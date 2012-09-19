@@ -30,7 +30,7 @@ import MySQLdb
 from twisted.cred import portal, checkers, credentials, error
 from twisted.conch import error, avatar, interfaces as conchinterfaces
 from twisted.conch.checkers import SSHPublicKeyDatabase
-from twisted.conch.ssh import factory, userauth, connection, keys, session, transport
+from twisted.conch.ssh import factory, connection, keys, session, transport
 from twisted.internet import reactor, protocol, defer
 from twisted.python import log
 from zope.interface import implements
@@ -40,6 +40,7 @@ from coret_honey import *
 from coret_config import *
 from coret_fake import *
 from coret_log import *
+from userauth import *
 
 #
 # First of all. Start logging now()!

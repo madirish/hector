@@ -1,6 +1,6 @@
 """
     Modified by Justin C. Klein Keane <justin@madirish.net>
-    Last modified: April 26, 2012
+    Last modified: August 20, 2012
     
     Kojoney - A honeypot that emules a secure shell (SSH) server.
     Copyright (C) 2005 Jose Antonio Coret
@@ -54,16 +54,23 @@ def processCmd(data, transport, attacker_username, ip):
     #directory changing
     if re.match('^cd',data):
         directory = data.split()
-        
-        if directory[1] == "/root": 
-            if attacker_username != "root":
-                transport.write('-bash: cd: /root: Permission denied')
+        if len(directory) == 1:
+            if attacker_username == "root":
+                FAKE_CWD = "/root"
+            elif attacker_username == "oracle":
+                FAKE_CWD = "/oracle"
+            else:
                 FAKE_CWD = "/"
-        elif len(directory) > 1:
-            FAKE_CWD = directory[1]
         else:
-            FAKE_CWD = "/"
-	
+            if directory[1] == "/root": 
+                if attacker_username != "root":
+                    transport.write('-bash: cd: /root: Permission denied')
+                    FAKE_CWD = "/"
+            elif len(directory) > 1:
+                FAKE_CWD = directory[1]
+            else:
+                FAKE_CWD = "/"
+    
     if uname_re.match(data):
         transport.write(FAKE_OS)
     elif data == "ps":
@@ -73,22 +80,36 @@ def processCmd(data, transport, attacker_username, ip):
         pass
     elif re.match('^date', data):
         transport.write(TIMESTAMP)
+    elif re.match('^ifconfig', data):
+        for line in FAKE_IFCONFIG:
+            transport.write(line + '\r\n')
+    elif re.match('^netstat', data):
+        for line in FAKE_NETSTAT:
+            transport.write(line + '\r\n')
+    elif re.match('^id', data):
+        if attacker_username == "root":
+            transport.write('uid=0(root) gid=0(root) groups=0(root),1(bin),2(daemon),3(sys),4(adm),6(disk),10(wheel)')
+        else:
+            transport.write("uid=312("+attacker_username+") gid=312(")
+            transport.write(attacker_username+") groups=312("+attacker_username+")")
+            transport.write('\r\n')
     elif re.match('^whoami', data):
         transport.write(attacker_username)
     elif re.match('^hostname', data):
         transport.write(FQDN)
     elif re.match('^ps ', data):
-	    for line in FAKE_PS:
-			transport.write(line + '\r\n')
+        for line in FAKE_PS:
+            transport.write(line + '\r\n')
     elif data == "cat /etc/passwd":
         for line in FAKE_CAT_PASSWD:
             transport.write(line + '\r\n')
     elif data == "cat /etc/issue":
-        transort.write("Debian-5ubuntu1\r\nKernel \\r on an \\m (\\l)")
+        for line in FAKE_ETC_ISSUE:
+            transport.write(line + '\r\n')
     elif data == "pwd":
-	    transport.write(FAKE_CWD + '\r\n')
+        transport.write(FAKE_CWD + '\r\n')
     elif re.match('^cd',data):
-	    pass
+        pass
     elif re.match('^tar', data):
             transport.write("tar: You must specify one of the `-Acdtrux' or `--test-label'  options\r\n")
             transport.write("Try `tar --help' or `tar --usage' for more information.\r\n")

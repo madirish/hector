@@ -2,7 +2,7 @@
 
 """
     Modified by Justin C. Klein Keane <jukeane@sas.upenn.edu>
-    Last updated: May 9, 2012
+    Last updated: August 20, 2012
 
     Kojoney - A honeypot that emules a secure shell (SSH) server.
     Copyright (C) 2005 Jose Antonio Coret
@@ -27,8 +27,8 @@ import sys
 import string
 import MySQLdb
 
-from twisted.cred import portal, checkers
-from twisted.conch import error, avatar
+from twisted.cred import portal, checkers, credentials, error
+from twisted.conch import error, avatar, interfaces as conchinterfaces
 from twisted.conch.checkers import SSHPublicKeyDatabase
 from twisted.conch.ssh import factory, userauth, connection, keys, session, transport
 from twisted.internet import reactor, protocol, defer
@@ -46,7 +46,7 @@ from coret_log import *
 #
 start_logging()
 # This line magically logs auth attempts to the database via mod in userauth.py in modified Twisted
-userauth.conch_mysql_connect(DATABASE_USER, DATABASE_PASS, DATABASE_HOST, DATABASE_NAME)
+#userauth.conch_mysql_connect(DATABASE_USER, DATABASE_PASS, DATABASE_HOST, DATABASE_NAME)
 
 # Global holder
 FAKE_USERNAME = ""
@@ -71,7 +71,7 @@ class CoretRealm:
         print "BUG #1255822: " + str(sys.exc_info()[1])
         print ""
         print "For more details see https://sourceforge.net/tracker/index.php?func=detail&aid=1255822&group_id=143961&atid=758336"
-        print "If you are using standar Ubuntu Hoary packages I recommend you to download and compile the source code of Zope Interfaces as well as Twisted libraries."
+        print "If you are using standard Ubuntu Hoary packages I recommend you to download and compile the source code of Zope Interfaces as well as Twisted libraries."
         print ""
         print "NOTE: If you known how to solve this problem, please, contact me at joxeankoret@yahoo.es"
         print ""
@@ -89,8 +89,10 @@ class CoretProtocol(protocol.Protocol):
 
 
     def connectionMade(self):
-        global FAKE_USERNAME
+        global FAKE_USERNAME, FAKE_PROMPT
         self.fake_username = FAKE_USERNAME
+        if self.fake_username == 'root':
+            FAKE_PROMPT = string.replace(FAKE_PROMPT, '$', '#')
         #self.transport.write('howdy ' + FAKE_USERNAME + '!\r\n\r\n')
         self.transport.write('Welcome to ' + str(FAKE_OS) + '!\r\n\r\n' +str(FAKE_PROMPT))
 
@@ -99,7 +101,7 @@ class CoretProtocol(protocol.Protocol):
     #removal of line breaks from commands (to prevent logs from being broken).
     def dataReceived(self, data):
         global FAKE_PROMPT
-
+        
         if data == '\r':
             self.lastCmd = string.replace(self.lastCmd, '\r', '')
             self.lastCmd = string.replace(self.lastCmd, '\n', '')
@@ -107,7 +109,7 @@ class CoretProtocol(protocol.Protocol):
             cursor = connection.cursor()
             escaped_command = connection.escape_string(self.lastCmd)
             escaped_ip = connection.escape_string(self.transport.session.conn.transport.transport.getPeer()[1])
-            cursor.execute("INSERT INTO koj_executed_commands SET command='%s', ip='%s'" % (escaped_command, escaped_ip))
+            cursor.execute("INSERT INTO executed_commands SET command='%s', ip='%s'" % (escaped_command, escaped_ip))
             retvalue = processCmd(self.lastCmd, self.transport, self.fake_username, escaped_ip)
             self.lastCmd = ""
             #data = '\r\n' + str(FAKE_PROMPT) 
@@ -145,20 +147,9 @@ class CoretProtocol(protocol.Protocol):
 
         self.transport.write(data)
 
-publicKey = 'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAGEArzJx8OYOnJmzf4tfBEvLi8DVPrJ3/c9k2I/Az64fxjHf9imyRJbixtQhlH9lfNjUIx+4LmrJH5QNRsFporcHDKOTwTTYLh5KmRpslkYHRivcJSkbh/C+BR3utDS555mV'
+publicKey = FAKE_SSH_KEY
 
-privateKey = """-----BEGIN RSA PRIVATE KEY-----
-MIIByAIBAAJhAK8ycfDmDpyZs3+LXwRLy4vA1T6yd/3PZNiPwM+uH8Yx3/YpskSW
-4sbUIZR/ZXzY1CMfuC5qyR+UDUbBaaK3Bwyjk8E02C4eSpkabJZGB0Yr3CUpG4fw
-vgUd7rQ0ueeZlQIBIwJgbh+1VZfr7WftK5lu7MHtqE1S1vPWZQYE3+VUn8yJADyb
-Z4fsZaCrzW9lkIqXkE3GIY+ojdhZhkO1gbG0118sIgphwSWKRxK0mvh6ERxKqIt1
-xJEJO74EykXZV4oNJ8sjAjEA3J9r2ZghVhGN6V8DnQrTk24Td0E8hU8AcP0FVP+8
-PQm/g/aXf2QQkQT+omdHVEJrAjEAy0pL0EBH6EVS98evDCBtQw22OZT52qXlAwZ2
-gyTriKFVoqjeEjt3SZKKqXHSApP/AjBLpF99zcJJZRq2abgYlf9lv1chkrWqDHUu
-DZttmYJeEfiFBBavVYIF1dOlZT0G8jMCMBc7sOSZodFnAiryP+Qg9otSBjJ3bQML
-pSTqy7c3a2AScC/YyOwkDaICHnnD3XyjMwIxALRzl0tQEKMXs6hH8ToUdlLROCrP
-EhQ0wahUTCk1gKA4uPD6TMTChavbh4K63OvbKg==
------END RSA PRIVATE KEY-----"""
+privateKey = FAKE_SSH_PRIVKEY
 
 class InMemoryPublicKeyChecker(SSHPublicKeyDatabase):
 
@@ -246,4 +237,3 @@ for port_num in port_nums:
     reactor.listenTCP(int(port_num), CoretFactory())
 
 reactor.run()
-

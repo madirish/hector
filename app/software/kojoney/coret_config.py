@@ -11,10 +11,10 @@
 import os
 import sys
 
-DATABASE_USER = 'kojoney_user'
-DATABASE_PASS = 'kojoney_pass'
-DATABASE_HOST = 'localhost'
-DATABASE_NAME = 'hector'
+DATABASE_USER = 'db_user'
+DATABASE_PASS = 'db_password'
+DATABASE_HOST = 'db_host'
+DATABASE_NAME = 'kojoney'
 
 if os.getuid() == 0:
 #################################################################
@@ -40,7 +40,7 @@ if os.getuid() == 0:
 #       Append output to file /var/log/honeypot.log, output to stderr and stdout, and output to /tmp/session.log 
 #       overwritting any previous file contents.
 #
-    ROOT_CONFIG_LOGS = [sys.stderr, open("/var/kojoney/kojoney.log", "a")]
+    ROOT_CONFIG_LOGS = [sys.stderr, open("/var/log/honeypot.log", "a")]
 
 #
 # ROOT_CONFIG_PORTS - Listening ports. You can specify one, two or more ports to listen.
@@ -62,7 +62,7 @@ if os.getuid() == 0:
 # When an intruder tries to download file with CURL or WGET, will I download the file? And where?
 #
     DOWNLOAD_REAL_FILE = True
-    DOWNLOAD_REAL_DIR  = "/var/kojoney/downloads/"
+    DOWNLOAD_REAL_DIR  = "/var/log/kojoney/"
 
 #################################################################
 # END OF KOJONEY CONFIGURATION - RUNNING AS ROOT
@@ -112,7 +112,7 @@ else:
 # When an intruder tries to download file with CURL or WGET, will I download the file? And where?
 #
     DOWNLOAD_REAL_FILE = True
-    DOWNLOAD_REAL_DIR  = "/var/kojoney/downloads/"
+    DOWNLOAD_REAL_DIR  = "/var/log/kojoney/"
 
 #################################################################
 # END OF KOJONEY CONFIGURATION - RUNNING AS A NORMAL USER

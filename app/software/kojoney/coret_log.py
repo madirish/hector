@@ -6,9 +6,11 @@ from coret_config import *
 from twisted.python import log
 
 def log_machine(data):
+    print "Log_machine: " + data
     pass
 
 def log_cmd_session(session, data):
+    print "Log_cmd_session: " + session + " :: " + data
     pass
 
 def start_logging():
@@ -20,3 +22,14 @@ def start_logging():
     for log_file in log_file_list:
         print "Ok, starting log to "  + str(log_file)
         log.startLogging(log_file)
+        log.addObserver(koj_watcher)
+    
+def koj_watcher(eventDict):
+  """Custom emit for FileLogObserver"""
+  text = log.textFromEventDict(eventDict)
+  if text is None:
+    return
+  fmtDict = {'text': text.replace("\n", "\n\t")}
+  msgStr = log._safeFormat("%(text)s\n", fmtDict)
+  print "Observed " + msgStr
+

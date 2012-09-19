@@ -1,3 +1,11 @@
+Version 0.0.5.0 - <jukeane@sas.upenn.edu>
+  * Removed most of the dependent libraries in favor of distr ones
+  * Added database support for login attempts and commands
+  * Make dynamic directory paths for more interactivity
+  * Dramatically updated the installer
+  * Changed default install path to /opt/kojoney
+  * Other minor fixes.
+
 Version 0.0.4.1 - <joxeankoret@yahoo.es>
 
 	* Support to download files solicited by the attacker.

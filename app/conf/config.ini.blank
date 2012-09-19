@@ -1,0 +1,27 @@
+; The global configuration file for HECTOR
+; These values should be customized!
+; Author: Justin C. Klein Keane <jukeane@sas.upenn.edu>
+
+db		=	database_name	
+db_host		=	localhost
+db_user		=	database_user
+db_pass		=	database_password
+
+; Use caution if setting this to 1, it's verbose!
+debug		=	0
+
+config_file	=	/path/to/hector/conf/config.ini
+error_log	=	/path/to/hector/logs/error_log
+message_log	=	/path/to/hector/logs/message_log
+
+libroot			=	/path/to/hector/lib/
+approot			= /path/to/hector/
+
+php_exec_path		=	/usr/bin/php
+nmap_exec_path	=	/usr/bin/nmap
+
+timezone		=	America/New_York
+
+site_url		= http://yoursite/hector_html
+site_email	= your_email@localhost
+alert_email	= your_email@localhost

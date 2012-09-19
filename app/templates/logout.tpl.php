@@ -1,0 +1,1 @@
+You have been logged out.  <a href="?action=default">Log in</a>

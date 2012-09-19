@@ -1,0 +1,376 @@
+/*
+ * Penn Header Styles 
+ */
+
+.headergrey{
+  background: url(http://www.sas.upenn.edu/home/assets/img/global/sas_header_fill_grey.jpg) top left repeat-x;
+  position: relative;
+  width: 100%;
+}
+
+#sas_header{
+  position: relative;
+  margin: 0px;
+  padding: 0px;
+  height: 40px;
+  overflow: hidden;
+  border-bottom: 1px solid #000000;
+  text-align: right;
+}
+
+#sas_header .links{
+  float: right;
+  clear: none;
+  color: white;
+  margin: 8px 1em 0px 0px;
+  padding-top:4px;
+  font-family: Frutiger, Arial, sans-serif;
+  font-size: 10pt;
+  font-weight:normal;
+  text-decoration: none;
+}
+
+#sas_header .links:hover{
+  color: #a0b7e0;
+}
+
+.sasgrey{
+  background: url(http://www.sas.upenn.edu/home/assets/img/global/sas_header_college_grey.jpg) right no-repeat;
+}
+
+#sas_header img{
+  float: left;
+  border: none;
+  padding-left: 6px;
+}
+
+/**
+ * Common styles
+ */
+ 
+body {	
+	background-color: #eee;
+	font-family: "Century Gothic", "Avant Garde Gothic", "Avant Garde", "URW Gothic L", helvetica, sans-serif;
+	margin: 0px;
+	padding: 0px;
+}
+
+h1,h2 {
+	font-family: georgia, palatino, times, serif;
+}
+
+div#appname {
+	background-color: #011f5b;
+	margin: 0px;
+	padding: 10px;
+}
+
+div#appname h2 {
+	color: white;
+	margin: 0px;
+	padding: 0px;
+}
+
+div#content {
+	background-color: white;
+	padding: 10px;
+}
+
+div#host_details span {
+	display: block;
+}
+
+div#scan_details {
+	display: table-row;
+}
+div#scan_details span {
+	display: table-cell;
+	padding: 0px 5px 0px 5px;
+  border-top: 1px solid black;
+}
+
+div.closed {
+	background-color: #ccc;
+}
+span#Addnew {
+	width:100%;
+}
+
+span#Addnew a.link {
+	text-decoration: none;
+}
+span#Addnew a.link img {
+	border: 0px;
+}
+
+span.link {
+	color: blue;
+	text-decoration: underline;
+}
+span.link:hover {
+	cursor: pointer;
+	text-decoration: none;
+}
+
+span#scan {
+	display: table;
+  border: 1px solid black;
+  padding: 5px;
+}
+
+.scan_timestamp {
+	/** visibility: hidden; **/
+}
+
+div#headerlinks {
+	border-bottom: 1px solid #011f5b;
+	background-color: #eee;
+	padding: 0px;
+	text-transform: lowercase;
+	width: 100%;
+}
+ 
+ul#links {
+	display: inline;
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px 0px 0px 10px;
+	width: 100%;
+}
+
+ul#links li {
+	display: inline;
+	list-style-type: none;
+	padding: 0px;
+	white-space: nowrap;
+}
+
+ul#links a {
+	color: #011f5b;
+	border-right: 1px solid #011f5b;
+	font-family:  "Andale Mono", "Courier New", monospace;
+	font-size: 12px;
+	padding-right: 10px;
+	text-decoration: none;
+}
+
+ul#links a:hover {
+	color: #990000;
+}
+
+/*
+ * Page specific styles  
+ */
+
+#summary h2 {
+	display: inline;
+}
+#summary table {
+	width: 100%;
+}
+#summary #common-ports-detected {
+	padding: 5px;
+}
+
+#summary #darknet-probes {
+	padding: 5px;
+}
+
+
+/* tables */
+
+table {
+  
+}
+
+th {
+  text-align: left;
+  text-decoration: underline;
+}
+
+td {
+  vertical-align: top;
+}
+
+table#dhost td {
+  border: 1px solid black;
+  padding: 2px;
+}
+
+table#listtable {
+  border: 1px black solid;
+  table-layout: fixed;
+  /* width: 100%; */
+  word-wrap:break-word;
+}
+table#listtable th {
+  text-align: left;
+  text-decoration: underline;
+}
+
+table#listtable tr.gray {
+  background-color: #ccc;
+}
+
+table#listtable td {
+  padding-left: 10px;
+  padding-right: 10px;
+ }
+
+table#listtable td.editcell,td.deletecell,th.optionscell {
+  width:100px;
+}
+
+table.tablesorter {
+	font-family:arial;
+	background-color: #CDCDCD;
+	margin:10px 0pt 15px;
+	font-size: 8pt;
+	width: 100%;
+	text-align: left;
+}
+table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+	background-color: #e6EEEE;
+	border: 1px solid #FFF;
+	font-size: 8pt;
+	padding: 4px;
+}
+table.tablesorter thead tr .header {
+	background-image: url(../images/bg.gif);
+	background-repeat: no-repeat;
+	background-position: center right;
+	cursor: pointer;
+}
+table.tablesorter tbody td {
+	color: #3D3D3D;
+	padding: 4px;
+	background-color: #FFF;
+	vertical-align: top;
+}
+table.tablesorter tbody tr.odd td {
+	background-color:#F0F0F6;
+}
+table.tablesorter thead tr .headerSortUp {
+	background-image: url(../images/asc.gif);
+}
+table.tablesorter thead tr .headerSortDown {
+	background-image: url(../images/desc.gif);
+}
+table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+background-color: #8dbdd8;
+}
+
+table.summary {
+  border: 1px solid gray;
+  width: 75%;
+  text-align: center;
+}
+
+table.summary tr.odd {
+  background-color: #eee;
+}
+
+table#add-edit-table {
+	width: 50%;
+}
+table#add-edit-table td.label {
+	padding-right: 10px;
+	white-space: nowrap;
+}
+table#add-edit-table td.value {
+	width: 100%
+}
+table#add-edit-table input.text {
+	width: 300px;
+}
+
+
+
+div.tr {
+  display: table-row;
+  width: 100%;
+}
+div.td {
+  display: table-cell;
+  padding: 10px 10px 10px 35px;
+  background-repeat: no-repeat;
+  background-position: top left;
+}
+div.td a {
+  display: block;
+  font-size: 1.1em;
+  font-weight: bold;
+}
+#add {
+  background-image: url(../images/applications-internet.png);
+}
+#alerts {
+  background-image: url(../images/alerts.png);
+}
+#browse {
+  background-image: url(../images/network-idle.png);
+}
+#hostgroups {
+  background-image: url(../images/network-workgroup.png);
+}
+#locations {
+  background-image: url(../images/start-here.png);
+}
+#supportgroups {
+  background-image: url(../images/system-users.png);
+}
+#ports {
+  background-image: url(../images/network-wired.png);
+}
+#search {
+  background-image: url(../images/system-search.png);
+}
+#users {
+  background-image: url(../images/contact-new.png);
+}
+#schedules {
+  background-image: url(../images/appointment-new.png);
+}
+#tags {
+  background-image: url(../images/bookmark-new.png);
+}
+#scan_types {
+  background-image: url(../images/preferences-desktop-remote-desktop.png);
+}
+#reports {
+  background-image: url(../images/internet-news-reader.png);
+}
+
+div#summary {
+  padding: 20px;
+}
+
+div#footer {
+	background-color: white;
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+	font-size: 12px;
+	padding: 2px;
+	text-align: center;
+	width: 100%;
+}
+
+div#footer a {
+	color: #011f5b;
+	text-decoration: none;
+}
+
+a.superlink {
+	color: blue;
+	font-size: .7em;
+	text-decoration: none;
+	vertical-align: top;
+}
+
+div#message {
+	background-color: #ff9999;
+	border: 1px solid #ff0000;
+	padding: 2px;
+	text-align: center;
+	width: 100%;
+}

@@ -1,0 +1,46 @@
+INSTALLATION
+------------
+
+HECTOR
+by Justin C.  Klein Keane <jukeane@sas.upenn.edu>
+Last modified: Feb 2, 2012
+
+There are two directories for the application: app and html.  The app directory
+is designed to be placed outside of your web server's web root (so that it 
+isn't exposed via the web service).  The html directory is supposed to be 
+placed in the web root.  Once you have placed both these files update the 
+conf/config.ini file in the app directory to reflect your environment.
+
+First create a database and user from MySQL:
+mysql> create database hector;
+mysql> grant all privileges on hector.* to 'hector_user'@localhost 
+  identified by 'hector_pass';
+
+Next populate the database using the installation script:
+$ mysql -u root -p < sql/db.sql
+ 
+OSSEC should be installed in server mode on the same host, or should at least
+make logs accessible to the host.  There is a Perl script, designed to be run
+daily, that scans the OSSEC logs and imports them into HECTOR's database.  This
+script is located at scripts/ossec_logreader.pl.  This script should be
+scheduled (via cron) to be run nightly.
+
+To run scheduled scans you must also create a scheduled (cron) job for the 
+script at scripts/scan_cron.php.  This script is designed to be run using the 
+PHP command line interface (CLI) and can be set with something like:
+
+01 0 * * * /usr/bin/php /var/www/app/scripts/scan_cron.php
+
+The script examines database settings and hands off to the various other PHP 
+scripts that actually run scans.  Be aware that the nmap_scan.php script writes
+an XML file of output, so be wary of what user account runs this script so 
+that the scan result XML file is protected.
+
+You can log into the web interface through your web browser, for instance at:
+http://192.168.0.1/html/
+
+The installation script creates an 'administrator' account with the password 
+'password'.  Note that you can create other accounts by following the template
+in sql/db.sql.  HECTOR is configured to utilize CoSign authentication if avail-
+able, so all you need to do is create accounts, and fill in bogus passwords,
+for CoSign authenticated accounts.

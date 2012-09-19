@@ -170,9 +170,41 @@ INSTALLING KOJONEY
 ------------------
 
 Finally, HECTOR utilizes data collected from a heavily modified Kojoney SSH
-honeypot (http://kojoney.sourceforge.net/).  You can install Kojoney on
-almost any host you want, including the HECTOR host, as long as you change 
-the port normally used for SSH to avoid conflicts.
+honeypot (http://kojoney.sourceforge.net/).  While it is possible to install
+Kojoney on the HECTOR host, this is not recommended.  Not only could it 
+potentially introduce confusion, but it might attract unwanted attention to the
+HECTOR server.
+
+To install Kojoney simply copy the entire Kojoney directory to the desired host
+and run the install.bash script as root.  Note that by default Kojoney will try
+to run on port 22, so you should reconfigure any SSH services already resident
+on the host to run on alternate ports.  When the installer asks about creating
+a database simply answser "no" to the question.
+
+Once the installation is complete you should modify the configuration so that
+Kojoney logs to the HECTOR server.  Be sure that the Kojoney host can access
+MySQL on the HECTOR server.  To do this you should add an additional rule in 
+your iptables such as:
+
+-A INPUT -s [ip_addr] -p tcp -m tcp --dport 3306 -j ACCEPT
+
+Where the [ip_addr] above is replaced with the IP address of your Kojoney 
+installation (such as 192.168.1.2).  This will allow discrete access to MySQL
+from the Kojoney server.  
+
+Once this is done you should update your Kojoney installation's configuration
+file (usually in /opt/kojoney/coret_config.py) so that the database connection
+credentials reflect the HECTOR host and a MySQL username and password with 
+privileges to write to the koj_login_attemps and koj_executed_commands tables
+in the HECTOR MySQL database.  Creating a new account for this purpose is 
+recommended using the following command on the HECTOR host:
+
+mysql> GRANT INSERT ON hector.koj_login_attempts, hector.koj_executed_commands
+to 'kojoney_user'@'kojoney_host' identified by 'kojoney_password';
+
+Making sure to replace 'kojoney_user' and 'kojoney_password' with strings of
+your choosing and 'kojoney_host' with the IP address or hostname of the kojoney
+host.
 
 DATABASE SUPPORT
 ----------------

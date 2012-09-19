@@ -12,7 +12,7 @@ function die
 	exit 1
 }
 
-KOJONEY_PATH=/usr/share/kojoney
+KOJONEY_PATH=/opt/kojoney
 INSTALLER_VERSION=0.4
 
 clear
@@ -62,25 +62,6 @@ fi
 echo 
 echo Kojoney Honeypot installer. 
 echo
-echo Kojoney is bound by a number of license agreements
-echo which are included in the install path.
-echo
-#echo "Press enter to view the license agreement(s) ..."
-#read
-#more LICENSE libs/license.zop libs/twisted.license 2>/dev/null || less LICENSE libs/license.zop libs/twisted.license 
-
-echo -e "Do you accept the ZPL, MIT and GPL license terms (yes/no) ?"
-read license_accept
-
-if [ "$license_accept" = 'yes' ]; then
-	echo All licenses accepted
-	echo
-else
-	echo You need to accept ALL the licenses to install it.
-	echo Exiting...
-	echo
-	exit
-fi
 
 NEED_DATABASE="unspecified"
 while [ $NEED_DATABASE == 'unspecified' ]

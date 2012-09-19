@@ -34,10 +34,25 @@ SUPPORTING SOFTWARE
 -------------------
  
 There are a number of additional supporting software packages included in the 
-HECTOR distribution that support the installation.  OSSEC, an open source
-host based intrusion detection system (http://www.ossec.net) is one of the 
-components and can be found in the app/software directory.  Simply unpack
-the installation using:
+HECTOR distribution that support the installation.  These include OSSEC, which
+is a host based intrusion detection system.  Although OSSEC can be run solely
+on the HECTOR server it is much more useful with additional client 
+installations on other machines.  Darknet sensors are another supporting 
+component.  Again, the HECTOR server can be configured as a darknet sensor, but
+is not optimal so other machines should be configured (the process is outlined
+below and largely similar on other machines excepting that remote sensors will
+need to be configured to route rsyslog logs to the HECTOR server).  Finally the
+HECTOR server can collect data from Kojoney, a lightweight SSH honeypot written
+in Python.  NMAP is also required, but can be installed using operating system
+sources for the HECTOR host and is not included in the distribution due to the
+fast nature of development and updates.
+
+INSTALLING OSSEC
+----------------
+
+OSSEC, an open source host based intrusion detection system 
+(http://www.ossec.net) is one of the components and can be found in the 
+app/software directory.  Simply unpack the installation using:
 
 # tar xvzf ossec-hids-2.3.tar.gz
 
@@ -58,6 +73,9 @@ Note that if you enable remote logging (in order to set up OSSEC clients on
 other machines) you will need to adjust your firewall rules to allow access to
 UDP port 514 by the clients.  Be sure to start OSSEC once the install is
 completed.
+
+INSTALLING DARKNET SENSORS
+--------------------------
 
 HECTOR also relies on darknet data collected via rsyslog and sensors running
 iptables as described in http://www.madirish.net/537.  The SQL install script
@@ -131,22 +149,6 @@ be found in /etc/sysconfig/iptables on a CentOS host):
 -A FORWARD -j REJECT --reject-with icmp-host-prohibited
 COMMIT
 
-Once done you can restart iptables and rsyslog and then test the configuration
-by attempting to telnet to the HECTOR host from another machine.  The connect
-attempt should fail and you can check to ensure database logging is working 
-using:
-
-$ mysql -u root Syslog
-mysql> select ID, ReceivedAt, Message from SystemEvents;
-
-You should see an entry for a dropped packed to destination port 23.  If not 
-then check your system logs for indications of what might have gone wrong.
-
-NMAP should also be installed on your HECTOR host, but you can use your
-operating system package management to do this installation.  Optionally you
-can download the latest version of NMAP from http://nmap.org and perform the
-installation manually.
-
 Note that this configuration allows TCP ports 22, 2222, 993 and 80, as well as
 UDP port 514, so the darknet sensor won't detect packets sent to those ports.
 Once iptables and rsyslog are configured they may need to be restarted using:
@@ -154,6 +156,18 @@ Once iptables and rsyslog are configured they may need to be restarted using:
 # service rsyslog restart
 # service iptables restart
 
+Once done you can test the configuration by attempting to telnet to the HECTOR 
+host from another machine.  The connectattempt should fail and you can check 
+to ensure database logging is working using:
+
+$ mysql -u root Syslog
+mysql> select ID, ReceivedAt, Message from SystemEvents;
+
+You should see an entry for a dropped packed to destination port 23.  If not 
+then check your system logs for indications of what might have gone wrong.
+
+INSTALLING KOJONEY
+------------------
 
 Finally, HECTOR utilizes data collected from a heavily modified Kojoney SSH
 honeypot (http://kojoney.sourceforge.net/).  You can install Kojoney on

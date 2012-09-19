@@ -10,7 +10,7 @@ FAKEYEARM2 = int(FAKEYEAR) - 2
 FAKEYEARM3 = int(FAKEYEAR) - 3
 FAKEYEARM4 = int(FAKEYEAR) - 4
 FAKEYEARM5 = int(FAKEYEAR) - 5
-FQDN = "fqdn_placeholder" #www.example.com
+FQDN = "jukeane01.sas.upenn.edu" #www.example.com
 FAKE_CWD = "/"
 
 FAKE_DIR_STRUCT = {

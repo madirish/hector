@@ -6,7 +6,7 @@
 # email subject
 #SUBJECT="Kojoney Daily Report"
 # email to
-EMAIL="root@localhost"
+EMAIL="jukeane@sas.upenn.edu"
 # email message
 #EMAILMESSAGE="/usr/share/kojoney/report.txt"
 # generate report

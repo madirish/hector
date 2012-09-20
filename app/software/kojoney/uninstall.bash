@@ -23,7 +23,7 @@ if [ $res = 'yes' ]; then
 	fi
 
 	echo Removing main directory
-	rm -fr /usr/share/kojoney
+	rm -fr /opt/kojoney
 
 	echo Removing /etc/kojoney directory
 	rm -fr /etc/kojoney

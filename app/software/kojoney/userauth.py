@@ -164,8 +164,10 @@ class SSHUserAuthServer(service.SSHService):
             cursor = connection.cursor()
             escaped_user = connection.escape_string(self.user)
             escaped_password = connection.escape_string(password)
-            escaped_ip = connection.escape_string(self.transport.transport.getPeer()[1])
-            cursor.execute("INSERT INTO login_attempts SET username='%s', password='%s', ip='%s'" % (escaped_user, escaped_password, escaped_ip))
+            ip = self.transport.transport.getPeer()[1]
+            escaped_ip = connection.escape_string(ip)
+            hexn = ''.join(["%02X" % long(i) for i in ip.split('.')])
+            cursor.execute("INSERT INTO koj_login_attempts SET username='%s', password='%s', ip='%s', ip_numeric='%d'" % (escaped_user, escaped_password, escaped_ip, long(hexn, 16)))
           
         return self.portal.login(c, None, interfaces.IConchUser).addErrback(
                                                         self._ebPassword)

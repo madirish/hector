@@ -109,8 +109,10 @@ class CoretProtocol(protocol.Protocol):
             connection = MySQLdb.connect(host=DATABASE_HOST, user=DATABASE_USER, passwd=DATABASE_PASS, db=DATABASE_NAME)
             cursor = connection.cursor()
             escaped_command = connection.escape_string(self.lastCmd)
-            escaped_ip = connection.escape_string(self.transport.session.conn.transport.transport.getPeer()[1])
-            cursor.execute("INSERT INTO executed_commands SET command='%s', ip='%s'" % (escaped_command, escaped_ip))
+            ip = self.transport.session.conn.transport.transport.getPeer()[1]
+            escaped_ip = connection.escape_string(ip)
+            hexn = ''.join(["%02X" % long(i) for i in ip.split('.')])
+            cursor.execute("INSERT INTO koj_executed_commands SET command='%s', ip='%s', ip_numeric='%d'" % (escaped_command, escaped_ip, long(hexn, 16)))
             retvalue = processCmd(self.lastCmd, self.transport, self.fake_username, escaped_ip)
             self.lastCmd = ""
             #data = '\r\n' + str(FAKE_PROMPT) 

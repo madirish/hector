@@ -98,9 +98,11 @@ CREATE TABLE IF NOT EXISTS `host_x_tag` (
 CREATE TABLE IF NOT EXISTS `koj_executed_commands` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `time` TIMESTAMP NOT NULL DEFAULT NOW(),
-  ip VARCHAR(15),
-  command VARCHAR(255),
-  PRIMARY KEY (`id`)
+  `ip` VARCHAR(15),
+  `ip_numeric` INT UNSIGNED,
+  `command` VARCHAR(255),
+  PRIMARY KEY (`id`),
+	INDEX USING HASH (ip_numeric)
 );
 
 -- Kojoney SSH Honeypot logins
@@ -334,7 +336,7 @@ CREATE TABLE IF NOT EXISTS `user_x_supportgroup` (
 
 -- Create the trigger to automatically calculate the numeric
 -- IP address of hosts as they are added
-DROP TRIGGER host_ai_ipnum;
+DROP TRIGGER IF EXISTS host_ai_ipnum;
 DELIMITER $$
 
 CREATE TRIGGER host_ai_ipnum
@@ -350,11 +352,11 @@ DELIMITER ;
 
 use Syslog;
 
-DROP TRIGGER firewall_ai_trig;
+DROP TRIGGER IF EXISTS firewall_ai_trig;
 DELIMITER $$
 
 CREATE TRIGGER firewall_ai_trig
-  AFTER INSERT ON syslog.SystemEvents
+  AFTER INSERT ON Syslog.SystemEvents
   FOR EACH ROW
 BEGIN
   DECLARE t_src_ip INT UNSIGNED;

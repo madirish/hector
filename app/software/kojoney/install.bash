@@ -13,12 +13,16 @@ function die
 }
 
 KOJONEY_PATH=/opt/kojoney
-INSTALLER_VERSION=0.4
+INSTALLER_VERSION=0.5
 
 clear
 echo "******************************************"
 echo " Kojoney Honeypot Installer version $INSTALLER_VERSION "
 echo "******************************************"
+echo "Distributed as part of HECTOR"
+echo "open source security intelligence"
+echo
+echo -e "by Justin C. Klien Keane jukeane@sas.upenn.edu"
 echo
 echo Checking for prerequisite dependencies...
 
@@ -47,7 +51,7 @@ if [ -e /etc/redhat-release ]; then
 	fi
 	if rpm -q python-crypto | grep not ; then
 	  echo Python crypto library not installed!
-	  yum install python-crypt
+	  yum install python-crypto
 	fi
 	if rpm -q python-twisted-conch | grep not ; then
 	  echo Python Twisted Conch library not installed!

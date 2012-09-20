@@ -13,6 +13,13 @@ are complex and dynamic technologies so should be installed using your
 distributions package management system (such as RPM, Yum, or APT).  This
 document will describe installation on a CentOS 6 system.
 
+Because many of the components of HECTOR require database support, it is 
+important that you follow the outline in this install guide so that scripts for
+components don't run into dependency issues (i.e. the database creation script
+for HECTOR assumes that a database for rsyslog is configured with default table
+names, so the instructions in the DARKNET SENSOR section must be complete prior
+to the DATABASE SUPPORT section).
+
 PACKAGE CONTENTS
 ----------------
 
@@ -46,33 +53,6 @@ HECTOR server can collect data from Kojoney, a lightweight SSH honeypot written
 in Python.  NMAP is also required, but can be installed using operating system
 sources for the HECTOR host and is not included in the distribution due to the
 fast nature of development and updates.
-
-INSTALLING OSSEC
-----------------
-
-OSSEC, an open source host based intrusion detection system 
-(http://www.ossec.net) is one of the components and can be found in the 
-app/software directory.  Simply unpack the installation using:
-
-# tar xvzf ossec-hids-2.3.tar.gz
-
-To unpack the installation.  Once unpacked simply install OSSEC using the 
-installation script (install.sh) included in the OSSEC directory.  Using the
-defaults for installation is expected.  For instance, the HECTOR scripts that
-import OSSEC data look for logs in the /var/ossec/logs directory, so if
-your installation varies you may need to change other scripts in HECTOR.  You
-should enable e-mail alerts if you wish to use OSSEC to track ongoing attacks
-as HECTOR does not import alerts as they occur, but rather on a nightly basis.
-
-OSSEC should be installed in server mode on the same host, or should at least
-make logs accessible to the host.  There is a Perl script, designed to be run
-daily, that scans the OSSEC logs and imports them into HECTOR's database.  This
-script is located at app/scripts/ossec_logreader.pl.  This script should be
-scheduled (via cron) to be run nightly (see SCHEDULED JOBS section below).  
-Note that if you enable remote logging (in order to set up OSSEC clients on 
-other machines) you will need to adjust your firewall rules to allow access to
-UDP port 514 by the clients.  Be sure to start OSSEC once the install is
-completed.
 
 INSTALLING DARKNET SENSORS
 --------------------------
@@ -166,6 +146,52 @@ mysql> select ID, ReceivedAt, Message from SystemEvents;
 You should see an entry for a dropped packed to destination port 23.  If not 
 then check your system logs for indications of what might have gone wrong.
 
+DATABASE SUPPORT
+----------------
+
+The next step to installation is to create a database for HECTOR.  In this 
+document we will use the database name 'hector' but it is somewhat arbitrary.
+
+Create the database using the MySQL command line interface:
+
+mysql> create database hector;
+mysql> grant all privileges on hector.* to 'hector_user'@localhost 
+  identified by 'hector_pass';
+
+Next populate the database using the installation script:
+
+$ mysql -u root -p < sql/db.sql
+
+Where "sql/db.sql" is a subdirectory under app (for instance, found in the 
+/opt/hector/app/sql/db.sql full file path).
+
+INSTALLING OSSEC
+----------------
+
+OSSEC, an open source host based intrusion detection system 
+(http://www.ossec.net) is one of the components and can be found in the 
+app/software directory.  Simply unpack the installation using:
+
+# tar xvzf ossec-hids-2.3.tar.gz
+
+To unpack the installation.  Once unpacked simply install OSSEC using the 
+installation script (install.sh) included in the OSSEC directory.  Using the
+defaults for installation is expected.  For instance, the HECTOR scripts that
+import OSSEC data look for logs in the /var/ossec/logs directory, so if
+your installation varies you may need to change other scripts in HECTOR.  You
+should enable e-mail alerts if you wish to use OSSEC to track ongoing attacks
+as HECTOR does not import alerts as they occur, but rather on a nightly basis.
+
+OSSEC should be installed in server mode on the same host, or should at least
+make logs accessible to the host.  There is a Perl script, designed to be run
+daily, that scans the OSSEC logs and imports them into HECTOR's database.  This
+script is located at app/scripts/ossec_logreader.pl.  This script should be
+scheduled (via cron) to be run nightly (see SCHEDULED JOBS section below).  
+Note that if you enable remote logging (in order to set up OSSEC clients on 
+other machines) you will need to adjust your firewall rules to allow access to
+UDP port 514 by the clients.  Be sure to start OSSEC once the install is
+completed.
+
 INSTALLING KOJONEY
 ------------------
 
@@ -173,7 +199,22 @@ Finally, HECTOR utilizes data collected from a heavily modified Kojoney SSH
 honeypot (http://kojoney.sourceforge.net/).  While it is possible to install
 Kojoney on the HECTOR host, this is not recommended.  Not only could it 
 potentially introduce confusion, but it might attract unwanted attention to the
-HECTOR server.
+HECTOR server.  You can copy Kojoney directly out of the HECTOR directory from
+the intended Kojoney host using an operation such as rsync in the following 
+fashion:
+
+# rsync -avze ssh [ip_addr]:/opt/hector/app/software/kojoney .
+
+Where [ip_addr] is the IP address of the HECTOR host (such as 10.0.0.2).  This 
+will move the entire Kojoney install directory onto the remote machine.
+
+The version of Kojoney distributed with HECTOR is designed to run on Red Hat
+based systems (such as RHEL, CentOS, Fedora, etc.).  The installer refers to 
+the Yum command and packages by their Red Hat names.  You may need to alter the
+installer to get it to work on other distributions.  For CentOS 5 and 
+potentially other distributions, additional repositories such as RPMForge may
+be necessary to install the required Python Twisted libraries.  Ideally you
+should install Kojoney on CentOS 6 or RHEL 6.
 
 To install Kojoney simply copy the entire Kojoney directory to the desired host
 and run the install.bash script as root.  Note that by default Kojoney will try
@@ -196,34 +237,30 @@ Once this is done you should update your Kojoney installation's configuration
 file (usually in /opt/kojoney/coret_config.py) so that the database connection
 credentials reflect the HECTOR host and a MySQL username and password with 
 privileges to write to the koj_login_attemps and koj_executed_commands tables
-in the HECTOR MySQL database.  Creating a new account for this purpose is 
-recommended using the following command on the HECTOR host:
+in the HECTOR MySQL database.  Such as:
 
-mysql> GRANT INSERT ON hector.koj_login_attempts, hector.koj_executed_commands
-to 'kojoney_user'@'kojoney_host' identified by 'kojoney_password';
+DATABASE_USER = 'kojoney_user'
+DATABASE_PASS = 'kojoney_password'
+DATABASE_HOST = '10.0.0.2'
+DATABASE_NAME = 'hector'
+
+
+Creating a new account for this purpose is recommended using the following 
+command on the HECTOR host:
+
+mysql> CREATE USER 'kojoney_user' identified by 'kojoney_password';
+mysql> GRANT INSERT ON hector.koj_login_attempts
+to 'kojoney_user'@'kojoney_host';
+mysql> GRANT INSERT ON hector.koj.executed_commands 
+to 'kojoney_user'@'kojoney_host';
 
 Making sure to replace 'kojoney_user' and 'kojoney_password' with strings of
 your choosing and 'kojoney_host' with the IP address or hostname of the kojoney
 host.
 
-DATABASE SUPPORT
-----------------
+Once Kojoney is configured it can be managed using:
 
-The next step to installation is to create a database for HECTOR.  In this 
-document we will use the database name 'hector' but it is somewhat arbitrary.
-
-Create the database using the MySQL command line interface:
-
-mysql> create database hector;
-mysql> grant all privileges on hector.* to 'hector_user'@localhost 
-  identified by 'hector_pass';
-
-Next populate the database using the installation script:
-
-$ mysql -u root -p < sql/db.sql
-
-Where "sql/db.sql" is a subdirectory under app (for instance, found in the 
-/opt/hector/app/sql/db.sql full file path).
+# /etc/rc.d/init.d/kojoney (start|stop|restart)
 
 SCHEDULED JOBS
 --------------

@@ -8,7 +8,8 @@
 <img src="images/window-new.png" title="Add new <?php echo $object;?>"/>
 Add New</a>
 </span>
-<table id="listtable">
+<table id="listtable" class="table table-striped">
+<thead>
 <tr>
 	<?php
 		foreach(array_keys($displays) as $header) {
@@ -16,7 +17,7 @@ Add New</a>
 		} 
 	?>
 	<th colspan="2" class="optionscell">Options</th>
-</tr>
+</tr></thead><tbody>
 	<?php
 		$x=0;
 		foreach ($items as $item) {
@@ -33,5 +34,5 @@ Add New</a>
 			<?php
 			$x++;
 		}
-	?>
+	?></tbody>
 </table>

@@ -1,10 +1,10 @@
 <form name="<?php echo $form_name;?>" id="<?php echo $form_name;?>" method="POST" action="?action=add_edit_scr&object=<?php echo $object;?>&id=<?php echo $id;?>">
 <fieldset>
-<legend><?php echo (isset($_GET['id'])) ? 'Edit' : 'Add';?> <?php echo $object;?></legend>
-<table id="add-edit-table">
+<legend><?php echo (isset($_GET['id'])) ? 'Edit' : 'Add';?> <?php echo str_ireplace("_"," ", $object);?></legend>
+<table id="add-edit-table" class="table">
 <?php
 	foreach ($form_data as $row) {
-		echo "\t" . '<tr><td class="label">' . $row['label'] . 
+		echo "\t" . '<tr><td>' . $row['label'] . 
 			'</td><td class="value">' . $row['form'] . '</td></tr>' . "\n";
 	}
 ?>	

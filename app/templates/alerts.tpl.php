@@ -1,7 +1,5 @@
-<h2>Last 60 Alerts</h2>
-<script type="text/javascript" src="js/jquery-1.4.4.js"></script>
-<script type="text/javascript" src="js/jquery.tablesorter.js"></script>
-<table id="tablealerts" name="tablealerts" class="tablesorter">
+<p class="lead">Last 60 Alerts</p>
+<table id="tablealerts" name="tablealerts" class="table table-striped">
 <thead>
 <tr>
 	<th>Timestamp</th>

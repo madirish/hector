@@ -4,11 +4,10 @@ Search malicious IP database: <input type="text" name="ip"/> <input type="submit
 <input type="hidden" name="form_name" value="<?php echo $formname;?>"/>
 </form>
 
-<table>
-<tr><td style="border:1px solid black;">
-
-<H2>Port Probes Yesterday</h2>
-<table>
+<div class="row">
+<div class="span4">
+<p class="lead">Port Probes Yesterday</p>
+<table class="table">
 <tr><th>Hits</th><th>Port</th><th>Protocol</th></tr>
 <?php
 
@@ -18,10 +17,10 @@ foreach ($port_result as $row) {
 ?>
 </table>
 
-</td><td style="border:1px solid black; padding-left: 20px;">
+</div><div class="span4">
 
-<H2>Latest 20 distinct darknet probe IPs</h2>
-<table>
+<p class="lead">Latest 20 distinct darknet probe IPs</p>
+<table class="table">
 <tr><th>IP Address</th></tr>
 <?php
 
@@ -31,9 +30,9 @@ foreach ($darknet_result as $row) {
 ?>
 </table>
 
-</td><td style="border:1px solid black; padding-left: 20px;">
-<H2>Latest 30 attackers detected by OSSEC</h2>
-<table>
+</div><div class="span4">
+<p class="lead">Latest 30 attackers detected by OSSEC</p>
+<table class="table">
 <tr><th>IP Address</th></tr>
 <?php
 
@@ -45,4 +44,4 @@ foreach ($ossec_attackers as $row) {
 </td></tr>
 </table>
 
-</tr></td></table>
+</div></div>

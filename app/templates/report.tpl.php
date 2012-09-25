@@ -2,7 +2,6 @@
 <script type="text/javascript" src="js/jquery.tablesorter.js"></script>
 <div id="content">
 
-<h2><?php echo $title;?></h2>
 
 <?php
 	if (! isset($content)) {

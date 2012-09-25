@@ -1,9 +1,13 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
+	<meta charset="utf-8">
 	<title>HECTOR</title>
-	<link type="text/css" href="css/style.css" rel="stylesheet" media="screen"/>
 	<link rel="shortcut icon" href="images/favicon.ico" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="css/bootstrap.css" rel="stylesheet">
+	<link href="css/bootstrap-responsive.css" rel="stylesheet">
+	<link href="css/penn.css" rel="stylesheet">
 </head>
 <body>
 <div id="headerbar" class="headergrey">
@@ -14,6 +18,4 @@
 </div>
 </div>
 
-<div id="appname">
-<h2>HECTOR</h2>
-</div>
+<div class="container">

@@ -7,9 +7,8 @@
  */
 session_name('HECTOR');
 session_start();
-
 // Global variables
-$approot = '/var/www/app/sas_sec/';
+$approot = getcwd() . '/../app/';
 $templates = $approot . 'templates/';
 
 // Necessary includes 

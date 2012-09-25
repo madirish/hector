@@ -19,10 +19,8 @@
 ini_set('memory_limit', '512M');
 global $add_edit;
 // Make sure of the environment
-if(php_sapi_name() != 'cli' && ! isset($add_edit)) {
-	die('This script (port_probe_rpt.php) is meant to be run from the CLI.');
-}
-if (! isset($add_edit)) {
+if(php_sapi_name() == 'cli') {
+
 	/**
 	 * Defined vars
 	 */

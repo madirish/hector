@@ -12,15 +12,12 @@
  * 
  * Last modified June 17, 2011  
  */
-syslog(LOG_INFO, 'Nmap_rescan_old.php beginning.');
  
 $months_old = 1;
 
 // Make sure of the environment
-if(php_sapi_name() != 'cli' && ! isset($add_edit)) {
-	die('This script (nmap_rescan_old.php) meant to be run from the CLI.');
-}
-if (! isset($add_edit)) {
+if(php_sapi_name() == 'cli') {
+	syslog(LOG_INFO, 'Nmap_rescan_old.php beginning.');
 	/**
 	 * Defined vars
 	 */

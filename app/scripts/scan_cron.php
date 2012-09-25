@@ -9,10 +9,7 @@
 
 
 // Make sure of the environment
-if(php_sapi_name() != 'cli'&& ! isset($add_edit)) {
-	die('This script (scan_cron.php) is meant to be run from the CLI.');
-}
-if (! isset($add_edit)) {
+if(php_sapi_name() == 'cli') {
 	/**
 	 * Defined vars
 	 */

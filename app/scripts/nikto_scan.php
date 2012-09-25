@@ -11,7 +11,7 @@
  
 // Make sure of the environment
 global $add_edit;
-if(php_sapi_name() != 'cli' && isset($add_edit)) {
+if(php_sapi_name() != 'cli') {
 	$is_executable[] = array('nikto_scan.php' => 'Nikto Scan');
 	global $javascripts;
 	$javascripts[] = <<<EOT

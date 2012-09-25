@@ -50,8 +50,7 @@ require_once($approot . 'lib/class.Scan_type.php');
 	
 // Make sure of the environment
 global $add_edit;
-if(php_sapi_name() != 'cli' && isset($add_edit)) {
-	
+if(php_sapi_name() != 'cli') {
 	$hostgroups = new Collection('Host_group');
 	$grouplist = "";
 	foreach ($hostgroups->members as $group) {
@@ -108,7 +107,6 @@ if(php_sapi_name() != 'cli' && isset($add_edit)) {
 			else {
 				document.getElementById("flags").value = document.getElementById("flags").value.replace("-a", "");
 			}
-			alert(document.getElementById("flags").value);
 		}
 		function addRemoveVersion() {
 			if (document.getElementById("add-remove-version").checked == true) {
@@ -119,7 +117,6 @@ if(php_sapi_name() != 'cli' && isset($add_edit)) {
 			else {
 				document.getElementById("flags").value = document.getElementById("flags").value.replace("-v", "");
 			}
-			alert(document.getElementById("flags").value);
 		}
 		function updatePorts() {
 			// First format the input properly
@@ -132,7 +129,6 @@ if(php_sapi_name() != 'cli' && isset($add_edit)) {
 			if (! document.getElementById("portlist").value == "") {
 				document.getElementById("flags").value += "-p=" + document.getElementById("portlist").value;
 			}
-			alert(document.getElementById("flags").value);
 		}
 		function updateoPorts() {
 			// First format the input properly
@@ -145,14 +141,12 @@ if(php_sapi_name() != 'cli' && isset($add_edit)) {
 			if (! document.getElementById("oportlist").value == "") {
 				document.getElementById("flags").value += "-e=" + document.getElementById("oportlist").value;
 			}
-			alert(document.getElementById("flags").value);
 		}
 	</script>
 EOT;
-	$onselects['nmap_scan.php'] = 'nmap_scan_display()';	
+	$onselects['nmap_scan.php'] = 'nmap_scan_display()';
 }
-else {
-	
+else {	
 	// Set high mem limit to prevent resource exhaustion
 	ini_set('memory_limit', '512M');
 	
@@ -301,7 +295,7 @@ else {
 }
 
 function show_help($error) {
-	echo "Usage nmap_scan.php [arguments=params]\n";
+	echo "Usage: nmap_scan.php [arguments=params]\n";
   echo $error;
 	echo "\n\n";
 	echo "Arguments:\n";
@@ -310,11 +304,11 @@ function show_help($error) {
 	echo "-g\tHost groups id's to scan\n";
 	echo "-p\tLimit scan to specific ports\n";
 	echo "-v\tAttempt to determine version information\n";
-	echo "\n\nExample:\n";
+	echo "\n\nExample Usage:\n";
 	echo '$ php nmap_scan.php -a -p=80,443 -g=1,4 -e=22 ' . "\n";
 	echo "Would scan for hosts in the 'web servers' and 'critical hosts' groups (id 1 & 4) \n";
 	echo "for ports 80 and 443, but only machines that have been seen with port 22 open.\n\n";
-	exit;
+	//exit;
 }
 
 function set_state_string($state) {

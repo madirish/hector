@@ -19,6 +19,8 @@
 # ToDo: 
 use DBI();
 
+my $debug = 0;
+
 my $workdir = substr($0, 0, rindex($0, 'ossec_logreader.pl'));
 my $config_file = substr($0, 0, rindex($0, 'ossec_logreader.pl')) . '../conf/config.ini';
 open(CONFINI, $config_file) or die "Couldn't open config file " . $config_file;
@@ -98,13 +100,14 @@ sub get_db_rule_id {
 
 sub get_host_id {
   my $client_ip = shift(@_);
+  if ($debug) { print "\n** Looking up host by host_ip $client_ip\n";}
   my $select_sql = "select host_id from host where host_ip = ?";
   my $host_id = db_select($select_sql, "host_id", $client_ip);
 
   # Insert the record if it can't be found
   if ($host_id < 1) {
     $sth = $dbh->prepare("insert into host(host_ip, host_name, host_note) values (?,?,?)") || die("Couldn't prep host insert.");
-    $sth->execute($client_ip, $host, "OSSEC") || die("Couldn't exec host insert.");
+    $sth->execute($client_ip, $host, "OSSEC") || die("Couldn't exec host insert with IP:[$client_ip], Host:[$host].\n");
     $sth->finish();
   }
   # Get the record we just found.
@@ -213,21 +216,21 @@ sub process_logfile {
     if ($record =~ /^\*\* Alert /) {
       # Make sure we aren't at the beginning
       if (! $alert_id eq "") {
-        #print "Original Entry:\n";
-        #print $orig;
-        #print "Translated:\n";
-        #print "Alert [" . $alert_id . "]\n";
-        #print "Dateline - [" . $dateline . "]\n";
-        #print "Host - [" . $host . "]\n";
-        #print "Client IP - [" . $client_ip . "]\n";
-        #print "Log - [" . $loglocation ."]\n";
-        #print "Rule id [" . $rule . "]\n";
-        #print "Level [" . $level . "]\n";
-        #print "Message [" . $message . "]\n";
-        #print "Src IP [" . $src_ip . "]\n";
-        #print "User [" . $user . "]\n";
-        #print $logentry;
-        #print "\n-=-=-=-=-=-=-=-\n";
+        if ($debug) {print "Original Entry:\n";}
+        if ($debug) {print $orig;}
+        if ($debug) {print "Translated:\n";}
+        if ($debug) {print "Alert [" . $alert_id . "]\n";}
+        if ($debug) {print "Dateline - [" . $dateline . "]\n";}
+        if ($debug) {print "Host - [" . $host . "]\n";}
+        if ($debug) {print "Client IP - [" . $client_ip . "]\n";}
+        if ($debug) {print "Log - [" . $loglocation ."]\n";}
+        if ($debug) {print "Rule id [" . $rule . "]\n";}
+        if ($debug) {print "Level [" . $level . "]\n";}
+        if ($debug) {print "Message [" . $message . "]\n";}
+        if ($debug) {print "Src IP [" . $src_ip . "]\n";}
+        if ($debug) {print "User [" . $user . "]\n";}
+        if ($debug) {print $logentry;}
+        if ($debug) {print "\n-=-=-=-=-=-=-=-\n";}
 
         # Get the host from the database
         my $host_id = get_host_id($client_ip);
@@ -252,13 +255,42 @@ sub process_logfile {
     }
     else {
       # Match the timstamp and location line
-      if ($record =~ /^(\d){4} ([a-z]){3} \d\d \d\d:\d\d:\d\d \(/i) {
-        $starthost = index($record, '(')+1;
-        $endhost = index($record, ')', $starthost);
-        $host = substr($record, $starthost, $endhost-$starthost);
-        $client_ip = substr($record, $endhost+2, index($record, "->")-$endhost-2);
-        $loglocation = substr($record, index($record, "->")+2);
-        $dateline = substr($record, 0, $starthost-2);
+      # Examples:
+      # 	2012 Sep 20 00:20:34 jukeane01->/var/log/secure
+      # 	Rule: 1002 (level 2) -> 'Unknown problem somewhere in the system.'
+      # 	Src IP: (none)
+      # 	User: (none)
+      # 	Sep 20 00:20:34 jukeane01 polkitd(authority=local): Operator of unix-session:/org/freedesktop/ConsoleKit/Session1 FAILED to authenticate to gain authorization for action org.freedesktop.packagekit.system-sources-refresh for system-bus-name::1.3077 [/usr/bin/gpk-update-icon] (owned by unix-user:justin)
+      # 	
+      #		2012 Sep 21 00:00:00 (quasar.sas.upenn.edu) 128.91.234.145->/var/log/secure
+      #		Rule: 5710 (level 5) -> 'Attempt to login using a non-existent user'
+      #		Src IP: 180.183.115.55
+      #		User: (none)
+      #		Sep 20 23:59:58 quasar sshd[2164]: Failed password for invalid user kelly from 180.183.115.55 port 39975 ssh2
+      
+       	      
+      if ($record =~ /^(\d){4} ([a-z]){3} \d\d \d\d:\d\d:\d\d /i) {
+      	@dateHostLogLine = split(' ', $record);
+      	$year = $dateHostLogLine[0];
+      	$month = $dateHostLogLine[1];
+      	$day = $dateHostLogLine[2];
+      	$time = $dateHostLogLine[3];
+      	# Handle format: 2012 Sep 21 00:00:00 (quasar.sas.upenn.edu) 128.91.234.145->/var/log/secure
+      	if (index('(', $dateHostLogLine[4]) > -1) {
+      		$host = $dateHostLogLine[4];
+      		$host =~ s/(\(|\))//g; # Get rid of parens
+      		@ipLog = split("->", $dateHostLogLine[5]);
+      		$client_ip = $ipLog[0];
+      		$loglocation = $ipLog[1];
+      	}
+      	# Handle format: 2012 Sep 20 00:20:34 jukeane01->/var/log/secure
+      	else {
+      		@hostLog = split("->", $dateHostLogLine[4]);
+      		$client_ip = "127.0.0.1";
+      		$host = $hostLog[0];
+      		$loglocation = $hostLog[1];
+      	}
+      	$dateline = "$year $month $day $time";
         chomp($loglocation);
       }
       # Match the Rule line
@@ -270,8 +302,14 @@ sub process_logfile {
       }
       # Match the Source IP
       elsif ($record =~ /^Src IP: /) {
+      	if ($debug) { print "\nMatching source ip for [$record]\n";}
         $src_ip = substr($record, index($record, ": ")+2);
         chomp($src_ip);
+        if ($debug) { print "\nSrc IP: $src_ip\n";}
+        if ($src_ip eq '(none)') {
+        	$src_ip = '127.0.0.1';
+        }
+        if ($debug) { print "\nSrc IP: $src_ip\n";}
       }
       # Match the user
       elsif ($record =~ /^User: /) {

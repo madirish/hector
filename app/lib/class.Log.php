@@ -77,13 +77,13 @@ Class Log {
 			
 		
 		if (! file_exists($this->error_log_location)) {
-			touch($this->error_log_location) or die('Could not create the error log ['. $this->error_log_location . '].  Please contact a system administrator.');
+			touch($this->error_log_location) or die('The web server could not create the error log ['. $this->error_log_location . '] (permissions problem?).  Please contact a system administrator.');
 		}
 		if (! file_exists($this->message_log_location)) {
-			touch($this->message_log_location) or die('Could not create the messages log  ['. $this->message_log_location . '].  Please contact a system administrator.');
+			touch($this->message_log_location) or die('The web server could not create the messages log  ['. $this->message_log_location . '] (permissions problem?).  Please contact a system administrator.');
 		}
-		$this->error = fopen($this->error_log_location, 'a') or die('Could not open error log.  Please contact a system administrator');
-		$this->message = fopen($this->message_log_location, 'a') or die('Could not open error log.  Please contact a system administrator');
+		$this->error = fopen($this->error_log_location, 'a') or die('The web server could not open the error log (permissions problem?).  Please contact a system administrator.');
+		$this->message = fopen($this->message_log_location, 'a') or die('The web server could not open the message log (permissions problem?).  Please contact a system administrator.');
 	}
 
 	/**

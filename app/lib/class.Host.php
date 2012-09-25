@@ -165,71 +165,69 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 				);
 			}
 			$result = $this->db->fetch_object_array($sql);
-			if (! is_object($result[0])) {
-				/*print "Error fetching object with SQL:\n";
-				print_r($sql);
-				var_dump(debug_backtrace());
-				die();*/
+			if (is_array($result) && is_object($result[0])) {			
+				$this->id = $result[0]->host_id;
+				$this->ip = $result[0]->host_ip;
+				$this->name = $result[0]->host_name;
+				if ($minimal == 'no') {
+					$this->os = $result[0]->host_os;
+					$this->sponsor = $result[0]->host_sponsor;
+					$this->link = $result[0]->host_link;
+					$this->note = $result[0]->host_note;
+					$this->supportgroup = new Supportgroup($result[0]->supportgroup_id);
+					$this->location = new Location($result[0]->location_id);
+					$this->technical = $result[0]->host_technical;
+					$this->policy = $result[0]->host_policy;
+					$this->ignore_portscan = $result[0]->host_ignore_portscan;
+					$this->ignore_portscan_byuserid = $result[0]->host_ignoredby_user_id;
+					$this->ignoredfor_days = $result[0]->host_ignoredfor_days;
+					$this->ignored_timestamp = $result[0]->host_ignored_timestamp;
+					$this->ignored_note = $result[0]->host_ignored_note;
+				}
+				// Only run these queries if necessary
+				if ($minimal == 'no') {
+					// Populate the host groups
+					$sql = array(
+						'SELECT x.host_group_id from host_x_host_group x, host_group g ' .
+						'WHERE g.host_group_id = x.host_group_id ' .
+						'AND x.host_id = ?i order by g.host_group_name',
+						$id
+					);
+					$result = $this->db->fetch_object_array($sql);
+					if (is_array($result)) {
+						foreach ($result as $record) $this->host_group_ids[] = $record->host_group_id;
+					}
+					// Populate the alterantive names
+					$sql = array(
+						'SELECT host_alt_name from host_alts WHERE host_id = ?i',
+						$id
+					);
+					$result = $this->db->fetch_object_array($sql);
+					if (is_array($result)) {
+						foreach ($result as $record) $this->alt_hostnames[] = $record->host_alt_name;
+					}
+					// Populate the alternative IP's
+					$sql = array(
+						'SELECT host_alt_ip from host_alts WHERE host_id = ?i',
+						$id
+					);
+					$result = $this->db->fetch_object_array($sql);
+					if (is_array($result)) {
+						foreach ($result as $record) $this->alt_ips[] = $record->host_alt_ip;
+					}
+					// Populate the tags
+					$sql = array(
+						'SELECT tag_id from host_x_tag WHERE host_id = ?i',
+						$id
+					);
+					$result = $this->db->fetch_object_array($sql);
+					if (is_array($result)) {
+						foreach ($result as $record) $this->tag_ids[] = $record->tag_id;
+					}
+				}
 			}
-			
-			$this->id = $result[0]->host_id;
-			$this->ip = $result[0]->host_ip;
-			$this->name = $result[0]->host_name;
-			if ($minimal == 'no') {
-				$this->os = $result[0]->host_os;
-				$this->sponsor = $result[0]->host_sponsor;
-				$this->link = $result[0]->host_link;
-				$this->note = $result[0]->host_note;
-				$this->supportgroup = new Supportgroup($result[0]->supportgroup_id);
-				$this->location = new Location($result[0]->location_id);
-				$this->technical = $result[0]->host_technical;
-				$this->policy = $result[0]->host_policy;
-				$this->ignore_portscan = $result[0]->host_ignore_portscan;
-				$this->ignore_portscan_byuserid = $result[0]->host_ignoredby_user_id;
-				$this->ignoredfor_days = $result[0]->host_ignoredfor_days;
-				$this->ignored_timestamp = $result[0]->host_ignored_timestamp;
-				$this->ignored_note = $result[0]->host_ignored_note;
-			}
-			// Only run these queries if necessary
-			if ($minimal == 'no') {
-				// Populate the host groups
-				$sql = array(
-					'SELECT x.host_group_id from host_x_host_group x, host_group g ' .
-					'WHERE g.host_group_id = x.host_group_id ' .
-					'AND x.host_id = ?i order by g.host_group_name',
-					$id
-				);
-				$result = $this->db->fetch_object_array($sql);
-				if (is_array($result)) {
-					foreach ($result as $record) $this->host_group_ids[] = $record->host_group_id;
-				}
-				// Populate the alterantive names
-				$sql = array(
-					'SELECT host_alt_name from host_alts WHERE host_id = ?i',
-					$id
-				);
-				$result = $this->db->fetch_object_array($sql);
-				if (is_array($result)) {
-					foreach ($result as $record) $this->alt_hostnames[] = $record->host_alt_name;
-				}
-				// Populate the alternative IP's
-				$sql = array(
-					'SELECT host_alt_ip from host_alts WHERE host_id = ?i',
-					$id
-				);
-				$result = $this->db->fetch_object_array($sql);
-				if (is_array($result)) {
-					foreach ($result as $record) $this->alt_ips[] = $record->host_alt_ip;
-				}
-				// Populate the tags
-				$sql = array(
-					'SELECT tag_id from host_x_tag WHERE host_id = ?i',
-					$id
-				);
-				$result = $this->db->fetch_object_array($sql);
-				if (is_array($result)) {
-					foreach ($result as $record) $this->tag_ids[] = $record->tag_id;
-				}
+			else {
+				$this->log->write_error("Unable to fetch array for Host object id $id.  Corrupt MySQL?");
 			}
 		}
 	}
@@ -512,7 +510,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 			$sql .= 'h.supportgroup_id = x.supportgroup_id AND' .
 					'x.user_id = ' . $appuser->get_id() . ' AND ';
 		}
-		$sql .= 'n.port_number = ' . $portnum .' and n.state_id=1';
+		$sql .= 'n.nmap_scan_result_port_number = ' . $portnum .' and n.state_id=1';
 		return $sql; 
 	}
 	
@@ -537,9 +535,10 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 */
 	public function get_details() {
 		require_once('class.Nmap_scan_result.php');
-		//$scans = new Collection('Nmap_scan_result', ' and host_id = ' . $this->id . ' and s.state_state != \'closed\'', '', 'ORDER BY port_number');
-		$scans = new Collection('Nmap_scan_result', ' AND s.state_id=1 AND host_id = ' . $this->id, '', 'ORDER BY port_number');
-		$retval = '<table id="host_details">' . "\n";
+		//$scans = new Collection('Nmap_scan_result', ' and host_id = ' . $this->id . ' and s.state_state != \'closed\'', '', 'ORDER BY nmap_scan_result_port_number');
+		$scans = new Collection('Nmap_scan_result', ' AND s.state_id=1 AND host_id = ' . $this->id, '', 'ORDER BY nmap_scan_result_port_number');
+		$retval = '<div class="row"><div class="span5">';
+		$retval .= '<table id="host_details" class="table">' . "\n";
 		$retval .= '<tr id="name"><td>Hostname</td><td>' . $this->get_name() . '</td></tr>' . "\n";
 		$retval .= '<tr id="ip"><td>IP Address</td><td>' . $this->get_ip() . '</td></tr>' . "\n";
 		$retval .= '<tr id="ip"><td>Operating System</td><td>' . $this->get_os() . '</td></tr>' . "\n";
@@ -566,12 +565,16 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 			$retval .= '<tr id="excludedreason"><td>Reason:</td><td>' . $this->get_excludedreason() . '</td></tr>' . "\n";
 		}
 		$retval .= '<tr id="groups"><td><a href="?action=details&object=host_group">Host groups</a>:</td><td>' . $this->get_host_groups_readable() . '</td></tr>' . "\n";
-		$retval .= '</table><span id="scan">NMAP scan results:<br/>' . "\n";
+		$retval .= '</table>';
+		$retval .= '</div><div class="span6"><p class="well well-small">NMAP scan results:</p>' . "\n";
+		$retval .= '<table class="table table-striped"><thead>';
+		$retval .= '<tr><th>Port</th><th>State</th><th>Date</th><th>Protocol</th><th>Version</th></tr>';
+		$retval .= '</thead><tbody>';
 		if (isset($scans->members) && is_array($scans->members)) {
 			foreach ($scans->members as $scan) $retval .= $scan->get_details();
 		}
-		$retval .= '</span>';
-		$retval .= '</div>';
+		$retval .= '</tbody></table>';
+		$retval .= '</div></div>';
 		return $retval;
 	}
 
@@ -703,7 +706,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	
 	public function get_ports() {
 		if ($this->ports == null) {
-			$ports = new Collection('Nmap_scan_result', 'and nsr.host_id = ' . $this->get_id() . ' order by nsr.port_number asc');
+			$ports = new Collection('Nmap_scan_result', 'and nsr.host_id = ' . $this->get_id() . ' order by nsr.nmap_scan_result_port_number asc');
 			if (isset($ports->members) && is_array($ports->members)) {
 				foreach ($ports->members as $port) {
 					$this->ports[] = $port;

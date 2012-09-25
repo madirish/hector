@@ -326,8 +326,8 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
 	    		'SET scan_name = \'?s\', ' .
 	    			'scan_type_id = ?i, ' .
 	    			'scan_daily = ?i, ' .
-	    			'scan_dayofweek = ?i,' .
-	    			'scan_dayofmonth = ?i,' .
+	    			'scan_dayofweek = ?i, ' .
+	    			'scan_dayofmonth = ?i, ' .
 	    			'scan_dayofyear = ?i ' . 
 	    		' WHERE scan_id = \'?i\'',
 	    		$this->get_name(),
@@ -347,8 +347,8 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
 	    		'SET scan_name = \'?s\', ' .
 	    			'scan_type_id = ?i, ' .
 	    			'scan_daily = ?i, ' .
-	    			'scan_dayofweek = ?i,' .
-	    			'scan_dayofmonth = ?i,' .
+	    			'scan_dayofweek = ?i, ' .
+	    			'scan_dayofmonth = ?i, ' .
 	    			'scan_dayofyear = ?i',
 	    		$this->get_name(),
 	    		$this->get_type()->get_id(),
@@ -363,8 +363,8 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
 	    		'SELECT scan_id FROM scan WHERE scan_name = \'?s\' AND ' .
 	    			'scan_type_id = ?i AND ' .
 	    			'scan_daily = ?i AND ' .
-	    			'scan_dayofweek = ?i AND' .
-	    			'scan_dayofmonth = ?i AND' .
+	    			'scan_dayofweek = ?i AND ' .
+	    			'scan_dayofmonth = ?i AND ' .
 	    			'scan_dayofyear = ?i',
 	    		$this->name,
 	    		$this->get_type()->get_id(),

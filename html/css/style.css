@@ -222,17 +222,17 @@ table#listtable td.editcell,td.deletecell,th.optionscell {
 }
 
 table.tablesorter {
-	font-family:arial;
-	background-color: #CDCDCD;
+	font-family: font-family: "Andale Mono", "Courier New", monospace;
+	background-color: #eee;
 	margin:10px 0pt 15px;
-	font-size: 8pt;
+	font-size: .8em;
 	width: 100%;
 	text-align: left;
 }
 table.tablesorter thead tr th, table.tablesorter tfoot tr th {
-	background-color: #e6EEEE;
+	background-color: #eee;
 	border: 1px solid #FFF;
-	font-size: 8pt;
+	font-size: .9em;
 	padding: 4px;
 }
 table.tablesorter thead tr .header {
@@ -247,9 +247,17 @@ table.tablesorter tbody td {
 	background-color: #FFF;
 	vertical-align: top;
 }
-table.tablesorter tbody tr.odd td {
-	background-color:#F0F0F6;
+table.tablesorter tbody td a {
+	text-decoration: none;
 }
+table.tablesorter tbody td a:hover {
+	text-decoration: underline;
+}
+/**
+table.tablesorter tbody tr.odd td {
+	background-color:#F0F0F0;
+}
+**/
 table.tablesorter thead tr .headerSortUp {
 	background-image: url(../images/asc.gif);
 }

@@ -8,7 +8,7 @@ if (! isset($_GET['object'])) {
 	// in case we don't have the right input
 	$template = 'default';
 }
-else {
+else { 
 	$object = ucfirst(urldecode($_GET['object']));	
 	$file = $approot . 'lib/class.' . $object . '.php';
 	if (is_file($file)) {

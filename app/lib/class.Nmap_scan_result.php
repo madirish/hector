@@ -193,13 +193,13 @@ class Nmap_scan_result
     public function get_details() {
     	$class = ($this->get_state() == "open") ? "open" : "closed";
     	$retval = '';
-    	$retval .= '<div id="scan_details" class="' . $class . '">';
-    	$retval .= '<span class="port_number">' . $this->get_port_number() . '</span>';
-    	$retval .= '<span class="port_state">' . $this->get_state() . '</span>';
-    	$retval .= '<span class="scan_timestamp">' . $this->get_timestamp() . '</span>';
-    	$retval .= '<span class="port_service_name">' . $this->get_service_name() . '</span>';
-    	$retval .= '<span class="port_service_version">' . $this->get_service_version() . '</span>';
-    	$retval .= '</div>' . "\n";
+    	$retval .= '<tr>';
+    	$retval .= '<td class="port_number">' . $this->get_port_number() . '</td>';
+    	$retval .= '<td class="port_state">' . $this->get_state() . '</td>';
+    	$retval .= '<td class="scan_timestamp">' . $this->get_timestamp() . '</td>';
+    	$retval .= '<td class="port_service_name">' . $this->get_service_name() . '</td>';
+    	$retval .= '<td class="port_service_version">' . $this->get_service_version() . '</td>';
+    	$retval .= '</tr>' . "\n";
     	return $retval;
     }
     

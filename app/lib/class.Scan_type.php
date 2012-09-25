@@ -70,8 +70,8 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
 			$result = $this->db->fetch_object_array($sql);
 			$this->id = $result[0]->scan_type_id;
 			$this->name = $result[0]->scan_type_name;
-			$this->flags = $result[0]->scan_flags;
-			$this->script = $result[0]->scan_script;
+			$this->flags = $result[0]->scan_type_flags;
+			$this->script = $result[0]->scan_type_script;
 		}
     }
 
@@ -136,7 +136,7 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
 		$is_executable = array();
 		if ($handle = opendir($approot . '/scripts')) {
 			while (false !== ($entry = readdir($handle))) {
-				$fname = $approot . 'scripts/' . $entry;
+				$fname = $approot . 'scripts/' . $entry; 
 				if (is_file($fname) && substr($fname, -4) == ".php") {
 					include_once($fname);
 				}
@@ -152,7 +152,7 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
 		return $retval;
 	}
 	
-	private function get_script_onselects() {
+	private function get_script_onselects() { 
 		return $this->onselects;
 	}
 	
@@ -201,7 +201,7 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
     	if ($this->id > 0 ) {
     		// Update an existing record
 	    	$sql = array(
-	    		'UPDATE scan_type SET scan_type_name = \'?s\', scan_flags = \'?s\', scan_script = \'?s\' WHERE scan_type_id = \'?i\'',
+	    		'UPDATE scan_type SET scan_type_name = \'?s\', scan_type_flags = \'?s\', scan_type_script = \'?s\' WHERE scan_type_id = \'?i\'',
 	    		$this->get_name(),
 	    		$this->get_flags(),
 	    		$this->get_script(),
@@ -212,7 +212,7 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
     	else {
     		// Insert a new value
 	    	$sql = array(
-	    		'INSERT INTO scan_type SET scan_type_name = \'?s\', scan_flags = \'?s\', scan_script = \'?s\'',
+	    		'INSERT INTO scan_type SET scan_type_name = \'?s\', scan_flags = \'?s\', scan_type_script = \'?s\'',
 	    		$this->get_name(),
 	    		$this->get_flags(),
 	    		$this->get_script()
@@ -220,7 +220,7 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
 	    	$this->db->iud_sql($sql);
 	    	// Now set the id
 	    	$sql = array(
-	    		'SELECT scan_type_id FROM scan_type WHERE scan_type_name = \'?s\' AND scan_flags = \'?s\' AND scan_script = \'?s\'',
+	    		'SELECT scan_type_id FROM scan_type WHERE scan_type_name = \'?s\' AND scan_type_flags = \'?s\' AND scan_type_script = \'?s\'',
 	    		$this->get_name(),
 	    		$this->get_flags(),
 	    		$this->get_script()

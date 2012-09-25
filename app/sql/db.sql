@@ -13,6 +13,29 @@ CREATE TABLE IF NOT EXISTS `alert` (
 	KEY `host_id` (`host_id`)
 );
 
+-- Actual data from RSS feeds
+CREATE TABLE IF NOT EXISTS `article` (
+  `article_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `article_date` TIMESTAMP NOT NULL DEFAULT NOW(),
+  `article_title` varchar(255),
+  `article_url` varchar (255),
+  `article_body` text,
+  PRIMARY KEY (`article_id`),
+  INDEX USING BTREE (`article_date`)
+);
+
+-- Allow free tagging of articles from RSS feeds
+CREATE TABLE IF NOT EXISTS `article_x_tag` (
+  `article_id` INT NOT NULL,
+  `tag_id` INT NOT NULL
+);
+
+-- If the article describes a vulnerability pair them
+CREATE TABLE IF NOT EXISTS `article_x_vuln` (
+  `article_id` INT NOT NULL,
+  `vuln_id` INT NOT NULL
+);
+
 -- Darknet sensor
 CREATE TABLE IF NOT EXISTS `darknet` (
 	`id` INT NOT NULL AUTO_INCREMENT,
@@ -71,6 +94,14 @@ CREATE TABLE IF NOT EXISTS `hostnote` (
   KEY `host_id` (`host_id`)
 );
 
+-- Track alternative IP addresses and domain names
+CREATE TABLE IF NOT EXISTS `host_alts` (
+	`host_id` INT NOT NULL,
+	`host_alt_ip` varchar(15),
+	`host_alt_name` varchar(255),
+  PRIMARY KEY  (`host_id`)
+);
+
 -- For grouping hosts (say, "HR Machines")
 CREATE TABLE IF NOT EXISTS `host_group` (
 	`host_group_id` INT NOT NULL AUTO_INCREMENT,
@@ -84,6 +115,17 @@ CREATE TABLE IF NOT EXISTS `host_x_host_group` (
 	`host_id` INT NOT NULL,
   KEY  (`host_group_id`),
   KEY `host_id` (`host_id`)
+);
+
+-- Track vulnerabilities discovered in certain hosts
+CREATE TABLE IF NOT EXISTS `host_x_vuln` (
+  `host_id` INT UNSIGNED NOT NULL,
+  `vuln_id` INT UNSIGNED NOT NULL,
+  `scan_process_id` INT UNSIGNED,
+  `dated` TIMESTAMP NOT NULL DEFAULT NOW(),
+  INDEX USING HASH (`host_id`),
+  INDEX USING HASH (`vuln_id`),
+  INDEX USING BTREE (`dated`)
 );
 
 -- Free tagging of hosts
@@ -154,7 +196,7 @@ CREATE TABLE IF NOT EXISTS `nmap_scan_result` (
 	PRIMARY KEY (`nmap_scan_result_id`),
   KEY `host_id` (`host_id`),
   KEY `nmap_scan_result_port_number` (`nmap_scan_result_port_number`),
-  UNIQUE KEY `scan_id` (`scan_id`)
+  KEY `scan_id` (`scan_id`)
 );
 
 -- OSSEC alerts from clients
@@ -167,7 +209,7 @@ CREATE TABLE IF NOT EXISTS `ossec_alerts` (
 	`rule_src_ip` VARCHAR(15) DEFAULT NULL,
 	`rule_src_ip_numeric` INT UNSIGNED,
 	`rule_user` VARCHAR(20) DEFAULT NULL,
-	`rule log` TEXT DEFAULT NULL,
+	`rule_log` TEXT DEFAULT NULL,
 	`alert_ossec_id` VARCHAR(50) NOT NULL,
 	PRIMARY KEY (`alert_id`),
 	KEY `host_id` (`host_id`),
@@ -198,11 +240,20 @@ CREATE TABLE IF NOT EXISTS `reports` (
 	PRIMARY KEY (`report_id`)
 );
 
+-- RSS feed import table (for scheduling)
+CREATE TABLE IF NOT EXISTS `rss` (
+  `rss_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `rss_name` varchar(255),
+  `rss_url` varchar(255) NOT NULL,
+  PRIMARY KEY (`rss_id`)
+);
+
 
 -- Scans are a generic network poke for scheduling
 CREATE TABLE IF NOT EXISTS `scan` (
 	`scan_id` INT NOT NULL AUTO_INCREMENT,
-	`scan_process_id` INT NOT NULL,
+	`scan_type_id` INT NOT NULL,
+	`scan_name` VARCHAR(255),
 	`scan_daily` INT(1) DEFAULT 0,
 	`scan_dayofweek` INT DEFAULT 0,
 	`scan_dayofmonth` INT DEFAULT 0,
@@ -212,16 +263,16 @@ CREATE TABLE IF NOT EXISTS `scan` (
 );
 
 -- Scan process refers to the type of program to run (NMAP, Nikto, etc.)
-CREATE TABLE IF NOT EXISTS `scan_process` (
-	`scan_process_id` INT NOT NULL AUTO_INCREMENT,
-	`scan_process_name` VARCHAR(255) NOT NULL, -- Friendly name of the program
-	`scan_process_flags` VARCHAR(255) DEFAULT NULL,
-	`scan_process_executable` VARCHAR(255) NOT NULL, -- Actualy system path to the exe
-	PRIMARY KEY (`scan_process_id`)
+CREATE TABLE IF NOT EXISTS `scan_type` (
+	`scan_type_id` INT NOT NULL AUTO_INCREMENT,
+	`scan_type_name` VARCHAR(255) NOT NULL, -- Friendly name of the program
+	`scan_type_flags` VARCHAR(255) DEFAULT NULL,
+	`scan_type_script` VARCHAR(255) NOT NULL, -- Actual system path to the php controller
+	PRIMARY KEY (`scan_type_id`)
 );
-INSERT INTO `scan_process` SET `scan_process_name` = 'NMAP network scanner', 
-	`scan_process_id`=1, 
-	`scan_process_executable`='nmap_scan.php' ON DUPLICATE KEY UPDATE `scan_process_id`=1;
+INSERT INTO `scan_type` SET `scan_type_name` = 'NMAP network scanner', 
+	`scan_type_id`=1, 
+	`scan_type_script`='nmap_scan.php' ON DUPLICATE KEY UPDATE `scan_type_id`=1;
 
 -- Map scans to host groups
 CREATE TABLE IF NOT EXISTS `scan_x_host_group` (
@@ -258,62 +309,6 @@ CREATE TABLE IF NOT EXISTS `tag` (
   PRIMARY KEY  (`tag_id`)
 );
 
--- Vulnerabilities
-CREATE TABLE IF NOT EXISTS `vuln` (
-  `vuln_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `vuln_name` varchar(255),
-  `vuln_description` text,
-  PRIMARY KEY (`vuln_id`)
-);
-
--- Add ability to free tag vulnerabilities
-CREATE TABLE IF NOT EXISTS `vuln_x_tag` (
-  `vuln_id` INT UNSIGNED NOT NULL,
-  `tag_id` INT UNSIGNED NOT NULL
-);
-
--- Track vulnerabilities discovered in certain hosts
-CREATE TABLE IF NOT EXISTS `host_x_vuln` (
-  `host_id` INT UNSIGNED NOT NULL,
-  `vuln_id` INT UNSIGNED NOT NULL,
-  `scan_process_id` INT UNSIGNED,
-  `dated` TIMESTAMP NOT NULL DEFAULT NOW(),
-  INDEX USING HASH (`host_id`),
-  INDEX USING HASH (`vuln_id`),
-  INDEX USING BTREE (`dated`)
-);
-
--- RSS feed import table (for scheduling)
-CREATE TABLE IF NOT EXISTS `rss` (
-  `rss_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rss_name` varchar(255),
-  `rss_url` varchar(255) NOT NULL,
-  PRIMARY KEY (`rss_id`)
-);
-
--- Actual data from RSS feeds
-CREATE TABLE IF NOT EXISTS `article` (
-  `article_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `article_date` TIMESTAMP NOT NULL DEFAULT NOW(),
-  `article_title` varchar(255),
-  `article_url` varchar (255),
-  `article_body` text,
-  PRIMARY KEY (`article_id`),
-  INDEX USING BTREE (`article_date`)
-);
-
--- Allow free tagging of articles from RSS feeds
-CREATE TABLE IF NOT EXISTS `article_x_tag` (
-  `article_id` INT NOT NULL,
-  `tag_id` INT NOT NULL
-);
-
--- If the article describes a vulnerability pair them
-CREATE TABLE IF NOT EXISTS `article_x_vuln` (
-  `article_id` INT NOT NULL,
-  `vuln_id` INT NOT NULL
-);
-
 -- Finally the user table
 CREATE TABLE IF NOT EXISTS `user` (
 	`user_id` INT NOT NULL AUTO_INCREMENT,
@@ -333,6 +328,21 @@ CREATE TABLE IF NOT EXISTS `user_x_supportgroup` (
 	`user_id` INT NOT NULL,
 	`supportgroup_id` INT NOT NULL		
 );
+
+-- Vulnerabilities
+CREATE TABLE IF NOT EXISTS `vuln` (
+  `vuln_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `vuln_name` varchar(255),
+  `vuln_description` text,
+  PRIMARY KEY (`vuln_id`)
+);
+
+-- Add ability to free tag vulnerabilities
+CREATE TABLE IF NOT EXISTS `vuln_x_tag` (
+  `vuln_id` INT UNSIGNED NOT NULL,
+  `tag_id` INT UNSIGNED NOT NULL
+);
+
 
 -- Create the trigger to automatically calculate the numeric
 -- IP address of hosts as they are added

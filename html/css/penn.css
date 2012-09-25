@@ -1,0 +1,45 @@
+/*
+ * Penn Header Styles 
+ */
+
+.headergrey{
+  background: url(http://www.sas.upenn.edu/home/assets/img/global/sas_header_fill_grey.jpg) top left repeat-x;
+  position: relative;
+  width: 100%;
+}
+
+#sas_header{
+  position: relative;
+  margin: 0px;
+  padding: 0px;
+  height: 40px;
+  overflow: hidden;
+  border-bottom: 1px solid #000000;
+  text-align: right;
+}
+
+#sas_header .links{
+  float: right;
+  clear: none;
+  color: white;
+  margin: 8px 1em 0px 0px;
+  padding-top:4px;
+  font-family: Frutiger, Arial, sans-serif;
+  font-size: 10pt;
+  font-weight:normal;
+  text-decoration: none;
+}
+
+#sas_header .links:hover{
+  color: #a0b7e0;
+}
+
+.sasgrey{
+  background: url(http://www.sas.upenn.edu/home/assets/img/global/sas_header_college_grey.jpg) right no-repeat;
+}
+
+#sas_header img{
+  float: left;
+  border: none;
+  padding-left: 6px;
+}

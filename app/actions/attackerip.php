@@ -41,7 +41,7 @@ if ($ip != '') {
 
 $tablename='darknet_drops';
 	
-$content .= '<table id="table' . $tablename . '" class="tablesorter">';
+$content .= '<table id="table' . $tablename . '" class="table table-striped">';
 $content .= '<thead><tr><th>Attacker IP</th><th>Target IP</th><th>Source Port</th><th>Destination Port</th><th>Protocol</th><th>Observed at:</th></tr></thead><tbody>';
 if (is_array($darknet_drops)) {
 	foreach ($darknet_drops as $drop) {
@@ -55,13 +55,6 @@ if (is_array($darknet_drops)) {
 	}
 }
 $content .= '</tbody></table>';
-$content .= '<script type="text/javascript">
-$(document).ready(function() 
-    { 
-        $("#table' . $tablename . '").tablesorter(); 
-    } 
-); 
-</script>';
 
 include_once($templates . 'attackerip.tpl.php');
 	

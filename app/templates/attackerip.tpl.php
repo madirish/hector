@@ -7,11 +7,11 @@ Search malicious IP database: <input type="text" name="ip"/> <input type="submit
 <input type="hidden" name="form_name" value="<?php echo $formname;?>"/>
 </form>
 <p class="lead">Report for <?php echo htmlspecialchars($ip) . ' - ' . gethostbyaddr($ip);?></p>
-<div class="well">
+<div class="well well-small">
 	<h3>Honeypot logins</h3>
 	<p>This ip has attempted <strong><?php echo $login_attempts; ?></strong> logins on the honeypot.</p>
 </div>
-<div class="well">
+<div class="well well-small">
 <h3>Darknet sensors</h3>
 Your search returned <?php echo count($darknet_drops);?> results from darknet sensors.
 <?php 
@@ -27,8 +27,8 @@ if (count($darknet_drops) > 0) {
 </thead><tbody>
 <?php
 foreach ($ossec_alerts as $alert) {
-	echo "<tr><td style='padding-right: 10px;border-right: solid 1px black;'>" . $alert->alert_date . "</td>";
-	echo "<td style='padding-right: 10px;border-right: solid 1px black;'>" . $alert->rule_level . "</td>";
+	echo "<tr><td>" . $alert->alert_date . "</td>";
+	echo "<td>" . $alert->rule_level . "</td>";
 	echo "<td>" . htmlspecialchars($alert->rule_log) . "</td></tr>\n";
 }
 ?>

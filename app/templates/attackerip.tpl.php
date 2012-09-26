@@ -1,5 +1,3 @@
-<script type="text/javascript" src="js/jquery-1.4.4.js"></script>
-<script type="text/javascript" src="js/jquery.tablesorter.js"></script>
 <div id="content">
 <form method="post" action="?action=attackerip" name="<?php echo $formname;?>" id="<?php echo $formname;?>">
 Search malicious IP database: <input type="text" name="ip"/> <input type="submit" value="Search"/><br/>
@@ -8,11 +6,11 @@ Search malicious IP database: <input type="text" name="ip"/> <input type="submit
 </form>
 <p class="lead">Report for <?php echo htmlspecialchars($ip) . ' - ' . gethostbyaddr($ip);?></p>
 <div class="well well-small">
-	<h3>Honeypot logins</h3>
+	<h4>Honeypot logins</h4>
 	<p>This ip has attempted <strong><?php echo $login_attempts; ?></strong> logins on the honeypot.</p>
 </div>
 <div class="well well-small">
-<h3>Darknet sensors</h3>
+<h4>Darknet sensors</h4>
 Your search returned <?php echo count($darknet_drops);?> results from darknet sensors.
 <?php 
 if (count($darknet_drops) > 0) {
@@ -20,7 +18,8 @@ if (count($darknet_drops) > 0) {
 }
 ?>
 </div>
-<h3>OSSEC alerts</h3>
+<div class="well">
+<h4>OSSEC alerts</h4>
 <table class="table table striped">
 <thead>
 <tr><th>Alert date</th><th>Alert level</th><th>Log entry</th></tr>
@@ -34,4 +33,5 @@ foreach ($ossec_alerts as $alert) {
 ?>
 </tbody>
 </table>
+</div>
 </div>

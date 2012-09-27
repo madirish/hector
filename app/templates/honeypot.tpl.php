@@ -29,7 +29,8 @@ foreach ($login_attempts as $row) {
 
 foreach ($commands as $row) {
 	echo "<tr><td>" . $row->time . "</td>";
-	echo "<td><a href='?action=attackerip&ip=" . $row->ip . "'>".$row->ip."</a></td>";
+	echo "<td><a href='?action=attackerip&ip=" . $row->ip . "'>".$row->ip."</a>";
+	echo " (" . gethostbyaddr($row->evilip) . ")</td>";
 	echo "<td>" . $row->command . "</td></tr>";
 }
 ?>

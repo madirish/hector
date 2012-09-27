@@ -16,7 +16,7 @@ array_map(htmlspecialchars, $login_attempts);
 
 // Get the latest sessions:
 $sql = 'select time, ip, command from koj_executed_commands ' .
-		'where time > date_sub(curdate(), interval 2 day) order by time';
+		'where time > date_sub(curdate(), interval 2 day) order by time desc';
 $commands = $db->fetch_object_array($sql);
 
 require_once($approot . 'lib/class.Form.php');

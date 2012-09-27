@@ -1,5 +1,5 @@
 </div> <!-- end content div -->
-<div class="well well-small">HECTOR, an Open Souce Security Platform, by the <a href="http://www.sas.upenn.edu" title="Website for the University of Pennsylvania School of Arts & Sciences">University of Pennsylvania School of Arts &amp; Sciences</a></div>
+<div class="well well-small"><strong>HECTOR</strong>, an Open Souce Security Platform, by the <a href="http://www.sas.upenn.edu" title="Website for the University of Pennsylvania School of Arts & Sciences">University of Pennsylvania School of Arts &amp; Sciences</a></div>
 
 </div> <!-- end container div -->
 

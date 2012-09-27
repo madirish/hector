@@ -10,6 +10,14 @@
 	<link href="css/penn.css" rel="stylesheet">
 </head>
 <body>
+<!-- 
+
+	HECTOR
+	
+	an open source security intelligence platform from the 
+	University of Pennsylvania's School of Arts & Sciences.
+
+-->
 <div id="headerbar" class="headergrey">
 <div id="sas_header" class="sasgrey"> 
 	<a href="http://www.sas.upenn.edu"><img src="http://www.sas.upenn.edu/home/assets/img/global/sas_header_logo_grey.jpg"></a> 

@@ -34,7 +34,13 @@ $ip_search->save();
         <li><a href="?action=reports&report=nonisuswebservers">Ports detected</a></li>
       </ul>
     </li>
-    <li><a href="?action=detection" title="View intrustion detection summaries."><i class="icon-eye-open"></i> Detection</a></li>
+     <li class="dropdown">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown"" title="View intrustion detection summaries."><i class="icon-eye-open"></i> Detection <b class="caret"></b></a>
+      <ul class="dropdown-menu">
+        <li><a href="?action=detection">Detection summary</a></li>
+        <li><a href="?action=honeypot">Honeypot data</a></li>
+      </ul>
+    </li>
     <li class="dropdown">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench"></i> Configuration <b class="caret"></b></a>
       <ul class="dropdown-menu">

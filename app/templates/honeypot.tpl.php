@@ -8,12 +8,12 @@ Search malicious IP database: <input type="text" name="ip"/> <input type="submit
 <div class="span6">
 <p class="lead">Recent Login Attempts</p>
 <table class="table">
-<tr><th>IP</th><th>Time</th><th>Username</th><th>Password</th></tr>
+<tr><th>IP</th><th>Hostname</th><th>Time</th><th>Username</th><th>Password</th></tr>
 <?php
 
 foreach ($login_attempts as $row) {
-	echo "<tr><td><a href='?action=attackerip&ip=" . $row->ip . "'>".$row->ip."</a>";
-	echo " (" . gethostbyaddr($row->evilip) . ")";
+	echo "<tr><td><a href='?action=attackerip&ip=" . $row->ip . "'>".$row->ip."</a></td>";
+	echo "<td>" . gethostbyaddr($row->ip) . "</td>";
 	echo "</td><td>" . $row->time . "</td><td>" . $row->username . "</td>";
 	echo "<td>" . $row->password . "</tr>";
 }
@@ -24,13 +24,13 @@ foreach ($login_attempts as $row) {
 
 <p class="lead">Sessions Yesterday</p>
 <table class="table">
-<tr><th>Time</th><th>IP</th><th>Command</th></tr>
+<tr><th>Time</th><th>IP</th><th>Hostname</th><th>Command</th></tr>
 <?php
 
 foreach ($commands as $row) {
 	echo "<tr><td>" . $row->time . "</td>";
-	echo "<td><a href='?action=attackerip&ip=" . $row->ip . "'>".$row->ip."</a>";
-	echo " (" . gethostbyaddr($row->evilip) . ")</td>";
+	echo "<td><a href='?action=attackerip&ip=" . $row->ip . "'>".$row->ip."</a></td>";
+	echo "<td>" . gethostbyaddr($row->ip) . "</td>";
 	echo "<td>" . $row->command . "</td></tr>";
 }
 ?>

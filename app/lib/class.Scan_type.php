@@ -25,12 +25,8 @@ require_once('class.Collection.php');
 require_once('interface.Maleable_Object_Interface.php');
 require_once('class.Maleable_Object.php');
 
-/* user defined constants */
-// section 127-0-0-1--4d23d2c8:125a23d9458:-8000:0000000000000D1F-constants begin
-// section 127-0-0-1--4d23d2c8:125a23d9458:-8000:0000000000000D1F-constants end
-
 /**
- * Short description of class Scan_type
+ * Scan_type is the holder object for scans of various types
  *
  * @access public
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>

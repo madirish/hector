@@ -4,8 +4,13 @@ Search malicious IP database: <input type="text" name="ip"/> <input type="submit
 <input type="hidden" name="form_name" value="<?php echo $formname;?>"/>
 </form>
 
-<div class="row">
-<div class="span6">
+<ul class="nav nav-tabs" id="honeypotTabs">	
+	<li class="active"><a href="#logins"data-toggle="tab">Login Attempts</a></li>
+	<li><a href="#sessions"data-toggle="tab">Sessions</a></li>
+</ul>
+
+<div class="tab-content">
+<div class="tab-pane active" id="logins">
 <p class="lead">Recent Login Attempts</p>
 <table class="table">
 <tr><th>IP</th><th>Hostname</th><th>Time</th><th>Username</th><th>Password</th></tr>
@@ -14,14 +19,14 @@ Search malicious IP database: <input type="text" name="ip"/> <input type="submit
 foreach ($login_attempts as $row) {
 	echo "<tr><td><a href='?action=attackerip&ip=" . $row->ip . "'>".$row->ip."</a></td>";
 	echo "<td>" . gethostbyaddr($row->ip) . "</td>";
-	echo "</td><td>" . $row->time . "</td><td>" . $row->username . "</td>";
+	echo "<td>" . $row->time . "</td><td>" . $row->username . "</td>";
 	echo "<td>" . $row->password . "</tr>";
 }
 ?>
 </table>
 
-</div><div class="span6">
-
+</div>
+<div class="tab-pane" id="sessions">
 <p class="lead">Sessions Yesterday</p>
 <table class="table">
 <tr><th>Time</th><th>IP</th><th>Hostname</th><th>Command</th></tr>
@@ -37,3 +42,4 @@ foreach ($commands as $row) {
 </table>
 
 </div></div>
+

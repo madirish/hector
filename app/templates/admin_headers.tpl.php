@@ -31,11 +31,11 @@ $ip_search->save();
       <ul class="dropdown-menu">
         <li><a href="?action=reports&report=by_port">Ports detected</a></li>
         <li><a href="?action=reports&report=danger_host">Dangerous hosts</a></li>
-        <li><a href="?action=reports&report=nonisuswebservers">Ports detected</a></li>
+        <li><a href="?action=reports&report=nonisuswebservers">Non ISUS Server Report</a></li>
       </ul>
     </li>
      <li class="dropdown">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown"" title="View intrustion detection summaries."><i class="icon-eye-open"></i> Detection <b class="caret"></b></a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="View intrustion detection summaries."><i class="icon-eye-open"></i> Detection <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li><a href="?action=detection">Detection summary</a></li>
         <li><a href="?action=honeypot">Honeypot data</a></li>

@@ -184,6 +184,11 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 					$this->ignored_timestamp = $result[0]->host_ignored_timestamp;
 					$this->ignored_note = $result[0]->host_ignored_note;
 				}
+				// Is there an exclusion?  Should it be honored?
+				if ($this->ignore_portscan) {
+					$this->check_expire_scan_exclusion();
+				}
+				
 				// Only run these queries if necessary
 				if ($minimal == 'no') {
 					// Populate the host groups
@@ -236,6 +241,29 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		$id = intval($id);
 		if (! in_array($id, $this->host_group_ids) && $id > 0){
 			$this->host_group_ids[] = $id;
+		}
+	}
+	
+	/**
+	 * If this host is being excluded from portscans, make
+	 * sure that the exclusion is still valid.  If it has
+	 * expired update the record accordingly.
+	 * 
+	 * @return true
+	 */
+	private function check_expire_scan_exclusion() {
+		$sql = 'select datediff(' .
+										'date_add(host_ignored_timestamp, ' .
+										'INTERVAL host_ignoredfor_days DAY), now()) ' .
+										'as exclude from host where host_id = ' + $this->id;
+		$active_exclude = $this->db->fetch_object_array($sql);
+		if ($active_exclude->exclude < 0) {
+			// Exclusion has expired
+			$this->log->write_message("Expiring portscan exclusion for host id " + $this->id);
+			$this->set_portscan_exclusion(0);
+			$sql = 'update host set host_ignore_portscan = 0 ' .
+					'where host_id = ' + $this->id;
+			$this->db->iud_sql($sql);
 		}
 	}
 	
@@ -614,7 +642,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		return $retval;
 	}
 
-	    /**
+	/**
 	 * Short description of method get_id
 	 *
 	 * @access public
@@ -625,6 +653,15 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	   return intval($this->id);
 	}
 	
+	/**
+	 * Should this host be exempted from portscans?
+	 * 
+	 * @access public
+	 * @return boolean
+	 */
+	public function get_ignore_portscan() {
+		return intval($this->ignore_portscan);
+	}
 	/**
 	 * Get the host's IP address
 	 *

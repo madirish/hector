@@ -234,7 +234,7 @@ else {
 				foreach ($host_group->get_host_ids() as $host_id) {
 					$newhost = new Host($host_id);
 					$hosts[$newhost->get_ip()] = $newhost;
-					$host_ids[] = $newhost->get_id();
+					if (! $newhost->get_ignore_portscan()) $host_ids[] = $newhost->get_id();
 				}
 			}
 		}
@@ -245,14 +245,15 @@ else {
 		if (isset($allhosts->members) && is_array($allhosts->members)) {
 			foreach ($allhosts->members as $newhost) {
 				$hosts[$newhost->get_ip()] = $newhost;
-				$host_ids[] = $newhost->get_id();
+				if (! $newhost->get_ignore_portscan()) $host_ids[] = $newhost->get_id();
 			}
 		}
 	}
+	$filter = '';
 	
 	// Restrict machines based on port specifications
 	if ($hasport != null) {
-		$filter = ' AND nsr.state_id=1 AND nsr.nmap_scan_result_port_number in (' . mysql_real_escape_string($hasport) . ')';
+		$filter .= ' AND nsr.state_id=1 AND nsr.nmap_scan_result_port_number in (' . mysql_real_escape_string($hasport) . ')';
 		$filter .= ' AND nsr.host_id IN (' . implode(',',$host_ids) . ')';
 		$prevscan = new Collection('Nmap_scan_result', $filter);
 		if (isset($prevscan->members) && is_array($prevscan->members)) {

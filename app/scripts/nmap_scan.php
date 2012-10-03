@@ -234,7 +234,7 @@ else {
 				foreach ($host_group->get_host_ids() as $host_id) {
 					$newhost = new Host($host_id);
 					$hosts[$newhost->get_ip()] = $newhost;
-					if (! $newhost->get_ignore_portscan()) $host_ids[] = $newhost->get_id();
+					if ($newhost->get_ignore_portscan() > 0) $host_ids[] = $newhost->get_id();
 				}
 			}
 		}
@@ -245,7 +245,7 @@ else {
 		if (isset($allhosts->members) && is_array($allhosts->members)) {
 			foreach ($allhosts->members as $newhost) {
 				$hosts[$newhost->get_ip()] = $newhost;
-				if (! $newhost->get_ignore_portscan()) $host_ids[] = $newhost->get_id();
+				if ($newhost->get_ignore_portscan() > 0) $host_ids[] = $newhost->get_id();
 			}
 		}
 	}
@@ -274,7 +274,7 @@ else {
 	foreach($hosts as $host_ip => $host_object) {
 		fwrite($fp, $host_ip . "\n");
 	}
-	fclose($fp);
+	fclose($fp);die();
 	
 	// Run the scan and store the results on the filesystem
 	$xmloutput = $approot . 'scripts/results-' . time() . '.xml';  // Avoid namespace collissions!

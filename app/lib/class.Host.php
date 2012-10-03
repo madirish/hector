@@ -237,6 +237,11 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		}
 	}
 
+	/**
+	 * Add this host to a host group.
+	 * 
+	 * @param int
+	 */
 	public function add_host_group_id($id) {
 		$id = intval($id);
 		if (! in_array($id, $this->host_group_ids) && $id > 0){
@@ -255,14 +260,14 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		$sql = 'select datediff(' .
 										'date_add(host_ignored_timestamp, ' .
 										'INTERVAL host_ignoredfor_days DAY), now()) ' .
-										'as exclude from host where host_id = ' + $this->id;
+										'as exclude from host where host_id = ' . $this->id;
 		$active_exclude = $this->db->fetch_object_array($sql);
-		if ($active_exclude->exclude < 0) {
+		if (is_array($active_exclude) && $active_exclude[0]->exclude < 0) {
 			// Exclusion has expired
 			$this->log->write_message("Expiring portscan exclusion for host id " + $this->id);
 			$this->set_portscan_exclusion(0);
 			$sql = 'update host set host_ignore_portscan = 0 ' .
-					'where host_id = ' + $this->id;
+					'where host_id = ' . $this->id;
 			$this->db->iud_sql($sql);
 		}
 	}

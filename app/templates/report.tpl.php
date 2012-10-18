@@ -20,8 +20,8 @@ else {
 	<legend>Find hosts with:</legend>
 	<table>
 		<tr><td>Any of these ports:</td><td><input type="text" name="anyports"/> (comma separated list)</td></tr>
-		<tr><td>All of these ports:</td><td><input type="text" name="allports"/> (comma separatedlist)</td></tr>
-		<tr><td>None of these ports:</td><td><input type="text" name="portsex"/> (comma separatedlist)</td></tr>
+		<tr><td>All of these ports:</td><td><input type="text" name="allports"/> (comma separated list)</td></tr>
+		<tr><td>None of these ports:</td><td><input type="text" name="portsex"/> (comma separated list)</td></tr>
 		<tr><td>All of these tags:</td><td><select name="tagsin" size="4">
 			<?php foreach ($tags as $tag) echo '<option value="' . $tag->get_id() . '">' . $tag->get_name() . '</option>'; ?>
 			</select> (only search for machines with these tags)</td></tr>

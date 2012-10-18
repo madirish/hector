@@ -1,8 +1,8 @@
 <?php
 require_once($approot . 'lib/class.Form.php');
 $ip_search = new Form();
-$ip_serach_name = 'search_ip_form';
-$ip_search->set_name($ip_serach_name);
+$ip_search_name = 'search_ip_form';
+$ip_search->set_name($ip_search_name);
 $ip_search_token = $ip_search->get_token();
 $ip_search->save();
 ?>
@@ -66,7 +66,7 @@ $ip_search->save();
     <li><a href="?action=logout">Log Out</a></li>
   </ul>
     
-    <form class="navbar-search pull-right" method="post" name="<?php echo $ip_serach_name;?>" id="<?php echo $ip_serach_name;?>">
+    <form class="navbar-search pull-right" method="post" name="<?php echo $ip_search_name;?>" id="<?php echo $ip_search_name;?>" action="/?action=assets&object=search">
     	<input type="text" class="search-query" placeholder="Search for IP" name="ip">
     	<input type="hidden" name="token" value="<?php echo $ip_search_token;?>"/>
 			<input type="hidden" name="form_name" value="<?php echo $ip_search_name;?>"/>

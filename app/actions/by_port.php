@@ -1,4 +1,11 @@
 <?php
+/**
+ * Advanced search controller
+ * now with insanely complex queries!
+ * 
+ * by Justin C. Klein Keane <jukeane@sas.upenn.edu>
+ * Last updated 18 October, 2012
+ */
 
 $tagsin = '';
 $tagsex = '';
@@ -15,16 +22,19 @@ require_once($approot . 'lib/class.Host.php');
 require_once($approot . 'lib/class.Supportgroup.php');
 
 // Allow simple get requests as well
-if (isset($_GET['ports'])) $_POST['ports'] = $_GET['ports'];
+if (isset($_GET['anyports'])) $_POST['anyports'] = $_GET['anyports'];
+if (isset($_GET['allports'])) $_POST['allports'] = $_GET['allports'];
 if (isset($_GET['portsex'])) $_POST['portsex'] = $_GET['portsex'];
 
-if (isset($_POST['ports'])) { 
-	$ports = preg_replace('/^(d|,)*/','',$_POST['ports']);
-	$portsex = isset($_POST['portsex']) ? preg_replace('/^(d|,)*/','',$_POST['portsex']) : 0;
-	$db = Db::get_instance();
-	foreach (explode(',',$ports) as $port) {
-		$content .= '<h3>Results for ports ' . $ports;
-		if ($portsex != 0) $content .= ' excluding ports ' . $portsex;
+$allports = isset($_POST['allports']) ? preg_replace('/^(d|,)*/','',$_POST['allports']) : 0;
+$anyports = isset($_POST['anyports']) ? preg_replace('/^(d|,)*/','',$_POST['anyports']) : 0;
+$portsex = isset($_POST['portsex']) ? preg_replace('/^(d|,)*/','',$_POST['portsex']) : 0;
+$db = Db::get_instance();
+
+if ($anyports != 0 || $allports != 0) { 
+	if ($anyports != 0 && $allports == 0) {
+		$content .= '<h3>Results with any ports: ' . $anyports;
+		if ($portsex != 0) $content .= ' excluding ports: ' . $portsex;
 		$content .= '</h3>';
 		if ($portsex == 0) {
 		  $query = 'select distinct(nsr.host_id), h.supportgroup_id, h.host_id, ' .
@@ -37,8 +47,8 @@ if (isset($_POST['ports'])) {
 			$query .= 'WHERE nsr.host_id = h.host_id AND ' .
 					'h.host_id = nsr.host_id and ' .
 					's.state_id = nsr.state_id AND ' .
-					'nsr.nmap_scan_result_port_number IN (' . $ports . ') ';
-			$query .= 'and s.state_state = \'open\' ';
+					'nsr.nmap_scan_result_port_number IN (' . $anyports. ') ';
+			$query .= ' and s.state_state = \'open\' ';
 			if (! (isset($appuser) && $appuser->get_is_admin())) {
 				$query .= ' AND ux.supportgroup_id = h.supportgroup_id and ' .
 					'ux.user_id = ' . $appuser->get_id() . ' ';
@@ -47,52 +57,89 @@ if (isset($_POST['ports'])) {
 			$host_results = $db->fetch_object_array($query);
 		}
 		else {
-			// We're going to have to do some back flips to get the exclusive set
-			// @TODO: Access restriction, tag restriction
-			$query = 'create temporary table host_ports1 ' .
-					'select n.host_id, n.port_number, n.nmap_scan_result_timestamp ' .
-					'from nmap_scan_result n ' .
-					'where n.nmap_scan_result_port_number IN (' . $ports . ') ' .
-					'and n.state_id = 1;';
-			$db->iud_sql($query);
-			$query = 'create temporary table host_ports2 ' .
-					'select n.host_id, n.port_number ' .
-					'from nmap_scan_result n ' .
-					'where n.nmap_scan_result_port_number IN (' . $portsex . ') ' .
-					'and n.state_id = 1;';
-			$db->iud_sql($query);
-			$query = 'select t1.host_id, t1.nmap_scan_result_timestamp ' .
-					'from host_ports1 t1 ' .
-					'left outer join host_ports2 t2 on t1.host_id = t2.host_id '.
-					'where t2.host_id is null';
+			$query = 'select distinct(nsr1.host_id) from nmap_scan_result nsr1';
+			if (! (isset($appuser) && $appuser->get_is_admin())) { $query .= ', host h, user_x_support_group ux ';}		
+			$query .= ' left outer join nmap_scan_result nsr2 on nsr1.host_id = nsr2.host_id ';
+			if ($tagsin != '' || $tagsex != '') {
+				$query .= ' LEFT OUTER JOIN host_x_tag x on nsr1.host_id = x.host_id ';
+			}
+			$query .= ' where nsr1.nmap_scan_result_port_number IN (' . $anyports . ') ';
+			$query .= ' AND nsr1.state_id = 1 AND nsr2.nmap_scan_result_port_number IN (' . $portsex . ') ';
+			$query .= ' AND nsr2.state_id != 1';
+			if (! (isset($appuser) && $appuser->get_is_admin())) { 
+				$query .= ' and nsr1.host_id = h.host_id ';
+				$query .= ' AND ux.supportgroup_id = h.supportgroup_id and ' .
+					'ux.user_id = ' . $appuser->get_id() . ' ';
+			}		
+			if ($tagsex != '') $query .= ' AND x.host_id IS NULL';
+			if ($tagsin != '') $query .= ' AND x.host_id IS NOT NULL';
 			$host_results = $db->fetch_object_array($query);
 		}
-		if (is_array($host_results)) $content .= '<h4>' . count($host_results) . ' records found</h4>';
-		//$content .= '<table id="table' . $port . '" class="tablesorter">';
-		$content .= '<table id="table' . $port . '" class="table table-striped">';
-		$content .= '<thead>' .
-				'<tr><th>Hostname</th>' .
-				'<th>Support Group</th>' . 
-				'<th>IP Address</th>' .
-				'<th>Last seen on:</th>' .
-				'</tr></thead>' .
-				'<tbody>';
-		if (is_array($host_results)) {
-			foreach ($host_results as $ret) {
-				$host = new Host($ret->host_id);
-				$supportgroup = new Supportgroup($host->get_supportgroup_id());
-				$content .= '<tr><td>' . $host->get_name_linked() . '</td>' .
-						'<td>' . $supportgroup->get_name() . '</td>' .
-						'<td>' . $host->get_ip() . '</td>' .
-						'<td>' . $ret->nmap_scan_result_timestamp . '</td></tr>';
-			}
-			if (count($host_results) < 1) {
-				$content .= '<tr><td colspan="4">No results available ' .
-						'(you may not have permissions to see specific hosts).</td></tr>';
+	}
+	else if ($anyports == 0 || $allports != 0) { 
+		$content .= '<h3>Results with all ports: ' . $allports;
+		if ($portsex != 0) $content .= ' excluding ports: ' . $portsex;
+		$content .= '</h3>';
+		$ports = explode(',', $allports);
+		$exports = $portsex != 0 ? explode(',',$portsex) : 0;
+		$i = 2;
+		$count = count($ports);
+		$query = 'select nsr1.host_id from nmap_scan_result nsr1';
+		while ($i <= $count) {
+			$query .= ' inner join nmap_scan_result nsr' . $i;
+			$query .= ' on nsr1.host_id = nsr' . $i . '.host_id ';
+			$i++;
+		}
+		if ($exports != 0) {
+			while ($i <= $count + count($exports)) {
+				$query .= ' inner join nmap_scan_result nsr' . $i;
+				$query .= ' on nsr1.host_id = nsr' . $i . '.host_id ';
+				$i++;;
 			}
 		}
-		$content .= '</tbody></table>';		
+		$query .= ' where nsr1.nmap_scan_result_port_number = ' . intval($ports[0]);
+		$query .= ' and nsr1.state_id = 1 ';
+		$i = 2;
+		while ($i <= $count) {
+			$query .= ' and nsr' . $i . '.nmap_scan_result_port_number = ' . intval($ports[$i-1]);
+			$query .= ' and nsr' . $i . '.state_id = 1 ';
+			$i++;
+		}
+		if ($exports != 0) {
+			$exportscount = 0;
+			while ($i <= $count + count($exports)) {
+				$query .= ' and nsr' . $i . '.nmap_scan_result_port_number = ' . intval($exports[$exportscount]);
+				$query .= ' and nsr' . $i . '.state_id != 1 ';
+				$exportscount++;
+				$i++;
+			}
+		}
+		$host_results = $db->fetch_object_array($query);
 	}
+	if (is_array($host_results)) $content .= '<h4>' . count($host_results) . ' records found</h4>';
+	$content .= '<table id="table' . $port . '" class="table table-striped">';
+	$content .= '<thead>' .
+			'<tr><th>Hostname</th>' .
+			'<th>Support Group</th>' . 
+			'<th>IP Address</th>' .
+			'<th>Last seen on:</th>' .
+			'</tr></thead>' .
+			'<tbody>';
+	if (is_array($host_results)) {
+		foreach ($host_results as $ret) {
+			$host = new Host($ret->host_id);
+			$supportgroup = new Supportgroup($host->get_supportgroup_id());
+			$content .= '<tr><td>' . $host->get_name_linked() . '</td>' .
+					'<td>' . $supportgroup->get_name() . '</td>' .
+					'<td>' . $host->get_ip() . '</td>' .
+					'<td>' . $ret->nmap_scan_result_timestamp . '</td></tr>';
+		}
+		if (count($host_results) < 1) {
+			$content .= '<tr><td colspan="4">No results available ' .
+					'(you may not have permissions to see specific hosts).</td></tr>';
+		}
+	}
+	$content .= '</tbody></table>';		
 }
 else {
 	

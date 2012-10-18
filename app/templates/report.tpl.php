@@ -17,14 +17,15 @@ else {
 ?>
 <form method="post" action="?action=reports&report=by_port" name="<?php echo $formname;?>" id="<?php echo $formname;?>">
 <fieldset>
-	<legend>What ports are you interested in?</legend>
+	<legend>Find hosts with:</legend>
 	<table>
-		<tr><td>Ports:</td><td><input type="text" name="ports"/> (comma separated list of ports open on machine to search for)</td></tr>
-		<tr><td>Exclude ports:</td><td><input type="text" name="portsex"/> (comma separated, if these ports are open exlude from resuts)</td></tr>
-		<tr><td>With tags:</td><td><select name="tagsin" size="4">
+		<tr><td>Any of these ports:</td><td><input type="text" name="anyports"/> (comma separated list)</td></tr>
+		<tr><td>All of these ports:</td><td><input type="text" name="allports"/> (comma separatedlist)</td></tr>
+		<tr><td>None of these ports:</td><td><input type="text" name="portsex"/> (comma separatedlist)</td></tr>
+		<tr><td>All of these tags:</td><td><select name="tagsin" size="4">
 			<?php foreach ($tags as $tag) echo '<option value="' . $tag->get_id() . '">' . $tag->get_name() . '</option>'; ?>
 			</select> (only search for machines with these tags)</td></tr>
-		<tr><td>Exclude Tags:</td><td><select name="tagsex" size="4">
+		<tr><td>None of these Tags:</td><td><select name="tagsex" size="4">
 			<?php foreach ($tags as $tag) echo '<option value="' . $tag->get_id() . '">' . $tag->get_name() . '</option>'; ?>
 			</select> (do not report machines with these tags)</td></tr>
 		<tr><td>&nbsp;</td><td><input type="submit" value="Search"/></td></tr>

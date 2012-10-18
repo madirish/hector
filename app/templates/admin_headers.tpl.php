@@ -17,7 +17,7 @@ $ip_search->save();
         <li class="divider"></li>
         <li class="nav-header">Search</li>
         <li><a href="?action=assets&object=search">Search</a></li>
-        <li><a href="?action=assets&object=ports">By port</a></li>
+        <li><a href="?action=assets&object=ports">Advanced Search</a></li>
         <li class="divider"></li>
         <li class="nav-header">State changes</li>
         <li><a href="?action=assets&object=alerts">View alerts</a></li>

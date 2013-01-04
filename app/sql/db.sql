@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS `host_x_host_group` (
 CREATE TABLE IF NOT EXISTS `host_x_vuln` (
   `host_id` INT UNSIGNED NOT NULL,
   `vuln_id` INT UNSIGNED NOT NULL,
-  `scan_process_id` INT UNSIGNED,
+  `scan_id` INT UNSIGNED,
   `dated` TIMESTAMP NOT NULL DEFAULT NOW(),
   INDEX USING HASH (`host_id`),
   INDEX USING HASH (`vuln_id`),
@@ -258,8 +258,7 @@ CREATE TABLE IF NOT EXISTS `scan` (
 	`scan_dayofweek` INT DEFAULT 0,
 	`scan_dayofmonth` INT DEFAULT 0,
 	`scan_dayofyear` INT DEFAULT 0,
-	PRIMARY KEY (`scan_id`),
-  KEY `scan_process_id` (`scan_process_id`)
+	PRIMARY KEY (`scan_id`)
 );
 
 -- Scan process refers to the type of program to run (NMAP, Nikto, etc.)

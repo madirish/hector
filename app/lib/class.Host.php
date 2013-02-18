@@ -596,7 +596,8 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		if ($this->get_portscan_exclusion()) {
 			$retval .= '<tr id="excludedby"><td>Excluded by:</td><td>' . $this->get_excludedby() . '</td></tr>' . "\n";
 			$retval .= '<tr id="excludedon"><td>Excluded on:</td><td>' . $this->get_excludedon() . '</td></tr>' . "\n";
-			$retval .= '<tr id="excludedfor"><td>Excluded for:</td><td>' . $this->get_excludedfor() . ' days</td></tr>' . "\n";
+			$excludedfor = ($this->get_excludedfor() == 0) ? 'forever' : $this->get_excludedfor() . ' days';
+			$retval .= '<tr id="excludedfor"><td>Excluded for:</td><td>' . $excludedfor . '</td></tr>' . "\n";
 			$retval .= '<tr id="excludedreason"><td>Reason:</td><td>' . $this->get_excludedreason() . '</td></tr>' . "\n";
 		}
 		$retval .= '<tr id="groups"><td><a href="?action=details&object=host_group">Host groups</a>:</td><td>' . $this->get_host_groups_readable() . '</td></tr>' . "\n";

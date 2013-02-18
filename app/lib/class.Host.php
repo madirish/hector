@@ -257,18 +257,20 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 * @return true
 	 */
 	private function check_expire_scan_exclusion() {
-		$sql = 'select datediff(' .
-										'date_add(host_ignored_timestamp, ' .
-										'INTERVAL host_ignoredfor_days DAY), now()) ' .
-										'as exclude from host where host_id = ' . $this->id;
-		$active_exclude = $this->db->fetch_object_array($sql);
-		if (is_array($active_exclude) && $active_exclude[0]->exclude < 0) {
-			// Exclusion has expired
-			$this->log->write_message("Expiring portscan exclusion for host id " + $this->id);
-			$this->set_portscan_exclusion(0);
-			$sql = 'update host set host_ignore_portscan = 0 ' .
-					'where host_id = ' . $this->id;
-			$this->db->iud_sql($sql);
+		if ($this->ignoredfor_days > 0) {
+			$sql = 'select datediff(' .
+											'date_add(host_ignored_timestamp, ' .
+											'INTERVAL host_ignoredfor_days DAY), now()) ' .
+											'as exclude from host where host_id = ' . $this->id;
+			$active_exclude = $this->db->fetch_object_array($sql);
+			if (is_array($active_exclude) && $active_exclude[0]->exclude < 0) {
+				// Exclusion has expired
+				$this->log->write_message("Expiring portscan exclusion for host id " + $this->id);
+				$this->set_portscan_exclusion(0);
+				$sql = 'update host set host_ignore_portscan = 0 ' .
+						'where host_id = ' . $this->id;
+				$this->db->iud_sql($sql);
+			}
 		}
 	}
 	
@@ -479,7 +481,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 			array('label'=>'Exclude for time period (starting now):', 
 					'name'=>'excludedfor', 
 					'type'=>'select', 
-					'options'=>array(1=>'1 Day',7=>'One Week',30=>'One month'), 
+					'options'=>array(1=>'1 Day',7=>'One Week',30=>'One month',0=>'Forever'), 
 					'value_function'=>'get_excludedfor',
 					'process_callback'=>'set_excludedfor'),
 			array('label'=>'Reason for exclusion:',

@@ -38,8 +38,7 @@ if(php_sapi_name() == 'cli') {
 	// Check to make sure arguments are present
 	if ($argc < 3) show_help("Too few arguments!  You tried:\n " . implode(' ', $argv));
 	
-	$scan_id = $argv[1];
-	$xmloutput = $argv[2];
+	$xmloutput = $argv[1];
 	
 	
 	
@@ -87,7 +86,6 @@ if(php_sapi_name() == 'cli') {
 			if (isset($port->service['servicefp']))  $version_info .= ' ' . $port->service['servicefp'];
 			if ($version_info != ' ') $result->set_service_version($version_info);
 			$result->set_service_name($port->service['name']);
-			$result->set_scan_id($scan_id); 
 			$nmap_scan_results[] = $result;
 		}			
 	

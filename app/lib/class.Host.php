@@ -594,7 +594,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		$retval .= implode(',', $this->get_tag_names());
 		$retval .= '</td></tr>' . "\n";
 		if ($this->get_portscan_exclusion()) {
-			$retval .= '<tr id="excludedby"><td>Excluded by:</td><td>' . $this->get_excludedby() . '</td></tr>' . "\n";
+			$retval .= '<tr id="excludedby"><td>Excluded by:</td><td>' . $this->get_excludedby_name() . '</td></tr>' . "\n";
 			$retval .= '<tr id="excludedon"><td>Excluded on:</td><td>' . $this->get_excludedon() . '</td></tr>' . "\n";
 			$excludedfor = ($this->get_excludedfor() == 0) ? 'forever' : $this->get_excludedfor() . ' days';
 			$retval .= '<tr id="excludedfor"><td>Excluded for:</td><td>' . $excludedfor . '</td></tr>' . "\n";
@@ -623,6 +623,11 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		$user = new User($this->ignore_portscan_byuserid);
 		$uid = ($user->get_id() == "") ? $appuser->get_id() : $user->get_id();
 		return ($this->get_portscan_exclusion()) ? $uid : '';
+	}
+	public function get_excludedby_name() {
+		global $appuser;
+		$user = new User($this->ignore_portscan_byuserid);
+		return ($user->get_name());
 	}
 	public function get_excludedon() {
 		return $this->ignored_timestamp;

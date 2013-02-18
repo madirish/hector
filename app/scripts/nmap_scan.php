@@ -180,9 +180,6 @@ else {
 	$version = FALSE;
 	$nmap_debug = TRUE;
 	
-	$Nmap_scan = new Nmap_scan();
-	$scan_id = $Nmap_scan->get_id();
-	
 	/**
 	 * This will be an associative array of the form
 	 * host_ip => Host object
@@ -291,7 +288,7 @@ else {
 	loggit("nmap_scan.php process", "The command: " . $command . " completed!");
 	
 	// Run the import
-	system('/usr/bin/php ' . $approot . 'scripts/nmap_scan_loadfile.php ' . $scan_id . ' ' . $xmloutput);
+	system('/usr/bin/php ' . $approot . 'scripts/nmap_scan_loadfile.php ' . $xmloutput);
 	
 	// Shut down nicely
 	loggit("nmap_scan.php status", "Nmap scan complete.");

@@ -1,4 +1,4 @@
-<div class="accordion" id="search-accordion">
+<div class="accordion" id="search-accordion" style="padding: 2px;">
 	<div class="accordion-group">
 		<div calss="accordion-heading">
 		<a class="accordion-toggle" data-toggle="collapse" data-parent="#search-accordion" href="#collapseOne">
@@ -26,8 +26,3 @@
 		</div>
 	</div>
 </div>
-<button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#demo">
-  simple collapsible
-</button>
- 
-<div id="demo" class="collapse in"> … </div>

@@ -95,7 +95,7 @@ if ($anyports != 0 || $allports != 0) {
 		$exports = $portsex != 0 ? explode(',',$portsex) : 0;
 		$i = 2;
 		$count = count($ports);
-		$query = 'select nsr1.host_id, max(nsr1.nmap_scan_result_timestamp) from nmap_scan_result nsr1';
+		$query = 'select nsr1.host_id, nsr1.nmap_scan_result_timestamp from nmap_scan_result nsr1';
 		while ($i <= $count) {
 			$query .= ' inner join nmap_scan_result nsr' . $i;
 			$query .= ' on nsr1.host_id = nsr' . $i . '.host_id ';

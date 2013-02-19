@@ -481,7 +481,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 			array('label'=>'Exclude for time period (starting now):', 
 					'name'=>'excludedfor', 
 					'type'=>'select', 
-					'options'=>array(1=>'1 Day',7=>'One Week',30=>'One month',0=>'Forever'), 
+					'options'=>array(1=>'1 Day',7=>'One Week',30=>'One month',-1=>'Forever'), 
 					'value_function'=>'get_excludedfor',
 					'process_callback'=>'set_excludedfor'),
 			array('label'=>'Reason for exclusion:',
@@ -596,7 +596,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		if ($this->get_portscan_exclusion()) {
 			$retval .= '<tr id="excludedby"><td>Excluded by:</td><td>' . $this->get_excludedby_name() . '</td></tr>' . "\n";
 			$retval .= '<tr id="excludedon"><td>Excluded on:</td><td>' . $this->get_excludedon() . '</td></tr>' . "\n";
-			$excludedfor = ($this->get_excludedfor() == 0) ? 'forever' : $this->get_excludedfor() . ' days';
+			$excludedfor = ($this->get_excludedfor() < 0) ? 'forever' : $this->get_excludedfor() . ' days';
 			$retval .= '<tr id="excludedfor"><td>Excluded for:</td><td>' . $excludedfor . '</td></tr>' . "\n";
 			$retval .= '<tr id="excludedreason"><td>Reason:</td><td>' . $this->get_excludedreason() . '</td></tr>' . "\n";
 		}

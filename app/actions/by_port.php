@@ -21,10 +21,14 @@ require_once($approot . 'lib/class.Db.php');
 require_once($approot . 'lib/class.Host.php');
 require_once($approot . 'lib/class.Supportgroup.php');
 
+// Bridge from older code
+if (isset($_GET['ports'])) $_POST['allports'] = $_GET['ports'];
+
 // Allow simple get requests as well
 if (isset($_GET['anyports'])) $_POST['anyports'] = $_GET['anyports'];
 if (isset($_GET['allports'])) $_POST['allports'] = $_GET['allports'];
 if (isset($_GET['portsex'])) $_POST['portsex'] = $_GET['portsex'];
+
 
 $allports = isset($_POST['allports']) ? preg_replace('/^(d|,)*/','',$_POST['allports']) : 0;
 $anyports = isset($_POST['anyports']) ? preg_replace('/^(d|,)*/','',$_POST['anyports']) : 0;

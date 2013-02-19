@@ -3,9 +3,14 @@
 <legend><?php echo (isset($_GET['id'])) ? 'Edit' : 'Add';?> <?php echo str_ireplace("_"," ", $object);?></legend>
 <table id="add-edit-table" class="table">
 <?php
-	foreach ($form_data as $row) {
-		echo "\t" . '<tr><td>' . $row['label'] . 
+	foreach ($form_data as $row) { 
+		if (stripos($row['form'], 'type="hidden"') === FALSE) {
+			echo "\t" . '<tr><td>' . $row['label'] . 
 			'</td><td class="value">' . $row['form'] . '</td></tr>' . "\n";
+		}
+		else {
+			echo "\t" . $row['form'] . "\n";
+		}
 	}
 ?>	
 <tr><td>&nbsp;</td>

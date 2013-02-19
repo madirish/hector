@@ -111,7 +111,7 @@ if ($anyports != 0 || $allports != 0) {
 		$query .= ' where nsr1.nmap_scan_result_port_number = ' . intval($ports[0]);
 		$query .= ' and nsr1.state_id = 1 ';
 		if ($tagsin != '') $query .= ' and nsr1.host_id = tx.host_id and tx.tag_id IN (' . $tagsin . ') ';
-		if ($tagsex != '') $query .= ' and nsr1.host_id = tx.host_id and tx.tag_id NOT IN (' . $tagsin . ') ';
+		if ($tagsex != '') $query .= ' and nsr1.host_id = tx.host_id and tx.tag_id NOT IN (' . $tagsex . ') ';
 		$i = 2;
 		while ($i <= $count) {
 			$query .= ' and nsr' . $i . '.nmap_scan_result_port_number = ' . intval($ports[$i-1]);

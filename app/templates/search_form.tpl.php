@@ -1,4 +1,5 @@
 <?php // Ensure that the collapse controls only show on results page ?>
+<?php print_r($_POST); ?>
 <?php if (isset($_POST['form_name']) && $_POST['form_name']=='search_form') { ?>
 <div class="accordion" id="search-accordion" style="padding: 2px;">
 	<div class="accordion-group">

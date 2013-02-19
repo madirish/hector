@@ -170,7 +170,7 @@ if ($anyports != 0 || $allports != 0) {
 		$host_results = $db->fetch_object_array($query);
 	}
 	if (is_array($host_results)) $content .= '<h4>' . count($host_results) . ' records found</h4>';
-	$content .= '<table id="table' . $port . '" class="table table-striped">';
+	$content .= '<table id="table-port-result" class="table table-striped">';
 	$content .= '<thead>' .
 			'<tr><th>Hostname</th>' .
 			'<th>Support Group</th>' . 

@@ -1,10 +1,10 @@
 <?php // Ensure that the collapse controls only show on results page ?>
-<?php if (isset($_POST)) { ?>
+<?php if (isset($_POST['form_name']) && $_POST['form_name']=='search_form') { ?>
 <div class="accordion" id="search-accordion" style="padding: 2px;">
 	<div class="accordion-group">
 		<div calss="accordion-heading">
 		<a class="accordion-toggle" data-toggle="collapse" data-parent="#search-accordion" href="#collapseOne">
-		Search
+		Search again...
 		</a>
 		</div>
 		<div id="collapseOne" class="accordion-body collapse">
@@ -25,7 +25,7 @@
 				<input type="hidden" name="form_name" value="<?php echo $formname;?>"/>
 				</form>
 				</fieldset>
-<?php if (isset($_POST)) { ?>
+<?php if (isset($_POST['form_name']) && $_POST['form_name']=='search_form') { ?>
 			</div>
 		</div>
 	</div>

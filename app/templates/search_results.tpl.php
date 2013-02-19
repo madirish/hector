@@ -1,6 +1,6 @@
 <div id="content">
-
-Your search returned <?php echo count($hosts);?> results.
+<h2>Search Results>
+Your search returned <span class="badge"><?php echo count($hosts);?></span> results.
 <hr>
 <?php 
 if (count($hosts) > 0) {

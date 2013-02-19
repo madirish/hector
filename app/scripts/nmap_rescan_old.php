@@ -51,7 +51,7 @@ if(php_sapi_name() == 'cli') {
 	
 	$sql = 'select distinct(host_id) from nmap_scan_result ' .
 			'where ' .
-			'scan_result_timestamp < date_sub(now(), INTERVAL ' . $months_old .' MONTH) ' .
+			'nmap_scan_result_timestamp < date_sub(now(), INTERVAL ' . $months_old .' MONTH) ' .
 			'AND state_id = 1 ORDER BY nmap_scan_result_port_number';
 	$old_hosts = array();
 	$result = $db->fetch_object_array($sql);
@@ -62,7 +62,7 @@ if(php_sapi_name() == 'cli') {
 	//Restrict the ports so we only rescan old data
 	$sql = 'select distinct(nmap_scan_result_port_number) from nmap_scan_result ' .
 			'where ' .
-			'scan_result_timestamp < date_sub(now(), INTERVAL ' . $months_old .' MONTH) ' .
+			'nmap_scan_result_timestamp < date_sub(now(), INTERVAL ' . $months_old .' MONTH) ' .
 			'AND state_id = 1 ORDER BY nmap_scan_result_port_number';
 	$ports = array();
 	$result = $db->fetch_object_array($sql);
@@ -78,7 +78,7 @@ if(php_sapi_name() == 'cli') {
 		}
 	}
 	
-	$command = $php . ' ' . $nmap_scan . ' -a -v -p=' . $ports . ' -g=' . $hostgroup->get_id();
+	$command = $php . ' ' . $nmap_scan . ' -a -p=' . $ports . ' -g=' . $hostgroup->get_id();
 	$log->write_message("Running: " . $command);
 	shell_exec($command);
 	//echo $command;

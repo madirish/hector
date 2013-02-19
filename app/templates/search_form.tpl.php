@@ -5,10 +5,10 @@
 		Advanced Search
 		</a>
 		</div>
-		<div id="collapseOne" class="accordion-body collapse in">
+		<div id="collapseOne" class="accordion-body collapse">
 			<div class="accodion-inner">
 				<fieldset>
-				<legend>Search</legend>
+				<legend>Advanced Search</legend>
 				<p>Search is <em>inclusive</em> meaning results are drawn from machines 
 				that match any of the specified criteria.</p>
 				<form method="post" name="<?php echo $formname;?>" id="<?php echo $formname;?>">
@@ -26,3 +26,8 @@
 		</div>
 	</div>
 </div>
+<button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#demo">
+  simple collapsible
+</button>
+ 
+<div id="demo" class="collapse in"> … </div>

@@ -1,7 +1,5 @@
 <?php // Ensure that the collapse controls only show on results page ?>
-<?php print_r($_POST); ?>
 <?php if (isset($_POST['form_name']) && ($_POST['form_name']=='search_form' || $_POST['form_name']=='search_ip_form')) { ?>
-<?php if (isset($hosts) && count($hosts) > 0) {?>
 <div class="accordion" id="search-accordion" style="padding: 2px;">
 	<div class="accordion-group">
 		<div calss="accordion-heading">
@@ -11,7 +9,7 @@
 		</div>
 		<div id="collapseOne" class="accordion-body collapse">
 			<div class="accodion-inner">
-<?php }} ?> 
+<?php } ?> 
 				<fieldset>
 				<legend>Search</legend>
 				<p>Search is <em>inclusive</em> meaning results are drawn from machines 
@@ -28,9 +26,8 @@
 				</form>
 				</fieldset>
 <?php if (isset($_POST['form_name']) && ($_POST['form_name']=='search_form' || $_POST['form_name']=='search_ip_form')) { ?>
-<?php if (isset($hosts) && count($hosts) > 0) {?>
 			</div>
 		</div>
 	</div>
 </div>
-<?php }} ?> 
+<?php } ?> 

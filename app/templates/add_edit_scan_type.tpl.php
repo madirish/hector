@@ -4,7 +4,7 @@
 <table id="add-edit-table">
 <?php
 	foreach ($form_data as $row) {
-		echo "\t" . '<tr><td class="label">' . $row['label'] . 
+		echo "\t" . '<tr><td>' . $row['label'] . 
 			'</td><td class="value">' . $row['form'] . '</td></tr>' . "\n";
 	}
 ?>	

@@ -319,6 +319,10 @@ class Nmap_scan_result
 				$this->db->iud_sql($sql);
 			}
 			else {
+				if ($this->scan_id == NULL) $this->log->write_error("Can't save nmap_scan_result as scan_id is NULL");
+				if ($this->host_id == NULL) $this->log->write_error("Can't save nmap_scan_result as host_id is NULL");
+				if ($this->port_number == NULL) $this->log->write_error("Can't save nmap_scan_result as port_number is NULL");
+				if ($this->state_id == NULL) $this->log->write_error("Can't save nmap_scan_result as state_id is NULL");
 				return false;
 			}
     }

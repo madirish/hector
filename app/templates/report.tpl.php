@@ -22,10 +22,10 @@ else {
 		<tr><td>Any of these ports:</td><td><input type="text" name="anyports"/> (comma separated list)</td></tr>
 		<tr><td>All of these ports:</td><td><input type="text" name="allports"/> (comma separated list)</td></tr>
 		<tr><td>None of these ports:</td><td><input type="text" name="portsex"/> (comma separated list)</td></tr>
-		<tr><td>All of these tags:</td><td><select name="tagsin" size="4">
+		<tr><td>All of these tags:</td><td><select name="tagsin[]" size="4" multiple="multiple">
 			<?php foreach ($tags as $tag) echo '<option value="' . $tag->get_id() . '">' . $tag->get_name() . '</option>'; ?>
 			</select> (only search for machines with these tags)</td></tr>
-		<tr><td>None of these Tags:</td><td><select name="tagsex" size="4">
+		<tr><td>None of these Tags:</td><td><select name="tagsex[]" size="4" multiple="multiple">
 			<?php foreach ($tags as $tag) echo '<option value="' . $tag->get_id() . '">' . $tag->get_name() . '</option>'; ?>
 			</select> (do not report machines with these tags)</td></tr>
 		<tr><td>&nbsp;</td><td><input type="submit" value="Search"/></td></tr>

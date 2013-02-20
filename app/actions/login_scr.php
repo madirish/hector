@@ -15,6 +15,11 @@ if ($user->validate($username, $password)) {
 	include_once($approot . 'actions/summary.php');
 }
 else {
+	$form = new Form();
+	$formname = 'login_form';
+	$form->set_name($formname);
+	$token = $form->get_token();
+	$form->save();
 	$action = 'login';
 	$sorry = true;
 	include_once($approot . 'templates/login.tpl.php');

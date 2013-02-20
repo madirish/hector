@@ -44,7 +44,6 @@ require_once($approot . 'lib/class.Dblog.php');
 require_once($approot . 'lib/class.Host.php');
 require_once($approot . 'lib/class.Host_group.php');
 require_once($approot . 'lib/class.Log.php');
-require_once($approot . 'lib/class.Nmap_scan.php');
 require_once($approot . 'lib/class.Nmap_scan_result.php');
 require_once($approot . 'lib/class.Scan_type.php');
 	
@@ -93,7 +92,7 @@ if(php_sapi_name() != 'cli') {
 			var nmapHTML = "Alert on Changes: <input id='add-remove-alert' type='checkbox' onClick='addRemoveAlert()' $alert/><br/>";
 			nmapHTML += "Ports to scan (comma delimited): <input type='text' id='portlist' onBlur='updatePorts()' value='$portlist'/><br/>";
 			nmapHTML += "Only scan hosts with these ports open (comma delimited): <input type='text' id='oportlist' onBlur='updateoPorts()' value='$exclusionlist'/><br/>";
-			nmapHTML += "Attept version detection: <input id='add-remove-version' type='checkbox' onClick='addRemoveVersion()' $version/><br/>";
+			nmapHTML += "Attempt version detection: <input id='add-remove-version' type='checkbox' onClick='addRemoveVersion()' $version/><br/>";
 			document.getElementById("specs").innerHTML = nmapHTML;
 		}
 		// Fire this up as it's the default

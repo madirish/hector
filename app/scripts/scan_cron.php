@@ -4,7 +4,8 @@
  * specifications in the database.
  * 
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
- * Last modified: Feb 29, 2012
+ * @todo Move the alerts e-mail into the nmap_scan.php script since it's specific to those findings
+ * Last modified: Feb 20, 2013
  */
 
 

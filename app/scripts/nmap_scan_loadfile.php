@@ -24,10 +24,11 @@ if(php_sapi_name() == 'cli') {
 	/**
 	 * Neccesary includes
 	 */
+	require_once($approot . 'lib/class.Alert.php');
 	require_once($approot . 'lib/class.Config.php');
 	require_once($approot . 'lib/class.Dblog.php');
-	require_once($approot . 'lib/class.Alert.php');
 	require_once($approot . 'lib/class.Host.php');
+	require_once($approot . 'lib/class.Log.php');
 	require_once($approot . 'lib/class.Nmap_scan_result.php');
 		
 	// Set high mem limit to prevent resource exhaustion
@@ -35,8 +36,25 @@ if(php_sapi_name() == 'cli') {
 	
 	syslog(LOG_INFO, 'Nmap_scan_loadfile.php starting.');
 	
+	// Make sure we have some functions that may come from nmap_scan
+	if (! function_exists("show_help")) {
+		function show_help($error) {
+			echo "Error from nmap_scan.php helper script nmap_scan_loadfile.php\n";
+			echo $error;
+			//exit;
+		}
+	}
+	if (! function_exists("loggit")) {
+		function loggit($status, $message) {
+			global $log;
+			global $dblog;
+			$log->write_message($message);
+			$dblog->log($status, $message);
+		}
+	}
+	
 	// Check to make sure arguments are present
-	if ($argc < 3) show_help("Too few arguments!  You tried:\n " . implode(' ', $argv));
+	if ($argc < 2) show_help("Too few arguments!  You tried:\n " . implode(' ', $argv));
 	
 	$xmloutput = $argv[1];
 	
@@ -53,7 +71,7 @@ if(php_sapi_name() == 'cli') {
 	// Load up the XML and parse it 
 	$nmaprun = simplexml_load_file($xmloutput);
 	if (! $nmaprun) {
-		loggit("nmap_scan.php process", "There was a problem parsing the XML file $xmloutput!");
+		loggit("nmap_scan_loadfile.php process", "There was a problem parsing the XML file $xmloutput!");
 	}
 	// just grab all the hosts
 	$allhosts = new Collection('Host');
@@ -104,10 +122,14 @@ if(php_sapi_name() == 'cli') {
 				}
 				$old_scan_result->delete();
 			}
+			// Set the scan_id, for now this value is reserved:
+			$scan->set_scan_id(1);
 			
 			// record the new results
-			if ($scan->save() === FALSE) echo "There was an error saving scan for " . 
-			"port " . $scan->get_port_number() . " on host " . $scan->get_host_id() . "\n";
+			if ($scan->save() === FALSE) {
+				loggit("nmap_scan_loadfile.php process", "There was an error saving scan for " . 
+						"port " . $scan->get_port_number() . " on host " . $scan->get_host_id());
+			}
 		}
 	}	
 }

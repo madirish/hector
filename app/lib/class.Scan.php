@@ -271,7 +271,8 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
 			$retval = '';
 			switch ($this->type->get_script()) {
 				case('nmap_scan.php'):
-					$retval = '-g=' . implode(',', $this->group_ids);
+					if (count($this->group_ids)>0) 
+						$retval = '-g=' . implode(',', $this->group_ids);
 					break;
 			}
 			return $retval;

@@ -267,7 +267,7 @@ class Nmap_scan_result
 				$this->scan_id = $result[0]->scan_id;
 				$this->state_id = $result[0]->state_id;
 				$this->state = $result[0]->state_state;
-				$this->timestamp = $result[0]->scan_result_timestamp;
+				$this->timestamp = $result[0]->nmap_scan_result_timestamp;
 				$this->service_name = $result[0]->nmap_scan_result_service_name;
 				$this->service_version = $result[0]->nmap_scan_result_service_version;
 			}

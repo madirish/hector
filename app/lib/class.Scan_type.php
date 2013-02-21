@@ -208,7 +208,7 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
     	else {
     		// Insert a new value
 	    	$sql = array(
-	    		'INSERT INTO scan_type SET scan_type_name = \'?s\', scan_flags = \'?s\', scan_type_script = \'?s\'',
+	    		'INSERT INTO scan_type SET scan_type_name = \'?s\', scan_type_flags = \'?s\', scan_type_script = \'?s\'',
 	    		$this->get_name(),
 	    		$this->get_flags(),
 	    		$this->get_script()

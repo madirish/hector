@@ -14,8 +14,8 @@ $content .= '<h3>Web servers</h3>' .
 $query = 'select n.host_id, h.supportgroup_id ' .
 		'from nmap_scan_result n, host h ' .
 		'where n.host_id = h.host_id and n.state_id=1 ' .
-		'and n.port_number in (80,443) ' .
-		'AND LOWER(n.service_version) NOT LIKE \'%skype%\' ' .
+		'and n.nmap_scan_result_port_number in (80,443) ' .
+		'AND LOWER(n.nmap_scan_result_service_version) NOT LIKE \'%skype%\' ' .
 		'AND h.host_id NOT IN (SELECT host_id from host_x_tag) ' .
 		'order by h.supportgroup_id';
 $host_results = $db->fetch_object_array($query);

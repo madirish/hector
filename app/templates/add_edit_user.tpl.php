@@ -12,7 +12,7 @@
 				echo $row['form'] . "\n";
 		}
 		else {
-				echo "\t" . '<tr><td class="label">' . $row['label'] . 
+				echo "\t" . '<tr><td>' . $row['label'] . 
 					'</td><td class="value">' . $row['form'] . '</td></tr>' . "\n";
 		}
 	}

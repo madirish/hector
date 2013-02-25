@@ -63,7 +63,7 @@ if (is_array($host_results)) {
 			if ($port->get_state() == 'open') $ports[] = $port->get_port_number();
 		}
 		$ports = implode(', ', $ports);
-		$content .= '<tr><td>' . $host->get_name_linked() . $printer . '</td><td>' . 
+		$content .= '<tr><td>' . $host->get_name_linked() . $isprinter . '</td><td>' . 
 			$host->get_ip() . '</td>' .
 			'<td style="white-space: nowrap;">' . $supportgroup->get_name() . '</td>' . 
 			'<td>' . $ports . '</tr>' . "\n";

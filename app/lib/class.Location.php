@@ -162,7 +162,7 @@ class Location extends Maleable_Object implements Maleable_Object_Interface {
 	
 	/**
 	 * Get an array of all the hosts associated with this
-	 * LSP Group.  This is an expensive operation so it 
+	 * Support Group.  This is an expensive operation so it 
 	 * isn't part of the constructor.
 	 * 
      * @access public

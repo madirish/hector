@@ -22,7 +22,7 @@ $host_results = $db->fetch_object_array($query);
 $content .= '<table id="dhost"><tr>' .
 		'<th>Host</th>' .
 		'<th>IP</th>' .
-		'<th>LSP Group</th>' .
+		'<th>Support Group</th>' .
 		'<th>Open Ports</th></tr>' . "\n";
 $x=1;
 if (is_array($host_results)) {

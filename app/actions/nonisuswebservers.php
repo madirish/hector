@@ -35,7 +35,7 @@ $content .= '<h3>Found: ' . count($host_results) . ' hosts</h3>';
 $content .= '<table id="dhost"><tr>' .
 		'<th>Host</th>' .
 		'<th>IP</th>' .
-		'<th>LSP Group</th></tr>' . "\n";
+		'<th>Support Group</th></tr>' . "\n";
 if (is_array($host_results)) {
 	foreach ($host_results as $ret) {
 		$host = new Host($ret->host_id);

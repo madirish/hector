@@ -1,0 +1,52 @@
+#!/bin/bash
+# This file is part of HECTOR
+# This init script should be moved to /etc/init.d and chmod +x
+#
+# Developer - Justin C. Klein Keane <jukeane@sas.upenn.edu>
+# Last updated 27 February, 2013
+#
+set -e
+
+test -x /usr/bin/python || exit 0
+test -f /opt/hector/app/scripts/log2mysql.py || exit 0
+
+case "$1" in
+  start)
+        echo -n "Starting HECTOR MySQL logging from OSSEC"
+  /usr/bin/python /opt/hector/app/scripts/log2mysql.py 2>&1 >/dev/null&
+        echo "."
+  ;;
+  stop)
+        echo -n "Stopping HECTOR MySQL logging from OSSEC"
+  kill `ps aux | grep /opt/hector/app/scripts/log2mysql.py | grep -v grep | awk '{ print $2 }'`
+        echo "."
+  ;;
+
+  kill)
+        echo -n "Killing HECTOR MySQL logging from OSSEC"
+  kill -9 `ps aux | grep /opt/hector/app/scripts/log2mysql.py | grep -v grep | awk '{ print $2 }'`
+        echo "."
+  ;;
+
+   restart)
+        echo -n "Restarting HECTOR MySQL logging from OSSEC"
+        /etc/init.d/hector-ossec-mysql stop > /dev/null
+        /etc/init.d/hector-ossec-mysql start > /dev/null
+        echo "."
+        ;;
+
+  status)
+  value=`ps aux | grep /opt/hector/app/scripts/log2mysql.py | grep -v grep | wc -l`
+
+  if [ $value -eq 0 ]; then
+    echo "HECTOR MySQL logging is stopped."
+  else
+    echo "HECTOR MySQL logging is up and running."
+  fi
+  ;;
+  *)
+  echo "Usage: /etc/init.d/hector-ossec-mysql {start|stop|kill|restart|status}"
+  exit 1
+esac
+
+exit 0

@@ -1,9 +1,19 @@
 #!/usr/bin/python
+"""
+This script is part of HECTOR.
+by Justin C. Klein Keane <jukeane@sas.upenn.edu>
+Last modified: 27 February, 2013
+
+This script is a daemonized log observer that parses OSSEC logs and then
+imports them into the HECTOR database.  It is intended to be run from the
+/etc/init.d/hector-ossec-mysql script included with HECTOR
+"""
 import MySQLdb
 import time
 import re
 import sys
 
+# Credentials used for the database connection
 HOST = 'localhost'
 USERNAME = 'root'
 PASSWORD = ''
@@ -11,8 +21,7 @@ DB = 'hector'
 PORT = 3306
 
 class LogEntry: 
-  """ 
-  This is just the object that we craft to 
+  """ This is just the object that we craft to 
   hold the OSSEC log file entry (since it is 
   a multi-line log)
   """
@@ -33,9 +42,11 @@ class LogEntry:
   src_ip = user = conn = None
   
   def __init__(self, conn):
+    """ Accepts the database connection so it can be reused. """
     self.conn = conn
     
   def clear(self):
+    """ Delete all data so the object can be re-used."""
     self.ossec_alert_id = None
     self.date = None
     self.host_id = None
@@ -46,36 +57,42 @@ class LogEntry:
     self.message = None
   
   def get_ossec_alert_id(self):
+    """ Return the OSSEC alert id (ex: 1297702559.16083181) or a blank."""
     if self.ossec_alert_id is None:
       return ""
     else:
       return self.ossec_alert_id
     
   def get_date(self):
+    """ Return the date or a blank date ('0000-00-00 00:00:00')"""
     if self.date is None:
-      return "0000-00-0000 00:00:00"
+      return "0000-00-00 00:00:00"
     else:
       return self.date
     
   def get_host_id(self):
+    """Return the host id from the database, or zero."""
     if self.host_id is None:
       return 0
     else:
       return self.host_id
     
   def get_alert_log(self):
+    """Return the log this alert was generated from, or blank."""
     if self.alert_log is None:
       return ""
     else:
       return self.alert_log
   
   def get_rule_id(self):
+    """Return the rule_id from the database, or zero."""
     if self.rule_id is None:
       return 0
     else:
       return self.rule_id
     
   def get_src_ip(self):
+    """Return the source id from the alert, or zero."""
     if self.src_ip is None:
       return "0.0.0.0"
     elif self.src_ip == "(none)":
@@ -84,12 +101,14 @@ class LogEntry:
       return self.src_ip
     
   def get_user(self):
+    """Return the user acccount string from the alert (potentially '(none)')"""
     if self.user is None:
       return ""
     else:
       return self.user
     
   def get_message(self):
+    """Return the actual body of the log that produced the alert."""
     if self.message is None:
       return ""
     else:
@@ -106,6 +125,7 @@ class LogEntry:
   # [Mon Feb 14 11:56:00 2011] [error] [client 128.91.34.6] PHP Warning:  Call-time pass-by-reference has been deprecated - argument passed by value;  If you would like to pass it by reference, modify the declaration of task_send_extra_email().  If you would like to enable call-time pass-by-reference, you can set allow_call_time_pass_reference to true in your INI file.  However, future versions may not support this any longer.  in /www/data/drupal-6.19/sites/oni.sas.upenn.edu.taskmgr/modules/task/task.module on line 254, referer: https://oni.sas.upenn.edu/taskmgr/
   # 
   def process(self, line):
+    """Process a line from the OSSEC log and parse it appropriately."""
     if line[0:8] == '** Alert':
       # Got the alert line
       alert_id = line.split(' ')[2][0:-1]
@@ -128,19 +148,24 @@ class LogEntry:
         self.set_message(line)
     
   def set_alert_log(self, log):
+    """Set the internal alert_log variable."""
     self.alert_log = str(log).strip()
     
   def set_date(self, date):
+    """Set the internal date string."""
     self.date = str(date).strip()
     
   def set_host_id(self, id):
+    """Set the internal host_id integer from the database."""
     self.host_id = int(id)
     
   def set_message(self, message):
+    """Set the internal message string corresponding to the OSSEC client log entry."""
     self.message = str(message).strip()
     
   # Rule: 31410 (level 3) -> 'PHP Warning message.'
   def set_new_rule(self, rulestr):
+    """Set the rule_id from the database, or addd a new rule to ossec_rules."""
     rulestr = str(rulestr).strip()
     rulesplit = rulestr.split(' ')
     number = rulesplit[1]
@@ -165,15 +190,19 @@ class LogEntry:
     
   # OSSEC alerts identifiers in the form 1297702559.16083181
   def set_ossec_alert_id(self, id):
+    """Set the sanitized OSSEC alert id (ex. 1297702559.16083181)"""
     id = re.sub('![\d\.]', '', id)
     self.ossec_alert_id = id.strip()
      
   # Expects the rule number from OSSEC, rather than the db
-  # therefore we have to look it up in the db adn set it 
+  # therefore we have to look it up in the db and set it 
   # accordingly
   #
   # Return False if we can't find it so it can be inserted
   def set_rule_id(self, id):
+    """Set the rule_id based on the OSSEC rule number.
+    Return false if there is an issue with the insert.
+    """
     id = int(id)
     try:
       cursor = self.conn.cursor()
@@ -190,6 +219,7 @@ class LogEntry:
     return True
     
   def set_src_ip(self, ip):
+    """Format and set the internal attribute for the alert source IP address."""
     ip= str(ip).strip()
     ip = re.sub('![\d\.]', '', ip)
     if ip == '':
@@ -197,9 +227,11 @@ class LogEntry:
     self.src_ip = ip
     
   def set_user(self, user):
+    """Set the internal attribute for the user string from the alert."""
     self.user = str(user).strip()
     
   def save(self):
+    """Persist the complete record back to the database."""
     try:
       cursor = self.conn.cursor()
       sql = 'insert into ossec_alerts set '
@@ -230,7 +262,11 @@ class LogEntry:
 import unittest
 
 class TestLogEntry(unittest.TestCase):
+  """Unit tests for the LogEntry class."""
   def setUp(self):
+    """Establish the database connection and process a series of lines
+    that are equivalent to a full OSSEC log entry.
+    """
     try:
       self.conn = MySQLdb.connect(host=HOST,
                                   user=USERNAME,
@@ -249,15 +285,20 @@ class TestLogEntry(unittest.TestCase):
     self.log.process("[Mon Feb 14 11:56:00 2011] [error] [client 128.91.34.6] PHP Warning:  Call-time pass-by-reference has been deprecated - argument passed by value;  If you would like to pass it by reference, modify the declaration of task_send_extra_email().  If you would like to enable call-time pass-by-reference, you can set allow_call_time_pass_reference to true in your INI file.  However, future versions may not support this any longer.  in /www/data/drupal-6.19/sites/oni.sas.upenn.edu.taskmgr/modules/task/task.module on line 254, referer: https://oni.sas.upenn.edu/taskmgr/")
     
   def test_ossec_alert_id(self):
+    """ Test the alert_id set by OSSEC."""
     self.assertEqual(self.log.get_ossec_alert_id(), "1297702559.16083181")
   def test_get_date(self):
+    """Test the date parsing from the alert."""
     self.assertEqual(self.log.get_date(), "2011 Feb 14 11:55:59")
   def test_get_host_id(self):
+    """Test the host_id setting and getting, artificially pinned as '1'."""
     self.log.set_host_id(1)
     self.assertEqual(self.log.get_host_id(), 1)
   def test_get_alert_log(self):
+    """Test the parsing for the logfile that generated the alert."""
     self.assertEqual(self.log.get_alert_log(), "(www.sas.upenn.edu) 128.91.55.19->/var/log/httpd/error_log")
   def test_get_rule_id(self):
+    """Test the rule_id persistence using a SQL query."""
     cursor = self.conn.cursor()
     sql = 'select rule_id from ossec_rules where rule_level = "3" '
     sql += 'AND rule_message = "PHP Warning message." AND rule_number = "31410"'
@@ -266,6 +307,7 @@ class TestLogEntry(unittest.TestCase):
     cursor.close()
     self.assertEqual(self.log.get_rule_id(), rule_id)
   def test_get_src_ip(self):
+    """Test the alert source IP parsing."""
     self.assertEqual(self.log.get_src_ip(), "128.91.34.6")
   def test_get_user(self):
     self.assertEqual(self.log.get_user(), "(none)")

@@ -38,6 +38,7 @@ start() {    echo -n $"Starting hector-ossec-mysql: "
 
 stop() {
     echo -n $"Stopping hector-ossec-mysql: "
+    $EXEC stop
     killproc $PROG
     RETVAL=$?
     echo
@@ -52,7 +53,8 @@ restart() {
 
 reload() {
     echo -n $"Reloading hector-ossec-mysql: "
-    killproc $PROG -HUP
+    $EXEC restart
+    #killproc $PROG -HUP
     RETVAL=$?
     echo
     return $RETVAL

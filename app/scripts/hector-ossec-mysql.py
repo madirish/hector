@@ -12,6 +12,7 @@ import MySQLdb
 import time
 import re
 import sys
+import syslog
 
 # Credentials used for the database connection
 HOST = 'localhost'
@@ -185,7 +186,8 @@ class LogEntry:
         return False
       return True
     except Exception as err:
-      print "Transaction error saving new rule (set_new_rule()) in LogEntry object " , err
+      syslog.syslog("There was an issue saving a new rule: ", err)
+      # print "Transaction error saving new rule (set_new_rule()) in LogEntry object " , err
       return False
     
   # OSSEC alerts identifiers in the form 1297702559.16083181
@@ -256,7 +258,8 @@ class LogEntry:
       self.conn.commit() 
       cursor.close()
     except Exception as err:
-      print "Transaction error saving LogEntry object " , err
+      syslog.syslog("There was an issue saving an OSSEC alert: ", err)
+      # print "Transaction error saving LogEntry object " , err
 
 
 import unittest
@@ -342,6 +345,7 @@ class Daemon:
                                 sys.exit(0)
                 except OSError, e:
                         sys.stderr.write("fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
+                        syslog.syslog("fork #1 in Daemon failed: %d (%s)" % (e.errno, e.strerror))
                         sys.exit(1)
        
                 # decouple from parent environment
@@ -357,6 +361,7 @@ class Daemon:
                                 sys.exit(0)
                 except OSError, e:
                         sys.stderr.write("fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
+                        syslog.syslog("fork #2 in Daemon failed: %d (%s)" % (e.errno, e.strerror))
                         sys.exit(1)
        
                 # redirect standard file descriptors
@@ -370,6 +375,7 @@ class Daemon:
                 os.dup2(se.fileno(), sys.stderr.fileno())
        
                 # write pidfile
+                os.umask(077)
                 atexit.register(self.delpid)
                 pid = str(os.getpid())
                 file(self.pidfile,'w+').write("%s\n" % pid)
@@ -391,6 +397,7 @@ class Daemon:
        
                 if pid:
                         message = "pidfile %s already exist. Daemon already running?\n"
+                        syslog.syslog("pidfile %s already exist. Daemon already running?" % self.pidfile)
                         sys.stderr.write(message % self.pidfile)
                         sys.exit(1)
                
@@ -412,6 +419,7 @@ class Daemon:
        
                 if not pid:
                         message = "pidfile %s does not exist. Daemon not running?\n"
+                        syslog.syslog("pidfile %s does not exist. Daemon not running?" % self.pidfile)
                         sys.stderr.write(message % self.pidfile)
                         return # not an error in a restart
  
@@ -442,25 +450,30 @@ class Daemon:
                 """
 
 class OSSECLogParser(Daemon):
-  
-  # Tail (follow) the log file and parse it into the database
+  """This is the log watching object that tails the ossec alert file
+  and writes entries into the database.
+  """
+
   def follow(self, thefile):
-      thefile.seek(0,2)      # Go to the end of the file
+    """Tail (follow) the log file and parse it into the database."""
+    thefile.seek(0,2)      # Go to the end of the file
+    sleep = 0.00001
+    while True:
+      line = thefile.readline()
+      if not line:
+        time.sleep(sleep)    # Sleep briefly
+        if sleep < 1.0:
+          sleep += 0.00001
+        continue
       sleep = 0.00001
-      while True:
-          line = thefile.readline()
-          if not line:
-              time.sleep(sleep)    # Sleep briefly
-              if sleep < 1.0:
-                  sleep += 0.00001
-              continue
-          sleep = 0.00001
-          yield line
+      yield line
   def run(self):
+    """Start the process, extended from Daemon."""
     while True:
       self.do_log()
       #time.sleep(1)
   def do_log(self):
+    """Connect to the database and watch the logfile."""
     try:
       conn = MySQLdb.connect(host=HOST,
                                   user=USERNAME,
@@ -468,6 +481,7 @@ class OSSECLogParser(Daemon):
                                   db=DB,
                                   port=PORT)
     except Exception as err:
+      syslog.syslog("Error connecting to the database: " , err)
       print "Error connecting to the database" , err
     logfile = open("/var/ossec/logs/alerts/alerts.log")
     loglines = self.follow(logfile)
@@ -476,7 +490,6 @@ class OSSECLogParser(Daemon):
       # start a new log if necessary
       if line[0:8] == '** Alert':
         if log.get_ossec_alert_id() is not "":
-          print "Saving log"
           print log.get_alert_log()
           print log.get_date()
           print log.get_host_id()

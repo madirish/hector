@@ -1,6 +1,7 @@
 # HECTOR database configuration file
 # Author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 
+CREATE DATABASE IF NOT EXISTS hector;
 use hector;
 
 -- Alerts are OSSEC alerts
@@ -319,9 +320,10 @@ CREATE TABLE IF NOT EXISTS `vuln_x_tag` (
   `tag_id` INT UNSIGNED NOT NULL
 );
 
-
+--
 -- Create the trigger to automatically calculate the numeric
 -- IP address of hosts as they are added
+--
 DROP TRIGGER IF EXISTS host_ai_ipnum;
 DELIMITER $$
 
@@ -333,8 +335,31 @@ BEGIN
 END$$
 DELIMITER ;
 
+
+
+--
+-- Create views to the Kojoney2 tables if it's installed
+--
+DROP PROCEDURE IF EXISTS kojoney_views;
+DELIMITER $$
+CREATE PROCEDURE kojoney_views()
+BEGIN
+	SET @kojoney_table_count := (SELECT COUNT(SCHEMA_NAME) FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = 'kojoney');
+		-- Only create views if Kojoney2 is installed
+    IF @kojoney_table_count > 0 THEN
+			CREATE OR REPLACE VIEW koj_login_attempts AS SELECT * FROM kojoney.login_attempts;
+			CREATE OR REPLACE VIEW koj_executed_commands AS SELECT * FROM kojoney.executed_commands;
+			CREATE OR REPLACE VIEW koj_downloads AS SELECT * FROM kojoney.downloads;
+		END IF;
+END$$
+DELIMITER ;
+
+call kojoney_views();
+
+--
 -- Next alter the Syslog database used by rsyslog (for darknets)
 -- for details see http://www.madirish.net/content/creating-darknet-sensor-database
+--
 
 use Syslog;
 
@@ -361,23 +386,6 @@ BEGIN
   IF NEW.SysLogTag = 'kernel:' AND INSTR(NEW.Message, 'iptables') > 0 THEN
   	INSERT INTO hector.darknet set src_ip = t_src_ip, dst_ip = t_dst_ip, src_port = t_src_port, dst_port = t_dst_port, proto = t_proto, received_at = NEW.ReceivedAt;
 	END IF;
-END$$
-DELIMITER ;
-
---
--- Create views to the Kojoney2 tables if it's installed
---
-DROP PROCEDURE IF EXISTS kojoney_views;
-DELIMITER $$
-CREATE PROCEDURE kojoney_views()
-BEGIN
-	SET @kojoney_table_count := (SELECT COUNT(Db) FROM mysql.db WHERE Db = 'kojoney');
-		-- Only create views if Kojoney2 is installed
-    IF @kojoney_table_count > 0 THEN
-			CREATE OR REPLACE VIEW koj_login_attempts AS SELECT * FROM kojoney.login_attempts;
-			CREATE OR REPLACE VIEW koj_executed_commands AS SELECT * FROM kojoney.executed_commands;
-			CREATE OR REPLACE VIEW koj_downloads AS SELECT * FROM kojoney.downloads;
-		END IF;
 END$$
 DELIMITER ;
 

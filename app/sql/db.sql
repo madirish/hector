@@ -136,29 +136,6 @@ CREATE TABLE IF NOT EXISTS `host_x_tag` (
   KEY `tag_id` (`tag_id`)
 );
 
--- Kojoney SSH honeypot commands
-CREATE TABLE IF NOT EXISTS `koj_executed_commands` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `time` TIMESTAMP NOT NULL DEFAULT NOW(),
-  `ip` VARCHAR(15),
-  `ip_numeric` INT UNSIGNED,
-  `command` VARCHAR(255),
-  PRIMARY KEY (`id`),
-	INDEX USING HASH (ip_numeric)
-);
-
--- Kojoney SSH Honeypot logins
-CREATE TABLE IF NOT EXISTS `koj_login_attempts` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `time` TIMESTAMP NOT NULL DEFAULT NOW(),
-  `ip` VARCHAR(15) NOT NULL,
-  `ip_numeric` INT UNSIGNED,
-  `username` VARCHAR(255) NOT NULL,
-  `password` VARCHAR(255),
-	PRIMARY KEY (`id`),
-	INDEX USING HASH (ip_numeric)
-);
-
 -- Physical addresses for hosts
 CREATE TABLE IF NOT EXISTS `location` (
 	`location_id` INT NOT NULL AUTO_INCREMENT,
@@ -386,3 +363,21 @@ BEGIN
 	END IF;
 END$$
 DELIMITER ;
+
+--
+-- Create views to the Kojoney2 tables if it's installed
+--
+DROP PROCEDURE IF EXISTS kojoney_views;
+DELIMITER $$
+CREATE PROCEDURE kojoney_views()
+BEGIN
+	SET @kojoney_table_count := (SELECT COUNT(Db) FROM mysql.db WHERE Db = 'kojoney');
+		-- Only create views if Kojoney2 is installed
+    IF @kojoney_table_count > 0 THEN
+			CREATE OR REPLACE VIEW koj_login_attempts AS SELECT * FROM kojoney.login_attempts;
+			CREATE OR REPLACE VIEW koj_executed_commands AS SELECT * FROM kojoney.executed_commands;
+			CREATE OR REPLACE VIEW koj_downloads AS SELECT * FROM kojoney.downloads;
+		END IF;
+END$$
+DELIMITER ;
+

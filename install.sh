@@ -80,7 +80,7 @@ echo -e "Do you wish to allow rsyslog (UDP 514)? (y/n):"
 read configiptables
 if [ $configiptables == 'y' ] ; then
   if ! cat /etc/sysconfig/iptables | grep -q "udp \-\-dport 514 \-j ACCEPT" ; then
-    sed -i "s/COMMIT/-A INPUT -m state --state NEW -m udp -p udp --dport 514 -j ACCEPT\\nCOMMIT/" /etc/sysconfig/iptables
+    sed -i "s/--dport 22 -j ACCEPT/--dport 22 -j ACCEPT\\n-A INPUT -m state --state NEW -m udp -p udp --dport 514 -j ACCEPT/" /etc/sysconfig/iptables
     echo " [+] Committing firewall updates"
     service iptables restart
   fi  
@@ -172,6 +172,15 @@ cp ${HECTOR_PATH}/app/scripts/hector-ossec-mysql /etc/init.d/
 /sbin/chkconfig --add hector-ossec-mysql
 /sbin/chkconfig --level 345 hector-ossec-mysql on
 
+echo -e "Do you wish to allow remote OSSEC (UDP 1514)? (y/n):"
+read configiptables
+if [ $configiptables == 'y' ] ; then
+  if ! cat /etc/sysconfig/iptables | grep -q "udp \-\-dport 514 \-j ACCEPT" ; then
+    sed -i "s/--dport 22 -j ACCEPT/--dport 22 -j ACCEPT\\n-A INPUT -m state --state NEW -m udp -p udp --dport 1514 -j ACCEPT/" /etc/sysconfig/iptables
+    echo " [+] Committing firewall updates"
+    service iptables restart
+  fi  
+fi
 echo 
 echo "Congratulations, installation complete!"
 echo "Note that http access is GLOBALLY available."

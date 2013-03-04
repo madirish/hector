@@ -147,7 +147,7 @@ echo "Step 7 of 7 - Finishing"
 echo 
 if [ ! -d /var/ossec ] ; then
   echo " [+] OSSEC still needs to be installed"
-  tar xvzf $HECTOR_PATH/app/software/ossec-hids-2.3.tar.gz
+  tar xvzf $HECTOR_PATH/app/software/ossec-hids-2.3.tar.gz --directory=$HECTOR_PATH/app/software/
   ${HECTOR_PATH}/app/software/ossec-hids-2.3/install.sh
 fi
 echo " [+] Scheduling OSSEC monitoring."

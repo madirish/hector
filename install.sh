@@ -50,7 +50,7 @@ cat ${rsyslogsqldir} > /tmp/hector.sql
 
 # Pull in Kojoney2 for the database components
 git clone git://github.com/madirish/kojoney2 app/software/kojoney2
-cat app/software/kojoney2/create_tables >> /tmp/hector.sql
+cat app/software/kojoney2/create_tables.sql >> /tmp/hector.sql
 
 
 echo " [+] Setting up the MySQL databases for rsyslog and HECTOR."

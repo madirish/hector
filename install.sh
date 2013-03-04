@@ -10,6 +10,12 @@ echo " Installer "
 echo "******************************************"
 echo "by Justin C. Klein Keane <jukeane@sas.upenn.edu>"
 echo 
+
+if [ "$(id -u)" != "0" ]; then
+   echo "This script must be run as root, please use sudo"
+   exit 1
+fi
+
 echo Step 1 of 7 - Checking for prerequisite dependencies...
 echo
 

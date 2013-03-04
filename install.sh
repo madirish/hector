@@ -16,7 +16,7 @@ echo
 
 # Install the prerequisites
 if [ -e /etc/redhat-release ]; then
-    yum install mysql mysql-server rsyslog rsyslog-mysql httpd php php-cli php-mysql php-xml MySQL-python MySQL-python nmap gcc make
+    yum install mysql mysql-server git rsyslog rsyslog-mysql httpd php php-cli php-mysql php-xml MySQL-python MySQL-python nmap gcc make
     /sbin/chkconfig --level 345 mysqld on 
     /sbin/chkconfig --level 345 httpd on 
     /sbin/chkconfig --level 345 rsyslog on 
@@ -48,6 +48,10 @@ IFS=';'
 rsyslogsqldir=${rsyslogsqldir//=/-}
 cat ${rsyslogsqldir} > /tmp/hector.sql
 
+# Pull in Kojoney2 for the database components
+git clone git://github.com/madirish/kojoney2 app/software/kojoney2
+cat app/software/kojoney2/create_tables >> /tmp/hector.sql
+
 
 echo " [+] Setting up the MySQL databases for rsyslog and HECTOR."
 echo "     Please choose a password for the hector-rsyslog MySQL user:"
@@ -57,6 +61,7 @@ read HECTORPASS
 echo "use mysql; GRANT INSERT ON Syslog.* to 'hector-rsyslog'@localhost identified by '${RSYSLOGPASS}';" >> /tmp/hector.sql
 echo "CREATE DATABASE IF NOT EXISTS hector; GRANT ALL PRIVILEGES ON hector.* to 'hector'@localhost identified by '${HECTORPASS}';" >> /tmp/hector.sql
 cat app/sql/db.sql >> /tmp/hector.sql
+
 echo "Please enter your MySQL root user password:"
 mysql -u root -p < /tmp/hector.sql
 

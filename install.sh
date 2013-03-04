@@ -16,7 +16,7 @@ echo
 
 # Install the prerequisites
 if [ -e /etc/redhat-release ]; then
-    yum install mysql mysql-server rsyslog rsyslog-mysql httpd php php-cli php-mysql php-xml MySQL-python MySQL-python nmap
+    yum install mysql mysql-server rsyslog rsyslog-mysql httpd php php-cli php-mysql php-xml MySQL-python MySQL-python nmap gcc make
     /sbin/chkconfig --level 345 mysqld on 
     /sbin/chkconfig --level 345 httpd on 
     /sbin/chkconfig --level 345 rsyslog on 
@@ -147,6 +147,8 @@ echo "Step 7 of 7 - Finishing"
 echo 
 if [ ! -d /var/ossec ] ; then
   echo " [+] OSSEC still needs to be installed"
+  echo "     Press [Enter] to begin the OSSEC install process"
+  read foo
   tar xvzf $HECTOR_PATH/app/software/ossec-hids-2.3.tar.gz --directory=$HECTOR_PATH/app/software/
   ${HECTOR_PATH}/app/software/ossec-hids-2.3/install.sh
 fi

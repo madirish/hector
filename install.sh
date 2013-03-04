@@ -34,6 +34,10 @@ echo
 echo "Step 2 of 7 - Configuring rsyslog"
 echo 
 
+# Create a new temporary file to perform all our SQL functions
+touch /tmp/hector.sql
+chmod 0700 /tmp/hector.sql
+
 if [ ! -d /var/lib/mysql/Syslog ]; then
   IN=`rpm -q rsyslog-mysql`
   IFS='-'
@@ -41,9 +45,21 @@ if [ ! -d /var/lib/mysql/Syslog ]; then
   rsyslogsqldir="/usr/share/doc/${arr[0]}=${arr[1]}=${arr[2]}/createDB.sql"
   IFS=';'
   rsyslogsqldir=${rsyslogsqldir//=/-}
-  echo "Enter your MySQL root password:"
-  mysql -u root -p < ${rsyslogsqldir}
+  cp ${rsyslogdir} > /tmp/hector.sql
 fi
+
+echo " [+] Setting up the MySQL databases for rsyslog and HECTOR."
+echo "     Please choose a password for the hector-ryslog MySQL user:"
+read RSYSLOGPASS
+echo "     Please choose a password for the hector MySQL user:"
+read HECTORPASS
+echo "use mysql; GRANT INSERT ON Syslog.* to 'hector-rsyslog'@localhost identified by ${RSYSLOGPASS};" >> /tmp/hector.sql
+echo "CREATE DATABASE hector; GRANT ALL PRIVILEGES ON hector to 'hector'@localhost identified by ${HECTORPASS};" >> /tmp/hector.sql
+cat app/sql/db.sql >> /tmp/hector.sql
+echo "Please enter your MySQL root user password:"
+mysql -u root -p < /tmp/hector.sql
+
+
 
 if  ! cat /etc/rsyslog.conf | grep -q "ModLoad ommysql" ; then
   echo " [+] Configuring rsyslog to load MySQL module"
@@ -55,7 +71,7 @@ if  ! cat /etc/rsyslog.conf | grep -q "iptables" ; then
   read mysqluser
   echo -e "Please enter the user's password:"
   read mysqlpass
-  sed -i "s/\/var\/log\/messages/\/var\/log\/messages\\nif \$msg contains 'iptables ' then :ommysql:localhost,Syslog,${mysqluser},${mysqlpass}/" /etc/rsyslog.conf
+  sed -i "s/\/var\/log\/messages/\/var\/log\/messages\\nif \$msg contains 'iptables ' then :ommysql:localhost,Syslog,hector-rsyslog,${RSYSLOGPASS}/" /etc/rsyslog.conf
 fi
 
 echo -e "Do you wish to allow rsyslog (UDP 514)? (y/n):"
@@ -72,20 +88,24 @@ echo " [+] Committing rsyslog updates"
 service rsyslog restart
 
 echo 
-echo "Step 3 of 7 - Creating databases for HECTOR"
-echo 
-echo -e "Please enter a username with permission to CREATE new databases:"
-read mysqluser
-echo " [+] Running the install script in app/sql/db.sql as ${mysqluser}"
-mysql -u ${mysqluser} -p < app/sql/db.sql
-
-echo 
 echo "Step 4 of 7 - Moving HECTOR files to /opt"
 echo 
 cp -rf app /opt/
 cp -rf html /opt/
 echo " [+] Files moved"
-
+echo " [+] Customizing config at /opt/hector/app/conf/config.ini"
+cp /opt/hector/app/conf/config.ini.blank /opt/hector/app/conf/config.ini
+sed -i "s/\/path\/to\/hector/\/opt\/hector/g" /opt/hector/app/conf/config.ini
+sed -i "s/database_name\hector/g" /opt/hector/app/conf/config.ini
+sed -i "s/database_user\hector/g" /opt/hector/app/conf/config.ini
+sed -i "s/database_password\${HECTORPASS}/g" /opt/hector/app/conf/config.ini
+echo "    Please enter your HECTOR server name or IP:"
+read SERVERNAME
+sed -i "s/yoursite\/hector_html\${SERVERNAME}\/hector/g" /opt/hector/app/conf/config.ini
+echo "    Please enter an e-mail address for contact e-mails:"
+read EMAILADDY
+sed -i "s/your_email@localhost\${EMAILADDY}/g" /opt/hector/app/conf/config.ini
+echo " [+] Config at /opt/hector/app/conf/config.ini complete."
 
 echo 
 echo "Step 5 of 7 - Configuring Apache"

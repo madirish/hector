@@ -84,6 +84,8 @@ if [ $configiptables == 'y' ] ; then
     echo " [+] Committing firewall updates"
     service iptables restart
   fi  
+  sed -i "s/#\$ModLoad imudp/\$ModLoad imudp/" /etc/rsyslog.conf
+  sed -i "s/#\$UDPServerRun 514/\$UDPServerRun 514/" /etc/rsyslog.conf
 fi
 
 echo " [+] Committing rsyslog updates"

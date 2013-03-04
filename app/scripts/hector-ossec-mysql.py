@@ -238,34 +238,35 @@ class LogEntry:
     """Persist the complete record back to the database."""
     if DEBUG : syslog.syslog("Beginning OSSEC alert save()")
     try:
-      cursor = self.conn.cursor()
-      sql = 'insert into ossec_alerts set '
-      sql += ' alert_date = STR_TO_DATE(%s,\'%%Y %%b %%d %%H:%%i:%%s\'), ' # 2011 Feb 14 11:55:59
-      sql += ' host_id = %s, '
-      sql += ' alert_log = %s, '
-      sql += ' rule_id = %s, '
-      sql += ' rule_user = %s, '
-      sql += ' rule_log = %s, '
-      sql += ' rule_src_ip = %s, '
-      sql += ' rule_src_ip_numeric = INET_ATON(%s), '
-      sql += ' alert_ossec_id = %s '
-      cursor.execute(sql , (self.get_date(),
-                            self.get_host_id(),
-                            self.get_message(),
-                            self.get_rule_id(),
-                            self.get_user(),
-                            self.get_alert_log(),
-                            self.get_src_ip(),
-                            self.get_src_ip(),
-                            self.get_ossec_alert_id()))
-      self.conn.commit() 
-      cursor.close()
-      if self.get_message().find("iptables IN=") > -1 :
-        # darknet log
-        if DEBUG : syslog.syslog("Darknet packet detected!")
-        self.log_darknet()
-      else :
-        if DEBUG : syslog.syslog("Not a darknet packet alert.")
+      if self.get_host_id() > 0 and self.get_rule_id() > 0 and self.get_src_ip() > 0:
+        cursor = self.conn.cursor()
+        sql = 'insert into ossec_alerts set '
+        sql += ' alert_date = STR_TO_DATE(%s,\'%%Y %%b %%d %%H:%%i:%%s\'), ' # 2011 Feb 14 11:55:59
+        sql += ' host_id = %s, '
+        sql += ' alert_log = %s, '
+        sql += ' rule_id = %s, '
+        sql += ' rule_user = %s, '
+        sql += ' rule_log = %s, '
+        sql += ' rule_src_ip = %s, '
+        sql += ' rule_src_ip_numeric = INET_ATON(%s), '
+        sql += ' alert_ossec_id = %s '
+        cursor.execute(sql , (self.get_date(),
+                              self.get_host_id(),
+                              self.get_message(),
+                              self.get_rule_id(),
+                              self.get_user(),
+                              self.get_alert_log(),
+                              self.get_src_ip(),
+                              self.get_src_ip(),
+                              self.get_ossec_alert_id()))
+        self.conn.commit() 
+        cursor.close()
+        if self.get_message().find("iptables IN=") > -1 :
+          # darknet log
+          if DEBUG : syslog.syslog("Darknet packet detected!")
+          self.log_darknet()
+        else :
+          if DEBUG : syslog.syslog("Not a darknet packet alert.")
         
     except Exception as err:
       syslog.syslog("There was an issue saving an OSSEC alert: ", err)

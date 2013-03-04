@@ -15,7 +15,7 @@ error_log	=	/path/to/hector/logs/error_log
 message_log	=	/path/to/hector/logs/message_log
 
 libroot			=	/path/to/hector/lib/
-approot			= /path/to/hector/
+approot = /path/to/hector/
 
 php_exec_path		=	/usr/bin/php
 nmap_exec_path	=	/usr/bin/nmap

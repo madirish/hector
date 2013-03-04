@@ -49,12 +49,12 @@ if [ ! -d /var/lib/mysql/Syslog ]; then
 fi
 
 echo " [+] Setting up the MySQL databases for rsyslog and HECTOR."
-echo "     Please choose a password for the hector-ryslog MySQL user:"
+echo "     Please choose a password for the hector-rsyslog MySQL user:"
 read RSYSLOGPASS
 echo "     Please choose a password for the hector MySQL user:"
 read HECTORPASS
-echo "use mysql; GRANT INSERT ON Syslog.* to 'hector-rsyslog'@localhost identified by ${RSYSLOGPASS};" >> /tmp/hector.sql
-echo "CREATE DATABASE hector; GRANT ALL PRIVILEGES ON hector to 'hector'@localhost identified by ${HECTORPASS};" >> /tmp/hector.sql
+echo "use mysql; GRANT INSERT ON Syslog.* to 'hector-rsyslog'@localhost identified by '${RSYSLOGPASS}';" >> /tmp/hector.sql
+echo "CREATE DATABASE hector; GRANT ALL PRIVILEGES ON hector to 'hector'@localhost identified by '${HECTORPASS}';" >> /tmp/hector.sql
 cat app/sql/db.sql >> /tmp/hector.sql
 echo "Please enter your MySQL root user password:"
 mysql -u root -p < /tmp/hector.sql
@@ -67,10 +67,6 @@ if  ! cat /etc/rsyslog.conf | grep -q "ModLoad ommysql" ; then
 fi
 if  ! cat /etc/rsyslog.conf | grep -q "iptables" ; then
   echo " [+] Configuring rsyslog to log to MySQL"
-  echo -e "Please enter a username with permission to INSERT on the Syslog tables:"
-  read mysqluser
-  echo -e "Please enter the user's password:"
-  read mysqlpass
   sed -i "s/\/var\/log\/messages/\/var\/log\/messages\\nif \$msg contains 'iptables ' then :ommysql:localhost,Syslog,hector-rsyslog,${RSYSLOGPASS}/" /etc/rsyslog.conf
 fi
 

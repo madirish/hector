@@ -25,17 +25,17 @@ if [ -e /etc/redhat-release ]; then
     yum install mysql mysql-server git httpd php php-cli php-mysql php-xml MySQL-python MySQL-python nmap gcc make
     /sbin/chkconfig --level 345 mysqld on 
     /sbin/chkconfig --level 345 httpd on 
-    #/sbin/chkconfig --level 345 rsyslog on 
     if ! /sbin/service mysqld status | grep running ; then
       /sbin/service mysqld start
     fi
     if ! /sbin/service httpd status | grep running ; then
       /sbin/service httpd start
     fi
-    #if ! /sbin/service rsyslog status | grep running ; then
-    #  /sbin/service rsyslog start
-    #fi
 fi
+
+echo " [+] Pulling down Kojoney2 sources."
+# Pull in Kojoney2 for the database components
+git clone git://github.com/madirish/kojoney2 app/software/kojoney2
 
 echo 
 echo "Step 2 of 7 - Configuring MySQL"
@@ -44,17 +44,12 @@ echo
 # Create a new temporary file to perform all our SQL functions
 touch /tmp/hector.sql
 chmod 0700 /tmp/hector.sql
-
-# Pull in Kojoney2 for the database components
-git clone git://github.com/madirish/kojoney2 app/software/kojoney2
 cat app/software/kojoney2/create_tables.sql >> /tmp/hector.sql
 
 echo " [+] Setting up the MySQL databases for HECTOR."
-#echo "     Please choose a password for the hector-rsyslog MySQL user:"
-#read RSYSLOGPASS
 echo "     Please choose a password for the hector MySQL user:"
 read HECTORPASS
-#echo "use mysql; GRANT INSERT ON Syslog.* to 'hector-rsyslog'@localhost identified by '${RSYSLOGPASS}';" >> /tmp/hector.sql
+
 echo "use mysql; " >> /tmp/hector.sql
 echo "CREATE DATABASE IF NOT EXISTS hector; GRANT ALL PRIVILEGES ON hector.* to 'hector'@localhost identified by '${HECTORPASS}';" >> /tmp/hector.sql
 cat app/sql/db.sql >> /tmp/hector.sql

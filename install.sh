@@ -117,13 +117,19 @@ if ! cat /etc/httpd/conf/httpd.conf | grep -q "HECTOR" ; then
   echo " [+] Creating virtual directory /hector at the web root"
   echo >> /etc/httpd/conf/httpd.conf
   echo '#HECTOR configuration' >> /etc/httpd/conf/httpd.conf
-  echo 'Alias /hector "${HECTOR_PATH}/html/"' >>  /etc/httpd/conf/httpd.conf
+  echo "Alias /hector \"${HECTOR_PATH}/html/\"" >>  /etc/httpd/conf/httpd.conf
   echo '<Directory "/hector">' >>  /etc/httpd/conf/httpd.conf
   echo '  Options Indexes MultiViews FollowSymLinks' >>  /etc/httpd/conf/httpd.conf
   echo '  AllowOverride None' >>  /etc/httpd/conf/httpd.conf
   echo '  Order allow,deny' >>  /etc/httpd/conf/httpd.conf
   echo '  Allow from all' >>  /etc/httpd/conf/httpd.conf
   echo '</Directory>' >>  /etc/httpd/conf/httpd.conf
+  if ! cat /etc/sysconfig/iptables | grep -q "tcp \-\-dport 80 \-j ACCEPT" ; then
+    echo " [+] Modifyign iptables to allow port 80"
+    sed -i "s/COMMIT/-A INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT\\nCOMMIT/" /etc/sysconfig/iptables
+    echo " [+] Committing firewall updates"
+    service iptables restart
+  fi
   service httpd restart
 else
   echo " [+] HECTOR Apache config seems to already exist"
@@ -152,7 +158,17 @@ if [ ! -d /var/ossec ] ; then
   tar xvzf $HECTOR_PATH/app/software/ossec-hids-2.3.tar.gz --directory=$HECTOR_PATH/app/software/
   ${HECTOR_PATH}/app/software/ossec-hids-2.3/install.sh
 fi
-echo " [+] Scheduling OSSEC monitoring."
+echo " [+] Scheduling OSSEC monitoring services."
 cp ${HECTOR_PATH}/app/scripts/hector-ossec-mysql /etc/init.d/
 /sbin/chkconfig --add hector-ossec-mysql
+/sbin/chkconfig --level 345 hector-ossec-mysql on
 
+echo 
+echo "Congratulations, installation complete!"
+echo "Note that http access is GLOBALLY available."
+echo "Update your iptables rules if you wish to "
+echo "restrict access."
+echo
+echo "You can log in to the admin panel at:"
+echo "http://$SERVERNAME/hector"
+echo "as admin:password (which you should change)"

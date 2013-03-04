@@ -320,22 +320,6 @@ CREATE TABLE IF NOT EXISTS `vuln_x_tag` (
   `tag_id` INT UNSIGNED NOT NULL
 );
 
---
--- Create the trigger to automatically calculate the numeric
--- IP address of hosts as they are added
---
-DROP TRIGGER IF EXISTS host_ai_ipnum;
-DELIMITER $$
-
-CREATE TRIGGER host_ai_ipnum
-  AFTER INSERT ON host
-  FOR EACH ROW
-BEGIN
-  UPDATE host set host_ip_numeric = INET_ATON(NEW.host_ip) where host_id = NEW.host_id;
-END$$
-DELIMITER ;
-
-
 
 --
 -- Create views to the Kojoney2 tables if it's installed
@@ -356,36 +340,4 @@ DELIMITER ;
 
 call kojoney_views();
 
---
--- Next alter the Syslog database used by rsyslog (for darknets)
--- for details see http://www.madirish.net/content/creating-darknet-sensor-database
---
-
-use Syslog;
-
-DROP TRIGGER IF EXISTS firewall_ai_trig;
-DELIMITER $$
-
-CREATE TRIGGER firewall_ai_trig
-  AFTER INSERT ON Syslog.SystemEvents
-  FOR EACH ROW
-BEGIN
-  DECLARE t_src_ip INT UNSIGNED;
-  DECLARE t_dst_ip INT UNSIGNED;
-  DECLARE t_src_port INT UNSIGNED;
-  DECLARE t_dst_port INT UNSIGNED;
-  DECLARE t_proto ENUM('tcp','udp','icmp');
-
-  
-  SELECT INET_ATON(SUBSTRING(NEW.Message, INSTR(NEW.Message, 'SRC=')+4, INSTR(New.Message, ' DST=')-INSTR(NEW.Message, 'SRC=')-4)) INTO t_src_ip from DUAL;
-  SELECT INET_ATON(SUBSTRING(NEW.Message, INSTR(NEW.Message, 'DST=')+4, INSTR(New.Message, ' LEN=')-INSTR(NEW.Message, 'DST=')-4)) INTO t_dst_ip from DUAL;
-  SELECT SUBSTRING(NEW.Message, INSTR(NEW.Message, 'SPT=')+4, INSTR(New.Message, ' DPT=')-INSTR(NEW.Message, 'SPT=')-4) INTO t_src_port from DUAL;
-  SELECT SUBSTRING(NEW.Message, INSTR(NEW.Message, 'DPT=')+4, LOCATE(' ', NEW.Message, INSTR(NEW.Message, 'DPT='))-LOCATE('DPT=', NEW.Message)-4) INTO t_dst_port from DUAL;
-  SELECT LOWER(SUBSTRING(NEW.Message, INSTR(NEW.Message, 'PROTO=')+6, INSTR(New.Message, ' SPT=')-INSTR(NEW.Message, 'PROTO=')-6)) INTO t_proto from DUAL;
-
-  IF NEW.SysLogTag = 'kernel:' AND INSTR(NEW.Message, 'iptables') > 0 THEN
-  	INSERT INTO hector.darknet set src_ip = t_src_ip, dst_ip = t_dst_ip, src_port = t_src_port, dst_port = t_dst_port, proto = t_proto, received_at = NEW.ReceivedAt;
-	END IF;
-END$$
-DELIMITER ;
 

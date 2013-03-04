@@ -54,7 +54,7 @@ read RSYSLOGPASS
 echo "     Please choose a password for the hector MySQL user:"
 read HECTORPASS
 echo "use mysql; CREATE DATABASE IF NOT EXISTS Syslog; GRANT INSERT ON Syslog.* to 'hector-rsyslog'@localhost identified by '${RSYSLOGPASS}';" >> /tmp/hector.sql
-echo "CREATE DATABASE hector; GRANT ALL PRIVILEGES ON hector to 'hector'@localhost identified by '${HECTORPASS}';" >> /tmp/hector.sql
+echo "CREATE DATABASE IF NOT EXISTS hector; GRANT ALL PRIVILEGES ON hector to 'hector'@localhost identified by '${HECTORPASS}';" >> /tmp/hector.sql
 cat app/sql/db.sql >> /tmp/hector.sql
 echo "Please enter your MySQL root user password:"
 mysql -u root -p < /tmp/hector.sql

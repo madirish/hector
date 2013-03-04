@@ -55,7 +55,7 @@ read RSYSLOGPASS
 echo "     Please choose a password for the hector MySQL user:"
 read HECTORPASS
 echo "use mysql; GRANT INSERT ON Syslog.* to 'hector-rsyslog'@localhost identified by '${RSYSLOGPASS}';" >> /tmp/hector.sql
-echo "CREATE DATABASE IF NOT EXISTS hector; GRANT ALL PRIVILEGES ON hector to 'hector'@localhost identified by '${HECTORPASS}';" >> /tmp/hector.sql
+echo "CREATE DATABASE IF NOT EXISTS hector; GRANT ALL PRIVILEGES ON hector.* to 'hector'@localhost identified by '${HECTORPASS}';" >> /tmp/hector.sql
 cat app/sql/db.sql >> /tmp/hector.sql
 echo "Please enter your MySQL root user password:"
 mysql -u root -p < /tmp/hector.sql
@@ -96,12 +96,16 @@ echo " [+] Files moved"
 echo " [+] Customizing config at $HECTOR_PATH/app/conf/config.ini"
 cp ${HECTOR_PATH}/app/conf/config.ini.blank ${HECTOR_PATH}/app/conf/config.ini
 
-sed -i "s|/path/to/hector|${HECTOR_PATH}|g" $HECTOR_PATH/app/conf/config.ini
+sed -i "s|/path/to/hector|${HECTOR_PATH}/app|g" $HECTOR_PATH/app/conf/config.ini
 
 echo " [+] Setting database parameters in $HECTOR_PATH/app/conf/config.ini"
 sed -i "s/database_name/hector/g" ${HECTOR_PATH}/app/conf/config.ini
 sed -i "s/database_user/hector/g" ${HECTOR_PATH}/app/conf/config.ini
 sed -i "s/database_password/${HECTORPASS}/g" ${HECTOR_PATH}/app/conf/config.ini
+
+
+sed -i "s|approot                 = /opt/hector/app|approot                 = /opt/hector|g" ${HECTOR_PATH}/app/conf/config.ini
+
 echo "    Please enter your HECTOR server name or IP:"
 read SERVERNAME
 sed -i "s/yoursite\/hector_html/${SERVERNAME}\/hector/g" ${HECTOR_PATH}/app/conf/config.ini
@@ -126,7 +130,7 @@ if ! cat /etc/httpd/conf/httpd.conf | grep -q "HECTOR" ; then
   echo '</Directory>' >>  /etc/httpd/conf/httpd.conf
   if ! cat /etc/sysconfig/iptables | grep -q "tcp \-\-dport 80 \-j ACCEPT" ; then
     echo " [+] Modifyign iptables to allow port 80"
-    sed -i "s/COMMIT/-A INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT\\nCOMMIT/" /etc/sysconfig/iptables
+    sed -i "s/--dport 22 -j ACCEPT/--dport 22 -j ACCEPT\\n-A INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT/" /etc/sysconfig/iptables
     echo " [+] Committing firewall updates"
     service iptables restart
   fi

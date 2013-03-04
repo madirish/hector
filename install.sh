@@ -104,7 +104,7 @@ sed -i "s/database_user/hector/g" ${HECTOR_PATH}/app/conf/config.ini
 sed -i "s/database_password/${HECTORPASS}/g" ${HECTOR_PATH}/app/conf/config.ini
 
 
-sed -i "s|approot                 = /opt/hector/app|approot                 = /opt/hector|g" ${HECTOR_PATH}/app/conf/config.ini
+sed -i "s|approot = /opt/hector/app|approot = /opt/hector|g" ${HECTOR_PATH}/app/conf/config.ini
 
 echo "    Please enter your HECTOR server name or IP:"
 read SERVERNAME
@@ -175,4 +175,4 @@ echo "restrict access."
 echo
 echo "You can log in to the admin panel at:"
 echo "http://$SERVERNAME/hector"
-echo "as admin:password (which you should change)"
+echo "as administrator:password (which you should change)"

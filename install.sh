@@ -140,7 +140,7 @@ fi
 
 echo " [+] Adding OSSEC local_rule so it can monitor darknet sensors."
 echo "<group name=\"local,syslog,\">" >> /var/ossec/rules/local_rules.xml
-echo "  <rule id=\"100001\" level="3">" >> /var/ossec/rules/local_rules.xml
+echo "  <rule id=\"100001\" level=\"3\">" >> /var/ossec/rules/local_rules.xml
 echo "    <if_sid>4100</if_sid>" >> /var/ossec/rules/local_rules.xml
 echo "    <match>iptables</match>" >> /var/ossec/rules/local_rules.xml
 echo "    <description>Darknet sensor detection for HECTOR.</description>\n" >> /var/ossec/rules/local_rules.xml
@@ -154,6 +154,7 @@ cp ${HECTOR_PATH}/app/scripts/hector-ossec-mysql /etc/init.d/
 chmod +x /etc/init.d/hector-ossec-mysql
 /sbin/chkconfig --add hector-ossec-mysql
 /sbin/chkconfig --level 345 hector-ossec-mysql on
+/sbin/service ossec restart
 /sbin/service hector-ossec-mysql start
 
 echo -e "Do you wish to allow remote OSSEC (UDP 1514)? (y/n):"

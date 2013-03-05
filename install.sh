@@ -1,6 +1,7 @@
 #!/bin/bash
+# ToDo: Allow change to default install path
 
-HECTOR_PATH=/opt/hector
+HECTOR_PATH=${HECTOR_PATH}
 
 clear
 echo "******************************************"
@@ -38,7 +39,7 @@ echo
 touch /tmp/hector.sql
 chmod 0700 /tmp/hector.sql
 
-if [ ! -d /var/lib/mysql/Syslog ]; then
+if [ -d /var/lib/mysql/Syslog ]; then
   IN=`rpm -q rsyslog-mysql`
   IFS='-'
   arr=($IN)
@@ -89,19 +90,19 @@ echo
 cp -rf app /opt/
 cp -rf html /opt/
 echo " [+] Files moved"
-echo " [+] Customizing config at /opt/hector/app/conf/config.ini"
-cp /opt/hector/app/conf/config.ini.blank /opt/hector/app/conf/config.ini
-sed -i "s/\/path\/to\/hector/\/opt\/hector/g" /opt/hector/app/conf/config.ini
-sed -i "s/database_name\hector/g" /opt/hector/app/conf/config.ini
-sed -i "s/database_user\hector/g" /opt/hector/app/conf/config.ini
-sed -i "s/database_password\${HECTORPASS}/g" /opt/hector/app/conf/config.ini
+echo " [+] Customizing config at ${HECTOR_PATH}/app/conf/config.ini"
+cp ${HECTOR_PATH}/app/conf/config.ini.blank ${HECTOR_PATH}/app/conf/config.ini
+sed -i "s/\/path\/to\/hector/\/opt\/hector/g" ${HECTOR_PATH}/app/conf/config.ini
+sed -i "s/database_name\hector/g" ${HECTOR_PATH}/app/conf/config.ini
+sed -i "s/database_user\hector/g" ${HECTOR_PATH}/app/conf/config.ini
+sed -i "s/database_password\${HECTORPASS}/g" ${HECTOR_PATH}/app/conf/config.ini
 echo "    Please enter your HECTOR server name or IP:"
 read SERVERNAME
-sed -i "s/yoursite\/hector_html\${SERVERNAME}\/hector/g" /opt/hector/app/conf/config.ini
+sed -i "s/yoursite\/hector_html\${SERVERNAME}\/hector/g" ${HECTOR_PATH}/app/conf/config.ini
 echo "    Please enter an e-mail address for contact e-mails:"
 read EMAILADDY
-sed -i "s/your_email@localhost\${EMAILADDY}/g" /opt/hector/app/conf/config.ini
-echo " [+] Config at /opt/hector/app/conf/config.ini complete."
+sed -i "s/your_email@localhost\${EMAILADDY}/g" ${HECTOR_PATH}/app/conf/config.ini
+echo " [+] Config at ${HECTOR_PATH}/app/conf/config.ini complete."
 
 echo 
 echo "Step 5 of 7 - Configuring Apache"
@@ -110,7 +111,7 @@ if ! cat /etc/httpd/conf/httpd.conf | grep -q "HECTOR" ; then
   echo " [+] Creating virtual directory /hector at the web root"
   echo >> /etc/httpd/conf/httpd.conf
   echo '#HECTOR configuration' >> /etc/httpd/conf/httpd.conf
-  echo 'Alias /hector "/opt/hector/html/"' >>  /etc/httpd/conf/httpd.conf
+  echo 'Alias /hector "${HECTOR_PATH}/html/"' >>  /etc/httpd/conf/httpd.conf
   echo '<Directory "/hector">' >>  /etc/httpd/conf/httpd.conf
   echo '  Options Indexes MultiViews FollowSymLinks' >>  /etc/httpd/conf/httpd.conf
   echo '  AllowOverride None' >>  /etc/httpd/conf/httpd.conf
@@ -122,14 +123,14 @@ else
   echo " [+] HECTOR Apache config seems to already exist"
 fi  
   
-chown -R apache /opt/hector/app/logs
+chown -R apache ${HECTOR_PATH}/app/logs
 
 echo 
 echo "Step 6 of 7 - Scheduling cron jobs"
 echo 
 if ! cat /etc/cronttab | grep -q "HECTOR" ; then
   echo "#HECTOR scans" >> /etc/crontab
-  echo "01 0 * * * /usr/bin/php /opt/hector/app/scripts/scan_cron.php" >> /etc/crontab
+  echo "01 0 * * * /usr/bin/php ${HECTOR_PATH}/app/scripts/scan_cron.php" >> /etc/crontab
   echo " [+] cron scheduled in /etc/crontab"
 else
   echo " [+] HECTOR crontab seems to already exist"
@@ -140,10 +141,10 @@ echo "Step 7 of 7 - Finishing"
 echo 
 if [ ! -d /var/ossec ] ; then
   echo " [+] OSSEC still needs to be installed"
-  tar xvzf /opt/hector/app/software/ossec-hids-2.3.tar.gz
-  /opt/hector/app/software/ossec-hids-2.3/install.sh
+  tar xvzf ${HECTOR_PATH}/app/software/ossec-hids-2.3.tar.gz
+  ${HECTOR_PATH}/app/software/ossec-hids-2.3/install.sh
 fi
 echo " [+] Scheduling OSSEC monitoring."
-cp /opt/hector/app/scripts/hector-ossec-mysql /etc/init.d/
+cp ${HECTOR_PATH}/app/scripts/hector-ossec-mysql /etc/init.d/
 /sbin/chkconfig --add hector-ossec-mysql
 

@@ -51,6 +51,9 @@ cat ${rsyslogsqldir} > /tmp/hector.sql
 # Pull in Kojoney2 for the database components
 git clone git://github.com/madirish/kojoney2 app/software/kojoney2
 cat app/software/kojoney2/create_tables.sql >> /tmp/hector.sql
+# Adjust the default script so it plays nicely
+sed -i "s/CREATE DATABASE Syslog/CREATE DATABASE IF NOT EXISTS Syslog/" /tmp/hector.sql
+sed -i "s/TABLE System/TABLE IF NOT EXISTS System/g" /tmp/hector.sql
 
 
 echo " [+] Setting up the MySQL databases for rsyslog and HECTOR."
@@ -171,6 +174,7 @@ if [ ! -d /var/ossec ] ; then
 fi
 echo " [+] Scheduling OSSEC monitoring services."
 cp ${HECTOR_PATH}/app/scripts/hector-ossec-mysql /etc/init.d/
+chmod +x ${HECTOR_PATH}/app/scripts/hector-ossec-mysql
 /sbin/chkconfig --add hector-ossec-mysql
 /sbin/chkconfig --level 345 hector-ossec-mysql on
 

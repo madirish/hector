@@ -154,7 +154,7 @@ chown -R apache $HECTOR_PATH/app/logs
 echo 
 echo "Step 6 of 7 - Scheduling cron jobs"
 echo 
-if ! cat /etc/cronttab | grep -q "HECTOR" ; then
+if ! cat /etc/crontab | grep -q "HECTOR" ; then
   echo "#HECTOR scans" >> /etc/crontab
   echo "01 0 * * * /usr/bin/php $HECTOR_PATH/app/scripts/scan_cron.php" >> /etc/crontab
   echo " [+] cron scheduled in /etc/crontab"

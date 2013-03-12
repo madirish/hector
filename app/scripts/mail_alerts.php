@@ -52,7 +52,8 @@ function mail_alerts($testing='No') {
 	$alerts = $collection->members;
 	$output = "Newly observed ports:\n\n";
 	$htmloutput = "<html><head>\n\t<title>HECTOR Port Report</title>\n\t<style type='text/css'>";
-	$htmloutput .= "\t\tbody { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;}\n";
+	$htmloutput .= "\t\tbody { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;\n";
+	$htmloutput .= "\tbackground: #fff url('http://repository.upenn.edu/assets/md5images/9802b9464e5bfd061e7fac29d55c223c.gif') no-repeat right top;}\n";
 	$htmloutput .= "\t\th1 {font-size: 36px;font-weight: bold;height: 40px;line-height: 40px;}\n";
 	$htmloutput .= "\t</style>\n</head>\n<body>\n<h1>HECTOR</h1>\n\n";
 	$htmloutput .= "<h4>Newly observed ports:</h4>\n";
@@ -83,7 +84,7 @@ function mail_alerts($testing='No') {
 			}
 		}
 	}
-	$htmloutput .= "\<p>You are receiving this e-mail as part of the nightly HECTOR port scan.\r\n" .
+	$htmloutput .= "</ul>\n<p>You are receiving this e-mail as part of the nightly HECTOR port scan.</p>\n<p>" .
 						"You can log in to HECTOR to review these results at <a href='". $_SESSION['site_url'] .
 						"' title='HECTOR Open Source Intelligence'>" . $_SESSION['site_url'] . "</a></p>\n<p>" .
 						"If you feel you are getting these alerts in error or if you have any questions about response " .

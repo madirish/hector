@@ -131,6 +131,12 @@ class Alert {
 	private function get_host_id() {
 		return intval($this->host_id);
 	}
+	
+	public function get_host() {
+    	$string = $this->get_string();
+    	$splitstring = split(' ', $string);
+    	return $splitstring[-1];
+	}
     /**
      * Short description of method get_id
      *
@@ -140,6 +146,12 @@ class Alert {
      */
     private function get_id() {
        return $this->id;
+    }
+    
+    public function get_port() {
+    	$string = $this->get_string();
+    	$splitstring = split(' ', $string);
+    	return $splitstring[1];
     }
 
     /**

@@ -42,7 +42,7 @@ function mail_alerts($testing='No') {
 	
 	$filter = ' AND host_id NOT IN (select h.host_id from host h ' .
 			'	where TO_DAYS(h.host_ignored_timestamp) + h.host_ignoredfor_days > TO_DAYS(now())) ';
-	$filter .= ' ORDER BY host_id, alert_timestamp DESC';
+	$filter .= ' ORDER BY alert_timestamp DESC';
 	// Use today (should report at end of scan)
 	$today  = mktime(0, 0, 0, date("m")  , date("d"), date("Y"));
 	$timestart = date("Y-m-d 00:00:00", $today);
@@ -60,9 +60,10 @@ function mail_alerts($testing='No') {
 			}
 			else {
 				$host = $tmphost;
-				$output .= $host . "\n";
-				$output .= "\t" . $alert->get_timestamp() . "\n";
-				$output .= "\t\t" . $alert->get_port() . "\n";
+				$output .= $host . " at " . $alert->get_timestamp() . "\n";
+				$output .= "\tNew Ports:\n"
+				$output .= "\t----------\n";
+				$output .= "\t" . $alert->get_port() . "\n";
 			}
 			//$output .= '[' . $alert->get_timestamp() . 
 			//	'] ' . $alert->get_string();
@@ -80,7 +81,7 @@ function mail_alerts($testing='No') {
 	
 	// Send alerts to Supprot groups about machines observed in their area
 	if ($testing !== 'No') {
-		$lspgColl = new Collection('Supportgroup' , " AND supportgroup_email IS NOT NULL AND supportgroup_email != ''");
+		/*$lspgColl = new Collection('Supportgroup' , " AND supportgroup_email IS NOT NULL AND supportgroup_email != ''");
 		$groups = $lspgColl->members;
 		if (isset($groups) && is_array($groups)) {
 			foreach ($groups as $group) {
@@ -109,7 +110,7 @@ function mail_alerts($testing='No') {
 					mail($to, $subject, $message, $headers);
 				}
 			}
-		}
+		}*/
 	}
 	syslog(LOG_INFO, 'scan_cron.php email notices complete.');
 }

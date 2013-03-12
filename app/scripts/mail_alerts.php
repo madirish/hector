@@ -102,8 +102,8 @@ function mail_alerts($testing='No') {
 			"\r\n" . $htmloutput;
 	$headers = 'From: ' . $_SESSION['site_email'] . "\r\n" .
 	    'Reply-To: ' . $_SESSION['site_email'] . "\r\n" .
-	    'Content-Type: multipart/mixed;' . "\r\n" . ' boundary="PHP-alt-' . $boundary_hash . '"' . "\r\n";
-	    'X-Mailer: HECTOR';
+	    'Content-Type: Multipart/Mixed; boundary="PHP-alt-' . $boundary_hash . '"' . "\r\n";
+	    'X-Mailer: HECTOR\r\n';
 	
 	if ($message != '') mail($to, $subject, $message, $headers);
 	

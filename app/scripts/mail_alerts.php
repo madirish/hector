@@ -120,7 +120,7 @@ function mail_alerts($testing='No') {
 	
 	// Send alerts to Supprot groups about machines observed in their area
 	if ($testing !== 'No') {
-		/*$lspgColl = new Collection('Supportgroup' , " AND supportgroup_email IS NOT NULL AND supportgroup_email != ''");
+		$lspgColl = new Collection('Supportgroup' , " AND supportgroup_email IS NOT NULL AND supportgroup_email != ''");
 		$groups = $lspgColl->members;
 		if (isset($groups) && is_array($groups)) {
 			foreach ($groups as $group) {
@@ -130,26 +130,68 @@ function mail_alerts($testing='No') {
 				$filter_string .= $datelimit . ' and host_id IN (' . $hosts . ')';
 				$collection = new Collection('Alert', $filter_string , '', $filter);
 				$alerts = $collection->members;
-				$output = "";
+				
+				$output = "Newly observed ports:\n\n";
+				$htmloutput = "<html><head>\n\t<title>HECTOR Port Report</title>\n\t<style type='text/css'>";
+				$htmloutput .= "\t\tbody { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;\n";
+				$htmloutput .= "\tbackground: #fff url('http://repository.upenn.edu/assets/md5images/9802b9464e5bfd061e7fac29d55c223c.gif') no-repeat right top;}\n";
+				$htmloutput .= "\t\th1 {font-size: 36px;font-weight: bold;height: 40px;line-height: 40px;}\n";
+				$htmloutput .= "\t</style>\n</head>\n<body>\n<h1>HECTOR</h1>\n\n";
+				$htmloutput .= "<h4>Newly observed ports:</h4>\n";
 				if (isset($alerts) && is_array($alerts)) {
+					$host = '';
 					foreach ($alerts as $alert) {
-						
-						$output .= '[' . $alert->get_timestamp() . 
-							'] ' . $alert->get_string();
-						$output .=  "\n";
+						$tmphost = $alert->get_host();
+						if ($host == $tmphost) {
+							$output .= "\t\t" . $alert->get_port() . " (" . getservbyport($alert->get_port(), 'tcp') . ")\n";
+							$htmloutput .= "\t<li>" . $alert->get_port() . " (" . getservbyport($alert->get_port(), 'tcp') . ")</li>\n";
+						}
+						else {
+							if ($host !== '') $htmloutput .= "</ul>\n\n";
+							$host = $tmphost;
+							$output .= $host . " at " . $alert->get_timestamp() . "\n";
+							$output .= "\tNew Ports:\n";
+							$output .= "\t----------\n";
+							$output .= "\t" . $alert->get_port() . " (" . getservbyport($alert->get_port(), 'tcp') . ")\n";
+							
+							
+							$htmloutput .= "<strong>" . 
+								str_replace('href="?', 'href="'. $_SESSION['site_url'] .'?', $alert->get_host_linked()) . 
+								" at " . $alert->get_timestamp() . "</strong><hr/>\n";
+							$htmloutput .= "<span style='text-decoration:underline;'>New Ports:</span>\n";
+							$htmloutput .= "<ul>\n";
+							$htmloutput .= "\t<li>" . $alert->get_port() . " (" . getservbyport($alert->get_port(), 'tcp') . ")</li>\n";
+						}
 					}
 				}
 				if ($output != '') {
 					$to = $group->get_email();
-					$footer = "\r\n\r\nYou are receiving this e-mail as part of the nightly HECTOR port scan.\r\n" .
+					$output .= "\r\n\r\nYou are receiving this e-mail as part of the nightly HECTOR port scan.\r\n" .
 						"You can log in to HECTOR to review these results at " . $_SESSION['site_url'] . "\r\n\r\n" .
 						"If you feel you are getting these alerts in error or if you have any questions about response " .
 						"or remediation please contact " . $_SESSION['site_email'];
-					$message = $output . $footer;
+					$htmloutput .= "</ul>\n<p>You are receiving this e-mail as part of the nightly HECTOR port scan.</p>\n<p>" .
+						"You can log in to HECTOR to review these results at <a href='". $_SESSION['site_url'] .
+						"' title='HECTOR Open Source Intelligence'>" . $_SESSION['site_url'] . "</a></p>\n<p>" .
+						"If you feel you are getting these alerts in error or if you have any questions about response " .
+						"or remediation please contact <a href='mailto:" . $_SESSION['site_email'] . "'>" . 
+						$_SESSION['site_email'] . "</a></p>\n";
+					$htmloutput .= "</body></html>";
+					
+					if ($attempt_mime_delivery) {
+						$message = "--PHP-alt-" . $boundary_hash . "\r\n" . $plain_heading . $output . 
+							"\r\n\r\n" . "--PHP-alt-" . $boundary_hash . $html_heading .
+							"\r\n" . $htmloutput;
+						$content_encoding = 'Content-Type: multipart/alternative; boundary="PHP-alt-' . $boundary_hash . '"' . "\r\n";
+					}
+					else {
+						$message = "\r\n\r\n" . $htmloutput;
+						$content_encoding = 'Content-Type: text/html;' . "\r\n";
+					}
 					mail($to, $subject, $message, $headers);
 				}
 			}
-		}*/
+		}
 	}
 	syslog(LOG_INFO, 'scan_cron.php email notices complete.');
 }

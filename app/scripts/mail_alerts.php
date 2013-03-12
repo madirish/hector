@@ -66,13 +66,13 @@ function mail_alerts($testing='No') {
 				$output .= $host . " at " . $alert->get_timestamp() . "\n";
 				$output .= "\tNew Ports:\n";
 				$output .= "\t----------\n";
-				$output .= "\t" . $alert->get_port() . "\n";
+				$output .= "\t" . $alert->get_port() . " (" . getservbyport($alert->get_port(), 'tcp') . ")\n";
 				
 				
 				$htmloutput .= "<strong>" . $host . " at " . $alert->get_timestamp() . "</strong><br/>";
 				$htmloutput .= "New Ports:";
 				$htmloutput .= "<ul>";
-				$htmloutput .= "<li>" . $alert->get_port() . "</li>";
+				$htmloutput .= "<li>" . $alert->get_port() . " (" . getservbyport($alert->get_port(), 'tcp') . ")</li>";
 			}
 			//$output .= '[' . $alert->get_timestamp() . 
 			//	'] ' . $alert->get_string();

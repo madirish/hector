@@ -60,7 +60,7 @@ function mail_alerts($testing='No') {
 			}
 			else {
 				$host = $tmphost;
-				$ouput .= $host . "\n";
+				$output .= $host . "\n";
 				$output .= "\t" . $alert->get_timestamp() . "\n";
 				$output .= "\t\t" . $alert->get_port() . "\n";
 			}

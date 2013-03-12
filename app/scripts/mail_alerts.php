@@ -66,24 +66,23 @@ function mail_alerts($testing='No') {
 				$output .= $host . " at " . $alert->get_timestamp() . "\n";
 				$output .= "\tNew Ports:\n";
 				$output .= "\t----------\n";
-				$output .= "\t" . $alert->get_port() . "\n";
+				$output .= "\t" . $alert->get_port() . " (" . getservbyport($alert->get_port(), 'tcp') . ")\n";
 				
 				
 				$htmloutput .= "<strong>" . $host . " at " . $alert->get_timestamp() . "</strong><br/>";
 				$htmloutput .= "New Ports:";
 				$htmloutput .= "<ul>";
-				$htmloutput .= "<li>" . $alert->get_port() . "</li>";
+				$htmloutput .= "<li>" . $alert->get_port() . " (" . getservbyport($alert->get_port(), 'tcp') . ")</li>";
 			}
-			//$output .= '[' . $alert->get_timestamp() . 
-			//	'] ' . $alert->get_string();
-			//$output .=  "\n";
 		}
 	}
 	$to      = $_SESSION['site_email'];
 	$subject = 'New Ports Observed Today';
 	$boundary_hash = md5('HECTOR OSInt Platform');
-	$message = "--PHP-alt-" . $boundary_hash . "\r\n" . $output . 
-			"\r\n\r\n" . "--PHP-alt-" . $boundary_hash . 
+	$plain_heading = "MIME-Version: 1.0\r\nContent-Type: text/plain; charset=\"iso-8859-1\"\r\nContent-Transfer-Encoding: 7bit\r\n";
+	$html_heading = str_replace('plain', 'html', $plain_heading);
+	$message = "--PHP-alt-" . $boundary_hash . "\r\n" . $plain_heading . $output . 
+			"\r\n\r\n" . "--PHP-alt-" . $boundary_hash . $html_heading .
 			"\r\n" . $htmloutput;
 	$headers = 'From: ' . $_SESSION['site_email'] . "\r\n" .
 	    'Reply-To: ' . $_SESSION['site_email'] . "\r\n" .

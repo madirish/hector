@@ -42,7 +42,7 @@ function mail_alerts($testing='No') {
 	
 	$filter = ' AND host_id NOT IN (select h.host_id from host h ' .
 			'	where TO_DAYS(h.host_ignored_timestamp) + h.host_ignoredfor_days > TO_DAYS(now())) ';
-	$filter .= ' ORDER BY alert_timestamp DESC';
+	$filter .= ' ORDER BY host_id, alert_timestamp DESC';
 	// Use today (should report at end of scan)
 	$today  = mktime(0, 0, 0, date("m")  , date("d"), date("Y"));
 	$timestart = date("Y-m-d 00:00:00", $today);
@@ -56,7 +56,7 @@ function mail_alerts($testing='No') {
 		foreach ($alerts as $alert) {
 			$tmphost = $alert->get_host();
 			if ($host == $tmphost) {
-				$output .= "\t\t" . $alert->get_port();
+				$output .= "\t\t" . $alert->get_port() . "\n";
 			}
 			else {
 				$host = $tmphost;

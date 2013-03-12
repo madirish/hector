@@ -134,8 +134,8 @@ class Alert {
 	
 	public function get_host() {
     	$string = $this->get_string();
-    	$splitstring = split(' ', $string);
-    	return $splitstring[-1];
+    	$splitstring = explode(' ', $string);
+    	return $splitstring[ count($splitstring) - 1 ];
 	}
     /**
      * Short description of method get_id
@@ -150,7 +150,7 @@ class Alert {
     
     public function get_port() {
     	$string = $this->get_string();
-    	$splitstring = split(' ', $string);
+    	$splitstring = explode(' ', $string);
     	return $splitstring[1];
     }
 

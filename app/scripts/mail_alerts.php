@@ -13,7 +13,7 @@
  */
 if(php_sapi_name() == 'cli') {
 	$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-	$approot = '/opt/hector/app';
+	$approot = '/opt/hector/app/';
 }
 else {
 	$_SERVER['REMOTE_ADDR'] = '127.0.0.1';

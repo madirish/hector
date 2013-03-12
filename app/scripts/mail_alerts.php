@@ -51,14 +51,19 @@ function mail_alerts($testing='No') {
 	$collection = new Collection('Alert', ' AND alert_string LIKE \'%to open%\' ' . $datelimit, '', $filter);
 	$alerts = $collection->members;
 	$output = "Newly observed ports:\n\n";
-	$htmloutput = "<h4>Newly observed ports:</h4>";
+	$htmloutput = "<html><head><title>HECTOR Port Report</title><style type='text/css'>";
+	$htmloutput .= "body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;}";
+	$htmloutput .= "h1 {font-size: 36px;font-weight: bold;height: 40px;line-height: 40px;}";
+	$htmloutput .= "</style></head><body><h1>HECTOR</h1>";
+	$htmloutput .= "<h4>Newly observed ports:</h4>";
+	
 	if (isset($alerts) && is_array($alerts)) {
 		$host = '';
 		foreach ($alerts as $alert) {
 			$tmphost = $alert->get_host();
 			if ($host == $tmphost) {
-				$output .= "\t\t" . $alert->get_port() . "\n";
-				$htmloutput .= "<li>" . $alert->get_port() . "</li>";
+				$output .= "\t\t" . $alert->get_port() . " (" . getservbyport($alert->get_port(), 'tcp') . ")\n";
+				$htmloutput .= "<li>" . $alert->get_port() . " (" . getservbyport($alert->get_port(), 'tcp') . ")</li>";
 			}
 			else {
 				if ($host !== '') $htmloutput .= "</ul>";
@@ -69,13 +74,23 @@ function mail_alerts($testing='No') {
 				$output .= "\t" . $alert->get_port() . " (" . getservbyport($alert->get_port(), 'tcp') . ")\n";
 				
 				
-				$htmloutput .= "<strong>" . $host . " at " . $alert->get_timestamp() . "</strong><br/>";
+				$htmloutput .= "<strong>" . 
+					str_replace('href="?', 'href="https://infosec.sas.upenn.edu/?', $alert->get_host_linked()) . 
+					" at " . $alert->get_timestamp() . "</strong><hr/>";
 				$htmloutput .= "New Ports:";
 				$htmloutput .= "<ul>";
 				$htmloutput .= "<li>" . $alert->get_port() . " (" . getservbyport($alert->get_port(), 'tcp') . ")</li>";
 			}
 		}
 	}
+	$htmloutput .= "<p>You are receiving this e-mail as part of the nightly HECTOR port scan.\r\n" .
+						"You can log in to HECTOR to review these results at <a href='". $_SESSION['site_url'] .
+						"' title='HECTOR Open Source Intelligence'>" . $_SESSION['site_url'] . "</a></p><p>" .
+						"If you feel you are getting these alerts in error or if you have any questions about response " .
+						"or remediation please contact <a href='mailto:" . $_SESSION['site_email'] . "'>" . 
+						$_SESSION['site_email'] . "</a></p>";
+	$htmloutput .= "</body></html>";
+	
 	$to      = $_SESSION['site_email'];
 	$subject = 'New Ports Observed Today';
 	$boundary_hash = md5('HECTOR OSInt Platform');

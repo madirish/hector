@@ -11,14 +11,16 @@
 /**
  * Defined vars
  */
-if(php_sapi_name() == 'cli') {
+$attempt_mime_delivery = FALSE; // Causes problems with iOS
+
+/*if(php_sapi_name() == 'cli') {
 	$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 	$approot = '/opt/hector/app/';
 }
-else {
+else {*/
 	$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 	$approot = realpath(substr($_SERVER['PATH_TRANSLATED'],0,strrpos($_SERVER['PATH_TRANSLATED'],'/')) . '/../') . '/';
-}
+/*}*/
 
 	
 	
@@ -36,6 +38,7 @@ new Config();
 $db = Db::get_instance();
 
 function mail_alerts($testing='No') {
+	global $attempt_mime_delivery;
 	/**
 	 * Send out notices of new ports observed
 	 */
@@ -76,7 +79,7 @@ function mail_alerts($testing='No') {
 				
 				
 				$htmloutput .= "<strong>" . 
-					str_replace('href="?', 'href="https://infosec.sas.upenn.edu/?', $alert->get_host_linked()) . 
+					str_replace('href="?', 'href="'. $_SESSION['site_url'] .'?', $alert->get_host_linked()) . 
 					" at " . $alert->get_timestamp() . "</strong><hr/>\n";
 				$htmloutput .= "<span style='text-decoration:underline;'>New Ports:</span>\n";
 				$htmloutput .= "<ul>\n";
@@ -97,12 +100,20 @@ function mail_alerts($testing='No') {
 	$boundary_hash = md5('HECTOR OSInt Platform');
 	$plain_heading = "MIME-Version: 1.0\r\nContent-Type: text/plain; charset=\"iso-8859-1\"\r\nContent-Transfer-Encoding: 7bit\r\n";
 	$html_heading = str_replace('plain', 'html', $plain_heading);
-	$message = "--PHP-alt-" . $boundary_hash . "\r\n" . $plain_heading . $output . 
+	if ($attempt_mime_delivery) {
+		$message = "--PHP-alt-" . $boundary_hash . "\r\n" . $plain_heading . $output . 
 			"\r\n\r\n" . "--PHP-alt-" . $boundary_hash . $html_heading .
 			"\r\n" . $htmloutput;
+		$content_encoding = 'Content-Type: multipart/alternative; boundary="PHP-alt-' . $boundary_hash . '"' . "\r\n";
+	}
+	else {
+		$message = "\r\n\r\n" . $htmloutput;
+		$content_encoding = 'Content-Type: text/html;' . "\r\n";
+	}
+	
 	$headers = 'From: ' . $_SESSION['site_email'] . "\r\n" .
 	    'Reply-To: ' . $_SESSION['site_email'] . "\r\n" .
-	    'Content-Type: text/html; boundary="PHP-alt-' . $boundary_hash . '"' . "\r\n";
+	    $content_encoding . 
 	    'X-Mailer: HECTOR\r\n';
 	
 	if ($message != '') mail($to, $subject, $message, $headers);

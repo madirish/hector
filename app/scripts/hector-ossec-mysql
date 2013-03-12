@@ -1,0 +1,89 @@
+#!/bin/sh
+#
+# hector-ossec-mysql    This starts and stops the HECTOR database logging from OSSEC.
+#
+# Add this with 'chkconfig --add hector-ossec-mysql' after it's in /etc/init.d
+#
+# chkconfig:   345 75 25
+# description: This starts and stops the HECTOR database logging from OSSEC.
+# processname: /opt/hector/app/scripts/hector-ossec-mysql.py
+# config:      /opt/hector/app/conf/config.ini
+# pidfile:     /var/run/hector-ossec-mysql.pid
+#
+### BEGIN INIT INFO
+# Provides: $hector-ossec-mysql
+### END INIT INFO
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+EXEC="/opt/hector/app/scripts/hector-ossec-mysql.py"
+PROG=$(basename $EXEC)
+
+# Check for missing binaries (stale symlinks should not happen)
+# Note: Special treatment of stop for LSB conformance
+test -x $EXEC || { echo "$EXEC not installed (or executable)"; 
+        if [ "$1" = "stop" ]; then exit 0;
+        else exit 5; fi; }
+
+LOCKFILE=/var/lock/subsys/$PROG
+
+start() {    echo -n $"Starting hector-ossec-mysql: "
+    daemon $EXEC start
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && touch $LOCKFILE
+    return $RETVAL
+}
+
+stop() {
+    echo -n $"Stopping hector-ossec-mysql: "
+    $EXEC stop
+    killproc $PROG
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && rm -f $LOCKFILE
+    return $RETVAL
+}
+
+restart() {
+    stop
+    start
+}
+
+reload() {
+    echo -n $"Reloading hector-ossec-mysql: "
+    $EXEC restart
+    #killproc $PROG -HUP
+    RETVAL=$?
+    echo
+    return $RETVAL
+}
+
+force_reload() {
+    restart
+}
+
+fdr_status() {    status $PROG
+}
+
+case "$1" in
+    start|stop|restart|reload)
+        $1
+        ;;
+    force-reload)
+        force_reload
+        ;;
+    status)
+        fdr_status
+        ;;
+    condrestart|try-restart)
+        [ ! -f $LOCKFILE ] || restart
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|status|restart|try-restart|reload|force-reload}"
+        exit 2
+esac
+
+
+

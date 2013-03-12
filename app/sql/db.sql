@@ -1,6 +1,7 @@
 # HECTOR database configuration file
 # Author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 
+CREATE DATABASE IF NOT EXISTS hector;
 use hector;
 
 -- Alerts are OSSEC alerts
@@ -134,29 +135,6 @@ CREATE TABLE IF NOT EXISTS `host_x_tag` (
 	`tag_id` INT NOT NULL,
   KEY `host_id` (`host_id`),
   KEY `tag_id` (`tag_id`)
-);
-
--- Kojoney SSH honeypot commands
-CREATE TABLE IF NOT EXISTS `koj_executed_commands` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `time` TIMESTAMP NOT NULL DEFAULT NOW(),
-  `ip` VARCHAR(15),
-  `ip_numeric` INT UNSIGNED,
-  `command` VARCHAR(255),
-  PRIMARY KEY (`id`),
-	INDEX USING HASH (ip_numeric)
-);
-
--- Kojoney SSH Honeypot logins
-CREATE TABLE IF NOT EXISTS `koj_login_attempts` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `time` TIMESTAMP NOT NULL DEFAULT NOW(),
-  `ip` VARCHAR(15) NOT NULL,
-  `ip_numeric` INT UNSIGNED,
-  `username` VARCHAR(255) NOT NULL,
-  `password` VARCHAR(255),
-	PRIMARY KEY (`id`),
-	INDEX USING HASH (ip_numeric)
 );
 
 -- Physical addresses for hosts
@@ -342,9 +320,10 @@ CREATE TABLE IF NOT EXISTS `vuln_x_tag` (
   `tag_id` INT UNSIGNED NOT NULL
 );
 
-
+--
 -- Create the trigger to automatically calculate the numeric
 -- IP address of hosts as they are added
+--
 DROP TRIGGER IF EXISTS host_ai_ipnum;
 DELIMITER $$
 
@@ -356,8 +335,31 @@ BEGIN
 END$$
 DELIMITER ;
 
+
+
+--
+-- Create views to the Kojoney2 tables if it's installed
+--
+DROP PROCEDURE IF EXISTS kojoney_views;
+DELIMITER $$
+CREATE PROCEDURE kojoney_views()
+BEGIN
+	SET @kojoney_table_count := (SELECT COUNT(SCHEMA_NAME) FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = 'kojoney');
+		-- Only create views if Kojoney2 is installed
+    IF @kojoney_table_count > 0 THEN
+			CREATE OR REPLACE VIEW koj_login_attempts AS SELECT * FROM kojoney.login_attempts;
+			CREATE OR REPLACE VIEW koj_executed_commands AS SELECT * FROM kojoney.executed_commands;
+			CREATE OR REPLACE VIEW koj_downloads AS SELECT * FROM kojoney.downloads;
+		END IF;
+END$$
+DELIMITER ;
+
+call kojoney_views();
+
+--
 -- Next alter the Syslog database used by rsyslog (for darknets)
 -- for details see http://www.madirish.net/content/creating-darknet-sensor-database
+--
 
 use Syslog;
 
@@ -386,3 +388,4 @@ BEGIN
 	END IF;
 END$$
 DELIMITER ;
+

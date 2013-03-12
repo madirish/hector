@@ -20,6 +20,7 @@ USERNAME = 'root'
 PASSWORD = ''
 DB = 'hector'
 PORT = 3306
+DEBUG = True
 
 class LogEntry: 
   """ This is just the object that we craft to 
@@ -278,6 +279,7 @@ class TestLogEntry(unittest.TestCase):
                                   port=PORT)
     except Exception as err:
       print "Error connecting to the database" , err
+      syslog.syslog("Error connecting to the database" , err)
       
     self.log = LogEntry(self.conn)
     self.log.process("** Alert 1297702559.16083181: - apache,")
@@ -339,14 +341,14 @@ class Daemon:
                 http://www.erlenstar.demon.co.uk/unix/faq_2.html#SEC16
                 """
                 try:
-                        pid = os.fork()
-                        if pid > 0:
-                                # exit first parent
-                                sys.exit(0)
+                  pid = os.fork()
+                  if pid > 0:
+                    # exit first parent
+                    sys.exit(0)
                 except OSError, e:
-                        sys.stderr.write("fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
-                        syslog.syslog("fork #1 in Daemon failed: %d (%s)" % (e.errno, e.strerror))
-                        sys.exit(1)
+                  sys.stderr.write("fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
+                  syslog.syslog("fork #1 in Daemon failed: %d (%s)" % (e.errno, e.strerror))
+                  sys.exit(1)
        
                 # decouple from parent environment
                 os.chdir("/")
@@ -355,14 +357,14 @@ class Daemon:
        
                 # do second fork
                 try:
-                        pid = os.fork()
-                        if pid > 0:
-                                # exit from second parent
-                                sys.exit(0)
+                  pid = os.fork()
+                  if pid > 0:
+                    # exit from second parent
+                    sys.exit(0)
                 except OSError, e:
-                        sys.stderr.write("fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
-                        syslog.syslog("fork #2 in Daemon failed: %d (%s)" % (e.errno, e.strerror))
-                        sys.exit(1)
+                  sys.stderr.write("fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
+                  syslog.syslog("fork #2 in Daemon failed: %d (%s)" % (e.errno, e.strerror))
+                  sys.exit(1)
        
                 # redirect standard file descriptors
                 sys.stdout.flush()
@@ -389,17 +391,17 @@ class Daemon:
                 """
                 # Check for a pidfile to see if the daemon already runs
                 try:
-                        pf = file(self.pidfile,'r')
-                        pid = int(pf.read().strip())
-                        pf.close()
+                  pf = file(self.pidfile,'r')
+                  pid = int(pf.read().strip())
+                  pf.close()
                 except IOError:
-                        pid = None
+                  pid = None
        
                 if pid:
-                        message = "pidfile %s already exist. Daemon already running?\n"
-                        syslog.syslog("pidfile %s already exist. Daemon already running?" % self.pidfile)
-                        sys.stderr.write(message % self.pidfile)
-                        sys.exit(1)
+                  message = "pidfile %s already exist. Daemon already running?\n"
+                  syslog.syslog("pidfile %s already exist. Daemon already running?" % self.pidfile)
+                  sys.stderr.write(message % self.pidfile)
+                  sys.exit(1)
                
                 # Start the daemon
                 self.daemonize()
@@ -411,31 +413,32 @@ class Daemon:
                 """
                 # Get the pid from the pidfile
                 try:
-                        pf = file(self.pidfile,'r')
-                        pid = int(pf.read().strip())
-                        pf.close()
+                  pf = file(self.pidfile,'r')
+                  pid = int(pf.read().strip())
+                  pf.close()
                 except IOError:
-                        pid = None
+                  syslog.syslog("There was an error closing put the pidfile in stop")
+                  pid = None
        
                 if not pid:
-                        message = "pidfile %s does not exist. Daemon not running?\n"
-                        syslog.syslog("pidfile %s does not exist. Daemon not running?" % self.pidfile)
-                        sys.stderr.write(message % self.pidfile)
-                        return # not an error in a restart
+                  message = "pidfile %s does not exist. Daemon not running?\n"
+                  syslog.syslog("pidfile %s does not exist. Daemon not running?" % self.pidfile)
+                  sys.stderr.write(message % self.pidfile)
+                  return # not an error in a restart
  
                 # Try killing the daemon process       
                 try:
-                        while 1:
-                                os.kill(pid, SIGTERM)
-                                time.sleep(0.1)
+                  while 1:
+                    os.kill(pid, SIGTERM)
+                    time.sleep(0.1)
                 except OSError, err:
-                        err = str(err)
-                        if err.find("No such process") > 0:
-                                if os.path.exists(self.pidfile):
-                                        os.remove(self.pidfile)
-                        else:
-                                print str(err)
-                                sys.exit(1)
+                  err = str(err)
+                  if err.find("No such process") > 0:
+                    if os.path.exists(self.pidfile):
+                      os.remove(self.pidfile)
+                  else:
+                    print str(err)
+                    sys.exit(1)
  
         def restart(self):
                 """
@@ -448,30 +451,76 @@ class Daemon:
                 """
                 Nothing to see here, move along. Move along.
                 """
+                
+from datetime import date
 
 class OSSECLogParser(Daemon):
   """This is the log watching object that tails the ossec alert file
   and writes entries into the database.
   """
+  
+  logfile = None
+  daystr = None
+  yearstr = None
+  monthstr = None
 
-  def follow(self, thefile):
+  def follow(self):
     """Tail (follow) the log file and parse it into the database."""
-    thefile.seek(0,2)      # Go to the end of the file
+    if DEBUG : syslog.syslog("Beginning follow")
+    self.logfile.seek(0,2)      # Go to the end of the file
     sleep = 0.00001
-    while True:
-      line = thefile.readline()
-      if not line:
-        time.sleep(sleep)    # Sleep briefly
-        if sleep < 1.0:
-          sleep += 0.00001
-        continue
-      sleep = 0.00001
-      yield line
+    if DEBUG: syslog.syslog("Entering follow loop")
+    try:
+      while True:
+        # Roll to the new logfile each day
+        if not str(date.today().day) == self.daystr :
+          self.get_logfile()
+        line = self.logfile.readline()
+        if not line:
+          time.sleep(sleep)    # Sleep briefly
+          if sleep < 1.0:
+            sleep += 0.00001
+          continue
+        sleep = 0.00001
+        yield line
+    except Exception as err:
+      syslog.syslog("Error in follow method: ", err)
+      
   def run(self):
     """Start the process, extended from Daemon."""
     while True:
       self.do_log()
       #time.sleep(1)
+      
+  def get_logfile(self):
+    """ Create a singleton of the log file which will
+    rotate daily as the OSSEC scheduler archives older
+    logs.
+    """ 
+    if DEBUG : syslog.syslog("Start get_logfile")
+    if self.logfile is not None:
+      close(self.logfile)
+      
+    if DEBUG : syslog.syslog("Closed logfile loop passed")
+    # We have to open the days log in order to maintain our lock on 
+    # the file as the time passes midnight
+    
+    self.yearstr = str(date.today().year)
+    months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+    self.monthstr = months[date.today().month - 1]
+    self.daystr = str(date.today().day)
+    if len(self.daystr) < 2 :
+      self.daystr = '0' + self.daystr
+    self.logdir = '/var/ossec/logs/alerts/' + self.yearstr + '/' + self.monthstr + '/ossec-alerts-' + self.daystr + '.log'
+      
+    if DEBUG : syslog.syslog("Strings set up, opening log file %s." % self.logdir)
+    try: 
+      self.logfile = open(self.logdir)
+      syslog.syslog("Opened logfile %s" % self.logdir)
+    except Exception as err:
+      syslog.syslog("Error opening logfile %s " % self.logdir, err)
+    if DEBUG : syslog.syslog("get_logfile is done")
+    
   def do_log(self):
     """Connect to the database and watch the logfile."""
     try:
@@ -483,8 +532,9 @@ class OSSECLogParser(Daemon):
     except Exception as err:
       syslog.syslog("Error connecting to the database: " , err)
       print "Error connecting to the database" , err
-    logfile = open("/var/ossec/logs/alerts/alerts.log")
-    loglines = self.follow(logfile)
+    if DEBUG : syslog.syslog("Looking up logfile from do_log")
+    self.get_logfile()
+    loglines = self.follow()
     log = LogEntry(conn)
     for line in loglines:
       # start a new log if necessary

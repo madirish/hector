@@ -7,13 +7,33 @@
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * @package HECTOR
  */
+ 
+/**
+ * Defined vars
+ */
+if(php_sapi_name() == 'cli') {
+	$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+	$approot = '/opt/hector/app';
+}
+else {
+	$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+	$approot = realpath(substr($_SERVER['PATH_TRANSLATED'],0,strrpos($_SERVER['PATH_TRANSLATED'],'/')) . '/../') . '/';
+}
 
+	
+	
 /**
  * Neccesary includes
  */
 require_once($approot . 'lib/class.Config.php');
 require_once($approot . 'lib/class.Host.php');
 require_once($approot . 'lib/class.Alert.php');
+
+/**
+ * Singletons
+ */
+new Config();
+$db = Db::get_instance();
 
 function mail_alerts($testing='No') {
 	/**
@@ -95,7 +115,7 @@ function mail_alerts($testing='No') {
 }
 
 if(php_sapi_name() == 'cli') {
-	if ($argc > 1 && $argv[2] == 'test') {
+	if ($argc > 1 && $argv[1] == 'test') {
 		mail_alerts('testing');
 	}	
 }

@@ -13,6 +13,7 @@ import time
 import re
 import sys
 import syslog
+from os import path
 
 # Credentials used for the database connection
 HOST = 'localhost'
@@ -499,7 +500,7 @@ class OSSECLogParser(Daemon):
     """ 
     if DEBUG : syslog.syslog("Start get_logfile")
     if self.logfile is not None:
-      close(self.logfile)
+      self.logfile.close()
       
     if DEBUG : syslog.syslog("Closed logfile loop passed")
     # We have to open the days log in order to maintain our lock on 
@@ -514,6 +515,10 @@ class OSSECLogParser(Daemon):
     self.logdir = '/var/ossec/logs/alerts/' + self.yearstr + '/' + self.monthstr + '/ossec-alerts-' + self.daystr + '.log'
       
     if DEBUG : syslog.syslog("Strings set up, opening log file %s." % self.logdir)
+    # Wait until OSSEC rotates the logfile into existence
+    while not os.path.exists(self.logdir) :
+        syslog.syslog("File doesn't exist yet, passing a cycle")
+        pass
     try: 
       self.logfile = open(self.logdir)
       syslog.syslog("Opened logfile %s" % self.logdir)
@@ -534,7 +539,9 @@ class OSSECLogParser(Daemon):
       print "Error connecting to the database" , err
     if DEBUG : syslog.syslog("Looking up logfile from do_log")
     self.get_logfile()
+    if DEBUG : syslog.syslog("Logfile open")
     loglines = self.follow()
+    if DEBUG : syslog.syslog("Opening db connection")
     log = LogEntry(conn)
     for line in loglines:
       # start a new log if necessary

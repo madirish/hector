@@ -32,29 +32,16 @@ if [ -e /etc/redhat-release ]; then
 fi
 
 echo 
-echo "Step 2 of 7 - Configuring rsyslog"
+echo "Step 2 of 7 - Configuring MySQL"
 echo 
 
 # Create a new temporary file to perform all our SQL functions
 touch /tmp/hector.sql
 chmod 0700 /tmp/hector.sql
 
-# No more need for rsyslog now that we get darknet alerts from OSSEC
-#IN=`rpm -q rsyslog-mysql`
-#IFS='-'
-#arr=($IN)
-#rsyslogsqldir="/usr/share/doc/${arr[0]}=${arr[1]}=${arr[2]}/createDB.sql"
-#IFS=';'
-#rsyslogsqldir=${rsyslogsqldir//=/-}
-#cat ${rsyslogsqldir} > /tmp/hector.sql
-
 # Pull in Kojoney2 for the database components
 git clone git://github.com/madirish/kojoney2 app/software/kojoney2
 cat app/software/kojoney2/create_tables.sql >> /tmp/hector.sql
-# Adjust the default script so it plays nicely
-#sed -i "s/CREATE DATABASE Syslog/CREATE DATABASE IF NOT EXISTS Syslog/" /tmp/hector.sql
-#sed -i "s/TABLE System/TABLE IF NOT EXISTS System/g" /tmp/hector.sql
-
 
 echo " [+] Setting up the MySQL databases for HECTOR."
 #echo "     Please choose a password for the hector-rsyslog MySQL user:"
@@ -68,32 +55,6 @@ cat app/sql/db.sql >> /tmp/hector.sql
 
 echo "Please enter your MySQL root user password:"
 mysql -u root -p < /tmp/hector.sql
-
-
-
-#if  ! cat /etc/rsyslog.conf | grep -q "ModLoad ommysql" ; then
-#  echo " [+] Configuring rsyslog to load MySQL module"
-#  sed -i "s/MODULES ####/MODULES ####\\n\\n\$ModLoad ommysql/" /etc/rsyslog.conf
-#fi
-#if  ! cat /etc/rsyslog.conf | grep -q "iptables" ; then
-#  echo " [+] Configuring rsyslog to log to MySQL"
-#  sed -i "s/\/var\/log\/messages/\/var\/log\/messages\\nif \$msg contains 'iptables ' then :ommysql:localhost,Syslog,hector-rsyslog,${RSYSLOGPASS}/" /etc/rsyslog.conf
-#fi
-
-#echo -e "Do you wish to allow rsyslog (UDP 514)? (y/n):"
-#read configiptables
-#if [ $configiptables == 'y' ] ; then
-#  if ! cat /etc/sysconfig/iptables | grep -q "udp \-\-dport 514 \-j ACCEPT" ; then
-#    sed -i "s/--dport 22 -j ACCEPT/--dport 22 -j ACCEPT\\n-A INPUT -m udp -p udp --dport 514 -j ACCEPT/" /etc/sysconfig/iptables
-#    echo " [+] Committing firewall updates"
-#    service iptables restart
-#  fi  
-#  sed -i "s/#\$ModLoad imudp/\$ModLoad imudp/" /etc/rsyslog.conf
-#  sed -i "s/#\$UDPServerRun 514/\$UDPServerRun 514/" /etc/rsyslog.conf
-#fi
-
-#echo " [+] Committing rsyslog updates"
-#service rsyslog restart
 
 echo 
 echo "Step 4 of 7 - Moving HECTOR files to /opt"
@@ -175,6 +136,16 @@ if [ ! -d /var/ossec ] ; then
   tar xvzf $HECTOR_PATH/app/software/ossec-hids-2.3.tar.gz --directory=$HECTOR_PATH/app/software/
   ${HECTOR_PATH}/app/software/ossec-hids-2.3/install.sh
 fi
+
+echo " [+] Adding OSSEC local_rule so it can monitor darknet sensors."
+echo "<group name=\"local,syslog,\">" >> /var/ossec/rules/local_rules.xml
+echo "  <rule id=\"100001\" level="3">" >> /var/ossec/rules/local_rules.xml
+echo "    <if_sid>4100</if_sid>" >> /var/ossec/rules/local_rules.xml
+echo "    <match>iptables</match>" >> /var/ossec/rules/local_rules.xml
+echo "    <description>Darknet sensor detection for HECTOR.</description>\n" >> /var/ossec/rules/local_rules.xml
+echo "  </rule>" >> /var/ossec/rules/local_rules.xml
+echo "</group>" >> /var/ossec/rules/local_rules.xml
+
 echo " [+] Scheduling OSSEC monitoring services."
 sed -i "s/USERNAME = 'root'/USERNAME = 'hector'/g" ${HECTOR_PATH}/app/scripts/hector-ossec-mysql.py
 sed -i "s/PASSWORD = ''/PASSWORD = '${HECTORPASS}'/g" ${HECTOR_PATH}/app/scripts/hector-ossec-mysql.py

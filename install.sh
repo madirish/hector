@@ -16,19 +16,19 @@ echo
 
 # Install the prerequisites
 if [ -e /etc/redhat-release ]; then
-    yum install mysql mysql-server git rsyslog rsyslog-mysql httpd php php-cli php-mysql php-xml MySQL-python MySQL-python nmap gcc make
+    yum install mysql mysql-server git httpd php php-cli php-mysql php-xml MySQL-python MySQL-python nmap gcc make
     /sbin/chkconfig --level 345 mysqld on 
     /sbin/chkconfig --level 345 httpd on 
-    /sbin/chkconfig --level 345 rsyslog on 
+    #/sbin/chkconfig --level 345 rsyslog on 
     if ! /sbin/service mysqld status | grep running ; then
       /sbin/service mysqld start
     fi
     if ! /sbin/service httpd status | grep running ; then
       /sbin/service httpd start
     fi
-    if ! /sbin/service rsyslog status | grep running ; then
-      /sbin/service rsyslog start
-    fi
+    #if ! /sbin/service rsyslog status | grep running ; then
+    #  /sbin/service rsyslog start
+    #fi
 fi
 
 echo 
@@ -39,29 +39,30 @@ echo
 touch /tmp/hector.sql
 chmod 0700 /tmp/hector.sql
 
-
-IN=`rpm -q rsyslog-mysql`
-IFS='-'
-arr=($IN)
-rsyslogsqldir="/usr/share/doc/${arr[0]}=${arr[1]}=${arr[2]}/createDB.sql"
-IFS=';'
-rsyslogsqldir=${rsyslogsqldir//=/-}
-cat ${rsyslogsqldir} > /tmp/hector.sql
+# No more need for rsyslog now that we get darknet alerts from OSSEC
+#IN=`rpm -q rsyslog-mysql`
+#IFS='-'
+#arr=($IN)
+#rsyslogsqldir="/usr/share/doc/${arr[0]}=${arr[1]}=${arr[2]}/createDB.sql"
+#IFS=';'
+#rsyslogsqldir=${rsyslogsqldir//=/-}
+#cat ${rsyslogsqldir} > /tmp/hector.sql
 
 # Pull in Kojoney2 for the database components
 git clone git://github.com/madirish/kojoney2 app/software/kojoney2
 cat app/software/kojoney2/create_tables.sql >> /tmp/hector.sql
 # Adjust the default script so it plays nicely
-sed -i "s/CREATE DATABASE Syslog/CREATE DATABASE IF NOT EXISTS Syslog/" /tmp/hector.sql
-sed -i "s/TABLE System/TABLE IF NOT EXISTS System/g" /tmp/hector.sql
+#sed -i "s/CREATE DATABASE Syslog/CREATE DATABASE IF NOT EXISTS Syslog/" /tmp/hector.sql
+#sed -i "s/TABLE System/TABLE IF NOT EXISTS System/g" /tmp/hector.sql
 
 
-echo " [+] Setting up the MySQL databases for rsyslog and HECTOR."
-echo "     Please choose a password for the hector-rsyslog MySQL user:"
-read RSYSLOGPASS
+echo " [+] Setting up the MySQL databases for HECTOR."
+#echo "     Please choose a password for the hector-rsyslog MySQL user:"
+#read RSYSLOGPASS
 echo "     Please choose a password for the hector MySQL user:"
 read HECTORPASS
-echo "use mysql; GRANT INSERT ON Syslog.* to 'hector-rsyslog'@localhost identified by '${RSYSLOGPASS}';" >> /tmp/hector.sql
+#echo "use mysql; GRANT INSERT ON Syslog.* to 'hector-rsyslog'@localhost identified by '${RSYSLOGPASS}';" >> /tmp/hector.sql
+echo "use mysql; " >> /tmp/hector.sql
 echo "CREATE DATABASE IF NOT EXISTS hector; GRANT ALL PRIVILEGES ON hector.* to 'hector'@localhost identified by '${HECTORPASS}';" >> /tmp/hector.sql
 cat app/sql/db.sql >> /tmp/hector.sql
 
@@ -70,29 +71,29 @@ mysql -u root -p < /tmp/hector.sql
 
 
 
-if  ! cat /etc/rsyslog.conf | grep -q "ModLoad ommysql" ; then
-  echo " [+] Configuring rsyslog to load MySQL module"
-  sed -i "s/MODULES ####/MODULES ####\\n\\n\$ModLoad ommysql/" /etc/rsyslog.conf
-fi
-if  ! cat /etc/rsyslog.conf | grep -q "iptables" ; then
-  echo " [+] Configuring rsyslog to log to MySQL"
-  sed -i "s/\/var\/log\/messages/\/var\/log\/messages\\nif \$msg contains 'iptables ' then :ommysql:localhost,Syslog,hector-rsyslog,${RSYSLOGPASS}/" /etc/rsyslog.conf
-fi
+#if  ! cat /etc/rsyslog.conf | grep -q "ModLoad ommysql" ; then
+#  echo " [+] Configuring rsyslog to load MySQL module"
+#  sed -i "s/MODULES ####/MODULES ####\\n\\n\$ModLoad ommysql/" /etc/rsyslog.conf
+#fi
+#if  ! cat /etc/rsyslog.conf | grep -q "iptables" ; then
+#  echo " [+] Configuring rsyslog to log to MySQL"
+#  sed -i "s/\/var\/log\/messages/\/var\/log\/messages\\nif \$msg contains 'iptables ' then :ommysql:localhost,Syslog,hector-rsyslog,${RSYSLOGPASS}/" /etc/rsyslog.conf
+#fi
 
-echo -e "Do you wish to allow rsyslog (UDP 514)? (y/n):"
-read configiptables
-if [ $configiptables == 'y' ] ; then
-  if ! cat /etc/sysconfig/iptables | grep -q "udp \-\-dport 514 \-j ACCEPT" ; then
-    sed -i "s/--dport 22 -j ACCEPT/--dport 22 -j ACCEPT\\n-A INPUT -m state --state NEW -m udp -p udp --dport 514 -j ACCEPT/" /etc/sysconfig/iptables
-    echo " [+] Committing firewall updates"
-    service iptables restart
-  fi  
-  sed -i "s/#\$ModLoad imudp/\$ModLoad imudp/" /etc/rsyslog.conf
-  sed -i "s/#\$UDPServerRun 514/\$UDPServerRun 514/" /etc/rsyslog.conf
-fi
+#echo -e "Do you wish to allow rsyslog (UDP 514)? (y/n):"
+#read configiptables
+#if [ $configiptables == 'y' ] ; then
+#  if ! cat /etc/sysconfig/iptables | grep -q "udp \-\-dport 514 \-j ACCEPT" ; then
+#    sed -i "s/--dport 22 -j ACCEPT/--dport 22 -j ACCEPT\\n-A INPUT -m udp -p udp --dport 514 -j ACCEPT/" /etc/sysconfig/iptables
+#    echo " [+] Committing firewall updates"
+#    service iptables restart
+#  fi  
+#  sed -i "s/#\$ModLoad imudp/\$ModLoad imudp/" /etc/rsyslog.conf
+#  sed -i "s/#\$UDPServerRun 514/\$UDPServerRun 514/" /etc/rsyslog.conf
+#fi
 
-echo " [+] Committing rsyslog updates"
-service rsyslog restart
+#echo " [+] Committing rsyslog updates"
+#service rsyslog restart
 
 echo 
 echo "Step 4 of 7 - Moving HECTOR files to /opt"
@@ -158,7 +159,7 @@ if ! cat /etc/crontab | grep -q "HECTOR" ; then
   echo "#HECTOR scans" >> /etc/crontab
   echo "01 0 * * * /usr/bin/php $HECTOR_PATH/app/scripts/scan_cron.php" >> /etc/crontab
   echo "#HECTOR OSSEC monitor restart (for log rotates)" >> /etc/crontab
-  echo "01 0 * * * service hector-ossec-mysql restart" >> /etc/crontab
+  echo "#01 0 * * * service hector-ossec-mysql restart" >> /etc/crontab
   echo " [+] cron scheduled in /etc/crontab"
 else
   echo " [+] HECTOR crontab seems to already exist"
@@ -175,6 +176,8 @@ if [ ! -d /var/ossec ] ; then
   ${HECTOR_PATH}/app/software/ossec-hids-2.3/install.sh
 fi
 echo " [+] Scheduling OSSEC monitoring services."
+sed -i "s/USERNAME = 'root'/USERNAME = 'hector'/g" ${HECTOR_PATH}/app/scripts/hector-ossec-mysql.py
+sed -i "s/PASSWORD = ''/PASSWORD = '${HECTORPASS}'/g" ${HECTOR_PATH}/app/scripts/hector-ossec-mysql.py
 cp ${HECTOR_PATH}/app/scripts/hector-ossec-mysql /etc/init.d/
 chmod +x /etc/init.d/hector-ossec-mysql
 /sbin/chkconfig --add hector-ossec-mysql
@@ -184,7 +187,7 @@ chmod +x /etc/init.d/hector-ossec-mysql
 echo -e "Do you wish to allow remote OSSEC (UDP 1514)? (y/n):"
 read configiptables
 if [ $configiptables == 'y' ] ; then
-  if ! cat /etc/sysconfig/iptables | grep -q "udp \-\-dport 514 \-j ACCEPT" ; then
+  if ! cat /etc/sysconfig/iptables | grep -q "udp \-\-dport 1514 \-j ACCEPT" ; then
     sed -i "s/--dport 22 -j ACCEPT/--dport 22 -j ACCEPT\\n-A INPUT -m state --state NEW -m udp -p udp --dport 1514 -j ACCEPT/" /etc/sysconfig/iptables
     echo " [+] Committing firewall updates"
     service iptables restart

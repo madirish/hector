@@ -21,7 +21,7 @@ USERNAME = 'root'
 PASSWORD = ''
 DB = 'hector'
 PORT = 3306
-DEBUG = True
+DEBUG = False
 
 class LogEntry: 
   """ This is just the object that we craft to 
@@ -177,10 +177,10 @@ class LogEntry:
     try:
       cursor = self.conn.cursor()
       sql = 'insert into ossec_rules set '
-      sql += ' rule_number = "%s", '
-      sql += ' rule_message = "%s", '
-      sql += ' rule_level = "%s"'
-      cursor.execute(sql % (number, message, level)) 
+      sql += ' rule_number = %s, '
+      sql += ' rule_message = %s, '
+      sql += ' rule_level = %s'
+      cursor.execute(sql , (number, message, level)) 
       self.conn.commit() 
       cursor.close()
       if self.set_rule_id(number) == False:
@@ -211,7 +211,7 @@ class LogEntry:
     try:
       cursor = self.conn.cursor()
       sql = 'select rule_id from ossec_rules where rule_number = %d'
-      cursor.execute(sql % id) 
+      cursor.execute(sql , id) 
       rule_id = int(cursor.fetchone()[0])
     except Exception as err:
       # this error output is useless, always prints out: 'NoneType' object is unsubscriptable
@@ -236,19 +236,20 @@ class LogEntry:
     
   def save(self):
     """Persist the complete record back to the database."""
+    if DEBUG : syslog.syslog("Beginning OSSEC aler save()")
     try:
       cursor = self.conn.cursor()
       sql = 'insert into ossec_alerts set '
-      sql += ' alert_date = STR_TO_DATE("%s",\'%%Y %%b %%d %%H:%%i:%%s\'), ' # 2011 Feb 14 11:55:59
-      sql += ' host_id = "%s", '
-      sql += ' alert_log = "%s", '
-      sql += ' rule_id = "%s", '
-      sql += ' rule_user = "%s", '
-      sql += ' rule_log = "%s", '
-      sql += ' rule_src_ip = "%s", '
-      sql += ' rule_src_ip_numeric = INET_ATON("%s"), '
-      sql += ' alert_ossec_id = "%s" '
-      cursor.execute(sql % (self.get_date(),
+      sql += ' alert_date = STR_TO_DATE(%s,\'%%Y %%b %%d %%H:%%i:%%s\'), ' # 2011 Feb 14 11:55:59
+      sql += ' host_id = %s, '
+      sql += ' alert_log = %s, '
+      sql += ' rule_id = %s, '
+      sql += ' rule_user = %s, '
+      sql += ' rule_log = %s, '
+      sql += ' rule_src_ip = %s, '
+      sql += ' rule_src_ip_numeric = INET_ATON(%s), '
+      sql += ' alert_ossec_id = %s '
+      cursor.execute(sql , (self.get_date(),
                             self.get_host_id(),
                             self.get_message(),
                             self.get_rule_id(),
@@ -259,10 +260,70 @@ class LogEntry:
                             self.get_ossec_alert_id()))
       self.conn.commit() 
       cursor.close()
+      if self.get_message().find("iptables IN=") > -1 :
+        # darknet log
+        if DEBUG : syslog.syslog("Darknet packet detected!")
+        self.log_darknet()
+      else :
+        if DEBUG : syslog.syslog("Not a darknet packet alert.")
+        
     except Exception as err:
       syslog.syslog("There was an issue saving an OSSEC alert: ", err)
       # print "Transaction error saving LogEntry object " , err
-
+  
+  def get_proto(self, msg):
+    if DEBUG : syslog.syslog("Beginning get_proto")
+    if msg.find("PROTO=") > -1:
+      return msg[msg.find("PROTO=") + 6:].split(' ')[0]
+    else:
+      return 0
+  def get_src_port(self, msg):
+    if DEBUG : syslog.syslog("Beginning get_src_port")
+    if msg.find("SPT=") > -1:
+      return msg[msg.find("SPT=") + 4:].split(' ')[0]
+    else:
+      return 0
+  def get_dst_port(self, msg):
+    if DEBUG : syslog.syslog("Beginning get_dst_port")
+    if msg.find("DPT=") > -1:
+      return msg[msg.find("DPT=") + 4:].split(' ')[0]
+    else:
+      return 0
+  def get_dst_ip(self, msg):
+    if DEBUG : syslog.syslog("Beginning get_dst_ip")
+    if msg.find("DST=") > -1:
+      return msg[msg.find("DST=") + 4:].split(' ')[0]
+    else:
+      return 0
+    
+  def log_darknet(self):
+    if DEBUG : syslog.syslog("Beginning log_darknet()")
+    try:
+      cursor = self.conn.cursor()
+      sql = 'insert into darknet set '
+      sql += ' src_ip = INET_ATON(%s), ' 
+      sql += ' dst_ip = INET_ATON(%s), '
+      sql += ' src_port = %s, '
+      sql += ' dst_port = %s, '
+      sql += ' proto = %s, '
+      sql += ' received_at = %s '
+      if DEBUG : syslog.syslog("SQL composed in log_darknet()")
+      src_port = self.get_src_port(self.get_message())
+      dst_port = self.get_dst_port(self.get_message())
+      dst_ip = self.get_dst_ip(self.get_message())
+      proto = self.get_proto(self.get_message())
+      if DEBUG : syslog.syslog("Starting cursor execution in log_darknet().")
+      cursor.execute(sql , (self.get_src_ip(),
+                            dst_ip,
+                            src_port,
+                            dst_port,
+                            proto,
+                            self.get_date()))
+      if DEBUG : syslog.syslog("SQL executed in log_darknet()")
+      self.conn.commit() 
+      cursor.close()
+    except Exception as err:
+      syslog.syslog("There was an issue saving a darknet sensor alert: ", err)
 
 import unittest
 
@@ -547,14 +608,14 @@ class OSSECLogParser(Daemon):
       # start a new log if necessary
       if line[0:8] == '** Alert':
         if log.get_ossec_alert_id() is not "":
-          print log.get_alert_log()
-          print log.get_date()
-          print log.get_host_id()
-          print log.get_message()
-          print log.get_ossec_alert_id()
-          print log.get_rule_id()
-          print log.get_src_ip()
-          print log.get_user()
+          if DEBUG : print log.get_alert_log()
+          if DEBUG : print log.get_date()
+          if DEBUG : print log.get_host_id()
+          if DEBUG : print log.get_message()
+          if DEBUG : print log.get_ossec_alert_id()
+          if DEBUG : print log.get_rule_id()
+          if DEBUG : print log.get_src_ip()
+          if DEBUG : print log.get_user()
           log.save()
         log.clear()
       log.process(line)

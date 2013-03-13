@@ -236,7 +236,7 @@ class LogEntry:
     
   def save(self):
     """Persist the complete record back to the database."""
-    if DEBUG : syslog.syslog("Beginning OSSEC aler save()")
+    if DEBUG : syslog.syslog("Beginning OSSEC alert save()")
     try:
       cursor = self.conn.cursor()
       sql = 'insert into ossec_alerts set '
@@ -303,10 +303,10 @@ class LogEntry:
       sql = 'insert into darknet set '
       sql += ' src_ip = INET_ATON(%s), ' 
       sql += ' dst_ip = INET_ATON(%s), '
-      sql += ' src_port = %s, '
+      sql += ' src_port = %s, ' 
       sql += ' dst_port = %s, '
       sql += ' proto = %s, '
-      sql += ' received_at = %s '
+      sql += ' received_at = STR_TO_DATE(%s,\'%%Y %%b %%d %%H:%%i:%%s\') ' 
       if DEBUG : syslog.syslog("SQL composed in log_darknet()")
       src_port = self.get_src_port(self.get_message())
       dst_port = self.get_dst_port(self.get_message())

@@ -14,12 +14,13 @@ import re
 import sys
 import syslog
 from os import path
+from pylib.pull_config import Configurator
 
 # Credentials used for the database connection
-HOST = 'localhost'
-USERNAME = 'root'
-PASSWORD = ''
-DB = 'hector'
+HOST = configr.get_var('db_host')
+USERNAME =  configr.get_var('db_user')
+PASSWORD = configr.get_var('db_pass')
+DB = configr.get_var('db')
 PORT = 3306
 DEBUG = False
 

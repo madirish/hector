@@ -174,6 +174,7 @@ class LogEntry:
     number = rulesplit[1]
     message = rulestr.split('->')[1][2:-1]
     level = rulesplit[3][0:-1]
+    if DEBUG : syslog.syslog("Attempting to set new rule number %s" % number)
     try:
       cursor = self.conn.cursor()
       sql = 'insert into ossec_rules set '
@@ -184,7 +185,7 @@ class LogEntry:
       self.conn.commit() 
       cursor.close()
       if self.set_rule_id(number) == False:
-        print "Error setting new rule id in LogEntry object!"
+        # print "Error setting new rule id in LogEntry object!"
         return False
       return True
     except Exception as err:
@@ -207,15 +208,16 @@ class LogEntry:
     """Set the rule_id based on the OSSEC rule number.
     Return false if there is an issue with the insert.
     """
-    id = int(id)
+    rule_number = int(id)
     try:
       cursor = self.conn.cursor()
-      sql = 'select rule_id from ossec_rules where rule_number = %d'
-      cursor.execute(sql , id) 
+      sql = 'select rule_id from ossec_rules where rule_number = %s'
+      cursor.execute(sql , (rule_number)) 
       rule_id = int(cursor.fetchone()[0])
+      print "Rule id is %d" % rule_id
     except Exception as err:
       # this error output is useless, always prints out: 'NoneType' object is unsubscriptable
-      # print "Transaction error in set_rule_id() in LogEntry object:" , err
+      #syslog.syslog("Transaction error in set_rule_id() in LogEntry object:" , err)
       return False
     if rule_id < 1:
       return False
@@ -238,7 +240,8 @@ class LogEntry:
     """Persist the complete record back to the database."""
     if DEBUG : syslog.syslog("Beginning OSSEC alert save()")
     try:
-      if self.get_host_id() > 0 and self.get_rule_id() > 0 and self.get_src_ip() > 0:
+      # Make sure we have a valid entry to cut down on db interacts
+      if self.get_ossec_alert_id() > 0 and self.get_src_ip() > 0:
         cursor = self.conn.cursor()
         sql = 'insert into ossec_alerts set '
         sql += ' alert_date = STR_TO_DATE(%s,\'%%Y %%b %%d %%H:%%i:%%s\'), ' # 2011 Feb 14 11:55:59
@@ -267,7 +270,7 @@ class LogEntry:
           self.log_darknet()
         else :
           if DEBUG : syslog.syslog("Not a darknet packet alert.")
-        
+          
     except Exception as err:
       syslog.syslog("There was an issue saving an OSSEC alert: ", err)
       # print "Transaction error saving LogEntry object " , err

@@ -292,7 +292,7 @@ CREATE TABLE IF NOT EXISTS `url` (
   `host_ip` INT NOT NULL,
   `url_url` varchar(255) NOT NULL,
   `url_screenshot` varchar(255) DEFAULT NULL,
-  UNIQUE KEY `url` (`url`)
+  UNIQUE KEY `url_url` (`url_url`)
 ) ENGINE = INNODB;
 
 -- Finally the user table

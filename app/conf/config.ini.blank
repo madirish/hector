@@ -25,3 +25,5 @@ timezone		=	America/New_York
 site_url		= http://yoursite/hector_html
 site_email	= your_email@localhost
 alert_email	= your_email@localhost
+
+bing_api_key = your_bing_api_key

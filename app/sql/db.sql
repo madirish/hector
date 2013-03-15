@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS `alert` (
 	`host_id` INT NOT NULL,
 	PRIMARY KEY  (`alert_id`),
 	KEY `host_id` (`host_id`)
-);
+) ENGINE = INNODB;
 
 -- Actual data from RSS feeds
 CREATE TABLE IF NOT EXISTS `article` (
@@ -286,6 +286,14 @@ CREATE TABLE IF NOT EXISTS `tag` (
   PRIMARY KEY  (`tag_id`)
 );
 
+-- FQDN's that resolve to hosts
+CREATE TABLE IF NOT EXISTS `url` (
+  `host_id` INT NOT NULL,
+  `host_ip` INT NOT NULL,
+  `url` varchar(255) NOT NULL,
+  UNIQUE KEY `url` (`url`)
+);
+
 -- Finally the user table
 CREATE TABLE IF NOT EXISTS `user` (
 	`user_id` INT NOT NULL AUTO_INCREMENT,
@@ -298,7 +306,8 @@ CREATE TABLE IF NOT EXISTS `user` (
 INSERT INTO `user` set `user_id`=1, 
 	`user_name`='administrator', 
 	`user_pass`='$1$afQP7QmR$4cRYamEz5Z7lyxpsRTow/1', -- just "password" 
-	`user_is_admin`=1 ON DUPLICATE KEY UPDATE `user_id` = 1;
+	`user_is_admin`=1 ON DUPLICATE KEY UPDATE `user_id` = 1 
+	ON DUPLICATE KEY UPDATE `user_id` = 1;
 	
 -- Map users to support groups
 CREATE TABLE IF NOT EXISTS `user_x_supportgroup` (

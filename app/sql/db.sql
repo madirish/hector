@@ -307,7 +307,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 INSERT INTO `user` set `user_id`=1, 
 	`user_name`='administrator', 
 	`user_pass`='$1$afQP7QmR$4cRYamEz5Z7lyxpsRTow/1', -- just "password" 
-	`user_is_admin`=1 ON DUPLICATE KEY UPDATE `user_id` = 1 
+	`user_is_admin`=1 
 	ON DUPLICATE KEY UPDATE `user_id` = 1;
 	
 -- Map users to support groups

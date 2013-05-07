@@ -2,7 +2,7 @@
 """
 This script is part of HECTOR.
 by Justin C. Klein Keane <jukeane@sas.upenn.edu>
-Last modified: 27 February, 2013
+Last modified: 07 May, 2013
 
 This script is a daemonized log observer that parses OSSEC logs and then
 imports them into the HECTOR database.  It is intended to be run from the
@@ -14,13 +14,15 @@ import re
 import sys
 import syslog
 from os import path
-from pylib.pull_config import Configurator
+import ConfigParser
 
 # Credentials used for the database connection
-HOST = configr.get_var('db_host')
-USERNAME =  configr.get_var('db_user')
-PASSWORD = configr.get_var('db_pass')
-DB = configr.get_var('db')
+configr = ConfigParser.ConfigParser()
+configr.read('/opt/hector/app/conf/config.ini')
+HOST = configr.get('hector', 'db_host')
+USERNAME =  configr.get('hector', 'db_user')
+PASSWORD = configr.get('hector', 'db_pass')
+DB = configr.get('hector', 'db')
 PORT = 3306
 DEBUG = False
 

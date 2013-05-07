@@ -327,7 +327,7 @@ CREATE TABLE IF NOT EXISTS `vuln` (
 -- Vulnerabilities discovered
 CREATE TABLE IF NOT EXISTS `vuln_x_host` (
   `vuln_id` INT UNSIGNED NOT,
-  `host_id` INT UNSIGNED NOT
+  `host_id` INT UNSIGNED NOT NULL
 ) ENGINE = INNODB;
 
 -- Add ability to free tag vulnerabilities

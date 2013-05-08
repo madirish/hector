@@ -34,7 +34,7 @@ if ($ip != '') {
 	
 	$sql = 'select count(id) as thecount from koj_executed_commands where ip = \'' . $ip . '\'';
 	$honeypot_commands = $db->fetch_object_array($sql);
-	$commands = $honeypot_logins[0]->thecount;
+	$commands = $honeypot_commands[0]->thecount;
 	if ($commands == '') $commands = 'no';
 	
 	$sql = 'select a.alert_date, a.rule_log, r.rule_level from ossec_alerts a, ossec_rules r ' .

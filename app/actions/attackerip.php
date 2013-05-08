@@ -56,6 +56,13 @@ if (is_array($darknet_drops)) {
 }
 $content .= '</tbody></table>';
 
+$ip_addr = htmlspecialchars($ip);
+$ip_name = gethostbyaddr($ip);
+$ip_rpt_display = $ip_addr;
+if ($ip_addr != $ip_name) {
+	$ip_rpt_display .= ' - ' . $ip_name;
+}
+
 include_once($templates . 'attackerip.tpl.php');
 	
 ?>

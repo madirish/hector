@@ -4,7 +4,8 @@ Search malicious IP database: <input type="text" name="ip"/> <input type="submit
 <input type="hidden" name="token" value="<?php echo $token;?>"/>
 <input type="hidden" name="form_name" value="<?php echo $formname;?>"/>
 </form>
-<p class="lead">Report for <?php echo htmlspecialchars($ip) . ' - ' . gethostbyaddr($ip);?></p>
+<?php if ($ip !== "") { ?>
+<p class="lead">Report for <?php echo $ip_rpt_display;?></p>
 <div class="well well-small">
 	<h4>Honeypot logins</h4>
 	<p>This ip has attempted <span class="badge badge-info"><?php echo $login_attempts; ?></span> logins on the honeypot.</p>
@@ -34,4 +35,5 @@ foreach ($ossec_alerts as $alert) {
 </tbody>
 </table>
 </div>
+<?php } ?>
 </div>

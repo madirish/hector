@@ -136,8 +136,8 @@ if [ ! -d /var/ossec ] ; then
   echo " [+] OSSEC still needs to be installed"
   echo "     Press [Enter] to begin the OSSEC install process"
   read foo
-  tar xvzf $HECTOR_PATH/app/software/ossec-hids-2.3.tar.gz --directory=$HECTOR_PATH/app/software/
-  ${HECTOR_PATH}/app/software/ossec-hids-2.3/install.sh
+  tar xvzf $HECTOR_PATH/app/software/ossec-hids-2.7.tar.gz --directory=$HECTOR_PATH/app/software/
+  ${HECTOR_PATH}/app/software/ossec-hids-2.7/install.sh
 fi
 
 echo " [+] Adding OSSEC local_rule so it can monitor darknet sensors."

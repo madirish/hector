@@ -326,7 +326,7 @@ CREATE TABLE IF NOT EXISTS `vuln` (
 
 -- Vulnerabilities discovered
 CREATE TABLE IF NOT EXISTS `vuln_x_host` (
-  `vuln_id` INT UNSIGNED NOT,
+  `vuln_id` INT UNSIGNED NOT NULL,
   `host_id` INT UNSIGNED NOT NULL
 ) ENGINE = INNODB;
 
@@ -336,6 +336,16 @@ CREATE TABLE IF NOT EXISTS `vuln_x_tag` (
   `tag_id` INT UNSIGNED NOT NULL
 ) ENGINE = INNODB;
 
+-- API keys
+CREATE TABLE IF NOT EXISTS `api_key` (
+  `api_key_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `api_key_value` VARCHAR(255) NOT NULL,
+  `api_key_resource` VARCHAR(255) NOT NULL,
+  `api_key_holder_name` VARCHAR(255) NOT NULL,
+  `api_key_holder_affiliation` VARCHAR(255) NOT NULL,
+  `api_key_holder_email` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`api_key_id`)
+) ENGINE = INNODB;
 
 --
 -- Create views to the Kojoney2 tables if it's installed

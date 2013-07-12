@@ -43,3 +43,13 @@
   border: none;
   padding-left: 6px;
 }
+
+span.link {
+  color: #0088cc;
+  text-decoration: none;
+}
+span.link:hover {
+  color: #005580;
+  cursor: pointer;
+  text-decoration: underline;
+}

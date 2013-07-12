@@ -1,7 +1,7 @@
 ; The global configuration file for HECTOR
 ; These values should be customized!
 ; Author: Justin C. Klein Keane <jukeane@sas.upenn.edu>
-
+[hector]
 db		=	database_name	
 db_host		=	localhost
 db_user		=	database_user
@@ -25,3 +25,5 @@ timezone		=	America/New_York
 site_url		= http://yoursite/hector_html
 site_email	= your_email@localhost
 alert_email	= your_email@localhost
+
+bing_api_key = your_bing_api_key

@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS `alert` (
 	`host_id` INT NOT NULL,
 	PRIMARY KEY  (`alert_id`),
 	KEY `host_id` (`host_id`)
-);
+) ENGINE = INNODB;
 
 -- Actual data from RSS feeds
 CREATE TABLE IF NOT EXISTS `article` (
@@ -23,13 +23,13 @@ CREATE TABLE IF NOT EXISTS `article` (
   `article_body` text,
   PRIMARY KEY (`article_id`),
   INDEX USING BTREE (`article_date`)
-);
+) ENGINE = INNODB;
 
 -- Allow free tagging of articles from RSS feeds
 CREATE TABLE IF NOT EXISTS `article_x_tag` (
   `article_id` INT NOT NULL,
   `tag_id` INT NOT NULL
-);
+) ENGINE = INNODB;
 
 -- If the article describes a vulnerability pair them
 CREATE TABLE IF NOT EXISTS `article_x_vuln` (
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `darknet` (
 	`received_at` TIMESTAMP,
 	PRIMARY KEY (`id`),
 	INDEX USING HASH (src_ip)
-);
+) ENGINE = INNODB;
 
 -- Form table is used for anti XSRF tokens
 CREATE TABLE IF NOT EXISTS `form` (
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `form` (
 	`form_ip` VARCHAR(15) NOT NULL,
 	`form_datetime` DATETIME NOT NULL,
 	PRIMARY KEY  (`form_id`)
-);
+) ENGINE = INNODB;
 
 -- Hosts are IP based machines, the crux of the system
 CREATE TABLE IF NOT EXISTS `host` (
@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `host` (
   PRIMARY KEY  (`host_id`),
   KEY `location_id` (`location_id`),
   UNIQUE KEY `host_ip` (`host_ip`)
-);
+) ENGINE = INNODB;
 
 --  For end user notes about a host
 CREATE TABLE IF NOT EXISTS `hostnote` (
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `hostnote` (
 	`hostnote_note` TEXT DEFAULT NULL,
   PRIMARY KEY  (`hostnote_id`),
   KEY `host_id` (`host_id`)
-);
+) ENGINE = INNODB;
 
 -- Track alternative IP addresses and domain names
 CREATE TABLE IF NOT EXISTS `host_alts` (
@@ -101,14 +101,14 @@ CREATE TABLE IF NOT EXISTS `host_alts` (
 	`host_alt_ip` varchar(15),
 	`host_alt_name` varchar(255),
   PRIMARY KEY  (`host_id`)
-);
+) ENGINE = INNODB;
 
 -- For grouping hosts (say, "HR Machines")
 CREATE TABLE IF NOT EXISTS `host_group` (
 	`host_group_id` INT NOT NULL AUTO_INCREMENT,
 	`host_group_name` VARCHAR(255) NOT NULL,
   PRIMARY KEY  (`host_group_id`)
-);
+) ENGINE = INNODB;
 
 -- Mapping table for hosts to groups
 CREATE TABLE IF NOT EXISTS `host_x_host_group` (
@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS `host_x_host_group` (
 	`host_id` INT NOT NULL,
   KEY  (`host_group_id`),
   KEY `host_id` (`host_id`)
-);
+) ENGINE = INNODB;
 
 -- Track vulnerabilities discovered in certain hosts
 CREATE TABLE IF NOT EXISTS `host_x_vuln` (
@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS `host_x_vuln` (
   INDEX USING HASH (`host_id`),
   INDEX USING HASH (`vuln_id`),
   INDEX USING BTREE (`dated`)
-);
+) ENGINE = INNODB;
 
 -- Free tagging of hosts
 CREATE TABLE IF NOT EXISTS `host_x_tag` (
@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS `host_x_tag` (
 	`tag_id` INT NOT NULL,
   KEY `host_id` (`host_id`),
   KEY `tag_id` (`tag_id`)
-);
+) ENGINE = INNODB;
 
 -- Physical addresses for hosts
 CREATE TABLE IF NOT EXISTS `location` (
@@ -158,7 +158,7 @@ CREATE TABLE IF NOT EXISTS `nmap_scan` (
 	`nmap_scan_id` INT NOT NULL AUTO_INCREMENT,
 	`nmap_scan_datetime` DATETIME NOT NULL,
 	PRIMARY KEY (`nmap_scan_id`)
-);
+) ENGINE = INNODB;
 
 -- Results of NMAP scans
 CREATE TABLE IF NOT EXISTS `nmap_scan_result` (
@@ -194,7 +194,7 @@ CREATE TABLE IF NOT EXISTS `ossec_alerts` (
 	KEY `rule_id` (`rule_id`),
 	INDEX USING HASH (rule_src_ip_numeric),
 	INDEX USING BTREE (alert_date)
-);
+) ENGINE = INNODB;
 
 -- OSSEC rules (defined in the server)
 CREATE TABLE IF NOT EXISTS `ossec_rules` (
@@ -224,7 +224,7 @@ CREATE TABLE IF NOT EXISTS `rss` (
   `rss_name` varchar(255),
   `rss_url` varchar(255) NOT NULL,
   PRIMARY KEY (`rss_id`)
-);
+) ENGINE = INNODB;
 
 
 -- Scans are a generic network poke for scheduling
@@ -237,7 +237,7 @@ CREATE TABLE IF NOT EXISTS `scan` (
 	`scan_dayofmonth` INT DEFAULT 0,
 	`scan_dayofyear` INT DEFAULT 0,
 	PRIMARY KEY (`scan_id`)
-);
+) ENGINE = INNODB;
 
 -- Scan process refers to the type of program to run (NMAP, Nikto, etc.)
 CREATE TABLE IF NOT EXISTS `scan_type` (
@@ -246,7 +246,7 @@ CREATE TABLE IF NOT EXISTS `scan_type` (
 	`scan_type_flags` VARCHAR(255) DEFAULT NULL,
 	`scan_type_script` VARCHAR(255) NOT NULL, -- Actual system path to the php controller
 	PRIMARY KEY (`scan_type_id`)
-);
+) ENGINE = INNODB;
 INSERT INTO `scan_type` SET `scan_type_name` = 'NMAP network scanner', 
 	`scan_type_id`=1, 
 	`scan_type_script`='nmap_scan.php' ON DUPLICATE KEY UPDATE `scan_type_id`=1;
@@ -257,7 +257,7 @@ CREATE TABLE IF NOT EXISTS `scan_x_host_group` (
 	`scan_id` INT NOT NULL,
   KEY `host_group_id` (`host_group_id`),
   KEY `scan_id` (`scan_id`)
-);
+) ENGINE = INNODB;
 
 -- Port states (1=open, 2=closed, 3=filtered) but room for more
 CREATE TABLE IF NOT EXISTS `state` (
@@ -277,14 +277,23 @@ CREATE TABLE IF NOT EXISTS `supportgroup` (
 	`supportgroup_name` VARCHAR(255) NOT NULL,
 	`supportgroup_email` varchar(100) DEFAULT NULL, -- Distribution e-mail alias
   PRIMARY KEY  (`supportgroup_id`)
-);
+) ENGINE = INNODB;
 
 -- Free tags (for hosts)
 CREATE TABLE IF NOT EXISTS `tag` (
 	`tag_id` INT NOT NULL AUTO_INCREMENT,
 	`tag_name` VARCHAR(50) NOT NULL,
   PRIMARY KEY  (`tag_id`)
-);
+) ENGINE = INNODB;
+
+-- FQDN's that resolve to hosts
+CREATE TABLE IF NOT EXISTS `url` (
+  `host_id` INT NOT NULL,
+  `host_ip` INT NOT NULL,
+  `url_url` varchar(255) NOT NULL,
+  `url_screenshot` varchar(255) DEFAULT NULL,
+  UNIQUE KEY `url_url` (`url_url`)
+) ENGINE = INNODB;
 
 -- Finally the user table
 CREATE TABLE IF NOT EXISTS `user` (
@@ -294,17 +303,18 @@ CREATE TABLE IF NOT EXISTS `user` (
 	`user_is_admin` INT(1) DEFAULT 0,
   PRIMARY KEY  (`user_id`),
   UNIQUE KEY `user_name` (`user_name`)
-);
+) ENGINE = INNODB;
 INSERT INTO `user` set `user_id`=1, 
 	`user_name`='administrator', 
 	`user_pass`='$1$afQP7QmR$4cRYamEz5Z7lyxpsRTow/1', -- just "password" 
-	`user_is_admin`=1 ON DUPLICATE KEY UPDATE `user_id` = 1;
+	`user_is_admin`=1 
+	ON DUPLICATE KEY UPDATE `user_id` = 1;
 	
 -- Map users to support groups
 CREATE TABLE IF NOT EXISTS `user_x_supportgroup` (
 	`user_id` INT NOT NULL,
 	`supportgroup_id` INT NOT NULL		
-);
+) ENGINE = INNODB;
 
 -- Vulnerabilities
 CREATE TABLE IF NOT EXISTS `vuln` (
@@ -312,30 +322,30 @@ CREATE TABLE IF NOT EXISTS `vuln` (
   `vuln_name` varchar(255),
   `vuln_description` text,
   PRIMARY KEY (`vuln_id`)
-);
+) ENGINE = INNODB;
+
+-- Vulnerabilities discovered
+CREATE TABLE IF NOT EXISTS `vuln_x_host` (
+  `vuln_id` INT UNSIGNED NOT NULL,
+  `host_id` INT UNSIGNED NOT NULL
+) ENGINE = INNODB;
 
 -- Add ability to free tag vulnerabilities
 CREATE TABLE IF NOT EXISTS `vuln_x_tag` (
   `vuln_id` INT UNSIGNED NOT NULL,
   `tag_id` INT UNSIGNED NOT NULL
-);
+) ENGINE = INNODB;
 
---
--- Create the trigger to automatically calculate the numeric
--- IP address of hosts as they are added
---
-DROP TRIGGER IF EXISTS host_ai_ipnum;
-DELIMITER $$
-
-CREATE TRIGGER host_ai_ipnum
-  AFTER INSERT ON host
-  FOR EACH ROW
-BEGIN
-  UPDATE host set host_ip_numeric = INET_ATON(NEW.host_ip) where host_id = NEW.host_id;
-END$$
-DELIMITER ;
-
-
+-- API keys
+CREATE TABLE IF NOT EXISTS `api_key` (
+  `api_key_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `api_key_value` VARCHAR(255) NOT NULL,
+  `api_key_resource` VARCHAR(255) NOT NULL,
+  `api_key_holder_name` VARCHAR(255) NOT NULL,
+  `api_key_holder_affiliation` VARCHAR(255) NOT NULL,
+  `api_key_holder_email` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`api_key_id`)
+) ENGINE = INNODB;
 
 --
 -- Create views to the Kojoney2 tables if it's installed
@@ -356,36 +366,4 @@ DELIMITER ;
 
 call kojoney_views();
 
---
--- Next alter the Syslog database used by rsyslog (for darknets)
--- for details see http://www.madirish.net/content/creating-darknet-sensor-database
---
-
-use Syslog;
-
-DROP TRIGGER IF EXISTS firewall_ai_trig;
-DELIMITER $$
-
-CREATE TRIGGER firewall_ai_trig
-  AFTER INSERT ON Syslog.SystemEvents
-  FOR EACH ROW
-BEGIN
-  DECLARE t_src_ip INT UNSIGNED;
-  DECLARE t_dst_ip INT UNSIGNED;
-  DECLARE t_src_port INT UNSIGNED;
-  DECLARE t_dst_port INT UNSIGNED;
-  DECLARE t_proto ENUM('tcp','udp','icmp');
-
-  
-  SELECT INET_ATON(SUBSTRING(NEW.Message, INSTR(NEW.Message, 'SRC=')+4, INSTR(New.Message, ' DST=')-INSTR(NEW.Message, 'SRC=')-4)) INTO t_src_ip from DUAL;
-  SELECT INET_ATON(SUBSTRING(NEW.Message, INSTR(NEW.Message, 'DST=')+4, INSTR(New.Message, ' LEN=')-INSTR(NEW.Message, 'DST=')-4)) INTO t_dst_ip from DUAL;
-  SELECT SUBSTRING(NEW.Message, INSTR(NEW.Message, 'SPT=')+4, INSTR(New.Message, ' DPT=')-INSTR(NEW.Message, 'SPT=')-4) INTO t_src_port from DUAL;
-  SELECT SUBSTRING(NEW.Message, INSTR(NEW.Message, 'DPT=')+4, LOCATE(' ', NEW.Message, INSTR(NEW.Message, 'DPT='))-LOCATE('DPT=', NEW.Message)-4) INTO t_dst_port from DUAL;
-  SELECT LOWER(SUBSTRING(NEW.Message, INSTR(NEW.Message, 'PROTO=')+6, INSTR(New.Message, ' SPT=')-INSTR(NEW.Message, 'PROTO=')-6)) INTO t_proto from DUAL;
-
-  IF NEW.SysLogTag = 'kernel:' AND INSTR(NEW.Message, 'iptables') > 0 THEN
-  	INSERT INTO hector.darknet set src_ip = t_src_ip, dst_ip = t_dst_ip, src_port = t_src_port, dst_port = t_dst_port, proto = t_proto, received_at = NEW.ReceivedAt;
-	END IF;
-END$$
-DELIMITER ;
 

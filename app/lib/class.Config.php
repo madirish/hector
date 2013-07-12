@@ -64,7 +64,7 @@ Class Config {
 	 */
 	private function load_configs() {
 		$ini_array = parse_ini_file($this->config_file, 'true');
-		foreach ($ini_array as $key=>$val) {
+		foreach ($ini_array['hector'] as $key=>$val) {
 			$_SESSION[$key] = $val;
 			if ($key == 'timezone') date_default_timezone_set($val);
 		}

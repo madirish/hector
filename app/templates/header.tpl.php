@@ -8,6 +8,7 @@
 	<link href="css/bootstrap.css" rel="stylesheet">
 	<link href="css/bootstrap-responsive.css" rel="stylesheet">
 	<link href="css/penn.css" rel="stylesheet">
+	<script src="js/ajaxFunctions.js" type="text/javascript"></script> 
 </head>
 <body>
 <!-- 

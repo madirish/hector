@@ -33,7 +33,7 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
     // --- ATTRIBUTES ---
 
     /**
-     * Short description of attribute ip
+     * Short description of attribute id
      *
      * @access private
      * @var int

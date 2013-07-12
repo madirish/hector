@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 /**
  * HECTOR - class.Api_key.php
  *
- * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+ * @author Josh Bauer <joshbauer3@gmail.com>
  * @package HECTOR
  */
 
@@ -22,10 +22,10 @@ require_once('interface.Maleable_Object_Interface.php');
 require_once('class.Maleable_Object.php');
 
 /**
- * API keys allow acces to APIs'.
+ * API keys allow access to APIs'.
  *
  * @access public
- * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+ * @author Josh Bauer <joshbauer3@gmail.com>
  */
 class Api_key extends Maleable_Object implements Maleable_Object_Interface {
 
@@ -41,14 +41,38 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
     protected $id = null;
 
 	/**
-	 * Holder name
+	 * Key resource
 	 * 
 	 * @var String
 	 */
 	private $key_resource;
+	
+	/**
+	 * Holder name
+	 * 
+	 * @var String
+	 */
     private $holder_name;
+    
+    /**
+	 * Holder affiliation
+	 * 
+	 * @var String
+	 */
 	private $holder_affiliation;
+	
+	/**
+	 * Holder email
+	 * 
+	 * @var String
+	 */
 	private $holder_email;
+	
+	/**
+	 * Key value
+	 * 
+	 * @var String
+	 */
 	private $key_value;
 
 
@@ -58,7 +82,7 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
      * Short description of method __construct
      *
      * @access public
-     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @author Josh Bauer <joshbauer3@gmail.com>
      * @param  int id
      * @return void
      */
@@ -86,7 +110,7 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
      * Delete the record from the database
      *
      * @access public
-     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @author Josh Bauer <joshbauer3@gmail.com>
      * @return void
      */
     public function delete() {
@@ -162,17 +186,7 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
 		);
 	}
 
-
-    public function get_id()
-    {
-       return $this->id;
-    }
-
-    public function get_holder_name() {
-		return $this->holder_name;
-    }
-    
-    public function get_holder_affiliation() {
+	public function get_holder_affiliation() {
 		return $this->holder_affiliation;
     }
     
@@ -180,6 +194,15 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
 		return $this->holder_email;
     }
     
+    public function get_holder_name() {
+		return $this->holder_name;
+    }
+    
+    public function get_id()
+    {
+       return $this->id;
+    }
+      
     public function get_key_resource() {
 		return $this->key_resource;
     }
@@ -187,6 +210,7 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
     public function get_key_value() {
 		return $this->key_value;
     }
+    
 	public function new_key_value() {
         $key = time();
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -196,6 +220,7 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
         }
         return sha1($key); 
     }
+    
     public function save() {if ($this->id > 0 ) {
     		// Update an existing user
 	    	$sql = array(
@@ -220,15 +245,8 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
 	    	$this->db->iud_sql($sql);
     	}
     }
-
-    public function set_holder_name($holder_name) {
-    	if ($holder_name != '')
-    		$this->holder_name = htmlspecialchars($holder_name);
-    	elseif ($holder_name == '')
-    		$this->holder_name = '';
-    }
     
-    public function set_holder_affiliation($holder_affiliation) {
+	public function set_holder_affiliation($holder_affiliation) {
     	if ($holder_affiliation != '')
     		$this->holder_affiliation = htmlspecialchars($holder_affiliation);
     	elseif ($holder_affiliation == '')
@@ -240,6 +258,13 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
     		$this->holder_email = htmlspecialchars($holder_email);
     	elseif ($holder_email == '')
     		$this->holder_email = '';
+    }
+    
+    public function set_holder_name($holder_name) {
+    	if ($holder_name != '')
+    		$this->holder_name = htmlspecialchars($holder_name);
+    	elseif ($holder_name == '')
+    		$this->holder_name = '';
     }
     
      public function set_key_resource($key_resource) {

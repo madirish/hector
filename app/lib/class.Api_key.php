@@ -273,6 +273,17 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
     	elseif ($key_resource == '')
     		$this->key_resource = '';
     }
+    
+     public function validate($key) {
+    	if ($key != '')
+    	{
+    		$sql=array('SELECT * FROM api_key WHERE api_key_value=\'?s\'',$key);
+    		$result=$this->db->fetch_object_array($sql);
+    		if($result)
+    			return true;
+    	}
+    	return false;
+    }
 
 } /* end of class Api_key */
 

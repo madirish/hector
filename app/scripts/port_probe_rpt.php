@@ -52,8 +52,8 @@ if(php_sapi_name() == 'cli') {
 			'AND a.host_id = 31 ' .
 			'AND a.rule_id = r.rule_id ' .
 			'AND r.rule_number = 104500 ' .
-		'ORDER BY portnumber';*/
-	$sql = 'SELECT src_ip, concat(dst_port, \' \', proto) as portnumber from darknet where received_at > DATE_SUB(CURDATE(), INTERVAL 1 DAY) ORDER BY dst_port';
+		'ORDER BY portnumber LIMIT 20';*/
+	$sql = 'SELECT src_ip, concat(dst_port, \' \', proto) as portnumber from darknet where received_at > DATE_SUB(CURDATE(), INTERVAL 1 DAY) ORDER BY dst_port LIMIT 20';
 	$port_result = $db->fetch_object_array($sql) or die(mysql_error());
 	
 	$portcounts = array();
@@ -63,7 +63,7 @@ if(php_sapi_name() == 'cli') {
 	arsort($portcounts);
 	$db->close();
 	
-	$output = "The following are a list of ports (excluding SSH (DPT=22)) on our honeypot that were " .
+	$output = "The following are a list of ports on the darknet sensor that were " .
 			"probed in the 24 hour span from midnight to 11:59 PM " .
 			"yesterday.\n\n";
 	$output .= "Port Number\tHit Count\n";

@@ -279,7 +279,7 @@ else {
 	// Run the scan and store the results on the filesystem
 	$xmloutput = $approot . 'scripts/results-' . time() . '.xml';  // Avoid namespace collissions!
 	$portspec = ($ports != '') ? '-p T:' . $ports : '';
-	#if ($version) $portspec .= ' -sV ';
+	if ($version) $portspec .= ' -sV ';
 	$command = $nmap . ' -sT -PN -oX ' . $xmloutput . ' ' . $portspec .
 		' -T4 -iL ' . $ipfilename;
 	loggit("nmap_scan.php process", "Executing the command: " . $command);

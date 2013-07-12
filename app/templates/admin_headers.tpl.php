@@ -62,6 +62,7 @@ $ip_search->save();
         <li class="divider"></li>
         <li class="nav-header">Authorizations</li>
         <li><a href="?action=config&object=users">User accounts</a></li>
+        <li><a href="?action=config&object=api_key">API key</a></li>
       </ul>
     </li>
     <li><a href="?action=logout">Log Out</a></li>

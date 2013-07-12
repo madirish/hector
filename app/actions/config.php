@@ -54,6 +54,10 @@ elseif ($object == 'add_hosts') {
 	$_GET['object'] = 'add_hosts';
 	include_once($approot . 'actions/add_hosts.php');
 }
+elseif ($object == 'api_key') {
+	$_GET['object'] = 'api_key';
+	include_once($approot . 'actions/details.php');
+}
 else {
 	include_once($templates. 'admin_headers.tpl.php');
 	include_once($templates . 'config.tpl.php');

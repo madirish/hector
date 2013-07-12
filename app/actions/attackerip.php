@@ -32,6 +32,11 @@ if ($ip != '') {
 	$login_attempts = $honeypot_logins[0]->thecount;
 	if ($login_attempts == '') $login_attempts = 'no';
 	
+	$sql = 'select count(id) as thecount from koj_executed_commands where ip = \'' . $ip . '\'';
+	$honeypot_commands = $db->fetch_object_array($sql);
+	$commands = $honeypot_commands[0]->thecount;
+	if ($commands == '') $commands = 'no';
+	
 	$sql = 'select a.alert_date, a.rule_log, r.rule_level from ossec_alerts a, ossec_rules r ' .
 			'where a.rule_id = r.rule_id and r.rule_level >= 7 AND ' .
 			'a.rule_src_ip_numeric = inet_aton(\'' . $ip . '\') order by alert_date DESC';
@@ -55,6 +60,13 @@ if (is_array($darknet_drops)) {
 	}
 }
 $content .= '</tbody></table>';
+
+$ip_addr = htmlspecialchars($ip);
+$ip_name = gethostbyaddr($ip);
+$ip_rpt_display = $ip_addr;
+if ($ip_addr != $ip_name) {
+	$ip_rpt_display .= ' - ' . $ip_name;
+}
 
 include_once($templates . 'attackerip.tpl.php');
 	

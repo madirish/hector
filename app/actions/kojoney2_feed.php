@@ -19,11 +19,16 @@ else
 	{
 		$db = Db::get_instance();
 		$sql = 'select time, ip from koj_login_attempts ' .
-			'where time > date_sub(curdate(), interval 1 day) order by time desc';
+			'where time between date_sub(curdate(), interval 1 day) and curdate() order by time asc';
 		$results = $db->fetch_object_array($sql);
+		$ips = array();
 		foreach($results as $result)
 		{
-			print $result->ip . ' ' . $result->time."\r\n";
+			if(!in_array($result->ip, $ips))
+			{
+				print $result->ip . ' ' . $result->time."\r\n";
+				$ips[] = $result->ip;
+			}
 		}
 		$db->close();
 	}

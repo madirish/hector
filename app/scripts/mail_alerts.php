@@ -13,14 +13,14 @@
  */
 $attempt_mime_delivery = FALSE; // Causes problems with iOS
 
-/*if(php_sapi_name() == 'cli') {
+if(php_sapi_name() == 'cli') {
 	$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 	$approot = '/opt/hector/app/';
 }
-else {*/
+else {
 	$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 	$approot = realpath(substr($_SERVER['PATH_TRANSLATED'],0,strrpos($_SERVER['PATH_TRANSLATED'],'/')) . '/../') . '/';
-/*}*/
+}
 
 	
 	

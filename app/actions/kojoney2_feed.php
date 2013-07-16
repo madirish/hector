@@ -20,7 +20,7 @@ else
 		print "#Kojoney2 feed\n";
 		print "#description: Kojoney2 login attempts\n";
 		print "#values: address, detecttime\n";
-		print "#delimeters: \\t, \\n\n\n";
+		print "#delimiters: \\t, \\n\n\n";
 		$db = Db::get_instance();
 		$sql = 'select distinct(ip), time from koj_login_attempts ' .
 			'where time between date_sub(curdate(), interval 1 day) and curdate() group by ip';

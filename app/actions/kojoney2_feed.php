@@ -6,29 +6,28 @@
  */
 require_once($approot . 'lib/class.Api_key.php');
 require_once($approot . 'lib/class.Db.php');
-if(!isset($_GET['api_key']))
+if(!(isset($_GET['api_key']) and isset($_GET['ajax'])))
 {
-	print 'no key provided(go to home page)';
+	header("Location: ?action=summary");
 }
 else
 {
+	header("Content-type: text/plain");
 	$api_key=new Api_key();
 	$isvalid=$api_key->validate($_GET['api_key']);
-	
 	if($isvalid)
 	{
+		print "#Kojoney2 feed\n";
+		print "#description: Kojoney2 login attempts\n";
+		print "#values: address, detecttime\n";
+		print "#delimeters: \\t, \\n\n\n";
 		$db = Db::get_instance();
-		$sql = 'select time, ip from koj_login_attempts ' .
-			'where time between date_sub(curdate(), interval 1 day) and curdate() order by time asc';
+		$sql = 'select distinct(ip), time from koj_login_attempts ' .
+			'where time between date_sub(curdate(), interval 1 day) and curdate() group by ip';
 		$results = $db->fetch_object_array($sql);
-		$ips = array();
 		foreach($results as $result)
 		{
-			if(!in_array($result->ip, $ips))
-			{
-				print $result->ip . ' ' . $result->time."\r\n";
-				$ips[] = $result->ip;
-			}
+			print $result->ip . "\t" . $result->time."\n";
 		}
 		$db->close();
 	}

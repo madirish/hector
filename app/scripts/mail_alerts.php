@@ -19,7 +19,11 @@ if(php_sapi_name() == 'cli') {
 }
 else {
 	$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-	$approot = realpath(substr($_SERVER['PATH_TRANSLATED'],0,strrpos($_SERVER['PATH_TRANSLATED'],'/')) . '/../') . '/';
+	if (! isset($approot)) {
+		$servpath = $_SERVER['PATH_TRANSLATED'];
+		$approot = realpath(substr($servpath,0,strrpos($servpath,'/')) . '/../') . '/';
+	}
+	
 }
 
 	

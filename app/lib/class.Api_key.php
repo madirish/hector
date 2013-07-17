@@ -279,8 +279,7 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
     	{
     		$sql=array('SELECT * FROM api_key WHERE api_key_value=\'?s\'',$key);
     		$result=$this->db->fetch_object_array($sql);
-    		if($result)
-    			return true;
+    		if($result) return true;
     	}
     	return false;
     }

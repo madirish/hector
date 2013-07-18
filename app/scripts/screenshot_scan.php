@@ -1,4 +1,30 @@
 <?php
+
+/**
+ *   
+ * This script uses phantomjs to take screenshots
+ * of websites based on the data from the
+ * database's 'url' table. URLs are first pulled
+ * from the database. Then each URL's HTTP
+ * response header is checked. If the response
+ * code is good the URL is passed to phantomjs
+ * which saves a screenshot to the file system
+ * and the file name is added to the URL table in
+ * the database.
+ * 
+ *   
+ * Example usage:
+ * 
+ * $ php screenshot_scan.php
+ * 
+ * This script is run from scan_cron.php 
+ * 
+ * @author Josh Bauer <joshbauer3@gmail.com>
+ * @package HECTOR
+ * 
+ * Last modified July 18, 2013
+ */
+ 
 if(php_sapi_name() == 'cli') {
 	$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 	$approot = realpath(substr($_SERVER['PATH_TRANSLATED'],0,strrpos($_SERVER['PATH_TRANSLATED'],'/')) . '/../') . '/';	
@@ -48,7 +74,7 @@ else {
 		$output='';
 		$url=$result->url_url;
 		if (!(substr($url,0,4)=='http')) {$url = 'http://' . $url;}
-		$file_name = str_replace(array('/','.'),'_',$result->url_url) . "_" . time() .".png";
+		$file_name = str_replace(array('/','.',':'),'_',$result->url_url) . "_" . time() .".png";
 		$code = get_headers($url);
 		if ($code) {
 			$code = substr($code[0], 9, 3);

@@ -28,7 +28,8 @@ else {
 			}
 	}
 	else { 
-		header("HTTP/1.0 404 Not Found");}
+		header("HTTP/1.0 404 Not Found");
 		print "Error 404 Not Found";
+	}
 }
 ?>

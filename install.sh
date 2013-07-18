@@ -66,6 +66,7 @@ if [ ! -d $HECTOR_PATH ] ; then
 fi
 cp -rf app $HECTOR_PATH
 cp -rf html $HECTOR_PATH
+mkdir ${HECTOR_PATH}/app/screenshots
 
 echo " [+] Files moved"
 echo " [+] Customizing config at $HECTOR_PATH/app/conf/config.ini"

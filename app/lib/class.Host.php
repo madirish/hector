@@ -124,6 +124,8 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 */
 	private $link;
 	
+	private $urls = array();
+	
 	private $ignore_portscan = NULL;
 	private $ignore_portscan_byuserid = NULL;
 	private $ignoredfor_days = NULL;
@@ -183,6 +185,11 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 					$this->ignoredfor_days = $result[0]->host_ignoredfor_days;
 					$this->ignored_timestamp = $result[0]->host_ignored_timestamp;
 					$this->ignored_note = $result[0]->host_ignored_note;
+					$sql= array('SELECT url_url from url where host_id = ?i', $id);
+					$results = $this->db->fetch_object_array($sql);
+					foreach($results as $result){
+						$this->urls[] = $result->url_url;
+					}
 				}
 				// Is there an exclusion?  Should it be honored?
 				if ($this->ignore_portscan) {
@@ -593,6 +600,16 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		$retval .= '<tr id="notes"><td>Tags:</td><td>';
 		$retval .= implode(',', $this->get_tag_names());
 		$retval .= '</td></tr>' . "\n";
+		$retval .= '<tr id="screenshots"><td>Screenshots:</td><td>';
+		$retval .= '<table id="screenshotstable" class="table table-bordered">' . "\n";
+		foreach($this->get_urls() as $url){
+			$retval .= '<tr><td>' . $url . '</td>';
+			$retval .= '<td><a href=\'?action=display_screenshot&ajax&url=' . $url .'\'>';
+			$retval .= '<img width=150 alt="No image available" src=\'?action=display_screenshot&ajax&url=' . $url .'\'></img>';
+			$retval .= '</a></td></tr>';
+			}
+		$retval .= '</table>';
+		$retval .= '</td></tr>' . "\n";
 		if ($this->get_portscan_exclusion()) {
 			$retval .= '<tr id="excludedby"><td>Excluded by:</td><td>' . $this->get_excludedby_name() . '</td></tr>' . "\n";
 			$retval .= '<tr id="excludedon"><td>Excluded on:</td><td>' . $this->get_excludedon() . '</td></tr>' . "\n";
@@ -817,6 +834,10 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 			$names[] = $tag->get_name();
 		}
 		return $names;
+	}
+
+	public function get_urls() {
+		return $this->urls;
 	}
 
 	/**

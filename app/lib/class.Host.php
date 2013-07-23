@@ -602,10 +602,10 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		$retval .= '</td></tr>' . "\n";
 		$retval .= '<tr id="screenshots"><td>Screenshots:</td><td>';
 		$retval .= '<table id="screenshotstable" class="table table-bordered">' . "\n";
-		foreach($this->get_urls() as $url){
+		foreach($this->get_urls() as $url) {
 			$retval .= '<tr><td>' . $url . '</td>';
-			$retval .= '<td><a href=\'?action=display_screenshot&ajax&url=' . $url .'\'>';
-			$retval .= '<img width=150 alt="No image available" src=\'?action=display_screenshot&ajax&url=' . $url .'\'></img>';
+			$retval .= '<td><a href=\'?action=display_screenshot&ajax&url=' . $url . '\'>';
+			$retval .= '<img width=150 alt="No image available" src=\'?action=display_screenshot&ajax&url=' . $url . '\'></img>';
 			$retval .= '</a></td></tr>';
 			}
 		$retval .= '</table>';
@@ -836,6 +836,12 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		return $names;
 	}
 
+	/**
+	 * Get a list of URLs
+	 * 
+	 * @access public
+	 * @return Array of strings
+	 */
 	public function get_urls() {
 		return $this->urls;
 	}

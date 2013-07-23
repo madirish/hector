@@ -133,7 +133,7 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
 		if ($handle = opendir($approot . '/scripts')) {
 			while (false !== ($entry = readdir($handle))) {
 				$fname = $approot . 'scripts/' . $entry; 
-				if (is_file($fname) && substr($fname, -4) == ".php") {
+				if (is_file($fname) && substr($fname, -9) == "_scan.php") {
 					include_once($fname);
 				}
 			}

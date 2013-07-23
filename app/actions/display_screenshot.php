@@ -6,7 +6,7 @@
  */
 require_once($approot . 'lib/class.Db.php');
 $approot = getcwd() . '/../app/';
-if(!(isset($_GET['url']) and isset($_GET['ajax']))) {
+if (!(isset($_GET['url']) and isset($_GET['ajax']))) {
 	header("HTTP/1.0 404 Not Found");
 	print "Error 404 Not Found";
 }

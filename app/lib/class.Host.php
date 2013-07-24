@@ -627,8 +627,8 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		foreach($this->get_urls() as $url) {
 			$retval .= '<tr><td>' . $url[0] . '</td><td>';
 			if ($url[1] and file_exists($approot . 'screenshots/' . $url[1]))  {
-				$retval .= '<a href=\'?action=display_screenshot&ajax&url=' . $url[0] . '\'>';
-				$retval .= '<img width=150 alt="No image found" src=\'?action=display_screenshot&ajax&url=' . $url[0] . '\'></img></a>';
+				$retval .= '<a href=\'?action=display_screenshot&ajax&url=' . urlencode($url[0]) . '\'>';
+				$retval .= '<img width=150 alt="No image found" src=\'?action=display_screenshot&ajax&url=' . urlencode($url[0]) . '\'></img></a>';
 				
 			}
 			else { 

@@ -87,7 +87,7 @@ else {
 		}
 		//conditional can be changed to accept certain response codes (200,301,etc...)
 		if($code) {
-			$command = "phantomjs /opt/hector/app/scripts/snapshot.js " . $url . " " . $file_name;
+			$command = "phantomjs /opt/hector/app/scripts/snapshot.js '" . $url . "' '" . $file_name . "'";
 			$output = trim(shell_exec($command));
 			$dblog->log("screenshot_scan.php process", "The command: " . $command . " completed! Output: " . $output);
 			$log->write_message("The command: " . $command . " completed! Output: " . $output);

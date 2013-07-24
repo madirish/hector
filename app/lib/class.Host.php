@@ -124,6 +124,9 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 */
 	private $link;
 	
+	/**
+	 * Array of host's urls and screenshot filenames (url_url, url_screenshot)
+	 */
 	private $urls = array();
 	
 	private $ignore_portscan = NULL;
@@ -185,10 +188,10 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 					$this->ignoredfor_days = $result[0]->host_ignoredfor_days;
 					$this->ignored_timestamp = $result[0]->host_ignored_timestamp;
 					$this->ignored_note = $result[0]->host_ignored_note;
-					$sql= array('SELECT url_url from url where host_id = ?i', $id);
+					$sql= array('SELECT url_url, url_screenshot from url where host_id = ?i', $id);
 					$results = $this->db->fetch_object_array($sql);
 					foreach($results as $result){
-						$this->urls[] = $result->url_url;
+						$this->urls[] = array($result->url_url, $result->url_screenshot);
 					}
 				}
 				// Is there an exclusion?  Should it be honored?
@@ -600,16 +603,6 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		$retval .= '<tr id="notes"><td>Tags:</td><td>';
 		$retval .= implode(',', $this->get_tag_names());
 		$retval .= '</td></tr>' . "\n";
-		$retval .= '<tr id="screenshots"><td>Screenshots:</td><td>';
-		$retval .= '<table id="screenshotstable" class="table table-bordered">' . "\n";
-		foreach($this->get_urls() as $url) {
-			$retval .= '<tr><td>' . $url . '</td>';
-			$retval .= '<td><a href=\'?action=display_screenshot&ajax&url=' . $url . '\'>';
-			$retval .= '<img width=150 alt="No image available" src=\'?action=display_screenshot&ajax&url=' . $url . '\'></img>';
-			$retval .= '</a></td></tr>';
-			}
-		$retval .= '</table>';
-		$retval .= '</td></tr>' . "\n";
 		if ($this->get_portscan_exclusion()) {
 			$retval .= '<tr id="excludedby"><td>Excluded by:</td><td>' . $this->get_excludedby_name() . '</td></tr>' . "\n";
 			$retval .= '<tr id="excludedon"><td>Excluded on:</td><td>' . $this->get_excludedon() . '</td></tr>' . "\n";
@@ -628,6 +621,25 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		}
 		$retval .= '</tbody></table>';
 		$retval .= '</div></div>';
+		$retval .= '<div><table id="screenshotstable" class="table table-striped">' . "\n";
+		$retval .= '<thead><tr><th>URL</th><th>Screenshot</th></tr></thead><tbody>';
+		$approot = getcwd() . '/../app/';
+		foreach($this->get_urls() as $url) {
+			$retval .= '<tr><td>' . $url[0] . '</td><td>';
+			if ($url[1] and file_exists($approot . 'screenshots/' . $url[1]))  {
+				$retval .= '<a href=\'?action=display_screenshot&ajax&url=' . $url[0] . '\'>';
+				$retval .= '<img width=150 alt="No image found" src=\'?action=display_screenshot&ajax&url=' . $url[0] . '\'></img></a>';
+				
+			}
+			else { 
+				$retval .='No image available';
+				$sql = array('update url set url_screenshot=NULL where url_url=\'?s\'',$url[0]);
+				$this->db->iud_sql($sql); 
+			}
+		}
+			$retval .= '</td></tr>';
+		$retval .= '</tbody></table>';
+		$retval .= '</div>' . "\n";
 		return $retval;
 	}
 

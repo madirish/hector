@@ -6,6 +6,10 @@ if (system.args.length < 3) {
     phantom.exit();
 } 
 else {
+	setTimeout(function() {
+            console.log('timeout');
+            phantom.exit();
+        }, 5000);
 	filepath="/opt/hector/app/screenshots/"+system.args[2]
 	address=system.args[1];
 	page.open(address, function(status){

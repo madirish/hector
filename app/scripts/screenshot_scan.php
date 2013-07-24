@@ -89,9 +89,9 @@ else {
 		if($code) {
 			$command = "phantomjs /opt/hector/app/scripts/snapshot.js " . $url . " " . $file_name;
 			$output = trim(shell_exec($command));
-			$dblog->log("screenshot_scan.php process", "The command: " . $command . " completed!");
-			$log->write_message("The command: " . $command . " completed!");
-			if ($output == "Status:  success") {
+			$dblog->log("screenshot_scan.php process", "The command: " . $command . " completed! Output: " . $output);
+			$log->write_message("The command: " . $command . " completed! Output: " . $output);
+			if (strstr($output, "Status:  success")) {
 				$db->iud_sql(array('update url set url_screenshot = \'?s\' where url_url= \'?s\'', $file_name, $result->url_url));
 			}
 		}

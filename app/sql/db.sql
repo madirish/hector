@@ -289,7 +289,7 @@ CREATE TABLE IF NOT EXISTS `tag` (
 -- FQDN's that resolve to hosts
 CREATE TABLE IF NOT EXISTS `url` (
   `host_id` INT NOT NULL,
-  `host_ip` INT NOT NULL,
+  `host_ip` INT UNSIGNED NOT NULL,
   `url_url` varchar(255) NOT NULL,
   `url_screenshot` varchar(255) DEFAULT NULL,
   UNIQUE KEY `url_url` (`url_url`)

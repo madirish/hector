@@ -68,6 +68,8 @@ else {
 	$log = Log::get_instance();
 	$dblog->log("screenshot_scan.php status", "screenshot_scan.php invoked.");
 	$log->write_message("screenshot_scan.php invoked.");
+	normalize_database();
+	populate_database();
 	$sql = "select url_url from url";
 	$results= $db->fetch_object_array($sql);	
 	foreach($results as $result) {
@@ -100,6 +102,68 @@ else {
 	$dblog->log("screenshot_scan.php status", "screenshot scan complete.");
 	$log->write_message("screenshot scan complete.");
 	$db->close();
-	syslog(LOG_INFO, 'screenshot_scan.php complete.');	
+	syslog(LOG_INFO, 'screenshot_scan.php complete.');
+}
+function get_hosts_by_port($hasport) {
+	$filter = '';
+	$hosts = array();
+	$host_ids = array();
+	// Restrict machines based on port specifications
+	if ($hasport != null) {
+		$filter .= ' AND nsr.state_id=1 AND nsr.nmap_scan_result_port_number in (' . mysql_real_escape_string($hasport) . ')';
+		//$filter .= ' AND nsr.host_id IN (' . implode(',',$host_ids) . ')';
+		$prevscan = new Collection('Nmap_scan_result', $filter);
+		if (isset($prevscan->members) && is_array($prevscan->members)) {
+			// rebuild the $hosts and $host_ids arrays
+			foreach($prevscan->members as $seenhosts) {
+				if (array_search($seenhosts->get_host_id(), $host_ids) === FALSE)
+				$hosts_ids[] = $seenhosts->get_host_id();
+				$tmphost = new Host($seenhosts->get_host_id());
+				$hosts[$tmphost->get_ip()] = $tmphost;
+			}
+		}
+	}
+	return $hosts;
+}
+
+function normalize_database() {
+	$blacklist=array('.au','.doc','.docx','.gz','.pdf','.ppt');
+	$db = Db::get_instance();
+	$dblog = Dblog::get_instance();
+	$log = Log::get_instance();
+	$sql = "select url_url from url";
+	$results= $db->fetch_object_array($sql);
+	foreach($results as $result) {
+		$url=$result->url_url;
+		$extension = strrchr($url, '.');
+		if (in_array($extension, $blacklist)) {
+			$db->iud_sql(array('delete from url where url_url=\'?s\'', $url));
+			$dblog->log("screenshot_scan.php process", $url . "removed from database due to extension \'" . $extension . "\'");
+			$log->write_message("screeshot scan: " . $url . "removed from database due to extension \'" . $extension . "\'");
+		}
+	}
+}
+
+function populate_database() {
+	$hosts = get_hosts_by_port(80);
+	foreach ($hosts as $host) {
+		$db = Db::get_instance();
+		$sql= array('insert ignore into url set host_id=?i, host_ip=INET_ATON(\'?s\'), url_url=\'?s\'' ,
+			$host->get_id() ,
+			$host->get_ip() ,
+			'http://' . $host->get_ip()
+		);
+		$db->iud_sql($sql);
+	}
+	$hosts = get_hosts_by_port(443);
+	foreach ($hosts as $host) {
+		$db = Db::get_instance();
+		$sql= array('insert ignore into url set host_id=?i, host_ip=INET_ATON(\'?s\'), url_url=\'?s\'' ,
+			$host->get_id() ,
+			$host->get_ip() ,
+			'https://' . $host->get_ip()
+		);
+		$db->iud_sql($sql);
+	}			
 }
 ?>

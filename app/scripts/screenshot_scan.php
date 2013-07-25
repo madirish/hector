@@ -111,7 +111,6 @@ function get_hosts_by_port($hasport) {
 	// Restrict machines based on port specifications
 	if ($hasport != null) {
 		$filter .= ' AND nsr.state_id=1 AND nsr.nmap_scan_result_port_number in (' . mysql_real_escape_string($hasport) . ')';
-		//$filter .= ' AND nsr.host_id IN (' . implode(',',$host_ids) . ')';
 		$prevscan = new Collection('Nmap_scan_result', $filter);
 		if (isset($prevscan->members) && is_array($prevscan->members)) {
 			// rebuild the $hosts and $host_ids arrays
@@ -127,14 +126,14 @@ function get_hosts_by_port($hasport) {
 }
 
 function normalize_database() {
-	$blacklist=array('.au','.doc','.docx','.gz','.pdf','.ppt');
+	$blacklist = array('.au','.doc','.docx','.gz','.pdf','.ppt');
 	$db = Db::get_instance();
 	$dblog = Dblog::get_instance();
 	$log = Log::get_instance();
 	$sql = "select url_url from url";
-	$results= $db->fetch_object_array($sql);
+	$results = $db->fetch_object_array($sql);
 	foreach($results as $result) {
-		$url=$result->url_url;
+		$url = $result->url_url;
 		$extension = strrchr($url, '.');
 		if (in_array($extension, $blacklist)) {
 			$db->iud_sql(array('delete from url where url_url=\'?s\'', $url));
@@ -158,7 +157,7 @@ function populate_database() {
 	$hosts = get_hosts_by_port(443);
 	foreach ($hosts as $host) {
 		$db = Db::get_instance();
-		$sql= array('insert ignore into url set host_id=?i, host_ip=INET_ATON(\'?s\'), url_url=\'?s\'' ,
+		$sql = array('insert ignore into url set host_id=?i, host_ip=INET_ATON(\'?s\'), url_url=\'?s\'' ,
 			$host->get_id() ,
 			$host->get_ip() ,
 			'https://' . $host->get_ip()

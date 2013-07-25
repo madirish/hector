@@ -57,7 +57,8 @@ EOT;
 }
 else {	
 	// Set high mem limit to prevent resource exhaustion
-	ini_set('memory_limit', '512M');	
+	ini_set('memory_limit', '512M');
+	ini_set('default_socket_timeout', 10);	
 	syslog(LOG_INFO, 'screenshot_scan.php starting.');		
 	/**
 	 * Singletons

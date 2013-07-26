@@ -47,9 +47,9 @@ else {
 $hostcount = $db->fetch_object_array($sql);
 
 // Darknet summary:
-$sql = "SELECT DISTINCT(dst_port) AS port, count(id) AS cnt " .
+$sql = "SELECT CONCAT(dst_port, '/', proto) AS port, count(id) AS cnt " .
 		"FROM darknet WHERE received_at > DATE_SUB(NOW(), INTERVAL 4 DAY) " .
-		"GROUP BY port ORDER BY cnt DESC LIMIT 20";
+		"GROUP BY port ORDER BY cnt DESC LIMIT 10";
 $probe_result = $db->fetch_object_array($sql);
 
 $count = $hostcount[0]->hostcount;

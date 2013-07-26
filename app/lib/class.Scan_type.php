@@ -124,7 +124,8 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
 	 * Scan the scripts directory and populate the 
 	 * get_add_alter_form() appropriately with only
 	 * scripts meant to be configured via the web
-	 * front end.
+	 * front end.  Note that only scripts that have 
+	 * a filename ending in _scan.php will be included.
 	 */
 	private function get_script_exes() {
 		global $approot;

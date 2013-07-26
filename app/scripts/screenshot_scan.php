@@ -71,34 +71,7 @@ else {
 	$log->write_message("screenshot_scan.php invoked.");
 	normalize_database();
 	populate_database();
-	$sql = "select url_url from url";
-	$results= $db->fetch_object_array($sql);	
-	foreach($results as $result) {
-		$output='';
-		$url=$result->url_url;
-		if (!(substr($url,0,4)=='http')) {$url = 'http://' . $url;}
-		$file_name = str_replace(array('/','.',':'),'_',$result->url_url) . "_" . time() .".png";
-		$code = get_headers($url);
-		if ($code) {
-			$code = substr($code[0], 9, 3);
-			$dblog->log("screenshot_scan.php process", "The url: " . $url . " gave response code " . $code . ".");
-			$log->write_message("The url: " . $url . " gave response code " . $code . ".");
-		}
-		else {
-			$dblog->log("screenshot_scan.php process", "The url: " . $url . " is down.");
-			$log->write_message("The url: " . $url . " is down.");
-		}
-		//conditional can be changed to accept certain response codes (200,301,etc...)
-		if($code) {
-			$command = "phantomjs /opt/hector/app/scripts/snapshot.js '" . $url . "' '" . $file_name . "'";
-			$output = trim(shell_exec($command));
-			$dblog->log("screenshot_scan.php process", "The command: " . $command . " completed! Output: " . $output);
-			$log->write_message("The command: " . $command . " completed! Output: " . $output);
-			if (strstr($output, "Status:  success")) {
-				$db->iud_sql(array('update url set url_screenshot = \'?s\' where url_url= \'?s\'', $file_name, $result->url_url));
-			}
-		}
-	}
+	shell_exec('python /opt/hector/app/scripts/screenshot_scan.py');
 	// Shut down nicely
 	$dblog->log("screenshot_scan.php status", "screenshot scan complete.");
 	$log->write_message("screenshot scan complete.");

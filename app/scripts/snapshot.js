@@ -7,18 +7,18 @@ if (system.args.length < 3) {
 } 
 else {
 	setTimeout(function() {
-            console.log('timeout');
+            console.log('Status: timeout');
             phantom.exit();
         }, 10000);
 	filepath="/opt/hector/app/screenshots/"+system.args[2]
 	address=system.args[1];
 	page.open(address, function(status){
 		if(status !='success'){
-			console.log('Status:  ' + status);
+			console.log('Status: ' + status);
 			phantom.exit();
 		}
 		else{
-			console.log('Status:  ' + status);
+			console.log('Status: ' + status);
 			page.render(filepath);
 			phantom.exit();
 		}

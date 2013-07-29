@@ -22,7 +22,7 @@
  * @author Josh Bauer <joshbauer3@gmail.com>
  * @package HECTOR
  * 
- * Last modified July 18, 2013
+ * Last modified July 29, 2013
  */
  
 if(php_sapi_name() == 'cli') {
@@ -34,6 +34,7 @@ if(php_sapi_name() == 'cli') {
  * Neccesary includes
  */
 require_once($approot . 'lib/class.Config.php');
+require_once($approot . 'lib/class.Db.php');
 require_once($approot . 'lib/class.Dblog.php');
 require_once($approot . 'lib/class.Host.php');
 require_once($approot . 'lib/class.Host_group.php');
@@ -57,8 +58,7 @@ EOT;
 }
 else {	
 	// Set high mem limit to prevent resource exhaustion
-	ini_set('memory_limit', '512M');
-	ini_set('default_socket_timeout', 10);	
+	ini_set('memory_limit', '512M');	
 	syslog(LOG_INFO, 'screenshot_scan.php starting.');		
 	/**
 	 * Singletons
@@ -71,12 +71,18 @@ else {
 	$log->write_message("screenshot_scan.php invoked.");
 	normalize_database();
 	populate_database();
+	$dblog->log("screenshot_scan.php process", "screenshot_scan.py invoked");
+	$log->write_message("screeshot scan: screenshot_scan.py invoked");
 	shell_exec('python /opt/hector/app/scripts/screenshot_scan.py');
+	$dblog->log("screenshot_scan.php process", "screenshot_scan.py complete");
+	$log->write_message("screeshot scan: screenshot_scan.py complete");
+	remove_old();
+	
 	// Shut down nicely
+	syslog(LOG_INFO, 'screenshot_scan.php complete.');
 	$dblog->log("screenshot_scan.php status", "screenshot scan complete.");
 	$log->write_message("screenshot scan complete.");
 	$db->close();
-	syslog(LOG_INFO, 'screenshot_scan.php complete.');
 }
 function get_hosts_by_port($hasport) {
 	$filter = '';
@@ -99,11 +105,16 @@ function get_hosts_by_port($hasport) {
 	return $hosts;
 }
 
+/**
+ * remove urls from the database that refer to files that phantomjs will not render
+ */
 function normalize_database() {
 	$blacklist = array('.au','.doc','.docx','.gz','.pdf','.ppt');
 	$db = Db::get_instance();
 	$dblog = Dblog::get_instance();
 	$log = Log::get_instance();
+	$dblog->log("screenshot_scan.php process", "nomalize database started");
+	$log->write_message("screeshot scan: nomalize database started");
 	$sql = "select url_url from url";
 	$results = $db->fetch_object_array($sql);
 	foreach($results as $result) {
@@ -115,9 +126,19 @@ function normalize_database() {
 			$log->write_message("screeshot scan: " . $url . "removed from database due to extension \'" . $extension . "\'");
 		}
 	}
+	$dblog->log("screenshot_scan.php process", "nomalize database complete");
+	$log->write_message("screeshot scan: nomalize database complete");
 }
 
+/**
+ * adds urls to the database for host with port 80 or 443 open
+ */
 function populate_database() {
+	$db = Db::get_instance();
+	$dblog = Dblog::get_instance();
+	$log = Log::get_instance();
+	$dblog->log("screenshot_scan.php process", "populate database started");
+	$log->write_message("screeshot scan: populate database started");
 	$hosts = get_hosts_by_port(80);
 	foreach ($hosts as $host) {
 		$db = Db::get_instance();
@@ -137,6 +158,35 @@ function populate_database() {
 			'https://' . $host->get_ip()
 		);
 		$db->iud_sql($sql);
-	}			
+	}
+	$dblog->log("screenshot_scan.php process", "populate database complete");
+	$log->write_message("screeshot scan: populate database complete");		
+}
+
+/**
+ * removes unreferenced files from the screenshots directory
+ */
+function remove_old() {
+	$db = Db::get_instance();
+	$db = Db::get_instance();
+	$dblog = Dblog::get_instance();
+	$log = Log::get_instance();
+	$dblog->log("screenshot_scan.php process", "remove old screenshot files started");
+	$log->write_message("screeshot scan: remove old screenshot files started");
+	$approot = realpath(substr($_SERVER['PATH_TRANSLATED'],0,strrpos($_SERVER['PATH_TRANSLATED'],'/')) . '/../') . '/';
+	if ($files = opendir($approot . '/screenshots')) {
+		while (($dir = readdir($files)) !== false) {
+			if (substr($dir, -4) == ".png") {
+				$results=$db->fetch_object_array(array('select * from url where url_screenshot=\'?s\'', $dir));
+				if (count($results) == 0) {
+					unlink($approot . '/screenshots/' . $dir);
+					$dblog->log("screenshot_scan.php process", "unused file: " . $dir . " deleted");
+					$log->write_message("screeshot scan: unused file: " . $dir . " deleted");
+				}
+			}
+		}
+	}
+	$dblog->log("screenshot_scan.php process", "remove old screenshot files complete");
+	$log->write_message("screeshot scan: remove old screenshot files complete");
 }
 ?>

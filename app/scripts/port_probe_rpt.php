@@ -1,5 +1,4 @@
 <?php
-
 /**
  * 
  * Darknet report
@@ -11,7 +10,7 @@
  * @todo Log the scan_id
  * @package HECTOR
  * 
- * Last modified February 2, 2012
+ * Last modified 29 July 2013
  */
   
   
@@ -42,25 +41,10 @@ if(php_sapi_name() == 'cli') {
 	$dblog = Dblog::get_instance();
 	$log = Log::get_instance();
 	
-	// This OSSC dependent query is deprecated in favor of rsyslog->MySQL darknet logging 
-	/*$sql = 'SELECT rule_src_ip, ' .
-		'SUBSTRING(a.rule_log, LOCATE("DPT=", a.rule_log), LOCATE(" WINDOW=", a.rule_log) - LOCATE("DPT=", a.rule_log)) AS portnumber ' .  
-		'FROM ossec_alerts a, ossec_rules r ' .
-		'WHERE a.alert_date > DATE_SUB(CURDATE(), INTERVAL 1 DAY) ' .
-			//'AND rule_id = 182 ' .
-			'AND a.rule_src_ip != \'128.91.234.47\' ' .
-			'AND a.host_id = 31 ' .
-			'AND a.rule_id = r.rule_id ' .
-			'AND r.rule_number = 104500 ' .
-		'ORDER BY portnumber LIMIT 20';*/
-	$sql = 'SELECT src_ip, concat(dst_port, \' \', proto) as portnumber from darknet where received_at > DATE_SUB(CURDATE(), INTERVAL 1 DAY) ORDER BY dst_port LIMIT 20';
+	$sql = "SELECT CONCAT(dst_port, '/', proto) AS port, count(id) AS cnt " .
+		"FROM darknet WHERE received_at > DATE_SUB(NOW(), INTERVAL 1 DAY) " .
+		"GROUP BY port ORDER BY cnt DESC LIMIT 10";
 	$port_result = $db->fetch_object_array($sql) or die(mysql_error());
-	
-	$portcounts = array();
-	foreach($port_result as $scan) {
-		$portcounts[$scan->portnumber] = (isset($portcounts[$scan->portnumber])) ? $portcounts[$scan->portnumber] + 1 : 1;
-	} 
-	arsort($portcounts);
 	$db->close();
 	
 	$output = "The following are a list of ports on the darknet sensor that were " .
@@ -68,9 +52,9 @@ if(php_sapi_name() == 'cli') {
 			"yesterday.\n\n";
 	$output .= "Port Number\tHit Count\n";
 	$output .= "-------------------------\n";
-	foreach ($portcounts as $key=>$val) {
-		$tabs = (strlen($key) < 8) ? "\t\t" : "\t";
-		$output .=  $key . $tabs . $val . "\n";
+	foreach ($port_result as $rpt) {
+		$tabs = (strlen($rpt->port) < 8) ? "\t\t" : "\t";
+		$output .=  $rpt->port . $tabs . $rpt->cnt . "\n";
 	}
 	
 	$to      =  $_SESSION['alert_email'];
@@ -78,8 +62,7 @@ if(php_sapi_name() == 'cli') {
 	$message = $output;
 	$headers = 'From: ' . $_SESSION['site_email'] . "\r\n" .
 	    'Reply-To: ' . $_SESSION['site_email'] . "\r\n" .
-	    'X-Mailer: HECTOR';
-	    
+	    'X-Mailer: HECTOR';    
 	    
 	$footer = "\r\n\r\nYou are receiving this e-mail as part of the nightly cron job.  If you " .
 		"feel you are getting these alerts in error or if you have any questions about response " .
@@ -89,4 +72,3 @@ if(php_sapi_name() == 'cli') {
 	mail($to, $subject, $message, $headers);
 }
 ?>
-

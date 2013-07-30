@@ -22,7 +22,7 @@ require_once('interface.Maleable_Object_Interface.php');
 require_once('class.Maleable_Object.php');
 
 /**
- * API keys allow access to APIs'.
+ * Vulnerabilities
  *
  * @access public
  * @author Josh Bauer <joshbauer3@gmail.com>
@@ -115,7 +115,7 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
     
 	/**
 	 * This is a functional method designed to return
-	 * the form associated with altering api_key information.
+	 * the form associated with altering vuln information.
 	 */
 	public function get_add_alter_form() {
 
@@ -199,7 +199,7 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
     }
     
     public function save() {if ($this->id > 0 ) {
-    		// Update an existing user
+    		// Update an existing vulnerability
 	    	$sql = array(
 	    		'UPDATE vuln SET vuln_name = \'?s\', vuln_description = \'?s\', vuln_cve = \'?s\', vuln_osvdb = \'?s\' WHERE vuln_id = \'?i\'',
 	    		$this->get_name(),
@@ -250,6 +250,6 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
     		$this->osvdb = '';
     }
 
-} /* end of class Api_key */
+} /* end of class Vuln */
 
 ?>

@@ -222,7 +222,7 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
     }
     
     public function save() {if ($this->id > 0 ) {
-    		// Update an existing user
+    		// Update an existing api key
 	    	$sql = array(
 	    		'UPDATE api_key SET api_key_resource = \'?s\', api_key_holder_name = \'?s\', api_key_holder_affiliation = \'?s\', api_key_holder_email = \'?s\' WHERE api_key_id = \'?i\'',
 	    		$this->get_key_resource(),

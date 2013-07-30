@@ -27,14 +27,15 @@ $ip_search->save();
       </ul>
     </li>
     <li class="dropdown">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> Reports <b class="caret"></b></a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php $badge = '<span class="badge badge-warning">' . '</span>';?><i class="icon-list-alt"></i> Reports <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li><a href="?action=reports&report=by_port">Ports detected</a></li>
         <li><a href="?action=reports&report=danger_host">Dangerous hosts</a></li>
         <li><a href="?action=reports&report=nonisuswebservers">Non ISUS Server Report</a></li>
+        <li><a href="?">Vulnerabilities<?php $badge = '<span class="badge badge-warning">' . '</span>';?></a></li>
       </ul>
     </li>
-     <li class="dropdown">
+    <li class="dropdown">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="View intrustion detection summaries."><i class="icon-eye-open"></i> Detection <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li><a href="?action=detection">Detection summary</a></li>
@@ -56,6 +57,7 @@ $ip_search->save();
         <li><a href="?action=config&object=location">Locations</a></li>
         <li><a href="?action=config&object=supportgroup">Support groups</a></li>
         <li><a href="?action=config&object=tags">Free tags</a></li>
+        <li><a href="?action=config&object=vuln">Vulnerabilities</a></li>
         <li class="divider"></li>
         <li class="nav-header">Data sources</li>
         <li><a href="?action=config&object=feeds">RSS feeds</a></li>

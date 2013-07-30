@@ -321,13 +321,28 @@ CREATE TABLE IF NOT EXISTS `vuln` (
   `vuln_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `vuln_name` varchar(255),
   `vuln_description` text,
+  `vuln_cve` varchar(45),
+  `vuln_osvdb` varchar(45),
   PRIMARY KEY (`vuln_id`)
 ) ENGINE = INNODB;
 
 -- Vulnerabilities discovered
 CREATE TABLE IF NOT EXISTS `vuln_x_host` (
-  `vuln_id` INT UNSIGNED NOT NULL,
+  `vuln_details_id` INT UNSIGNED NOT NULL,
   `host_id` INT UNSIGNED NOT NULL
+) ENGINE = INNODB;
+
+-- Vulnerablities details
+CREATE TABLE IF NOT EXISTS `vuln_details` (
+  `vuln_details_id` INT UNSIGNED NOT NULL,
+  `vuln_details_text` varchar(45),
+  `vuln_details_datetime` varchar(45),
+  `vuln_details_ignore` varchar(45),
+  `vuln_details_fixed` varchar(45),
+  `vuln_details_fixed_datetime` varchar(45),
+  `vuln_details_fixed_notes` varchar(45),
+  `vuln_id` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`vuln_details_id`)
 ) ENGINE = INNODB;
 
 -- Add ability to free tag vulnerabilities

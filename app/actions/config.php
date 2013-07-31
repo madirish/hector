@@ -60,6 +60,7 @@ elseif ($object == 'api_key') {
 }
 elseif ($object == 'vuln') {
 	$_GET['object'] = 'vuln';
+	$header = 'Vulnerability Type';
 	include_once($approot . 'actions/details.php');
 }
 else {

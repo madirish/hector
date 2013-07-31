@@ -334,7 +334,7 @@ CREATE TABLE IF NOT EXISTS `vuln_x_host` (
 
 -- Vulnerablities details
 CREATE TABLE IF NOT EXISTS `vuln_details` (
-  `vuln_details_id` INT UNSIGNED NOT NULL,
+  `vuln_details_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `vuln_details_text` TEXT,
   `vuln_details_datetime` TIMESTAMP NOT NULL DEFAULT NOW(),
   `vuln_details_ignore` INT(1) NOT NULL DEFAULT 0,

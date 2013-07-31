@@ -90,6 +90,38 @@ class Vuln_details extends Maleable_Object implements Maleable_Object_Interface 
      */
     private $vuln_id = null;
     
+   /**
+     * vuln_name
+     *
+     * @access private
+     * @var int
+     */
+    private $vuln_name;
+    
+    /**
+     * vuln_description
+     *
+     * @access private
+     * @var int
+     */
+    private $vuln_description;
+    
+    /**
+     * vuln_cve
+     *
+     * @access private
+     * @var int
+     */
+    private $vuln_cve;
+    
+    /**
+     * vuln_cve
+     *
+     * @access private
+     * @var int
+     */
+    private $vuln_osvdb;
+    
     /**
      * host_id
      *
@@ -122,7 +154,10 @@ class Vuln_details extends Maleable_Object implements Maleable_Object_Interface 
 		$this->log = Log::get_instance();
 		if ($id != '') {
 			$sql = array(
-				'SELECT * FROM vuln_details WHERE vuln_details_id = ?i',
+				'SELECT vd.*, v.vuln_name, v.vuln_description, v.vuln_cve, v.vuln_osvdb, vh.host_id, h.host_name FROM vuln_details vd ' .
+				'inner join vuln v on v.vuln_id = vd.vuln_id ' .
+				'inner join vuln_x_host vh on vh.vuln_details_id = vd.vuln_details_id ' . 
+				'inner join host h on h.host_id = vh.host_id WHERE vd.vuln_details_id =?i',
 				$id
 			);
 			$result = $this->db->fetch_object_array($sql);
@@ -134,10 +169,10 @@ class Vuln_details extends Maleable_Object implements Maleable_Object_Interface 
 			$this->fixed_datetime = $result[0]->vuln_details_fixed_datetime;
 			$this->fixed_notes = $result[0]->vuln_details_fixed_notes;
 			$this->vuln_id = $result[0]->vuln_id;
-			$sql = array(
-				'SELECT v.host_id, h.host_name FROM vuln_x_host v inner join host h on h.host_id=v.host_id WHERE v.vuln_details_id =?i',
-				$id
-			);
+			$this->vuln_name = $result[0]->vuln_name;
+			$this->vuln_description = $result[0]->vuln_description;
+			$this->vuln_cve = $result[0]->vuln_cve;
+			$this->vuln_osvdb = $result[0]->vuln_osvdb;
 			$result = $this->db->fetch_object_array($sql);
 			$this->host_id = $result[0]->host_id;
 			$this->host_name = $result[0]->host_name;	
@@ -261,8 +296,24 @@ class Vuln_details extends Maleable_Object implements Maleable_Object_Interface 
 		return $this->text;
     }
     
+     public function get_vuln_cve() {
+		return $this->vuln_cve;
+    }
+    
+    public function get_vuln_description() {
+		return $this->vuln_description;
+    }
+    
     public function get_vuln_id() {
 		return $this->vuln_id;
+    }
+    
+     public function get_vuln_name() {
+		return $this->vuln_name;
+    }
+    
+     public function get_vuln_osvdb() {
+		return $this->vuln_osvdb;
     }
     
     public function save() {if ($this->id > 0 ) {

@@ -1,8 +1,8 @@
-<h2>Vulnerability Report</h2>
+<h3>Vulnerability Report</h3>
 <table class="table table-striped" id="vulns">
 	<tbody>
 	<thead>
-	<tr><th>Vuln</th><th>host</th><th>date</th><th>fixed</th><th>ignore</th></tr>
+	<tr><th>Type</th><th>Host</th><th>Date</th><th>Fixed</th><th>Ignore</th></tr>
 	</thead>
 	<?php foreach ($vulns as $vuln) {
 		$output = '<tr><td><a href=?action=vuln_details&id=' . $vuln->vuln_details_id . '>' . $vuln->vuln_name . '</a></td>';
@@ -13,4 +13,4 @@
 		echo $output;
 		}?>
 	</tbody>
-	</table>
+</table>

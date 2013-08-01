@@ -2,6 +2,9 @@
 /**
  * This is the default subcontroller for editing vulnerability
  * details
+ * 
+ *  by Josh Bauer <joshbauer3@gmail.com>
+ * 
  */
 include_once($templates. 'admin_headers.tpl.php');
 require_once($approot . 'lib/class.Vuln_details.php');

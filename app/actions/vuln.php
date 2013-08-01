@@ -2,6 +2,9 @@
 /**
  * This is the default subcontroller for vulnerability
  * reports
+ * 
+ *  by Josh Bauer <joshbauer3@gmail.com>
+ * 
  */
 
 include_once($templates . 'admin_headers.tpl.php');

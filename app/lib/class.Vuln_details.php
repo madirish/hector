@@ -198,31 +198,12 @@ class Vuln_details extends Maleable_Object implements Maleable_Object_Interface 
 	/**
 	 * This is a functional method designed to return
 	 * the form associated with altering vuln_details information.
+	 * 
+	 * NOT USED IN THIS CLASS
+	 *
 	 */
 	public function get_add_alter_form() {
-
-		return array (
-			array('label'=>'Text',
-					'type'=>'text',
-					'name'=>'resource_name',
-					'value_function'=>'get_text',
-					'process_callback'=>'set_text'),
-			array('label'=>'Holder name',
-					'type'=>'text',
-					'name'=>'holder_name',
-					'value_function'=>'get_holder_name',
-					'process_callback'=>'set_holder_name'),
-			array('label'=>'Holder affiliation',
-					'type'=>'text',
-					'name'=>'holder_affiliation',
-					'value_function'=>'get_holder_affiliation',
-					'process_callback'=>'set_holder_affiliation'),
-			array('label'=>'Holder email',
-					'type'=>'text',
-					'name'=>'holder_email',
-					'value_function'=>'get_holder_email',
-					'process_callback'=>'set_holder_email')
-		);
+		return array ();
 	}
 
     /**
@@ -319,9 +300,8 @@ class Vuln_details extends Maleable_Object implements Maleable_Object_Interface 
     public function save() {if ($this->id > 0 ) {
     		// Update an existing vuln_detail
 	    	$sql = array(
-	    		'UPDATE vuln_details SET vuln_details_text = \'?s\', vuln_details_datetime = \'?s\', vuln_details_ignore = \'?s\', vuln_details_fixed = \'?s\', vuln_details_fixed_datetime = \'?s\', vuln_details_fixed_notes =\'?s\' WHERE vuln_details_id = \'?i\'',
+	    		'UPDATE vuln_details SET vuln_details_text = \'?s\', vuln_details_ignore = \'?s\', vuln_details_fixed = \'?s\', vuln_details_fixed_datetime = \'?s\', vuln_details_fixed_notes =\'?s\' WHERE vuln_details_id = \'?i\'',
 				$this->get_text(),
-    			$this->get_datetime(),
 	    		$this->get_ignore(),
 	    		$this->get_fixed(),
 	    		$this->get_fixed_datetime(),
@@ -342,13 +322,6 @@ class Vuln_details extends Maleable_Object implements Maleable_Object_Interface 
 	    	);
 	    	$this->db->iud_sql($sql);
     	}
-    }
-    
-	public function set_datetime($datetime) {
-    	if ($datetime != '')
-    		$this->datetime = htmlspecialchars($datetime);
-    	elseif ($datetime == '')
-    		$this->datetime = '';
     }
     
      public function set_fixed($fixed) {
@@ -384,13 +357,6 @@ class Vuln_details extends Maleable_Object implements Maleable_Object_Interface 
     		$this->text = htmlspecialchars($text);
     	elseif ($text == '')
     		$this->text = '';
-    }
-    
-    public function set_vuln_id($vuln_id) {
-    	if ($vuln_id != '')
-    		$this->vuln_id = htmlspecialchars($vuln_id);
-    	elseif ($vuln_id == '')
-    		$this->vuln_id = '';
     }
 
 } /* end of class Vuln_details */

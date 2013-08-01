@@ -60,7 +60,7 @@ mysql -u root -p < /tmp/hector.sql
 echo 
 echo "Step 4 of 7 - Moving HECTOR files to /opt"
 echo 
-umask 033
+umask 022
 if [ ! -d $HECTOR_PATH ] ; then
   mkdir $HECTOR_PATH
 fi
@@ -89,6 +89,10 @@ echo "    Please enter an e-mail address for contact e-mails:"
 read EMAILADDY
 sed -i "s/your_email@localhost/${EMAILADDY}/g" ${HECTOR_PATH}/app/conf/config.ini
 echo " [+] Config at ${HECTOR_PATH}/app/conf/config.ini complete."
+
+touch $HECTOR_PATH/app/logs/error_log
+touch $HECTOR_PATH/app/logs/message_log
+chmod 0700 $HECTOR_PATH/app/logs/*_log
 
 echo 
 echo "Step 5 of 7 - Configuring Apache"

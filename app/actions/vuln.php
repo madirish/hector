@@ -22,10 +22,9 @@ $sql .= 'inner join host h on vh.host_id = h.host_id';
 
 if (isset($appuser) && ! $appuser->get_is_admin()) {
 	$sql .= ' inner join user_x_supportgroup us on us.supportgroup_id = h.supportgroup_id ';
-	$sql .= 'where us.user_id = ' . $appuser->get_id();
+	$sql = array($sql . 'where us.user_id = ?i' , $appuser->get_id());
 }
-
-$vulns = $db->fetch_object_array($sql);
 $db = Db::get_instance();
+$vulns = $db->fetch_object_array($sql);
 include_once($templates . 'vuln.tpl.php');
 ?>

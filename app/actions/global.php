@@ -18,11 +18,11 @@ if (isset($appuser) && ! $appuser->get_is_admin()) {
 			$sql .= 'inner join vuln_x_host vh on vh.vuln_details_id = vd.vuln_details_id ';
 			$sql .= 'inner join host h on h.host_id = vh.host_id ';
 			$sql .= 'inner join user_x_supportgroup us on us.supportgroup_id = h.supportgroup_id ';
-			$sql .= 'where vd.vuln_details_ignore = 0 and vd.vuln_details_fixed = 0 and us.user_id = ' . $appuser->get_id();
-		}
-		else {
+			$sql = array($sql . 'where vd.vuln_details_ignore = 0 and vd.vuln_details_fixed = 0 and us.user_id = ?i', $appuser->get_id());
+}
+else {
 			$sql .= 'where vd.vuln_details_ignore = 0 and vd.vuln_details_fixed = 0';
-		}
+}
 $db = Db::get_instance();
 $result = $db->fetch_object_array($sql);
 $vuln_count = $result[0]->count;

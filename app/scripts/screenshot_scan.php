@@ -73,7 +73,7 @@ else {
 	populate_database();
 	$dblog->log("screenshot_scan.php process", "screenshot_scan.py invoked");
 	$log->write_message("screeshot scan: screenshot_scan.py invoked");
-	shell_exec('python /opt/hector/app/scripts/screenshot_scan.py');
+	shell_exec($_SESSION['python_exec_path'] . ' /opt/hector/app/scripts/screenshot_scan.py');
 	$dblog->log("screenshot_scan.php process", "screenshot_scan.py complete");
 	$log->write_message("screeshot scan: screenshot_scan.py complete");
 	remove_old();

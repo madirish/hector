@@ -180,8 +180,6 @@ function remove_old() {
 				$results=$db->fetch_object_array(array('select * from url where url_screenshot=\'?s\'', $dir));
 				if (count($results) == 0) {
 					unlink($approot . '/screenshots/' . $dir);
-					$dblog->log("screenshot_scan.php process", "unused file: " . $dir . " deleted");
-					$log->write_message("screeshot scan: unused file: " . $dir . " deleted");
 				}
 			}
 		}

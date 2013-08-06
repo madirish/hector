@@ -319,10 +319,10 @@ CREATE TABLE IF NOT EXISTS `user_x_supportgroup` (
 -- Vulnerabilities
 CREATE TABLE IF NOT EXISTS `vuln` (
   `vuln_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `vuln_name` varchar(255),
-  `vuln_description` text,
-  `vuln_cve` varchar(45),
-  `vuln_osvdb` varchar(45),
+  `vuln_name` VARCHAR(255),
+  `vuln_description` TEXT,
+  `vuln_cve` VARCHAR(45),
+  `vuln_osvdb` VARCHAR(45),
   PRIMARY KEY (`vuln_id`)
 ) ENGINE = INNODB;
 
@@ -334,13 +334,13 @@ CREATE TABLE IF NOT EXISTS `vuln_x_host` (
 
 -- Vulnerablities details
 CREATE TABLE IF NOT EXISTS `vuln_details` (
-  `vuln_details_id` INT UNSIGNED NOT NULL,
-  `vuln_details_text` varchar(45),
-  `vuln_details_datetime` varchar(45),
-  `vuln_details_ignore` varchar(45),
-  `vuln_details_fixed` varchar(45),
-  `vuln_details_fixed_datetime` varchar(45),
-  `vuln_details_fixed_notes` varchar(45),
+  `vuln_details_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `vuln_details_text` TEXT,
+  `vuln_details_datetime` TIMESTAMP NOT NULL DEFAULT NOW(),
+  `vuln_details_ignore` INT(1) NOT NULL DEFAULT 0,
+  `vuln_details_fixed` INT(1) NOT NULL DEFAULT 0,
+  `vuln_details_fixed_datetime` TIMESTAMP,
+  `vuln_details_fixed_notes` TEXT,
   `vuln_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`vuln_details_id`)
 ) ENGINE = INNODB;

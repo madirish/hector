@@ -1,4 +1,5 @@
 <?php
+if (isset($_SESSION['user_id'])) include_once($approot . 'actions/global.php');
 require_once($approot . 'lib/class.Form.php');
 $ip_search = new Form();
 $ip_search_name = 'search_ip_form';
@@ -27,12 +28,12 @@ $ip_search->save();
       </ul>
     </li>
     <li class="dropdown">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php $badge = '<span class="badge badge-warning">' . '</span>';?><i class="icon-list-alt"></i> Reports <b class="caret"></b></a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $vuln_badge;?><i class="icon-list-alt"></i> Reports <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li><a href="?action=reports&report=by_port">Ports detected</a></li>
         <li><a href="?action=reports&report=danger_host">Dangerous hosts</a></li>
         <li><a href="?action=reports&report=nonisuswebservers">Non ISUS Server Report</a></li>
-        <li><a href="?">Vulnerabilities<?php $badge = '<span class="badge badge-warning">' . '</span>';?></a></li>
+        <li><a href="?action=vuln">Vulnerabilities<?php echo $vuln_badge ;?></a></li>
       </ul>
     </li>
     <li class="dropdown">

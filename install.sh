@@ -60,17 +60,20 @@ mysql -u root -p < /tmp/hector.sql
 echo 
 echo "Step 4 of 7 - Moving HECTOR files to /opt"
 echo 
-umask 033
+
 if [ ! -d $HECTOR_PATH ] ; then
   mkdir $HECTOR_PATH
 fi
 cp -rf app $HECTOR_PATH
 cp -rf html $HECTOR_PATH
 mkdir ${HECTOR_PATH}/app/screenshots
+chmod -R 0755 $HECTOR_PATH
 
 echo " [+] Files moved"
 echo " [+] Customizing config at $HECTOR_PATH/app/conf/config.ini"
 cp ${HECTOR_PATH}/app/conf/config.ini.blank ${HECTOR_PATH}/app/conf/config.ini
+chgrp apache ${HECTOR_PATH}/app/conf/config.ini
+chmod g+r ${HECTOR_PATH}/app/conf/config.ini
 
 sed -i "s|/path/to/hector|${HECTOR_PATH}/app|g" $HECTOR_PATH/app/conf/config.ini
 

@@ -11,7 +11,7 @@
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * @package HECTOR
  * 
- * Last modified September 6, 2012
+ * Last modified 7 August, 2013
  */
  
 /**
@@ -68,6 +68,7 @@ if(php_sapi_name() == 'cli') {
 	$dblog = Dblog::get_instance();
 	$log = Log::get_instance();
 		
+	
 	// Load up the XML and parse it 
 	$nmaprun = simplexml_load_file($xmloutput);
 	if (! $nmaprun) {
@@ -93,10 +94,13 @@ if(php_sapi_name() == 'cli') {
 			$result = new Nmap_scan_result();
 			$result->set_host_id($host->get_id());
 			$result->set_port_number($port['portid']);
+			$result->set_protocol($port['protocol']);
 			switch ($port->state['state']) {
 				case 'open' : $result->set_state_id(1); break;
 				case 'closed' : $result->set_state_id(2); break;
 				case 'filtered' : $result->set_state_id(3); break;
+				case 'open|filtered' : $result->set_state_id(4); break;
+				default: $result->set_state_id(5); break;
 			}
 			$version_info = $port->service['product'] . " " . $port->service['version'];
 			if (isset($port->service['devicetype']))  $version_info .= ' ' . $port->service['devicetype'];
@@ -109,12 +113,12 @@ if(php_sapi_name() == 'cli') {
 	
 		foreach($nmap_scan_results as $scan) {
 			$old_scan_result = new Nmap_scan_result();
-			$old_scan_result->lookup_scan($scan->get_host_id(), $scan->get_port_number());
+			$old_scan_result->lookup_scan($scan->get_host_id(), $scan->get_port_number(), $scan->get_protocol());
 			if ($old_scan_result->get_id() > 0) {
 				if ($scan->get_state_id() == 1 && $old_scan_result->get_state_id() > 1) {
 					require_once($approot . 'lib/class.Alert.php');
 					$alert = new Alert();
-					$string = "Port " . $scan->get_port_number() . " changed from " .
+					$string = "Port " . $scan->get_port_number() . $scan->get_protcol() . " changed from " .
 										$old_scan_result->get_state() . " to open on " . $host->get_name();
 					$alert->set_host_id($host->get_id());
 					$alert->set_string($string);
@@ -122,8 +126,8 @@ if(php_sapi_name() == 'cli') {
 				}
 				$old_scan_result->delete();
 			}
-			// Set the scan_id, for now this value is reserved:
-			$scan->set_scan_id(1);
+			// Set the scan_id, equivelent to the Unix timestamp
+			$scan->set_scan_id($nmaphost['starttime']);
 			
 			// record the new results
 			if ($scan->save() === FALSE) {

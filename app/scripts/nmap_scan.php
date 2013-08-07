@@ -16,7 +16,7 @@
  * For full help on usage see show_help() below.  
  * Example usage:
  * 
- * $ php nmap_scan.php -a -p=80,443 -g=1,4 -e=22
+ * $ php nmap_scan.php -a -p=T:80,443 -g=1,4 -e=22
  * 
  * This script is run from scan_cron.php and 
  * nmap_rescan_old.php
@@ -24,7 +24,7 @@
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * @package HECTOR
  * 
- * Last modified May 10, 2012
+ * Last modified 7 August, 2013
  */
  
 /**
@@ -70,10 +70,30 @@ if(php_sapi_name() != 'cli') {
 					$alert = 'checked=\'checked\'';
 					break;
 				case 'p':
-					$portlist = substr($flag, 2);
+					$portlist = explode(':', substr($flag, 2));
+					if (count($portlist) == 1) $tcpportlist = $portlist[0];
+					else {
+						if ($portlist[0] == 'T') {
+							$tcpportlist = $portlist[1];
+							if (count($portlist) == 3) {
+								$tcpportlist = substr($tcpportlist, 0, -2);
+								$udpportlist = $portlist[2];
+							}
+						}
+						if ($portlist[0] == 'U') {
+							$udpportlist = $portlist[1];
+							if (count($portlist) == 3) {
+								$udpportlist = substr($udpportlist, 0, -2);
+								$tcpportlist = $portlist[2];
+							}
+						}
+					}
 					break;
 				case 'e':
 					$exclusionlist = substr($flag, 2);
+					break;
+				case 'u':
+					$uexclusionlist = substr($flag, 2);
 					break;
 				case 'v': 
 					$version = 'checked=\'checked\'';
@@ -90,8 +110,10 @@ if(php_sapi_name() != 'cli') {
 		document.getElementById("nmap_scan.php").defaultSelected = true;
 		function nmap_scan_display() {
 			var nmapHTML = "Alert on Changes: <input id='add-remove-alert' type='checkbox' onClick='addRemoveAlert()' $alert/><br/>";
-			nmapHTML += "Ports to scan (comma delimited): <input type='text' id='portlist' onBlur='updatePorts()' value='$portlist'/><br/>";
-			nmapHTML += "Only scan hosts with these ports open (comma delimited): <input type='text' id='oportlist' onBlur='updateoPorts()' value='$exclusionlist'/><br/>";
+			nmapHTML += "TCP ports to scan (comma delimited): <input type='text' id='tcpportlist' onBlur='updatePorts()' value='$tcpportlist'/><br/>";
+			nmapHTML += "UDP ports to scan (comma delimited): <input type='text' id='udpportlist' onBlur='updatePorts()' value='$udpportlist'/><br/>";
+			nmapHTML += "Only scan hosts with these TCP ports open (comma delimited): <input type='text' id='oportlist' onBlur='updateoPorts()' value='$exclusionlist'/><br/>";
+			nmapHTML += "Only scan hosts with these UDP ports open (comma delimited): <input type='text' id='ouportlist' onBlur='updateouPorts()' value='$uexclusionlist'/><br/>";
 			nmapHTML += "Attempt version detection: <input id='add-remove-version' type='checkbox' onClick='addRemoveVersion()' $version/><br/>";
 			document.getElementById("specs").innerHTML = nmapHTML;
 		}
@@ -119,14 +141,29 @@ if(php_sapi_name() != 'cli') {
 		}
 		function updatePorts() {
 			// First format the input properly
-			document.getElementById("portlist").value = document.getElementById("portlist").value.replace(/[^\d^\,]*/g, '');
+			document.getElementById("tcpportlist").value = document.getElementById("tcpportlist").value.replace(/[^\d^\,]*/g, '');
+			document.getElementById("udpportlist").value = document.getElementById("udpportlist").value.replace(/[^\d^\,]*/g, '');
 			// Clear any pre-existing values
 			if (document.getElementById("flags").value.match(/-p/g)) { 
-				document.getElementById("flags").value = document.getElementById("flags").value.replace(/-p=[\d\,]*/g, '');
+				document.getElementById("flags").value = document.getElementById("flags").value.replace(/-p=[\d\,\:UT]*/g, '');
 			}
 			// Update the flags if necessary
-			if (! document.getElementById("portlist").value == "") {
-				document.getElementById("flags").value += "-p=" + document.getElementById("portlist").value;
+			if (! document.getElementById("tcpportlist").value == "" || ! document.getElementById("udpportlist").value == "") {
+				var tcpports = document.getElementById("tcpportlist").value;
+				var udpports = document.getElementById("udpportlist").value;
+				var ports;
+				if (! tcpports == "") {
+					ports = "T:" + tcpports;
+				}
+				if (! udpports == "") {
+					if (ports == "") {
+						ports = "U:" + udpports;
+					}
+					else {
+						ports = ports + ",U:" + udpports;
+					}
+				}
+				document.getElementById("flags").value += "-p=" + ports;
 			}
 		}
 		function updateoPorts() {
@@ -139,6 +176,18 @@ if(php_sapi_name() != 'cli') {
 			// Update the flags if necessary
 			if (! document.getElementById("oportlist").value == "") {
 				document.getElementById("flags").value += "-e=" + document.getElementById("oportlist").value;
+			}
+		}
+		function updateouPorts() {
+			// First format the input properly
+			document.getElementById("ouportlist").value = document.getElementById("ouportlist").value.replace(/[^\d^\,]*/g, '');
+			// Clear any pre-existing values
+			if (document.getElementById("flags").value.match(/-e/g)) { 
+				document.getElementById("flags").value = document.getElementById("flags").value.replace(/-u=[\d\,]*/g, '');
+			}
+			// Update the flags if necessary
+			if (! document.getElementById("ouportlist").value == "") {
+				document.getElementById("flags").value += "-u=" + document.getElementById("ouportlist").value;
 			}
 		}
 	</script>
@@ -175,6 +224,7 @@ else {
 	$ports = null;
 	$groups = null;
 	$hasport = null;
+	$hasudpport = null;
 	$alertchange = 0;
 	$version = FALSE;
 	$nmap_debug = TRUE;
@@ -208,6 +258,9 @@ else {
 				break;
 			case '-e':
 				$hasport = substr($arg,strpos($arg,'=')+1);
+				break;
+			case '-u':
+				$hasudpport = substr($arg,strpos($arg,'=')+1);
 				break;
 			case '-g':
 				$groups = substr($arg,strpos($arg,'=')+1);
@@ -252,9 +305,17 @@ else {
 	$filter = '';
 	
 	// Restrict machines based on port specifications
-	if ($hasport != null) {
-		$filter .= ' AND nsr.state_id=1 AND nsr.nmap_scan_result_port_number in (' . mysql_real_escape_string($hasport) . ')';
-		$filter .= ' AND nsr.host_id IN (' . implode(',',$host_ids) . ')';
+	if ($hasport != null || $hasudpport != null) {
+		if ($hasport != null) {
+			$filter .= ' AND  ' .
+				'(nsr.state_id=1 AND nsr.nmap_scan_result_protocol = "tcp" AND nsr.nmap_scan_result_port_number in (' . mysql_real_escape_string($hasport) . ')';
+			$filter .= ' AND nsr.host_id IN (' . implode(',',$host_ids) . ')';
+		}
+		if ($hasudpport != null) {
+			$filter .= ' AND ' .
+				'(nsr.state_id=1 AND nsr.nmap_scan_result_protocol = "udp" AND nsr.nmap_scan_result_port_number in (' . mysql_real_escape_string($hasudpport) . ')';
+			$filter .= ' AND nsr.host_id IN (' . implode(',',$host_ids) . ')';
+		}
 		$prevscan = new Collection('Nmap_scan_result', $filter);
 		if (isset($prevscan->members) && is_array($prevscan->members)) {
 			// rebuild the $hosts and $host_ids arrays
@@ -268,6 +329,7 @@ else {
 			}
 		}
 	}
+	
 	// Write IP's to a file for NMAP
 	$ipfilename = $approot . 'scripts/ips.txt';
 	$fp = fopen($ipfilename, 'w') or die("Couldn't open scirpts/ips.txt'");
@@ -278,9 +340,9 @@ else {
 	
 	// Run the scan and store the results on the filesystem
 	$xmloutput = $approot . 'scripts/results-' . time() . '.xml';  // Avoid namespace collissions!
-	$portspec = ($ports != '') ? '-p T:' . $ports : '';
+	$portspec = ($ports != '') ? '-p ' . $ports : '';
 	if ($version) $portspec .= ' -sV ';
-	$command = $nmap . ' -sT -PN -oX ' . $xmloutput . ' ' . $portspec .
+	$command = $nmap . ' -sT -sU -PN -oX ' . $xmloutput . ' ' . $portspec .
 		' -T4 -iL ' . $ipfilename;
 	loggit("nmap_scan.php process", "Executing the command: " . $command);
 	shell_exec($command);
@@ -303,12 +365,12 @@ function show_help($error) {
 	echo "-a\tAlert if ports have changed on the host\n";
 	echo "-e\tOnly scan hosts that already have specified port(s) open\n";
 	echo "-g\tHost groups id's to scan\n";
-	echo "-p\tLimit scan to specific ports\n";
+	echo "-p\tLimit scan to specific ports per nmap specs\n";
 	echo "-v\tAttempt to determine version information\n";
 	echo "\n\nExample Usage:\n";
-	echo '$ php nmap_scan.php -a -p=80,443 -g=1,4 -e=22 ' . "\n";
+	echo '$ php nmap_scan.php -a -p=T:80,443 -g=1,4 -e=22 ' . "\n";
 	echo "Would scan for hosts in the 'web servers' and 'critical hosts' groups (id 1 & 4) \n";
-	echo "for ports 80 and 443, but only machines that have been seen with port 22 open.\n\n";
+	echo "for TCP ports 80 and 443, but only machines that have been seen with port 22 open.\n\n";
 	//exit;
 }
 

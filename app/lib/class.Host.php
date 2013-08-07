@@ -59,6 +59,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 * Name of the host
 	 * 
 	 * @access private
+	 * @var String
 	 */
 	private $name;
 	
@@ -66,79 +67,165 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 * Operating system of the host
 	 * 
 	 * @access private
+	 * @var String
 	 */
 	private $os = null;
 	
 	/**
-	 * Short description of attribute ports
+	 * Ports that are detected on the host
 	 *
-	 * @access public
+	 * @access private
 	 * @var array
 	 */
 	private $ports = null;
 	
 	/**
-	 * Short description of attribute schedule_ids
+	 * Host groups to which this host belongs
 	 *
-	 * @access public
+	 * @access private
 	 * @var array
 	 */
-	private $schedule_ids = array();
-	
 	private $host_group_ids = array();
 	
+	/**
+	 * Tags applied to this host
+	 *
+	 * @access private
+	 * @var array
+	 */
 	private $tag_ids = array();
 	
+	/**
+	 * Alternative hostnames for the host
+	 *
+	 * @access private
+	 * @var array
+	 */
 	private $alt_hostnames = array();
 	
+	/**
+	 * Alternative IP addresses for the host
+	 *
+	 * @access private
+	 * @var array
+	 */
 	private $alt_ips = array();
 	
+	/**
+	 * Contact for the host
+	 *
+	 * @access private
+	 * @var String
+	 */
 	private $sponsor = "";
 	
+	/**
+	 * Technical contact for the host
+	 *
+	 * @access private
+	 * @var String
+	 */
 	private $technical = "";
 	
 	/**
 	 * Support group object
 	 * 
 	 * @var Supportgroup
+	 * @access private
 	 */
 	private $supportgroup = "";
 	
 	/**
 	 * Location object
 	 * 
+	 * @access private
 	 * @var Location
 	 */
 	private $location = "";
 	
+	/**
+	 * Horrible, terrible, free form note field
+	 * that we hope will never be used.
+	 *
+	 * @access private
+	 * @var String
+	 */
 	private $note = "";
 	
 	/**
 	 * Is the machine governed by policy
 	 * (i.e. does it contain confidential data)
+	 * 
+	 * @access private
+	 * @var boolean
 	 */
 	private $policy = "";
 	
 	/**
 	 * Link to an external reference on the machine
+	 * 
+	 * @access private
+	 * @var String
 	 */
 	private $link;
 	
 	/**
 	 * Array of host's urls and screenshot filenames (url_url, url_screenshot)
+	 * 
+	 * @access private
+	 * @var array
 	 */
 	private $urls = array();
 	
+	/**
+	 * Exclude this host from future port scans?
+	 *
+	 * @access private
+	 * @var boolean
+	 */
 	private $ignore_portscan = NULL;
+	
+	/**
+	 * User id of the person who excluded this host
+	 * from portscans
+	 *
+	 * @access private
+	 * @var int
+	 */
 	private $ignore_portscan_byuserid = NULL;
+	
+	/**
+	 * How many days to exclude this host from future
+	 * port scans
+	 *
+	 * @access private
+	 * @var int
+	 */
 	private $ignoredfor_days = NULL;
+	
+	/**
+	 * Time an exclusion was put into place (for 
+	 * removing this host from port scans)
+	 *
+	 * @access private
+	 * @var int
+	 */
 	private $ignored_timestamp = NULL;
+	
+	/**
+	 * Horrible, aweful, freeform text field that 
+	 * should include some explaination of why this
+	 * host shouldn't be scanned.
+	 *
+	 * @access private
+	 * @var String
+	 */
 	private $ignored_note = NULL;
 	
 	// --- OPERATIONS ---
 	
 	/**
-	 * Short description of method __construct
+	 * Create a new Host object
 	 *
 	 * @access public
 	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
@@ -250,6 +337,8 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	/**
 	 * Add this host to a host group.
 	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @param int
 	 */
 	public function add_host_group_id($id) {
@@ -264,6 +353,8 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 * sure that the exclusion is still valid.  If it has
 	 * expired update the record accordingly.
 	 * 
+	 * @access private
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @return true
 	 */
 	private function check_expire_scan_exclusion() {
@@ -305,6 +396,8 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 * the same IP as another host or the same name
 	 * as another host this check will return false.
 	 *
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @return boolean
 	 */
 	public function check_save() {
@@ -377,6 +470,12 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
     	}
     }
 
+	/**
+	 * Render the add or edit form for the interface.
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 */
 	public function get_add_alter_form() {
 		// get the host groups array
 		$hostgroups = array();
@@ -502,16 +601,33 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		);
 	}
 
+	/**
+	 * Get alternative hostnames for this host.
+	 * 
+	 * @access private
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return array
+	 */
 	private function get_alt_hostnames() {
 		return $this->alt_hostnames;
 	}
 
+	/**
+	 * Get alternative IP addresses for this host.
+	 * 
+	 * @access private
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return array
+	 */
 	private function get_alt_ips() {
 		return $this->alt_ips;
 	}
 
-    /* This function directly supports the Collection class.
+    /**
+     *  This function directly supports the Collection class.
 	 *
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @return SQL select string
 	 */
 	public function get_collection_definition($filter = '', $orderby = '') {
@@ -543,6 +659,14 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		return $sql;
 	}
 	
+    /**
+     * This function directly supports the Collection class.
+     * Gets a collection based on a port filter.
+	 *
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return SQL select string
+	 */
 	public function get_collection_by_port($port, $orderby='') {
 		global $appuser;
 		$portnum = intval($port);
@@ -559,6 +683,14 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		return $sql; 
 	}
 	
+	/**
+     * This function directly supports the Collection class.
+     * Gets a collection based on a service version filter.
+	 *
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return SQL select string
+	 */
 	public function get_collection_by_version($version, $orderby='') {
 		global $appuser;
 		$portnum = strtolower(mysql_real_escape_string($version));
@@ -576,12 +708,16 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	}
 
 	/**
-	 * The method to return the HTML for the details on this specific host
+	 * The method to return the HTML for the details on this specific host.
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return HTML chunk
 	 */
 	public function get_details() {
 		require_once('class.Nmap_scan_result.php');
 		//$scans = new Collection('Nmap_scan_result', ' and host_id = ' . $this->id . ' and s.state_state != \'closed\'', '', 'ORDER BY nmap_scan_result_port_number');
-		$scans = new Collection('Nmap_scan_result', ' AND s.state_id=1 AND host_id = ' . $this->id, '', 'ORDER BY nmap_scan_result_port_number');
+		$scans = new Collection('Nmap_scan_result', ' AND nsr.host_id = ' . $this->id, '', 'GROUP BY nsr.nmap_scan_result_protocol ORDER BY nsr.nmap_scan_result_port_number');
 		$retval = '<div class="row"><div class="span5">';
 		$retval .= '<table id="host_details" class="table">' . "\n";
 		$retval .= '<tr id="name"><td>Hostname</td><td>' . $this->get_name() . '</td></tr>' . "\n";
@@ -621,7 +757,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		}
 		$retval .= '</tbody></table>';
 		$retval .= '</div></div>';
-		$retval .= '<div class="row"><div class="span5"><table id="screenshotstable" class="table table-striped">' . "\n";
+		$retval .= '<div><table id="screenshotstable" class="table table-striped">' . "\n";
 		$retval .= '<thead><tr><th>URL</th><th>Screenshot</th></tr></thead><tbody>';
 		$approot = getcwd() . '/../app/';
 		foreach($this->get_urls() as $url) {
@@ -639,55 +775,106 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		}
 			$retval .= '</td></tr>';
 		$retval .= '</tbody></table>';
-		$retval .= '</div><div class="span6">';
-		$retval .= '<p class="well well-small">Vulnerabilities:</p>';
-		$retval .= '<table id="vulntable" class="table table-striped">';
-		$retval .= '<thead><tr><th>Type</th><th>Text</th><th>Dicovered</th><th>Fixed</th><th>Ignore</th></tr></thead><tbody>';
-		$sql = array('select v.vuln_name, vd.vuln_details_id, vd.vuln_details_text, vd.vuln_details_datetime, vd.vuln_details_ignore, vd.vuln_details_fixed ' .
-				'from vuln_details vd inner join vuln v on vd.vuln_id = v.vuln_id ' .
-				'inner join vuln_x_host vh on vh.vuln_details_id = vd.vuln_details_id ' .
-				'where vh.host_id = ?i order by vd.vuln_details_datetime desc', $this->get_id());
-		$vulns = $this->db->fetch_object_array($sql);
-		foreach($vulns as $vuln) {
-			$retval .= '<tr><td><a href=?action=vuln_details&id=' . $vuln->vuln_details_id . '>' . $vuln->vuln_name . '</a></td>';
-			$retval .= '<td>' . $vuln->vuln_details_text . '</td>';
-			$retval .= '<td>' . $vuln->vuln_details_datetime . '</td>';
-			$retval .= '<td>' . ($vuln->vuln_details_fixed==1 ? '<i class="icon-ok"></i>':'') . '</td>';
-			$retval .= '<td>' . ($vuln->vuln_details_ignore==1 ? '<i class="icon-ok"></i>':'') . '</td></tr>';
-		}
-		$retval .= '</tbody></table></div></div>';
+		$retval .= '</div>' . "\n";
 		return $retval;
 	}
 
+	/**
+	 * Get information for display via a template.
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return HTML chunk
+	 */
 	public function get_displays() {
 		return array('Name'=>'get_name_linked', 'IP'=>'get_ip', 'OS'=>'get_os', 'Host groups'=>'get_host_groups_readable');
 	}
 
+	/**
+	 * Return the User object for the user who excluded this
+	 * host from port scans.
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return User
+	 */
 	public function get_excludedby() {
 		global $appuser;
 		$user = new User($this->ignore_portscan_byuserid);
 		$uid = ($user->get_id() == "") ? $appuser->get_id() : $user->get_id();
 		return ($this->get_portscan_exclusion()) ? $uid : '';
 	}
+
+	/**
+	 * Return the username for the user who excluded this
+	 * host from port scans.
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return String
+	 */
 	public function get_excludedby_name() {
 		global $appuser;
 		$user = new User($this->ignore_portscan_byuserid);
 		return ($user->get_name());
 	}
+
+	/**
+	 * Return date when this host was excluded from port
+	 * scans.
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return timestamp
+	 */
 	public function get_excludedon() {
 		return $this->ignored_timestamp;
 	}
+
+	/**
+	 * Return the number of days this host was excluded from scans.
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return Int
+	 */
 	public function get_excludedfor() {
 		return $this->ignoredfor_days;
 	}
+
+	/**
+	 * Report the reason this host was excluded from scans.
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return String
+	 */
 	public function get_excludedreason() {
 		return htmlspecialchars($this->ignored_note);
 	}
 
+
+	/**
+	 * Return the Host_group id numbers for host groups that
+	 * this Host belongs to.
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return array
+	 */
 	public function get_host_group_ids() {
 		return $this->host_group_ids;
 	}
 
+
+	/**
+	 * Return a string of Host_group names for the host groups
+	 * that include this Host.
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return String
+	 */
 	public function get_host_groups_readable() {
 		$retval = '';
 		if (is_array($this->host_group_ids)) {
@@ -701,7 +888,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	}
 
 	/**
-	 * Short description of method get_id
+	 * Return the unique ID for this host
 	 *
 	 * @access public
 	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
@@ -715,6 +902,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 * Should this host be exempted from portscans?
 	 * 
 	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @return boolean
 	 */
 	public function get_ignore_portscan() {
@@ -730,19 +918,34 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	public function get_ip() {
 		return $this->ip;
 	}
-
+	/**
+	 * Get any link to external resources about this Host
+	 *
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return ip
+	 */
 	public function get_link() {
 		return htmlspecialchars($this->link);
 	}
 	/**
 	 * Return the location_id for the Location of the host
 	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @return Int
 	 */
 	public function get_location_id() {
 		return (is_object($this->location)) ? $this->location->get_id() : null;
 	}
 	
+	/**
+	 * Return the hostname for this host
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return String
+	 */
 	public function get_name() {
 		$retval = null;
 		if ($this->name != null) $retval = $this->name;
@@ -753,6 +956,15 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		return strtolower($retval);
 	}
 	
+	/**
+	 * Return the hostname as a hypterlinked chunk of 
+	 * HTML to insert into display so that the name can
+	 * be clicked to view details.
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return HTML string
+	 */
 	public function get_name_linked() {
 		$retval = null;
 		if ($this->ip != null) {
@@ -765,16 +977,35 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		return $retval;
 	}
 	
+	/**
+	 * Return any notes for this Host, hopefully this won't
+	 * be used very often.
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return String
+	 */
 	public function get_note() {
 		return htmlspecialchars($this->note);
 	}
 	
+	/**
+	 * Should this host be excluded from port scans?
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return boolean
+	 */
 	public function get_portscan_exclusion() {
 		return (boolean) $this->ignore_portscan;
 	}
 	
 	/**
 	 * Get the number of open ports.
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return int
 	 */
 	public function get_open_ports() {
 		$retval = 0;
@@ -791,14 +1022,35 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 				return $retval;
 	}
 	
+	/**
+	 * Get the operating system for this host.
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return String
+	 */
 	public function get_os() {
 		return $this->os;
 	}
-	
+	/**
+	 * Is this host covered by policy?  Meaning does this
+	 * host have sensitive data.
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return boolean
+	 */
 	public function get_policy() {
 		return (boolean) $this->policy;
 	}
-	
+	/**
+	 * Get a collection of ports as Nmap_scan_result 
+	 * objects using the Collection factory.
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return array
+	 */
 	public function get_ports() {
 		if ($this->ports == null) {
 			$ports = new Collection('Nmap_scan_result', 'and nsr.host_id = ' . $this->get_id() . ' order by nsr.nmap_scan_result_port_number asc');
@@ -814,26 +1066,44 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	/**
 	 * The faculty or staff sponsor for this host.
 	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @return String
 	 */
 	public function get_sponsor() {
 		return htmlspecialchars($this->sponsor);
 	}
 	
+	/**
+	 * ID for the Support_groups to which this
+	 * host is assigned.
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return int
+	 */
 	public function get_supportgroup_id() {
 		return (is_object($this->supportgroup)) ? $this->supportgroup->get_id() : null;
 	}
 	
-	
 	/**
 	 * The technical contact for this host
 	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @return String
 	 */
 	public function get_technical() {
 		return htmlspecialchars($this->technical);
 	}
 	
+	/**
+	 * Support function to allow for form submission (POST)
+	 * processing.
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 */
 	public function process_form($attribute, $value) {
 		$this->$attribute($value);
 		$this->save();
@@ -843,6 +1113,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 * Get a list of id's for tags associated with this host
 	 * 
 	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @return Array of integers
 	 */
 	public function get_tag_ids() {
@@ -853,6 +1124,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 * Get a list of names
 	 * 
 	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @return Array of strings
 	 */
 	public function get_tag_names() {
@@ -868,6 +1140,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 * Get a list of URLs
 	 * 
 	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @return Array of strings
 	 */
 	public function get_urls() {
@@ -878,6 +1151,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 * Remove this host form specificed host group
 	 * 
 	 * @param host_group_id
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @return void
 	 * @access public
 	 */
@@ -897,6 +1171,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 * Save this Host, for persistence
 	 * 
 	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @return void
 	 */
 	public function save() {
@@ -1024,6 +1299,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 * Set the alternate host name
 	 * 
 	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @param Name string
 	 * @return void
 	 */
@@ -1035,6 +1311,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 * Set the alternate host ip
 	 * 
 	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @param IP string
 	 * @return void
 	 */
@@ -1043,15 +1320,38 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
     		$this->alt_ips[] = $ip;
     	}
     }
-    
+    /**
+	 * Setter for the exclusion period
+	 * 
+	 * @access private
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @param int $days
+	 * @return void
+	 */
 	private function set_excludedfor($days) {
 		$this->ignoredfor_days = intval($days);
 	}
 	
+    /**
+	 * Setter for the exclusion notes
+	 * 
+	 * @access private
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @param String $note
+	 * @return void
+	 */
 	private function set_excludedreason($note) {
 		$this->ignored_note = htmlspecialchars($note);
 	}
 	
+    /**
+	 * Setter for the user id who excluded this host
+	 * 
+	 * @access private
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @param int $id
+	 * @return void
+	 */
 	private function set_excludedby($id) {
 		$this->ignored_portscan_byuserid = intval($id);
 	}
@@ -1084,7 +1384,15 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 			$this->ip = $ip;
 		}
 	}
-	
+		
+	/**
+	 * Set the link to external documentation of this host.
+	 *
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @param  String $link
+	 * @return void
+	 */
 	public function set_link($link) {
 		$this->link = $link;
 	}
@@ -1093,6 +1401,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 * Set the location id
 	 * 
 	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @param Location id
 	 * @return void
 	 */
@@ -1106,6 +1415,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 * Set the Support group id
 	 * 
 	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @param Supoprtgroup id
 	 * @return void
 	 */
@@ -1118,6 +1428,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	/**
 	 * Set the host name
 	 * @param Name string
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @return void
 	 * @access public
 	 */
@@ -1131,6 +1442,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	/**
 	 * Set the host note
 	 * @param Note string
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @return void
 	 * @access public
 	 */
@@ -1141,6 +1453,14 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
     		$this->note = '';
     }
     
+    /**
+	 * Setter to exclude this host from portscans.
+	 * 
+	 * @param boolean $val
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return void
+	 * @access private
+	 */
 	private function set_portscan_exclusion($val) {
 		$this->ignore_portscan = ((boolean) $val) ? 1 : 0;
 		if (isset($appuser)) $this->set_excludedby($appuser->get_id());
@@ -1173,20 +1493,6 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 */
     public function set_policy($covered_by_policy) {
     	$this->policy = intval($covered_by_policy);
-    }
-
-    /**
-     * Short description of method set_schedule_ids
-     *
-     * @access public
-     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @param  array ids
-     * @return void
-     */
-    public function set_schedule_ids($ids)
-    {
-        // section 127-0-0-1-6ee0c3aa:1262303b691:-8000:0000000000001079 begin
-        // section 127-0-0-1-6ee0c3aa:1262303b691:-8000:0000000000001079 end
     }
 
 	/**

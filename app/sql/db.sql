@@ -165,6 +165,7 @@ CREATE TABLE IF NOT EXISTS `nmap_scan_result` (
 	`nmap_scan_result_id` INT NOT NULL AUTO_INCREMENT,
 	`host_id` INT NOT NULL,
 	`nmap_scan_result_port_number` INT NOT NULL,
+  `nmap_scan_result_protocol` varchar(4),
 	`state_id` INT NOT NULL,
   `nmap_scan_result_service_name` VARCHAR(50) NOT NULL,
   `nmap_scan_result_service_version` VARCHAR(255) NOT NULL,
@@ -268,6 +269,8 @@ CREATE TABLE IF NOT EXISTS `state` (
 INSERT INTO `state` SET `state_id`=1, `state_state`='open' ON DUPLICATE KEY UPDATE `state_state` = 'open';
 INSERT INTO `state` SET `state_id`=2, `state_state`='closed' ON DUPLICATE KEY UPDATE `state_state` = 'closed';
 INSERT INTO `state` SET `state_id`=3, `state_state`='filtered' ON DUPLICATE KEY UPDATE `state_state` = 'filtered';
+INSERT INTO `state` SET `state_id`=4, `state_state`='open|filtered' ON DUPLICATE KEY UPDATE `state_state` = 'open|filtered';
+INSERT INTO `state` SET `state_id`=5, `state_state`='other' ON DUPLICATE KEY UPDATE `state_state` = 'other';
 
 
 -- Support groups are entities composed of individuals that
@@ -319,30 +322,15 @@ CREATE TABLE IF NOT EXISTS `user_x_supportgroup` (
 -- Vulnerabilities
 CREATE TABLE IF NOT EXISTS `vuln` (
   `vuln_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `vuln_name` VARCHAR(255),
-  `vuln_description` TEXT,
-  `vuln_cve` VARCHAR(45),
-  `vuln_osvdb` VARCHAR(45),
+  `vuln_name` varchar(255),
+  `vuln_description` text,
   PRIMARY KEY (`vuln_id`)
 ) ENGINE = INNODB;
 
 -- Vulnerabilities discovered
 CREATE TABLE IF NOT EXISTS `vuln_x_host` (
-  `vuln_details_id` INT UNSIGNED NOT NULL,
-  `host_id` INT UNSIGNED NOT NULL
-) ENGINE = INNODB;
-
--- Vulnerablities details
-CREATE TABLE IF NOT EXISTS `vuln_details` (
-  `vuln_details_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `vuln_details_text` TEXT,
-  `vuln_details_datetime` TIMESTAMP NOT NULL DEFAULT NOW(),
-  `vuln_details_ignore` INT(1) NOT NULL DEFAULT 0,
-  `vuln_details_fixed` INT(1) NOT NULL DEFAULT 0,
-  `vuln_details_fixed_datetime` TIMESTAMP,
-  `vuln_details_fixed_notes` TEXT,
   `vuln_id` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`vuln_details_id`)
+  `host_id` INT UNSIGNED NOT NULL
 ) ENGINE = INNODB;
 
 -- Add ability to free tag vulnerabilities

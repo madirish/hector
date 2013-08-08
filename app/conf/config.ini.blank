@@ -20,6 +20,7 @@ approot = /path/to/hector/
 php_exec_path		=	/usr/bin/php
 nmap_exec_path	=	/usr/bin/nmap
 python_exec_path  = /usr/bin/python
+xprobe2_exec_path  = /usr/bin/xprobe2
 
 timezone		=	America/New_York
 

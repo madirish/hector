@@ -15,6 +15,9 @@ else {
 		include_once($file);
 		$id = isset($_GET['id']) ? intval($_GET['id']) : '';
 		$generic = new $object($id);
+		// Include any object specific JavaScripts if necessary
+		if (method_exists($generic,'get_footer_scripts')) $footer_scripts .= $generic->get_footer_scripts();
+		
 		// Work out the display
 		$form_data = array();
 		$displays = $generic->get_add_alter_form();

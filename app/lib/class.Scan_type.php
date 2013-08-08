@@ -33,10 +33,6 @@ require_once('class.Maleable_Object.php');
  * @version .1
  */
 class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
-    // --- ASSOCIATIONS ---
-
-
-    // --- ATTRIBUTES ---
     
     private $name;
     
@@ -44,10 +40,12 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
     
     private $flags;
     
+    private $onselects = null;
+    
     // --- OPERATIONS ---
 
     /**
-     * Short description of method __construct
+     * Constructor to set up a Scan_type object
      *
      * @access public
      * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
@@ -76,7 +74,6 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
      *
      * @access public
      * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
-     * @return void
      */
     public function delete() {
     	if ($this->id > 0 ) {
@@ -88,7 +85,13 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
 	    	$this->db->iud_sql($sql);
     	}
     }
-	
+    /**
+     * Get the add/edit form for display in the template
+     *
+     * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return Array
+     */	
 	public function get_add_alter_form() {
 		// get the host groups array
 		$hostgroups = array();
@@ -98,7 +101,7 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
 				$hostgroups[$element->get_id()]=$element->get_name();
 			}
 		}
-		
+		$onselects = (is_null($this->onselects)) ? $this->get_script_exes() : $this->onselects;
 		return array (
 			array('label'=>'Scan type name', 
 					'type'=>'text', 
@@ -108,8 +111,10 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
 			array('label'=>'Script', 
 					'name'=>'script', 
 					'type'=>'select',
-					'options'=>$this->get_script_exes(),
-					'onselects'=>$this->get_script_onselects(),
+					//'options'=>$this->get_script_exes(),
+					'options'=>$this->exes,
+					//'onselects'=>$this->get_script_onselects(),
+					'onselects'=>$onselects,
 					'value_function'=>'get_script',
 					'process_callback'=>'set_script'),
 			array('label'=>'', 
@@ -121,11 +126,34 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
 	}
 	
 	/**
+	 * This function sets up the script that goes in the footer
+	 * template to populate the defaults for scripts in the add/edit
+	 * form.
+	 * 
+	 * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return String
+	 */
+	public function get_footer_scripts() {
+		$onselects = (is_null($this->onselects)) ? $this->get_script_exes() : $this->onselects;
+		$output = $this->onselects[$this->get_script()];
+		if ($output == '') {
+			$output = 'document.getElementById("nmap_scan.php").defaultSelected = true;';
+			$output .= 'nmap_scan_display()';
+		}
+		return '<script type="text/javascript">' . $output . ';</script>';
+	}
+	
+	/**
 	 * Scan the scripts directory and populate the 
 	 * get_add_alter_form() appropriately with only
 	 * scripts meant to be configured via the web
 	 * front end.  Note that only scripts that have 
 	 * a filename ending in _scan.php will be included.
+	 * 
+	 * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return Array
 	 */
 	private function get_script_exes() {
 		global $approot;
@@ -146,16 +174,26 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
 			foreach ($script as $key=>$val) $retval[$key] = $val;
 		} 
 		$this->onselects = $onselects;
-		return $retval;
+		$this->exes = $retval;
 	}
-	
+	/**
+     * Get a list of the onselect functions for the script
+     * out of the script files.
+     *
+     * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return String
+     */
 	private function get_script_onselects() { 
 		return $this->onselects;
 	}
 	
 	
-  /* This function directly supports the Collection class.
+    /** 
+     * This function directly supports the Collection class.
 	 * 
+	 * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
 	 * @return SQL select string
 	 */
 	public function get_collection_definition($filter = '', $orderby = '') {
@@ -173,11 +211,23 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
 		}
 		return $sql;
 	}
-	
+	    
+	/**
+     * Get the values for display in the add/edit form
+     *
+     * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     */
 	public function get_displays() {
 		return array('Name'=>'get_name', 'Script'=>'get_script', 'Flags'=>'get_flags');
 	}
-	
+	/**
+     * Get flags set on the script.
+     *
+     * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return String The flags set up for the script.
+     */
 	public function get_flags() {
 		return htmlspecialchars($this->flags);
 	}
@@ -193,7 +243,13 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
 	public function get_script() {
 		return htmlspecialchars($this->script);
 	}
-	
+	    
+	/**
+     * Persist the record to the database
+     *
+     * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     */
 	public function save() {
     	if ($this->id > 0 ) {
     		// Update an existing record

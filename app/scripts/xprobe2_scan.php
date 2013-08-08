@@ -42,8 +42,6 @@ if(php_sapi_name() != 'cli') {
 	global $javascripts;
 	$javascripts[] = <<<EOT
 	<script type="text/javascript">
-		// Make this scan the default
-		document.getElementById("xprobe2_scan.php").defaultSelected = true;
 		function xprobe2_display() {
 			var xprobe2HTML = "<p>Xprobe2 uses port data from the database to determine operating systems and update host records.</p/>";
 			xprobe2HTML += "<p>xprobe2  is  an  active  operating system fingerprinting tool with a different approach to operating system";
@@ -53,8 +51,6 @@ if(php_sapi_name() != 'cli') {
 			xprobe2HTML += "Operating System Fingerprinting\".</p>";
 			document.getElementById("specs").innerHTML = xprobe2HTML;
 		}
-		// Fire this up as it's the default
-		xprobe2_display();
 	</script>
 EOT;
 	$onselects['xprobe2_scan.php'] = 'xprobe2_display()';

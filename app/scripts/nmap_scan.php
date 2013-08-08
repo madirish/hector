@@ -16,7 +16,7 @@
  * For full help on usage see show_help() below.  
  * Example usage:
  * 
- * $ php nmap_scan.php -a -p=T:80,443 -g=1,4 -e=22
+ * $ php nmap_scan.php -a -p=80,443 -g=1,4 -e=22
  * 
  * This script is run from scan_cron.php and 
  * nmap_rescan_old.php
@@ -24,7 +24,7 @@
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * @package HECTOR
  * 
- * Last modified 7 August, 2013
+ * Last modified May 10, 2012
  */
  
 /**
@@ -106,8 +106,6 @@ if(php_sapi_name() != 'cli') {
 	global $javascripts;
 	$javascripts[] = <<<EOT
 	<script type="text/javascript">
-		// Make this scan the default
-		document.getElementById("nmap_scan.php").defaultSelected = true;
 		function nmap_scan_display() {
 			var nmapHTML = "Alert on Changes: <input id='add-remove-alert' type='checkbox' onClick='addRemoveAlert()' $alert/><br/>";
 			nmapHTML += "TCP ports to scan (comma delimited): <input type='text' id='tcpportlist' onBlur='updatePorts()' value='$tcpportlist'/><br/>";
@@ -117,8 +115,6 @@ if(php_sapi_name() != 'cli') {
 			nmapHTML += "Attempt version detection: <input id='add-remove-version' type='checkbox' onClick='addRemoveVersion()' $version/><br/>";
 			document.getElementById("specs").innerHTML = nmapHTML;
 		}
-		// Fire this up as it's the default
-		nmap_scan_display();
 		function addRemoveAlert() {
 			if (document.getElementById("add-remove-alert").checked == true) {
 				if (! document.getElementById("flags").value.match(/-a/g)) {

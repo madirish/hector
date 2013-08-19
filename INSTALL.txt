@@ -3,7 +3,26 @@ INSTALLATION
 
 HECTOR
 by Justin C. Klein Keane <jukeane@sas.upenn.edu>
-Last modified: 19 September 2012
+Last modified: 18 August 2013
+
+ABOUT HECTOR
+------------
+HECTOR is a security intelligence platform designed to collect data from 
+disparate sources for easy analysis.  Fundamentally HECTOR uses a relational
+database management system (RDMS - at this time MySQL) to collect structured
+data for analysis using SQL reporting.  HECTOR also utilizes OSSEC host 
+based intrusion detection system (HIDS) to monitor log files from sensors and
+hosts in an environment.  Alerts generated via OSSEC are added to the database
+for analysis.  OSSEC is also used for log aggregation and integration, moving
+messages from darknet sensors, honeypots, and other detection mechanisms into 
+the central MySQL repository.  HECTOR also captures data from open source 
+repositories such as mailing list archives, vulnerability databases and even
+social networking feeds.  
+
+The web based front end for HECTOR is designed for easy reporting and analysis
+and is used to configure and monitor vulnerability scans which populate
+additional data in the MySQL database.  The web based front end is authenticated
+and designed to easily allow role based access to records and reports.  
 
 PREREQUISITES
 -------------
@@ -15,14 +34,28 @@ document will describe installation on a CentOS 6 system.
 
 Because many of the components of HECTOR require database support, it is 
 important that you follow the outline in this install guide so that scripts for
-components don't run into dependency issues (i.e. the database creation script
-for HECTOR assumes that a database for rsyslog is configured with default table
-names, so the instructions in the DARKNET SENSOR section must be complete prior
-to the DATABASE SUPPORT section).
+components don't run into dependency issues.
+
+INSTALLATION
+------------
+HECTOR is not a single piece of software, but rather is a system comprised of a
+number of components.  HECTOR's database is the integration point for various 
+different data sets.  At a minimum, you should set up HECTOR with three distinct
+hosts.  One host serves as the OSSEC server and HECTOR's main reporting engine
+and database server.  A second host should be configured to serve as a darknet 
+sensor.  The third host supports honeypots - at a minimum the Kojoney2 medium
+interaction honeypot, which is implemented in Python.  These three servers 
+all report to the HECTOR main host and form the minimal core of a HECTOR 
+installation.
+
+To install the central server use the install.sh shell script on a CentOS 6
+machine.  Installation on other operating systems is similar, but the 
+commands and packages may vary slightly.  HECTOR should run on any platform 
+capable of supporting a web server, PHP, MySQL, OSSEC, Perl, Python and the
+supporting packages for vulnerability scanning (such as NMAP).
 
 PACKAGE CONTENTS
 ----------------
-
 There are two directories for the application: app and html.  The app directory
 is designed to be placed outside of your web server's web root (so that it 
 isn't exposed via the web service).  The html directory is supposed to be 
@@ -39,7 +72,6 @@ then rename it to config.ini to ensure that HECTOR can find it.
 
 SUPPORTING SOFTWARE
 -------------------
- 
 There are a number of additional supporting software packages included in the 
 HECTOR distribution that support the installation.  These include OSSEC, which
 is a host based intrusion detection system.  Although OSSEC can be run solely
@@ -49,61 +81,87 @@ component.  Again, the HECTOR server can be configured as a darknet sensor, but
 is not optimal so other machines should be configured (the process is outlined
 below and largely similar on other machines excepting that remote sensors will
 need to be configured to route rsyslog logs to the HECTOR server).  Finally the
-HECTOR server can collect data from Kojoney, a lightweight SSH honeypot written
+HECTOR server can collect data from Kojoney2, a lightweight SSH honeypot written
 in Python.  NMAP is also required, but can be installed using operating system
 sources for the HECTOR host and is not included in the distribution due to the
 fast nature of development and updates.
 
+DATABASE SUPPORT
+----------------
+The next step to installation is to create a database for HECTOR.  In this 
+document we will use the database name 'hector' but it is somewhat arbitrary.
+
+Create the database using the MySQL command line interface:
+
+mysql> create database hector;
+mysql> grant all privileges on hector.* to 'hector_user'@localhost 
+  identified by 'hector_pass';
+
+Next populate the database using the installation script:
+
+$ mysql -u root -p < app/sql/db.sql
+
+Where "app/sql/db.sql" is a subdirectory under hector (for instance, found in 
+the /opt/hector/app/sql/db.sql full file path).
+
+INSTALLING OSSEC
+----------------
+OSSEC, an open source host based intrusion detection system 
+(http://www.ossec.net) is one of the components and can be found in the 
+app/software directory.  Simply unpack the installation using:
+
+# tar xvzf ossec-hids-2.7.tar.gz
+
+To unpack the installation.  OSSEC must be compiled with database support in
+order to perform event logging to the central HECTOR data repositories.  After
+unpacking OSSEC configure database support using the following commands:
+
+# cd ossec-2.7
+# cd src
+# make setdb
+# cd ..
+# ./install.sh
+
+Using the defaults for installation should be sufficient.  Once OSSEC is 
+installed it must be configured for database support.  To do this first
+create the database tables for OSSEC in the HECTOR database:
+
+# cd ossec-2.7/src/os_dbd
+# mysql -u hector_user -p hector < mysql.schema
+
+Note that the username and password will be the same as those set up in the
+DATABASE SUPPORT section above.  Once this is done, OSSEC must be configured 
+to write to the database.  Modify the ossec.conf file using:
+
+# vi /var/ossec/etc/ossec.conf
+
+And add the following stanza, with appropriate variables filled in:
+
+<ossec_config>
+  <database_output>
+    <hostname>192.168.2.30</hostname>
+    <username>hector_user</username>
+    <password>hector_pass</password>
+    <database>hector</database>
+    <type>mysql</type>
+  </database_output>
+</ossec_config>
+
+
 INSTALLING DARKNET SENSORS
 --------------------------
 
-HECTOR also relies on darknet data collected via rsyslog and sensors running
-iptables as described in http://www.madirish.net/537.  The SQL install script
-(see DATABASE SUPPORT section) will create a trigger on the default MySQL table
-used by rsyslog when MySQL support is enabled that will move data from that 
-table into a table in the HECTOR database for easier reporting.
+HECTOR also relies on darknet data collected via iptables dropped packets.
+Sensors are configured with OSSEC in client mode to monitor syslog, to which
+iptables logs dropped packets.  By specifying a unique identifying string in
+the iptables configuration, OSSEC is able to identify these dropped packets
+with custom rules in /var/ossec/rules/local_rules.xml.
 
-Rsyslog and MySQL support should be installed and configured using your hosts
-native package managment (such as RPM, Yum, or APT) since this is fairly 
-dynamic software and will need to be updated somewhat regularly.  If you 
-install on a remote host just be sure that you're sending logs to rsyslog 
-on the HECTOR host so the MySQL trigger functions properly.
-
-On RHEL or CentOS systems you can use the Yum package manager to install and
-enable rsyslog and MySQL.  Simply use:
-
-# yum install rsyslog-mysql
-
-Next you must create the correct tables in MySQL for rsyslog.  To do this you
-must import the createDB.sql file from the rsyslog package.  On a CentOS 6 host
-this can be done using:
-
-$ mysql -u root -p < /usr/share/doc/rsyslog-mysql-5.8.10/createDB.sql
-
-(note the version number may differ from the above 5.8.10).  This script will
-create a new database called 'Syslog' with a table called 'SystemEvents' that 
-will be used by HECTOR as described below.  Additionally you'll need to add
-the following line to your /etc/rsyslog.conf file to enable this support:
-
-$ModLoad ommysql
-
-And finally you need to add the following line under the definition for log
-entries that go to /var/log/messages:
-
-if $msg contains 'iptables ' then :ommysql:[host],Syslog,[uname],[password]
-
-Where [host], [uname], and [password] are replaced with appropriate values for
-your installation.  For example:
-
-# Log anything (except mail) of level info or higher.
-# Don't log private authentication messages!
-*.info;mail.none;authpriv.none;cron.none                /var/log/messages
-if $msg contains 'iptables ' then :ommysql:localhost,Syslog,root,rootPassword
-
-Once installed and configured you will need to adjust iptables in order to log
-firewall drops to syslog.  This process is pretty much the same for darknet 
-sensors on other hosts, except you will have to update your rsyslog config-
-uration file (/etc/rsyslog.conf) on those hosts to point to the HECTOR host.  
+The first step to configuring a darknet sensor is to install OSSEC in client
+mode and configure it to report to the HECTOR main OSSEC server.  Once this 
+is complete simply configure OSSEC to drop packets using a configuration file
+such as the listing below.
+ 
 The important part of the iptables alteration is the final line that will LOG
 dropped packets.  Below is an example iptables configuration file (which can 
 be found in /etc/sysconfig/iptables on a CentOS host):
@@ -117,11 +175,6 @@ be found in /etc/sysconfig/iptables on a CentOS host):
 -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 -A INPUT -p icmp -j ACCEPT
 -A INPUT -i lo -j ACCEPT
--A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
--A INPUT -m state --state NEW -m tcp -p tcp --dport 2222 -j ACCEPT
--A INPUT -m state --state NEW -m tcp -p tcp --dport 993 -j ACCEPT
--A INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT
--A INPUT -m state --state NEW -m udp -p udp --dport 514 -j ACCEPT
 -A INPUT -d 224.0.0.251 -j REJECT -m comment --comment "Ignore multicast packets"
 -A INPUT -d 224.0.0.1 -j REJECT -m comment --comment "Ignore multicast packets"
 -A INPUT -d 10.0.0.2 -m state --state NEW -j LOG --log-ip-options --log-prefix "iptables " -m comment --comment "Log dropped packets"
@@ -129,68 +182,21 @@ be found in /etc/sysconfig/iptables on a CentOS host):
 -A FORWARD -j REJECT --reject-with icmp-host-prohibited
 COMMIT
 
-Note that this configuration allows TCP ports 22, 2222, 993 and 80, as well as
-UDP port 514, so the darknet sensor won't detect packets sent to those ports.
-Once iptables and rsyslog are configured they may need to be restarted using:
+Once iptables and OSSEC are configured they may need to be restarted using:
 
-# service rsyslog restart
+# /etc/rc.d/init.d/ossec restart
 # service iptables restart
 
-Once done you can test the configuration by attempting to telnet to the HECTOR 
-host from another machine.  The connectattempt should fail and you can check 
-to ensure database logging is working using:
+Once done you can test the configuration by attempting to telnet to the darknet 
+sensor from another machine.  The connect attempt should fail and you can check 
+to ensure that the dropped packet is logged by looking at the end of the darknet
+sensor's syslog with the following command:
 
-$ mysql -u root Syslog
-mysql> select ID, ReceivedAt, Message from SystemEvents;
+# tail /var/log/syslog
 
 You should see an entry for a dropped packed to destination port 23.  If not 
 then check your system logs for indications of what might have gone wrong.
 
-DATABASE SUPPORT
-----------------
-
-The next step to installation is to create a database for HECTOR.  In this 
-document we will use the database name 'hector' but it is somewhat arbitrary.
-
-Create the database using the MySQL command line interface:
-
-mysql> create database hector;
-mysql> grant all privileges on hector.* to 'hector_user'@localhost 
-  identified by 'hector_pass';
-
-Next populate the database using the installation script:
-
-$ mysql -u root -p < sql/db.sql
-
-Where "sql/db.sql" is a subdirectory under app (for instance, found in the 
-/opt/hector/app/sql/db.sql full file path).
-
-INSTALLING OSSEC
-----------------
-
-OSSEC, an open source host based intrusion detection system 
-(http://www.ossec.net) is one of the components and can be found in the 
-app/software directory.  Simply unpack the installation using:
-
-# tar xvzf ossec-hids-2.3.tar.gz
-
-To unpack the installation.  Once unpacked simply install OSSEC using the 
-installation script (install.sh) included in the OSSEC directory.  Using the
-defaults for installation is expected.  For instance, the HECTOR scripts that
-import OSSEC data look for logs in the /var/ossec/logs directory, so if
-your installation varies you may need to change other scripts in HECTOR.  You
-should enable e-mail alerts if you wish to use OSSEC to track ongoing attacks
-as HECTOR does not import alerts as they occur, but rather on a nightly basis.
-
-OSSEC should be installed in server mode on the same host, or should at least
-make logs accessible to the host.  There is a Perl script, designed to be run
-daily, that scans the OSSEC logs and imports them into HECTOR's database.  This
-script is located at app/scripts/ossec_logreader.pl.  This script should be
-scheduled (via cron) to be run nightly (see SCHEDULED JOBS section below).  
-Note that if you enable remote logging (in order to set up OSSEC clients on 
-other machines) you will need to adjust your firewall rules to allow access to
-UDP port 514 by the clients.  Be sure to start OSSEC once the install is
-completed.
 
 INSTALLING KOJONEY
 ------------------

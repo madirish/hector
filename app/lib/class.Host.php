@@ -756,8 +756,8 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 			foreach ($scans->members as $scan) $retval .= $scan->get_details();
 		}
 		$retval .= '</tbody></table>';
-		$retval .= '</div></div>';
-		$retval .= '<div><table id="screenshotstable" class="table table-striped">' . "\n";
+				$retval .= '</div></div>';
+		$retval .= '<div class="row"><div class="span5"><table id="screenshotstable" class="table table-striped">' . "\n";
 		$retval .= '<thead><tr><th>URL</th><th>Screenshot</th></tr></thead><tbody>';
 		$approot = getcwd() . '/../app/';
 		foreach($this->get_urls() as $url) {
@@ -775,7 +775,23 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		}
 			$retval .= '</td></tr>';
 		$retval .= '</tbody></table>';
-		$retval .= '</div>' . "\n";
+		$retval .= '</div><div class="span6">';
+		$retval .= '<p class="well well-small">Vulnerabilities:</p>';
+		$retval .= '<table id="vulntable" class="table table-striped">';
+		$retval .= '<thead><tr><th>Type</th><th>Text</th><th>Dicovered</th><th>Fixed</th><th>Ignore</th></tr></thead><tbody>';
+		$sql = array('select v.vuln_name, vd.vuln_details_id, vd.vuln_details_text, vd.vuln_details_datetime, vd.vuln_details_ignore, vd.vuln_details_fixed ' .
+				'from vuln_details vd inner join vuln v on vd.vuln_id = v.vuln_id ' .
+				'inner join vuln_x_host vh on vh.vuln_details_id = vd.vuln_details_id ' .
+				'where vh.host_id = ?i order by vd.vuln_details_datetime desc', $this->get_id());
+		$vulns = $this->db->fetch_object_array($sql);
+		foreach($vulns as $vuln) {
+			$retval .= '<tr><td><a href=?action=vuln_details&id=' . $vuln->vuln_details_id . '>' . $vuln->vuln_name . '</a></td>';
+			$retval .= '<td>' . $vuln->vuln_details_text . '</td>';
+			$retval .= '<td>' . $vuln->vuln_details_datetime . '</td>';
+			$retval .= '<td>' . ($vuln->vuln_details_fixed==1 ? '<i class="icon-ok"></i>':'') . '</td>';
+			$retval .= '<td>' . ($vuln->vuln_details_ignore==1 ? '<i class="icon-ok"></i>':'') . '</td></tr>';
+		}
+		$retval .= '</tbody></table></div></div>';
 		return $retval;
 	}
 

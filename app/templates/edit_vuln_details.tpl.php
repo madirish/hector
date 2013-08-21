@@ -1,3 +1,6 @@
+<script src="js/jquery.js" type="text/javascript"></script>
+<script src="js/bootstrap-datepicker.js" type="text/javascript"></script>
+<link href="css/datepicker.css" rel="stylesheet">
 <h3>Edit Vunerability Details</h3>
 <form name="<?php echo $form_name;?>" id="<?php echo $form_name;?>" method="POST" action="?action=edit_vuln_details&id=<?php echo $vuln_details->get_id();?>">
 <fieldset>
@@ -10,11 +13,15 @@
 	<tr><td>Tags</td><td><?php echo 'Need to add tags to vuln_details class!!!';?></td></tr
 	<tr><td>Text</td><td><textarea name ="text"><?php echo $vuln_details->get_text();?></textarea></td></tr>
 	<tr><td>Host</td><td><a href=?action=details&object=host&id=<?php echo $vuln_details->get_host_id();?>><?php echo $vuln_details->get_host_name();?></a></td></tr>
-	<tr><td>Discovered</td><td><?php echo $vuln_details->get_datetime();?></td></tr>
+	<tr><td>Discovered</td><td><?php echo $vuln_details->get_first_datetime();?></td></tr>
+	<tr><td>Last seen</td><td><?php echo $vuln_details->get_last_datetime();?></td></tr>
 	<tr><td>Ignore</td><td><input type="checkbox" name="ignore" <?php echo ($vuln_details->get_ignore() == 1) ? 'checked="true"' : '' ;?>/></td></tr>
-	<tr><td>Fixed</td><td><input type="checkbox" name="fixed" <?php echo ($vuln_details->get_fixed() == 1) ? 'checked="true"' : '' ;?>/></td></tr>
-	<tr><td>Fixed Time</td><td><?php echo $vuln_details->get_fixed_datetime();?></td></tr>
-	<tr><td>Fixed Notes</td><td><textarea name="fixed_notes"><?php echo $vuln_details->get_fixed_notes();?></textarea></td></tr>
+	<tr><td>Fixed</td><td><input type="checkbox" name="fixed" onclick="cbChanged(this);" <?php echo ($vuln_details->get_fixed() == 1) ? 'checked="true"' : '' ;?>/></td></tr>
+	<tr><td>Fixed Time</td><td><div class="input-append date" id="dp" data-date="<?php echo date('Y-m-d');?>" data-date-format="yyyy-mm-dd">
+    <input name='fixed_date' data-format="yyyy-MM-dd hh:mm:ss" id='fixed_date' type="text" value="<?php echo $vuln_details->get_fixed_datetime();?>"/>
+    <span class="add-on"><i class="icon-calendar"></i></span>
+    </div></td></tr>
+	<tr><td>Fixed Notes</td><td><textarea name="fixed_notes"/><?php echo $vuln_details->get_fixed_notes();?></textarea></td></tr>
 	<tr><td>&nbsp;</td>
 	<td><input type="submit" name="submit" value="Save changes"/></td></tr>
 	</tbody>
@@ -23,3 +30,24 @@
 <input type="hidden" name="token" value="<?php echo $token;?>"/>
 <input type="hidden" name="form_name" value="<?php echo $form_name;?>"/>
 </form>
+<script>
+	var ddatetime = new Date(<?php echo strtotime($vuln_details->get_last_datetime());?>*1000);
+	var defaulttime = '<?php echo date(' h:m:s');?>';
+    $('#dp').datepicker().on('changeDate', function(ev){
+    	if (ev.date.valueOf() > ddatetime) {
+				document.getElementById('fixed_date').value += defaulttime;
+    	}
+    	else {
+    		document.getElementById('fixed_date').value='0000-00-00 00:00:00';
+    		alert('Invalid Fixed Time');
+    	}
+    });
+
+	function cbChanged(checkboxElem) {
+  		if (checkboxElem.checked) {
+			document.getElementById('fixed_date').value='<?php echo date('Y-m-d h:m:s');?>';
+  		} else {
+   			document.getElementById('fixed_date').value='0000-00-00 00:00:00';
+  		}
+	}
+</script>

@@ -15,6 +15,7 @@ $ip_search->save();
       <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-globe"></i> Asset Management <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li><a href="?action=browse_ip">Browse</a></li>
+        <li><a href="?action=ossec">OSSEC Clients</a></li>
         <li class="divider"></li>
         <li class="nav-header">Search</li>
         <li><a href="?action=assets&object=search">Search</a></li>
@@ -42,6 +43,7 @@ $ip_search->save();
         <li><a href="?action=detection">Detection summary</a></li>
         <li><a href="?action=honeypot">Honeypot data</a></li>
         <li><a href="?action=attackerip">Malicious IP database</a></li>
+        <li><a href="?action=ossecalerts">OSSEC Alerts</a></li>
       </ul>
     </li>
     <li class="dropdown">

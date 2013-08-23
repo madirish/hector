@@ -14,6 +14,17 @@ CREATE TABLE IF NOT EXISTS `alert` (
 	KEY `host_id` (`host_id`)
 ) ENGINE = INNODB;
 
+-- API keys 
+CREATE TABLE IF NOT EXISTS `api_key` (
+  `api_key_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `api_key_value` VARCHAR(255) NOT NULL,
+  `api_key_resource` VARCHAR(255) NOT NULL,
+  `api_key_holder_name` VARCHAR(255) NOT NULL,
+  `api_key_holder_affiliation` VARCHAR(255) NOT NULL,
+  `api_key_holder_email` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`api_key_id`)
+) ENGINE = INNODB;
+
 -- Actual data from RSS feeds
 CREATE TABLE IF NOT EXISTS `article` (
   `article_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -144,6 +155,39 @@ CREATE TABLE IF NOT EXISTS `location` (
 	PRIMARY KEY (`location_id`)
 );
 
+CREATE TABLE IF NOT EXISTS `koj_login_attempts` (
+  `id` INT(12) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  `time` TIMESTAMP,
+  `ip` VARCHAR(15),
+  `username` VARCHAR(16),
+  `password` VARCHAR(20),
+  `ip_numeric` INT(10) UNSIGNED,
+  `sensor_id` INT(10) UNSIGNED
+) ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS `koj_executed_commands` (
+  `id` INT(12) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  `time` TIMESTAMP,
+  `ip` VARCHAR(15),
+  `command` VARCHAR(100),
+  `ip_numeric` INT(10) UNSIGNED,
+  `session_id` INT(10) UNSIGNED,
+  `sensor_id` INT(10) UNSIGNED
+) ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS `koj_downloads` (
+  `id` INT(12) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  `time` TIMESTAMP,
+  `ip` VARCHAR(15),
+  `ip_numeric` INT(10) UNSIGNED,
+  `url` VARCHAR(100),
+  `md5sum` VARCHAR(32),
+  `filetype` VARCHAR(255),
+  `clamsig` text,
+  `sensor_id` INT(10) UNSIGNED,
+  `file` LONGBLOB
+) ENGINE = InnoDB;
+
 -- Log file table
 CREATE TABLE IF NOT EXISTS `log` (
 	`log_id` INT NOT NULL AUTO_INCREMENT,
@@ -194,6 +238,8 @@ CREATE TABLE IF NOT EXISTS `ossec_alerts` (
 	KEY `host_id` (`host_id`),
 	KEY `rule_id` (`rule_id`),
 	INDEX USING HASH (rule_src_ip_numeric),
+  INDEX USING HASH (rule_id),
+  INDEX USING HASH (host_id),
 	INDEX USING BTREE (alert_date)
 ) ENGINE = INNODB;
 
@@ -338,35 +384,3 @@ CREATE TABLE IF NOT EXISTS `vuln_x_tag` (
   `vuln_id` INT UNSIGNED NOT NULL,
   `tag_id` INT UNSIGNED NOT NULL
 ) ENGINE = INNODB;
-
--- API keys
-CREATE TABLE IF NOT EXISTS `api_key` (
-  `api_key_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `api_key_value` VARCHAR(255) NOT NULL,
-  `api_key_resource` VARCHAR(255) NOT NULL,
-  `api_key_holder_name` VARCHAR(255) NOT NULL,
-  `api_key_holder_affiliation` VARCHAR(255) NOT NULL,
-  `api_key_holder_email` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`api_key_id`)
-) ENGINE = INNODB;
-
---
--- Create views to the Kojoney2 tables if it's installed
---
-DROP PROCEDURE IF EXISTS kojoney_views;
-DELIMITER $$
-CREATE PROCEDURE kojoney_views()
-BEGIN
-	SET @kojoney_table_count := (SELECT COUNT(SCHEMA_NAME) FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = 'kojoney');
-		-- Only create views if Kojoney2 is installed
-    IF @kojoney_table_count > 0 THEN
-			CREATE OR REPLACE VIEW koj_login_attempts AS SELECT * FROM kojoney.login_attempts;
-			CREATE OR REPLACE VIEW koj_executed_commands AS SELECT * FROM kojoney.executed_commands;
-			CREATE OR REPLACE VIEW koj_downloads AS SELECT * FROM kojoney.downloads;
-		END IF;
-END$$
-DELIMITER ;
-
-call kojoney_views();
-
-

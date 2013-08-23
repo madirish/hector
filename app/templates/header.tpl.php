@@ -3,12 +3,14 @@
 <head>
 	<meta charset="utf-8">
 	<title>HECTOR</title>
-	<link rel="shortcut icon" href="images/favicon.ico" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" href="images/favicon.ico" />
 	<link href="css/bootstrap.css" rel="stylesheet">
 	<link href="css/bootstrap-responsive.css" rel="stylesheet">
 	<link href="css/penn.css" rel="stylesheet">
 	<script src="js/ajaxFunctions.js" type="text/javascript"></script> 
+	<script src="js/jquery.js" type="text/javascript"></script>
+	<script src="js/bootstrap.js" type="text/javascript"></script>
 </head>
 <body>
 <!-- 

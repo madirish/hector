@@ -1,3 +1,4 @@
+<script src="js/jquery.js" type="text/javascript"></script>
 <script type="text/javascript">
 $(document).ready(function() 
     { 
@@ -7,7 +8,6 @@ $(document).ready(function()
 ); 
 </script>
 <script src="js/Chart.js" type="text/javascript"></script>
-<script src="js/jquery.js" type="text/javascript"></script>
 <p class="lead"><?php echo $count;?> Hosts Tracked</p>
 
 

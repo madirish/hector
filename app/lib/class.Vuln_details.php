@@ -39,6 +39,15 @@ class Vuln_details extends Maleable_Object implements Maleable_Object_Interface 
      * @var int
      */
     protected $id = null;
+    
+    /**
+     * array of vuln_details_id's
+     * that match this vulnerability
+     *
+     * @access private
+     * @var array
+     */
+    protected $ids = null;
 
 	/**
 	 * vuln_details_text
@@ -48,11 +57,18 @@ class Vuln_details extends Maleable_Object implements Maleable_Object_Interface 
 	private $text;
 	
 	/**
-	 * logged datetime
+	 * first logged datetime
 	 * 
 	 * @var String
 	 */
-    private $datetime;
+    private $first_datetime;
+    
+    /**
+	 * last logged datetime
+	 * 
+	 * @var String
+	 */
+    private $last_datetime;
     
     /**
 	 * ignore
@@ -163,7 +179,6 @@ class Vuln_details extends Maleable_Object implements Maleable_Object_Interface 
 			$result = $this->db->fetch_object_array($sql);
 			$this->id = $result[0]->vuln_details_id;
 			$this->text = $result[0]->vuln_details_text;
-			$this->datetime = $result[0]->vuln_details_datetime;
 			$this->ignore = $result[0]->vuln_details_ignore;
 			$this->fixed = $result[0]->vuln_details_fixed;
 			$this->fixed_datetime = $result[0]->vuln_details_fixed_datetime;
@@ -175,7 +190,29 @@ class Vuln_details extends Maleable_Object implements Maleable_Object_Interface 
 			$this->vuln_osvdb = $result[0]->vuln_osvdb;
 			$result = $this->db->fetch_object_array($sql);
 			$this->host_id = $result[0]->host_id;
-			$this->host_name = $result[0]->host_name;	
+			$this->host_name = $result[0]->host_name;
+			
+			$ids = array();
+			$sql = array(
+				'SELECT vd.vuln_details_id from vuln_details vd ' .
+				'inner join vuln_x_host vh on vh.vuln_details_id = vd.vuln_details_id ' . 
+				'inner join host h on h.host_id = vh.host_id ' .
+				'WHERE vh.host_id=?i and vd.vuln_id=?i and vd.vuln_details_text=\'?s\'',
+				$this->host_id,
+				$this->vuln_id,
+				$this->text
+				);
+			$results = $this->db->fetch_object_array($sql);
+			foreach($results as $result) $this->ids[]=$result->vuln_details_id;
+			
+			$sql = array(
+				'SELECT max(vd.vuln_details_datetime) as last, min(vd.vuln_details_datetime) as first from vuln_details vd ' .
+				'WHERE vd.vuln_details_id in (?s)',
+				implode(',', $this->ids)
+				);
+			$result = $this->db->fetch_object_array($sql);
+			$this->first_datetime = $result[0]->first;
+			$this->last_datetime = $result[0]->last;
 		}
     }
 
@@ -230,19 +267,15 @@ class Vuln_details extends Maleable_Object implements Maleable_Object_Interface 
 		return $sql;
 	}
 	
-
+	/**
+	 * get_displays() is not used.
+	 */
 	public function get_displays() {
-		return array('Id'=>'get_id',
-			'Value'=>'get_key_value',
-			'Resource'=>'get_key_resource',
-			'Holder name'=>'get_holder_name',
-			'Holder affiliation'=>'get_holder_affiliation',
-			'Holder email'=>'get_holder_email'
-		);
+		return array();
 	}
 
-	public function get_datetime() {
-		return $this->datetime;
+	public function get_first_datetime() {
+		return $this->first_datetime;
     }
     
     public function get_fixed() {
@@ -273,6 +306,10 @@ class Vuln_details extends Maleable_Object implements Maleable_Object_Interface 
 		return $this->ignore;
     }
     
+    public function get_last_datetime() {
+		return $this->last_datetime;
+    }
+    
     public function get_text() {
 		return $this->text;
     }
@@ -300,25 +337,14 @@ class Vuln_details extends Maleable_Object implements Maleable_Object_Interface 
     public function save() {if ($this->id > 0 ) {
     		// Update an existing vuln_detail
 	    	$sql = array(
-	    		'UPDATE vuln_details SET vuln_details_text = \'?s\', vuln_details_ignore = \'?s\', vuln_details_fixed = \'?s\', vuln_details_fixed_datetime = \'?s\', vuln_details_fixed_notes =\'?s\' WHERE vuln_details_id = \'?i\'',
+	    		'UPDATE vuln_details SET vuln_details_text = \'?s\', vuln_details_ignore = \'?s\', vuln_details_fixed = \'?s\', vuln_details_fixed_datetime = \'?s\', vuln_details_fixed_notes =\'?s\' ' .
+	    		'WHERE vuln_details_id in (?s)',
 				$this->get_text(),
 	    		$this->get_ignore(),
 	    		$this->get_fixed(),
 	    		$this->get_fixed_datetime(),
 	    		$this->get_fixed_notes(),
-	    		$this->get_id()
-	    	);
-	    	$this->db->iud_sql($sql);
-    	}
-    	else {
-    		$sql = array(
-				'INSERT INTO vuln_details SET vuln_details_text = \'?s\', vuln_details_datetime = \'?s\', vuln_details_ignore = \'?s\', vuln_details_fixed = \'?s\', vuln_details_fixed_datetime = \'?s\', vuln_details_fixed_notes =\'?s\'',
-    			$this->get_text(),
-    			$this->get_datetime(),
-	    		$this->get_ignore(),
-	    		$this->get_fixed(),
-	    		$this->get_fixed_datetime(),
-	    		$this->get_fixed_notes()
+	    		implode(',', $this->ids)
 	    	);
 	    	$this->db->iud_sql($sql);
     	}

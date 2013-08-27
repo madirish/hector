@@ -322,7 +322,7 @@ INSERT INTO `state` SET `state_id`=5, `state_state`='other' ON DUPLICATE KEY UPD
 -- Support groups are entities composed of individuals that
 -- handle host support
 CREATE TABLE IF NOT EXISTS `supportgroup` (
-	`supportgroup_id` INT NOT NULL AUTO_INCREMENT,
+	`supportgroup_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	`supportgroup_name` VARCHAR(255) NOT NULL,
 	`supportgroup_email` varchar(100) DEFAULT NULL, -- Distribution e-mail alias
   PRIMARY KEY  (`supportgroup_id`)
@@ -335,12 +335,13 @@ CREATE TABLE IF NOT EXISTS `tag` (
   PRIMARY KEY  (`tag_id`)
 ) ENGINE = INNODB;
 
--- FQDN's that resolve to hosts
+-- URL's and screenshot files for hosts
 CREATE TABLE IF NOT EXISTS `url` (
-  `host_id` INT NOT NULL,
-  `host_ip` INT UNSIGNED NOT NULL,
+  `url_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `url_url` varchar(255) NOT NULL,
   `url_screenshot` varchar(255) DEFAULT NULL,
+  `host_id` INT NOT NULL,
+  PRIMARY KEY  (`url_id`),
   UNIQUE KEY `url_url` (`url_url`)
 ) ENGINE = INNODB;
 

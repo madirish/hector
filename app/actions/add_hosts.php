@@ -1,7 +1,16 @@
 <?php
 /**
+ * Subcontroller for adding new hosts to the system.
+ * Diverging from the normal MVC model to drop hosts
+ * directly into the database.  This is because 
+ * constructing a full host, modifying it, then saving
+ * it takes a lot of overhead and if we're adding a
+ * few hundred hosts (say at initial setup) this can
+ * take forever.
+ * 
  * @package HECTOR
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+ * @version 2013.08.28
  */
  
 require_once($approot . 'lib/class.Form.php');
@@ -37,15 +46,6 @@ if (isset($_POST['startip'])) {
 		}
 		$ip = $startip;
 		while ($ip <= $endip) {
-			/**
-			 * Diverging from the normal MVC model to drop hosts
-			 * directly into the database.  This is because 
-			 * constructing a full host, modifying it, then saving
-			 * it takes a lot of overhead and if we're adding a
-			 * few hundred hosts (say at initial setup) this can
-			 * take forever.'
-			 */ 
-			 
 			// Don't save 192.168.2.0 for instance
 			// Probably a better mathy way to do this ($ip%8 == 0) ?
 			if (substr(long2ip($ip), -2) != ".0") {

@@ -9,6 +9,7 @@ error_reporting(E_ALL);
  *
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * @package HECTOR
+ * @version 2013.08.28
  */
 
 if (0 > version_compare(PHP_VERSION, '5')) {

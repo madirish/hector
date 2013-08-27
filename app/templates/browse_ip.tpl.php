@@ -6,7 +6,7 @@ if (isset($hosts) && is_array($hosts)) {
 	print "<table class='table table-striped'><th>Hostname</th><th>IP</th><th>Open Ports</th><th>OS</th></tr>";
 	foreach ($hosts as $host) {
 		$name = ($host->host_name !== '') ? $host->host_name : $host->host_ip;
-		print "<tr><td><a href='?action=details&object=Host&id=" . $host->host_id;
+		print "<tr><td><a href='?action=host_details&id=" . $host->host_id;
 		print "'>".htmlspecialchars($name)."</a></td><td>".htmlspecialchars($host->host_ip)."</td>";
 		print "<td>" . $host->portcount . "</td>";
 		print "<td>" . htmlspecialchars($host->host_os) . "</td>";

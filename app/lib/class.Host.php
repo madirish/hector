@@ -929,7 +929,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 			$name = gethostbyaddr($this->ip);
 			$this->set_name($name);
 		}
-		$retval = '<a href="?action=details&object=host&id=' .
+		$retval = '<a href="?action=host_details&id=' .
 			$this->get_id() . '">' .
 			$this->get_name() . '</a>';
 		return $retval;

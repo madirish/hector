@@ -36,5 +36,5 @@ if (isset($result[0])) {
 	$vuln_badge = ($vuln_count > 0) ? '<span class="badge badge-important">' . $vuln_count . '</span>' : '';
 }
 
-$reports = ($vuln_count > 0) ? '<span class="noticeme">Reports</span>' : 'Reports';
+$reports = ($vuln_count > 0) ? 'Reports <span class="badge badge-important">!</span>' : 'Reports';
 ?>

@@ -33,7 +33,7 @@ elseif (isset($_GET['classC'])) {
 		'FROM host h ' .
 		'LEFT OUTER JOIN nmap_scan_result n ' .
 		'ON n.host_id = h.host_id AND n.state_id = 1 ' .
-		'WHERE h.host_ip LIKE \'?s%\' GROUP BY h.host_id, h.host_name ORDER BY h.host_ip',
+		'WHERE h.host_ip LIKE \'?s%\' GROUP BY h.host_id, h.host_name ORDER BY h.host_ip_numeric',
 		$classC
 	);	
 	$hosts = $db->fetch_object_array($sql);

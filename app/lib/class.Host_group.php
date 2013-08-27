@@ -23,7 +23,6 @@ $explaination = "Host groups are logical aggregations of machines, generally ass
  *
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  */
-require_once('class.Nmap_scan_result.php');
 
 /* user defined includes */
 require_once('class.Config.php');

@@ -12,9 +12,9 @@ $content .= '<h3>Dangerous Hosts</h3>' .
 		'<h4>Hosts with more than 7 open ports</h4>';
 
 $query = 'select n.host_id, h.supportgroup_id ' .
-		'from nmap_scan_result n, host h ' .
+		'from nmap_result n, host h ' .
 		'where n.host_id=h.host_id AND n.state_id=1 ' .
-		'group by n.host_id having count(n.nmap_scan_result_port_number) > 7 ' .
+		'group by n.host_id having count(n.nmap_result_port_number) > 7 ' .
 		'order by h.supportgroup_id';
 $host_results = $db->fetch_object_array($query);
 $content .= '<table id="dhost"><tr>' .
@@ -41,11 +41,11 @@ $content .= '</table>';
 
 $content .= '<h4>Hosts with more than 4 "server" ports open:</h4>';
 $query = 'select n.host_id, h.supportgroup_id ' .
-		'from nmap_scan_result n, host h ' .
+		'from nmap_result n, host h ' .
 		'WHERE n.host_id=h.host_id ' .
 		'AND n.state_id=1 ' .
-		'AND n.nmap_scan_result_port_number IN (21,22,23,25,53,80,100,110,143,443,3306,8080) ' .
-		'group by n.host_id having count(n.nmap_scan_result_port_number) > 4 ' .
+		'AND n.nmap_result_port_number IN (21,22,23,25,53,80,100,110,143,443,3306,8080) ' .
+		'group by n.host_id having count(n.nmap_result_port_number) > 4 ' .
 		'order by h.supportgroup_id;';
 $host_results = $db->fetch_object_array($query);
 $content .= '<table id="dhost"><tr>' .

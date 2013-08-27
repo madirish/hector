@@ -31,7 +31,7 @@ if(php_sapi_name() == 'cli') {
 require_once($approot . 'lib/class.Config.php');
 require_once($approot . 'lib/class.Dblog.php');
 require_once($approot . 'lib/class.Host.php');
-require_once($approot . 'lib/class.Nmap_scan_result.php');
+require_once($approot . 'lib/class.Nmap_scan.php');
 require_once($approot . 'lib/class.Scan_type.php');
 	
 // Make sure of the environment

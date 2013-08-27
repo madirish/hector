@@ -33,7 +33,6 @@ if(php_sapi_name() == 'cli') {
 	require_once($approot . 'lib/class.Config.php');
 	require_once($approot . 'lib/class.Host_group.php');
 	require_once($approot . 'lib/class.Host.php');
-	require_once($approot . 'lib/class.Nmap_scan_result.php');
 	require_once($approot . 'lib/class.Log.php');
 	
 	/**
@@ -49,10 +48,10 @@ if(php_sapi_name() == 'cli') {
 	$hostgroup->set_name('old_hosts');
 	$hostgroup->save();
 	
-	$sql = 'select distinct(host_id) from nmap_scan_result ' .
+	$sql = 'select distinct(host_id) from nmap_scan ' .
 			'where ' .
-			'nmap_scan_result_timestamp < date_sub(now(), INTERVAL ' . $months_old .' MONTH) ' .
-			'AND state_id = 1 ORDER BY nmap_scan_result_port_number';
+			'nmap_scan_timestamp < date_sub(now(), INTERVAL ' . $months_old .' MONTH) ' .
+			'AND state_id = 1 ORDER BY nmap_scan_port_number';
 	$old_hosts = array();
 	$result = $db->fetch_object_array($sql);
 	if (is_array($result)) {
@@ -60,14 +59,14 @@ if(php_sapi_name() == 'cli') {
 	}
 	
 	//Restrict the ports so we only rescan old data
-	$sql = 'select distinct(nmap_scan_result_port_number) from nmap_scan_result ' .
+	$sql = 'select distinct(nmap_scan_port_number) from nmap_scan ' .
 			'where ' .
-			'nmap_scan_result_timestamp < date_sub(now(), INTERVAL ' . $months_old .' MONTH) ' .
-			'AND state_id = 1 ORDER BY nmap_scan_result_port_number';
+			'nmap_scan_timestamp < date_sub(now(), INTERVAL ' . $months_old .' MONTH) ' .
+			'AND state_id = 1 ORDER BY nmap_scan_port_number';
 	$ports = array();
 	$result = $db->fetch_object_array($sql);
 	if (is_array($result)) {
-		foreach($result as $record) $ports[] = $record->nmap_scan_result_port_number;
+		foreach($result as $record) $ports[] = $record->nmap_scan_port_number;
 	} 
 	$ports = implode(',', $ports);
 	

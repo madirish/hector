@@ -21,7 +21,6 @@ if (0 > version_compare(PHP_VERSION, '5')) {
  *
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  */
-require_once('class.Nmap_scan_result.php');
 
 /* user defined includes */
 require_once('class.Config.php');
@@ -30,6 +29,7 @@ require_once('class.Log.php');
 require_once('class.Collection.php');
 require_once('interface.Maleable_Object_Interface.php');
 require_once('class.Maleable_Object.php');
+require_once('class.Nmap_result.php');
 require_once('class.Host_group.php');
 require_once('class.Supportgroup.php');
 require_once('class.Location.php');
@@ -676,7 +676,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	public function get_collection_by_port($port, $orderby='') {
 		global $appuser;
 		$portnum = intval($port);
-		$sql = 'select h.host_id from host h, nmap_scan_result n ';
+		$sql = 'select h.host_id from host h, nmap_result n ';
 		if (isset($appuser) && ! $appuser->get_is_admin()) {
 			$sql .= ', user_x_supportgroup x ';
 		}
@@ -685,7 +685,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 			$sql .= 'h.supportgroup_id = x.supportgroup_id AND' .
 					'x.user_id = ' . $appuser->get_id() . ' AND ';
 		}
-		$sql .= 'n.nmap_scan_result_port_number = ' . $portnum .' and n.state_id=1';
+		$sql .= 'n.nmap_result_port_number = ' . $portnum .' and n.state_id=1';
 		return $sql; 
 	}
 	
@@ -700,7 +700,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	public function get_collection_by_version($version, $orderby='') {
 		global $appuser;
 		$portnum = strtolower(mysql_real_escape_string($version));
-		$sql = 'select h.host_id from host h, nmap_scan_result n ';
+		$sql = 'select h.host_id from host h, nmap_result n ';
 		if (isset($appuser) && ! $appuser->get_is_admin()) {
 			$sql .= ', user_x_supportgroup x ';
 		}
@@ -967,8 +967,8 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 */
 	public function get_open_ports() {
 		$retval = 0;
-		$sql = array('select count(nmap_scan_result_id) as portcount ' .
-				'from nmap_scan_result ' .
+		$sql = array('select count(nmap_result_id) as portcount ' .
+				'from nmap_result ' .
 				'where host_id = ?i ' .
 				'and state_id = 1',
 				$this->id
@@ -1002,7 +1002,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		return (boolean) $this->policy;
 	}
 	/**
-	 * Get a collection of ports as Nmap_scan_result 
+	 * Get a collection of ports as nmap_result 
 	 * objects using the Collection factory.
 	 * 
 	 * @access public
@@ -1011,7 +1011,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 */
 	public function get_ports() {
 		if ($this->ports == null) {
-			$ports = new Collection('Nmap_scan_result', 'and nsr.host_id = ' . $this->get_id() . ' order by nsr.nmap_scan_result_port_number asc');
+			$ports = new Collection('Nmap_result', 'and nsr.host_id = ' . $this->get_id() . ' order by nsr.nmap_result_port_number asc');
 			if (isset($ports->members) && is_array($ports->members)) {
 				foreach ($ports->members as $port) {
 					$this->ports[] = $port;

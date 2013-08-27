@@ -29,7 +29,7 @@ if(php_sapi_name() == 'cli') {
 	require_once($approot . 'lib/class.Dblog.php');
 	require_once($approot . 'lib/class.Host.php');
 	require_once($approot . 'lib/class.Log.php');
-	require_once($approot . 'lib/class.Nmap_scan_result.php');
+	require_once($approot . 'lib/class.Nmap_result.php');
 		
 	// Set high mem limit to prevent resource exhaustion
 	ini_set('memory_limit', '512M');
@@ -88,10 +88,10 @@ if(php_sapi_name() == 'cli') {
 		// look up the host
 		$host = $hosts[(string)$nmaphost->address['addr']]; 
 		// Track new results via variables
-		$nmap_scan_results = array();
+		$nmap_scans = array();
 	
 		foreach ($nmaphost->ports->port as $port) {
-			$result = new Nmap_scan_result();
+			$result = new Nmap_scan();
 			$result->set_host_id($host->get_id());
 			$result->set_port_number($port['portid']);
 			$result->set_protocol($port['protocol']);
@@ -108,11 +108,11 @@ if(php_sapi_name() == 'cli') {
 			if (isset($port->service['servicefp']))  $version_info .= ' ' . $port->service['servicefp'];
 			if ($version_info != ' ') $result->set_service_version($version_info);
 			$result->set_service_name($port->service['name']);
-			$nmap_scan_results[] = $result;
+			$nmap_scans[] = $result;
 		}			
 	
-		foreach($nmap_scan_results as $scan) {
-			$old_scan_result = new Nmap_scan_result();
+		foreach($nmap_scans as $scan) {
+			$old_scan_result = new Nmap_scan();
 			$old_scan_result->lookup_scan($scan->get_host_id(), $scan->get_port_number(), $scan->get_protocol());
 			if ($old_scan_result->get_id() > 0) {
 				if ($scan->get_state_id() == 1 && $old_scan_result->get_state_id() > 1) {

@@ -17,12 +17,12 @@ if (! isset($appuser)) {
 } 
 
 // Count of top 10 ports
-$sql = 'SELECT DISTINCT(CONCAT(n.nmap_scan_result_port_number, "/", n.nmap_scan_result_protocol)) AS port_number, '  .
-		'COUNT(n.nmap_scan_result_id) AS portcount ' .
-		'FROM nmap_scan_result n ';
+$sql = 'SELECT DISTINCT(CONCAT(n.nmap_result_port_number, "/", n.nmap_result_protocol)) AS port_number, '  .
+		'COUNT(n.nmap_result_id) AS portcount ' .
+		'FROM nmap_result n ';
 if ($appuser->get_is_admin()) {
 	$sql .= 'WHERE n.state_id = 1 ' .
-		'GROUP BY nmap_scan_result_port_number ' .
+		'GROUP BY nmap_result_port_number ' .
 		'ORDER BY portcount DESC ' .
 		'LIMIT 10 ';
 }
@@ -30,7 +30,7 @@ else {
 	$sql .= ", host h, user_x_supportgroup x " .
 			"WHERE n.host_id = h.host_id AND h.supportgroup_id = x.supportgroup_id " .
 			"AND x.user_id = " . $appuser->get_id() . " AND n.state_id = 1 " .
-			"GROUP BY nmap_scan_result_port_number " .
+			"GROUP BY nmap_result_port_number " .
 			"ORDER BY portcount desc " .
 			"LIMIT 10 ";
 }

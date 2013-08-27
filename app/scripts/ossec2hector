@@ -1,4 +1,14 @@
 #! /bin/sh
+#
+# ossec2hector           This shell script enables daemon monitoring of OSSEC logs
+#
+# Author:       Justin C. Klein Keane <jukeane@sas.upenn.edu>
+#
+# chkconfig:    345 50 01
+#
+# description:  Enable monitoring of OSSEC logs and import to HECTOR MySQL database
+# processname:  ossec2hector
+#
 set -e
 
 # /etc/init.d/ossec2hector: start and stop the ossec2mysqld daemon

@@ -10,7 +10,7 @@
  * 
  * @package HECTOR
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
- * @version 2013.08.28
+ * @version 2013.08.29
  */
  
 require_once($approot . 'lib/class.Form.php');
@@ -20,7 +20,7 @@ include_once($approot . 'lib/class.Host_group.php');
 
 if (isset($_POST['startip'])) {
 	// Add hosts to the database
-	$startip = ip2long($_POST['startip']);
+	$startip = ip2long($_POST['startip']); 
 	$endip = isset($_POST['endip']) && $_POST['endip'] != '' ? ip2long($_POST['endip']) : $startip;
 	if ($endip < $startip) {
 		$message = "Start IP must be less than end IP.";
@@ -48,11 +48,12 @@ if (isset($_POST['startip'])) {
 		while ($ip <= $endip) {
 			// Don't save 192.168.2.0 for instance
 			// Probably a better mathy way to do this ($ip%8 == 0) ?
+			$ipstring = long2ip($ip);
 			if (substr(long2ip($ip), -2) != ".0") {
 				// Check for duplicate entries
 				$sql = array(
-					'SELECT host_id FROM host WHERE host_ip_numeric = ?i',
-					$ip
+					'SELECT host_id FROM host WHERE host_ip_numeric = inet_aton(\'?i\')',
+					$ipstring
 				);	
 				$result = $db->fetch_object_array($sql);
 				$id = isset($result[0]->host_id) ? $result[0]->host_id : 0;
@@ -60,8 +61,8 @@ if (isset($_POST['startip'])) {
 				// If the host is new add it
 				if ($id < 1) {
 					$sql = array(
-						'INSERT INTO host SET host_ip = INET_NTOA(\'?i\'), host_ip_numeric = ?i',
-						$ip, $ip
+						'INSERT INTO host SET host_ip = \'?s\', host_ip_numeric = inet_aton(\'?s\'), host_name = \'?s\'',
+						$ipstring, $ipstring, $ipstring
 					);
 					$db->iud_sql($sql);
 			    	// Now set the id
@@ -95,7 +96,7 @@ if (isset($_POST['startip'])) {
 					
 				}
 			}
-			$ip++;
+			$ip++; 
 		}
 		$message = "Hosts added.";
 	}

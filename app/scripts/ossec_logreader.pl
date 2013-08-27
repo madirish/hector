@@ -50,7 +50,7 @@ my $dbh = DBI->connect("DBI:mysql:database=$db;host=$dbhost",$dbuser,$dbpass) ||
 my $ossec_log = open_check_log();
 open (OSSECLOG, "< $ossec_log") || die("Couldn't open log file.\n");
 
-my $max_ossec_alert = db_select("select max(alert_ossec_id) as maxid from ossec_alerts", "maxid");
+my $max_ossec_alert = db_select("select max(alert_ossec_id) as maxid from ossec_alert", "maxid");
 
 process_logfile();
 
@@ -84,12 +84,12 @@ sub db_select {
 
 sub get_db_rule_id {
   my ($rule_no, $level, $message) = @_;
-  my $select_sql = "select rule_id from ossec_rules where rule_number=? AND rule_level=? AND rule_message=?";
+  my $select_sql = "select rule_id from ossec_rule where rule_number=? AND rule_level=? AND rule_message=?";
   my $rule_id = db_select($select_sql, "rule_id", $rule_no, $level, $message);
 
   # Insert the record if it can't be found
   if ($rule_id < 1) {
-    $sth = $dbh->prepare("insert into ossec_rules(rule_number, rule_level, rule_message) values (?,?,?)") || die("Couldn't prep rule insert.");
+    $sth = $dbh->prepare("insert into ossec_rule (rule_number, rule_level, rule_message) values (?,?,?)") || die("Couldn't prep rule insert.");
     $sth->execute($rule_no, $level, $message) || die("Couldn't exec rule insert.");
     $sth->finish();
   }
@@ -119,7 +119,7 @@ sub get_host_id {
 sub insert_ossec {
   # Check to see if the record exists
   my ($ossec_alert_id, $date, $host_id, $alert_log, $rule_id, $src_ip, $user, $message) = @_;
-  my $sql_stmt = "insert into ossec_alerts (alert_date, host_id, alert_log, rule_id, " . 
+  my $sql_stmt = "insert into ossec_alert (alert_date, host_id, alert_log, rule_id, " . 
     "rule_src_ip, rule_src_ip_numeric, rule_user, rule_log, alert_ossec_id) values (?,?,?,?,?,inet_aton(rule_src_ip),?,?,?)";
   $sth = $dbh->prepare($sql_stmt) || die("Couldn't prep the ossec insert");
   $sth->execute(format_logdate($date), $host_id, $alert_log, $rule_id, $src_ip, $user, $message, $ossec_alert_id) || die("Couldn't exec ossec insert.");
@@ -147,10 +147,10 @@ sub insert_darknet {
   # only necessary in edge case scenarios.
   my $sql_stmt = "INSERT INTO darknet (darknet_time, darknet_srcip, darknet_destip, " .
   	"darknet_proto, darknet_srcpt, darknet_destpt, alert_id) VALUES (?,?,?,?,?,?,( 
-  	SELECT alert_id FROM ossec_alerts WHERE alert_ossec_id =?)) 
+  	SELECT alert_id FROM ossec_alert WHERE alert_ossec_id =?)) 
   	ON DUPLICATE KEY UPDATE darknet_id = LAST_INSERT_ID(darknet_id), darknet_time = ?, 
   		darknet_srcip = ?, darknet_destip = ?, darknet_proto = ?, darknet_srcpt = ?, 
-  		darknet_destpt = ?, alert_id = (SELECT alert_id FROM ossec_alerts WHERE alert_ossec_id =?)";
+  		darknet_destpt = ?, alert_id = (SELECT alert_id FROM ossec_alert WHERE alert_ossec_id =?)";
   $sth = $dbh->prepare($sql_stmt) || die("Couldn't prep the ossec insert");
   $sth->execute(format_logdate($date), $srcip, $dstip, $proto, $srcpt, $dstpt, $alert_id, format_logdate($date), $srcip, $dstip, $proto, $srcpt, $dstpt, $alert_id);
   $sth->finish();

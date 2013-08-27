@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-use strict;
+
 use Socket;
 use POSIX 'setsid';
 # ---------------------------------------------------------------------------
@@ -182,9 +182,9 @@ sub forceprintlog(){
 }
 sub taillog {
    my ($last_cid,$LOG)=@_;
-   my($offset, $line, $stall) = '';
-
-   $offset = (-s $LOG); # Don't start at beginning, go to end
+   my($line, $stall) = '';
+   my $offset = 0;
+   $offset = (-s $LOG) || 0; # Don't start at beginning, go to end
 
    while (1==1) {
        sleep(1);
@@ -325,13 +325,13 @@ sub checkaddrule() {
         $level,
         $description
     )=@_;   
-    my $select_sql = "select rule_id from ossec_rules 
+    my $select_sql = "select rule_id from ossec_rule 
         where rule_number = ?";
     $rule_id = db_select($select_sql, "rule_id", $rule);
 
     # Insert the record if it can't be found
 	if ($rule_id < 1) {
-        my $sth = $dbi->{dbh}->prepare("insert into ossec_rules(rule_number, rule_level, rule_message) values (?,?,?)") || die("Couldn't prep rule insert.");
+        my $sth = $dbi->{dbh}->prepare("insert into ossec_rule(rule_number, rule_level, rule_message) values (?,?,?)") || die("Couldn't prep rule insert.");
 	    $sth->execute($rule, $level, $description) || die("Couldn't insert new rule.");
 	    $sth->finish();  
         $rule_id = db_select($select_sql, "rule_id", $rule); # Set the new ID
@@ -391,14 +391,16 @@ sub get_host_id {
   my ($client_ip, $host) = @_;
   my $select_sql = "select host_id from host where host_ip = ?";
   my $host_id = db_select($select_sql, "host_id", $client_ip);
-
+  if (! $client_ip) {
+  	$client_ip = "";
+  }
   # Insert the record if it can't be found
   if ($host_id < 1) {
     if ($client_ip eq "") {
         $client_ip = "127.0.0.1";
     }
-    my $sth = $dbi->{dbh}->prepare("insert into host(host_ip, host_name, host_note) values (?,?,?)") || die("Couldn't prep host insert.");
-    $sth->execute($client_ip, $host, "OSSEC") || die("Couldn't exec host insert with IP:[$client_ip], Host:[$host].\n");
+    my $sth = $dbi->{dbh}->prepare("insert into host(host_ip, host_ip_numeric, host_name, host_note) values (?, inet_aton(?),?,?) ON DUPLICATE KEY UPDATE host_ip = ?") || die("Couldn't prep host insert.");
+    $sth->execute($client_ip, $client_ip, $host, "OSSEC", $client_ip) || die("Couldn't exec host insert with IP:[$client_ip], Host:[$host].\n");
     $sth->finish();
   }
   # Get the record we just found.
@@ -410,7 +412,7 @@ sub get_host_id {
 sub insert_ossec {
   # Check to see if the record exists
   my ($ossec_alert_id, $date, $host_id, $alert_log, $rule_id, $src_ip, $user, $message, $ossec_rule_number) = @_;
-  my $sql_stmt = "insert into ossec_alerts (alert_date, host_id, alert_log, rule_id, " . 
+  my $sql_stmt = "insert into ossec_alert (alert_date, host_id, alert_log, rule_id, " . 
     "rule_src_ip, rule_src_ip_numeric, rule_user, rule_log, alert_ossec_id) values (?,?,?,?,?,inet_aton(rule_src_ip),?,?,?)";
   my $sth = $dbi->{dbh}->prepare($sql_stmt) || die("Couldn't prep the ossec insert");
   $sth->execute($date, $host_id, $alert_log, $rule_id, $src_ip, $user, $message, $ossec_alert_id) || die("Couldn't exec ossec insert.");
@@ -438,7 +440,7 @@ sub insert_ossec {
     my $session_id = $sshservice[1];
     my $remote_ip = $sshservice[2]; 
     my $command = substr($message, index($message, 'COMMAND IS :') + 13);
-    my $koj_exec_sql = "INSERT INTO koj_executed_commands set time = ?, ip = ?,
+    my $koj_exec_sql = "INSERT INTO koj_executed_command set time = ?, ip = ?,
         command = ?, ip_numeric = inet_aton(?), session_id = ?, 
         sensor_id = ?";
     my $koj_exec_sth = $dbi->{dbh}->prepare($koj_exec_sql);
@@ -458,7 +460,7 @@ sub insert_ossec {
     my $username = $user;
     my $pwordstart = index($message, $user) + length($user) + 1;
     my $password = substr($message, $pwordstart, rindex($message, ']') - $pwordstart);
-    my $koj_login_sql = "INSERT INTO koj_login_attempts SET time = ?, username = ?, password = ?, 
+    my $koj_login_sql = "INSERT INTO koj_login_attempt SET time = ?, username = ?, password = ?, 
         ip_numeric = inet_aton(?), ip = ?, sensor_id = ?";
     my $koj_login_sth = $dbi->{dbh}->prepare($koj_login_sql);
     $koj_login_sth->execute($datestamp, $username, $password, $remote_ip, $remote_ip, $host_id);

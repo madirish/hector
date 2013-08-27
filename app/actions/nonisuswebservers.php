@@ -11,24 +11,24 @@ $db = Db::get_instance();
 $content .= '<h3>Web Servers</h3>' .
 		'<h4>Excluding printers, Skype boxes, or ISUS managed machines</h4>';
 
-$query = 'SELECT DISTINCT(h.host_id) FROM host h, nmap_scan_result nsr ' .
+$query = 'SELECT DISTINCT(h.host_id) FROM host h, nmap_result nsr ' .
 		'WHERE nsr.host_id = h.host_id AND ' .
 		'h.supportgroup_id NOT IN (1,3) AND ' .
-		'nsr.nmap_scan_result_port_number IN (80,443) AND ' .
+		'nsr.nmap_result_port_number IN (80,443) AND ' .
 		'nsr.state_id = 1 AND ' .
 		'h.host_os NOT LIKE \'%printer%\' AND ' .
 		'LOWER(h.host_name) NOT LIKE \'%ricoh%\' AND ' .
 		'LOWER(h.host_name) NOT LIKE \'%printer%\' AND ' .
 		'LOWER(h.host_name) NOT LIKE \'%lexmark%\' AND ' .
 		'LOWER(h.host_name) NOT LIKE \'%laserjet%\' AND ' .
-		'LOWER(nsr.nmap_scan_result_service_version) NOT LIKE \'%printer%\' AND ' .
-		'nsr.nmap_scan_result_service_version NOT LIKE \'%Virata-EmWeb%\' AND ' . 
-		'nsr.nmap_scan_result_service_version NOT LIKE \'%Virata-EmWeb%\' AND ' . 
-		'nsr.nmap_scan_result_service_version NOT LIKE \'%Agranat-EmWeb%\' AND ' . 
-		'nsr.nmap_scan_result_service_version NOT LIKE \'%Allegro RomPager%\' AND ' . 
-		'nsr.nmap_scan_result_service_version NOT LIKE \'%HP-ChaiSOE%\' AND ' . 
-		'nsr.nmap_scan_result_service_version NOT LIKE \'%ZOT-PS-19 print server%\' AND ' .
-		'LOWER(nsr.nmap_scan_result_service_version) NOT LIKE \'%skype%\' ' .
+		'LOWER(nsr.nmap_result_service_version) NOT LIKE \'%printer%\' AND ' .
+		'nsr.nmap_result_service_version NOT LIKE \'%Virata-EmWeb%\' AND ' . 
+		'nsr.nmap_result_service_version NOT LIKE \'%Virata-EmWeb%\' AND ' . 
+		'nsr.nmap_result_service_version NOT LIKE \'%Agranat-EmWeb%\' AND ' . 
+		'nsr.nmap_result_service_version NOT LIKE \'%Allegro RomPager%\' AND ' . 
+		'nsr.nmap_result_service_version NOT LIKE \'%HP-ChaiSOE%\' AND ' . 
+		'nsr.nmap_result_service_version NOT LIKE \'%ZOT-PS-19 print server%\' AND ' .
+		'LOWER(nsr.nmap_result_service_version) NOT LIKE \'%skype%\' ' .
 		'GROUP BY h.host_id';
 $host_results = $db->fetch_object_array($query);
 $content .= '<h3>Found: ' . count($host_results) . ' hosts</h3>';

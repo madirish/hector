@@ -11,7 +11,7 @@ require_once($approot . 'lib/class.Db.php');
 $db = Db::get_instance();
 
 $sql = 'SELECT a.*, r.rule_level, r.rule_message ' .
-		'FROM ossec_alerts a, ossec_rules r ' .
+		'FROM ossec_alert a, ossec_rule r ' .
 		'WHERE r.rule_id = a.rule_id ' .
 		'ORDER BY a.alert_date ' .
 		'LIMIT 100';

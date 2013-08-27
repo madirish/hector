@@ -39,7 +39,6 @@ else{
 	require_once($approot . 'lib/class.Config.php');
 	require_once($approot . 'lib/class.Host_group.php');
 	require_once($approot . 'lib/class.Host.php');
-	require_once($approot . 'lib/class.Nmap_scan_result.php');
 	require_once($approot . 'lib/class.Log.php');
 	
 	/**
@@ -63,7 +62,7 @@ else{
 				$end = strpos($output, '-------------', $start);
 				$len = $end - $start;
 				$server = trim(substr($output, $start, $len));
-				$sql = array('update nmap_scan_result set service_version =\'?s\' where port_number=80 and host_id=?i and state_id=1',
+				$sql = array('update nmap_result set service_version =\'?s\' where port_number=80 and host_id=?i and state_id=1',
 					$server,
 					$host->get_id()
 				);

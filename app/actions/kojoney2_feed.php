@@ -20,7 +20,7 @@ else {
 		print "#values: address, detecttime\n";
 		print "#delimiters: \\t, \\n\n\n";
 		$db = Db::get_instance();
-		$sql = 'select distinct(ip), time from koj_login_attempts ' .
+		$sql = 'select distinct(ip), time from koj_login_attempt ' .
 			'where time between date_sub(curdate(), interval 1 day) ' .
 			'and curdate() group by ip';
 		$results = $db->fetch_object_array($sql);

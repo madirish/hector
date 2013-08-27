@@ -2,24 +2,12 @@
 /**
  * Show port detection from sensors
  * @author Justin Klein Keane <jukeane@sas.upenn.edu>
- * @version 2011.11.28
+ * @package HECTOR
+ * @version 2013.08.29
  */
 
 require_once($approot . 'lib/class.Db.php');
 $db = Db::get_instance();
-
-// Port probes yesterday
-/*
-// Deprecated in favor of direct inserts to darknet table
-$sql = 'SELECT rule_src_ip, ' .
-	'SUBSTRING(a.rule_log, LOCATE("DPT=", a.rule_log), LOCATE(" WINDOW=", a.rule_log) - LOCATE("DPT=", a.rule_log)) AS portnumber ' .  
-	'FROM ossec_alerts a, ossec_rules r ' .
-	'WHERE a.alert_date > DATE_SUB(CURDATE(), INTERVAL 1 DAY) ' .
-		'AND a.rule_src_ip != \'128.91.234.47\' ' .
-		'AND a.host_id = 31 ' .
-		'AND a.rule_id = r.rule_id ' .
-		'AND r.rule_number = 104500 ' .
-	'ORDER BY portnumber';*/
 	
 // Query ports probed on the darknet
 $sql = 'select count(id) as cid, dst_port, proto from darknet ' .
@@ -35,7 +23,7 @@ $darknet_result = $db->fetch_object_array($sql);
 
 // Get attackers detected by OSSEC in last 24 hours
 $sql = 'select distinct(a.rule_src_ip) as evilip ' .
-		'from ossec_alerts a, host h, ossec_rules r ' .
+		'from ossec_alert a, host h, ossec_rule r ' .
 		'where a.rule_id = r.rule_id AND r.rule_level >= 7 ' .
 		'AND h.host_ip_numeric != a.rule_src_ip_numeric ' .
 		'AND a.host_id = h.host_id and a.alert_date > date_sub(curdate(), interval 2 day) ' .

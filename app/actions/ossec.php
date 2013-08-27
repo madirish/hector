@@ -8,7 +8,7 @@ require_once($approot . 'lib/class.Host.php');
 $db = Db::get_instance();
 
 
-$sql = 'SELECT distinct(host_id) FROM ossec_alerts';
+$sql = 'SELECT distinct(host_id) FROM ossec_alert';
 $result = $db->fetch_object_array($sql);
 $hosts = array();
 foreach($result as $host) {

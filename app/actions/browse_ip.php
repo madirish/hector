@@ -29,9 +29,9 @@ elseif (isset($_GET['classC'])) {
 	$classC = mysql_real_escape_string($_GET['classC']);
 	// Buildin a Collection is too heavy so we'll just SQL it
 	$sql = array(
-		'SELECT h.host_id, h.host_name, h.host_ip, h.host_os, COUNT(n.nmap_scan_result_id) AS portcount ' .
+		'SELECT h.host_id, h.host_name, h.host_ip, h.host_os, COUNT(n.nmap_result_id) AS portcount ' .
 		'FROM host h ' .
-		'LEFT OUTER JOIN nmap_scan_result n ' .
+		'LEFT OUTER JOIN nmap_result n ' .
 		'ON n.host_id = h.host_id AND n.state_id = 1 ' .
 		'WHERE h.host_ip LIKE \'?s%\' GROUP BY h.host_id, h.host_name ORDER BY h.host_ip_numeric',
 		$classC

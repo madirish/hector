@@ -14,7 +14,6 @@ if(php_sapi_name() == 'cli') {
 require_once($approot . 'lib/class.Config.php');
 require_once($approot . 'lib/class.Dblog.php');
 require_once($approot . 'lib/class.Host.php');
-require_once($approot . 'lib/class.Nmap_scan_result.php');
 require_once($approot . 'lib/class.Scan_type.php');
 	
 // Make sure of the environment
@@ -64,10 +63,10 @@ else {
 	$hosts = array('192.168.56.1' => 1, '192.168.56.101' => 2, '192.168.56.102' => 3, '192.168.56.103' => 4, '192.168.56.104' => 5, '192.168.56.105' => 6, '192.168.56.106' => 7);
 	$usernames = array();
 	$passwords = array();	
-	$sql = 'select distinct(username) as uname, count(id) as ucount from koj_login_attempts group by username order by ucount desc limit 10';
+	$sql = 'select distinct(username) as uname, count(id) as ucount from koj_login_attempt group by username order by ucount desc limit 10';
 	$results= $db->fetch_object_array($sql);
 	foreach($results as $result) $usernames[] = $result->uname;
-	$sql = 'select distinct(password) as passwd, count(id) as pcount from koj_login_attempts group by passwd order by pcount desc limit 10';
+	$sql = 'select distinct(password) as passwd, count(id) as pcount from koj_login_attempt group by passwd order by pcount desc limit 10';
 	$results= $db->fetch_object_array($sql);
 	foreach($results as $result) $passwords[] = $result->passwd;
 	$command = $ncrack . ' -p telnet --user ' . implode(',', $usernames) . ' --pass ' . implode(',', $passwords) . ' 192.168.56.101-106';
@@ -78,11 +77,11 @@ else {
 		print_r($matches);
 		foreach($matches as $match) {
 			$text = 'Easily guessed credentials for service: ' . $match[3] . ' on port: ' . $match[2] . ' with credentials: (' . $match[4] . ':' . $match[5] . ')';
-			$sql = 'insert into vuln_details set vuln_id=1, vuln_details_text=\''.$text.'\'';
+			$sql = 'insert into vuln_detail set vuln_id=1, vuln_detail_text=\''.$text.'\'';
 			$db->iud_sql($sql);
-			$vd_id = $db->fetch_object_array('select LAST_INSERT_ID() as id from vuln_details limit 1');
+			$vd_id = $db->fetch_object_array('select LAST_INSERT_ID() as id from vuln_detail limit 1');
 			print_r($vd_id);
-			$sql = array('insert into vuln_x_host set host_id=?i, vuln_details_id=?i', $hosts[$match[1]], $vd_id[0]->id);
+			$sql = array('insert into vuln_x_host set host_id=?i, vuln_detail_id=?i', $hosts[$match[1]], $vd_id[0]->id);
 			print_r($sql);
 			$db->iud_sql($sql);
 		}

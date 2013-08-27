@@ -77,7 +77,7 @@ if ($host->get_portscan_exclusion()) {?>
 
 </div>
 <div class="span6">
-<p class="well well-small">Open Ports:[<a href="?action=details&object=nmap_scan_result&host_id=<?php echo $host->get_id();?>">Full Scan Details</a>]</p>
+<p class="well well-small">Open Ports:[<a href="?action=details&object=nmap_result&host_id=<?php echo $host->get_id();?>">Full Scan Details</a>]</p>
 <table class="table table-striped">
 <thead>
 	<tr>

@@ -9,7 +9,7 @@ hosts added to the asset database.</p>
 <table>
 	<tr><td>Start IP:</td><td><input type="text" name="startip"/></td></tr>
 	<tr><td>End IP:</td><td><input type="text" name="endip"/></td></tr>
-	<tr><td>Host group:</td><td><select name="hostgroup" size="3" multiple="multiple">
+	<tr><td>Host group:</td><td><select name="hostgroup[]" size="3" multiple="multiple">
 	<?php
 		foreach ($hostgroups as $key=>$val) {
 			echo "<option value='$key'>$val</option>\n\t";

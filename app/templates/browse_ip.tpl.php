@@ -15,7 +15,8 @@ if (isset($hosts) && is_array($hosts)) {
 }
 else {
 	print "<ul class='nav nav-tabs nav-stacked'>";
-	foreach($result as $row) {
+	foreach($ip_ranges as $row) {
+		print "<!-- row -->";
 		print "<li><a href='?action=browse_ip&$class=". $row->ipclass ."'>";
 		print $row->ipclass . " <span class='badge badge-info'>" . $row->thecount . " hosts</span></a></li>";
 	}

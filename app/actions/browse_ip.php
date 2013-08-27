@@ -35,7 +35,7 @@ else {
 
 $db = Db::get_instance();
 
-if (isset($query)) $result = $db->fetch_object_array($query);
+if (isset($query)) $ip_ranges = $db->fetch_object_array($query); 
 
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates . 'browse_ip.tpl.php');

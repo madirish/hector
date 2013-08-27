@@ -1162,6 +1162,83 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	public function get_urls() {
 		return $this->urls;
 	}
+	
+	/**
+	 * Populate this object from data that may
+	 * already exist.
+	 * 
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @access public
+	 */
+	public function lookup_by_ip() {
+		if (! isset($this->ip)) return;
+		$sql = array(
+					'SELECT * from host h where h.host_ip = \'?s\'',
+					$this->ip
+				);
+		$result = $this->db->fetch_object_array($sql);
+		if (is_array($result) && is_object($result[0])) {			
+			$this->id = $result[0]->host_id;
+			$this->ip = $result[0]->host_ip;
+			$this->name = $result[0]->host_name;
+			$this->os = $result[0]->host_os;
+			$this->sponsor = $result[0]->host_sponsor;
+			$this->link = $result[0]->host_link;
+			$this->note = $result[0]->host_note;
+			$this->supportgroup = new Supportgroup($result[0]->supportgroup_id);
+			$this->location = new Location($result[0]->location_id);
+			$this->technical = $result[0]->host_technical;
+			$this->policy = $result[0]->host_policy;
+			$this->ignore_portscan = $result[0]->host_ignore_portscan;
+			$this->ignore_portscan_byuserid = $result[0]->host_ignoredby_user_id;
+			$this->ignoredfor_days = $result[0]->host_ignoredfor_days;
+			$this->ignored_timestamp = $result[0]->host_ignored_timestamp;
+			$this->ignored_note = $result[0]->host_ignored_note;
+			$sql= array('SELECT url_url, url_screenshot from url where host_id = ?i', $this->id);
+			$results = $this->db->fetch_object_array($sql);
+			foreach($results as $result){
+				$this->urls[] = array($result->url_url, $result->url_screenshot);
+			}
+			// Populate the host groups
+			$sql = array(
+				'SELECT x.host_group_id from host_x_host_group x, host_group g ' .
+				'WHERE g.host_group_id = x.host_group_id ' .
+				'AND x.host_id = ?i order by g.host_group_name',
+				$this->id
+			);
+			$result = $this->db->fetch_object_array($sql);
+			if (is_array($result)) {
+				foreach ($result as $record) $this->host_group_ids[] = $record->host_group_id;
+			}
+			// Populate the alterantive names
+			$sql = array(
+				'SELECT host_alt_name from host_alts WHERE host_id = ?i',
+				$this->id
+			);
+			$result = $this->db->fetch_object_array($sql);
+			if (is_array($result)) {
+				foreach ($result as $record) $this->alt_hostnames[] = $record->host_alt_name;
+			}
+			// Populate the alternative IP's
+			$sql = array(
+				'SELECT host_alt_ip from host_alts WHERE host_id = ?i',
+				$this->id
+			);
+			$result = $this->db->fetch_object_array($sql);
+			if (is_array($result)) {
+				foreach ($result as $record) $this->alt_ips[] = $record->host_alt_ip;
+			}
+			// Populate the tags
+			$sql = array(
+				'SELECT tag_id from host_x_tag WHERE host_id = ?i',
+				$this->id
+			);
+			$result = $this->db->fetch_object_array($sql);
+			if (is_array($result)) {
+				foreach ($result as $record) $this->tag_ids[] = $record->tag_id;
+			}
+		}			
+	}
 
 	/**
 	 * Remove this host form specificed host group
@@ -1396,7 +1473,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 * @todo Validate the IP
 	 */
 	public function set_ip($ip) {
-		if ($this->check_ip($ip)) {
+		if ($this->check_ip($ip)) {			
 			$this->ip = $ip;
 		}
 	}

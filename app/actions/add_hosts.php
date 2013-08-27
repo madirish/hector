@@ -14,15 +14,43 @@ if (isset($_POST['startip'])) {
 		$message = "Start IP must be less than end IP.";
 	}
 	else {
+		$hostgroups = array();
+		if (isset($_POST["newhostgroup"]) && $_POST["newhostgroup"] !== '') {
+			$group = new Host_group();
+			$group->set_name($_POST["newhostgroup"]);
+			$group->save();
+			$hostgroups[] = $group->get_id();
+		}
 		$ip = $startip;
 		while ($ip <= $endip) {
-			$host = new Host();
+			$host = new Host('', 'yes'); // Minimal construction
 			$ip_addr = long2ip($ip);
 			$host->set_ip($ip_addr);
 			$host->set_name(gethostbyaddr($ip_addr));
+			$host->lookup_by_ip(); // Be sure no dupes exist
 			if (isset($_POST['hostgroup'])) {
-				$host->set_host_group_ids(array($_POST['hostgroup']));
+				foreach ($_POST['hostgroup'] as $group) {
+					$hostgroups[] = $group;
+				}	
 			}
+			// If the host groups already set append to them
+			if (is_array($host->get_host_group_ids())) {
+				$existing = $host->get_host_group_ids();
+				$ecount = count($existing);
+				foreach ($hostgroups as $group) {
+					if (! array_search($group, $existing)) {
+						$existing[] = $group;
+					}
+				}
+				if (count($existing) > $ecount) {
+					$host->set_host_group_ids($existing);
+				}
+			}
+			// Otherwise simply set the new host groups
+			else {
+				$host->set_host_group_ids($hostgroups);
+			}
+			
 			// Don't save 192.168.2.0 for instance
 			if (substr($ip_addr, -2) != ".0") $host->save();
 			$ip++;

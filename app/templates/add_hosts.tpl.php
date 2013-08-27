@@ -9,15 +9,14 @@ hosts added to the asset database.</p>
 <table>
 	<tr><td>Start IP:</td><td><input type="text" name="startip"/></td></tr>
 	<tr><td>End IP:</td><td><input type="text" name="endip"/></td></tr>
-	<tr><td>Host group:<!-- <a href="?action=add_edit&object=Host_group" class="superlink" title="Add a new host group">+</a>--></td><td><select name="hostgroup">
-	<option></option>
+	<tr><td>Host group:</td><td><select name="hostgroup" size="3" multiple="multiple">
 	<?php
 		foreach ($hostgroups as $key=>$val) {
 			echo "<option value='$key'>$val</option>\n\t";
 		}
 	?>
 	</select> <!-- Button to trigger modal -->
-	<a href="?action=add_edit&object=Host_group" role="button" class="label label-info" >Add new host group</a></td></tr>
+	<tr><td>Add new host group:</td><td><input type="text" name="newhostgroup"></td></tr>
 	<tr><td>&nbsp;</td><td><input type="submit" value="Save changes"/></td></tr>
 </table>
 </fieldset>

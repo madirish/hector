@@ -12,7 +12,7 @@ if (!(isset($_GET['url']) and isset($_GET['ajax']))) {
 }
 else {
 	$db = Db::get_instance();
-	$sql = array('select url_screenshot from url where url_url=\'?s\'',$_GET['url']);
+	$sql = array('select url_screenshot from url where url_url=\'?s\'', $_GET['url']);
 	$result = $db->fetch_object_array($sql);
 	if ($result[0]->url_screenshot != null) {
 		$filename = $result[0]->url_screenshot;

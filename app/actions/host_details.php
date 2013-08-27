@@ -15,16 +15,16 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $host = new Host($id);
 $tags = implode(',', $host->get_tag_names());
 $sql = array('SELECT v.vuln_name, ' .
-					'vd.vuln_details_id, ' .
-					'vd.vuln_details_text, ' .
-					'vd.vuln_details_datetime, ' .
-					'vd.vuln_details_ignore, ' .
-					'vd.vuln_details_fixed ' .
+					'd.vuln_details_id, ' .
+					'd.vuln_details_text, ' .
+					'd.vuln_details_datetime, ' .
+					'd.vuln_details_ignore, ' .
+					'd.vuln_details_fixed ' .
 				'FROM vuln_details d, ' .
 					'vuln v, ' .
 					'vuln_details_x_host x ' .
 				'WHERE d.vuln_id = v.vuln_id AND ' .
-					'v.vuln_id = x.host_id AND ' .
+					'd.vuln_details_id = x.vuln_details_id AND ' .
 					'x.host_id = ?i ' .
 				'ORDER BY d.vuln_details_datetime DESC', 
 				$host->get_id());

@@ -18,7 +18,7 @@ if (! isset($appuser)) {
 $sql = 'SELECT * from (';
 $sql .= 'SELECT vd.vuln_details_id, vd. vuln_details_text, v.vuln_name, h.host_name,vh.host_id, vd.vuln_details_datetime, vd.vuln_details_fixed, vd.vuln_details_ignore ';
 $sql .= 'FROM vuln_details vd inner join vuln v on v.vuln_id = vd.vuln_id ';
-$sql .= 'inner join vuln_x_host vh on vd.vuln_details_id = vh.vuln_details_id ';
+$sql .= 'inner join vuln_details_x_host vh on vd.vuln_details_id = vh.vuln_details_id ';
 $sql .= 'inner join host h on vh.host_id = h.host_id';
 
 if (isset($appuser) && ! $appuser->get_is_admin()) {

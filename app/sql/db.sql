@@ -365,7 +365,7 @@ CREATE TABLE IF NOT EXISTS `user_x_supportgroup` (
 	`supportgroup_id` INT NOT NULL		
 ) ENGINE = INNODB;
 
--- Vulnerabilities
+-- Vulnerability classes
 CREATE TABLE IF NOT EXISTS `vuln` (
 `vuln_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 `vuln_name` varchar(255),
@@ -376,8 +376,8 @@ PRIMARY KEY (`vuln_id`)
 ) ENGINE = INNODB;
 
 -- Vulnerabilities discovered
-CREATE TABLE IF NOT EXISTS `vuln_x_host` (
-`vuln_id` INT UNSIGNED NOT NULL,
+CREATE TABLE IF NOT EXISTS `vuln_details_x_host` (
+`vuln_details_id` INT UNSIGNED NOT NULL,
 `host_id` INT UNSIGNED NOT NULL
 ) ENGINE = INNODB;
 

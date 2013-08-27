@@ -132,8 +132,6 @@ echo
 if ! cat /etc/crontab | grep -q "HECTOR" ; then
   echo "#HECTOR scans" >> /etc/crontab
   echo "01 0 * * * /usr/bin/php $HECTOR_PATH/app/scripts/scan_cron.php" >> /etc/crontab
-  echo "#HECTOR OSSEC monitor restart (for log rotates)" >> /etc/crontab
-  echo "#01 0 * * * service hector-ossec-mysql restart" >> /etc/crontab
   echo " [+] cron scheduled in /etc/crontab"
 else
   echo " [+] HECTOR crontab seems to already exist"
@@ -160,14 +158,14 @@ echo "  </rule>" >> /var/ossec/rules/local_rules.xml
 echo "</group>" >> /var/ossec/rules/local_rules.xml
 
 echo " [+] Scheduling OSSEC monitoring services."
-sed -i "s/USERNAME = 'root'/USERNAME = 'hector'/g" ${HECTOR_PATH}/app/scripts/hector-ossec-mysql.py
-sed -i "s/PASSWORD = ''/PASSWORD = '${HECTORPASS}'/g" ${HECTOR_PATH}/app/scripts/hector-ossec-mysql.py
-cp ${HECTOR_PATH}/app/scripts/hector-ossec-mysql /etc/init.d/
-chmod +x /etc/init.d/hector-ossec-mysql
-/sbin/chkconfig --add hector-ossec-mysql
-/sbin/chkconfig --level 345 hector-ossec-mysql on
+sed -i "s/USERNAME = 'youruser'/USERNAME = 'hector'/g" ${HECTOR_PATH}/app/scripts/ossec2mysql.conf
+sed -i "s/PASSWORD = 'yourpassword'/PASSWORD = '${HECTORPASS}'/g" ${HECTOR_PATH}/app/scripts/ossec2mysql.conf
+cp ${HECTOR_PATH}/app/scripts/ossec2hector /etc/init.d/
+chmod +x /etc/init.d/ossec2hector
+/sbin/chkconfig --add ossec2hector
+/sbin/chkconfig --level 345 ossec2hector on
 /sbin/service ossec restart
-/sbin/service hector-ossec-mysql start
+/sbin/service ossec2hector start
 
 echo -e "Do you wish to allow remote OSSEC (UDP 1514)? (y/n):"
 read configiptables

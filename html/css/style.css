@@ -112,6 +112,11 @@ span.link:hover {
 	text-decoration: none;
 }
 
+span.noticeme {
+  font-weight: bold;
+  font-color: red;
+}
+
 span#scan {
 	display: table;
   border: 1px solid black;

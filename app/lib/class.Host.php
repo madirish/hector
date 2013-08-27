@@ -717,7 +717,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	public function get_details() {
 		require_once('class.Nmap_scan_result.php');
 		//$scans = new Collection('Nmap_scan_result', ' and host_id = ' . $this->id . ' and s.state_state != \'closed\'', '', 'ORDER BY nmap_scan_result_port_number');
-		$scans = new Collection('Nmap_scan_result', ' AND nsr.host_id = ' . $this->id, '', 'GROUP BY nsr.nmap_scan_result_protocol ORDER BY nsr.nmap_scan_result_port_number');
+		$scans = new Collection('Nmap_scan_result', ' AND nsr.host_id = ' . $this->id, '', ' AND s.state_id = 1 ORDER BY nsr.nmap_scan_result_protocol, nsr.nmap_scan_result_port_number');
 		$retval = '<div class="row"><div class="span5">';
 		$retval .= '<table id="host_details" class="table">' . "\n";
 		$retval .= '<tr id="name"><td>Hostname</td><td>' . $this->get_name() . '</td></tr>' . "\n";
@@ -748,7 +748,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		}
 		$retval .= '<tr id="groups"><td><a href="?action=details&object=host_group">Host groups</a>:</td><td>' . $this->get_host_groups_readable() . '</td></tr>' . "\n";
 		$retval .= '</table>';
-		$retval .= '</div><div class="span6"><p class="well well-small">NMAP scan results:</p>' . "\n";
+		$retval .= '</div><div class="span6"><p class="well well-small">Open Ports:[<a href="?action=details&object=nmap_scan_result&host_id=' . $this->id . '">Full Scan Details</a>]</p>' . "\n";
 		$retval .= '<table class="table table-striped"><thead>';
 		$retval .= '<tr><th>Port</th><th>State</th><th>Date</th><th>Protocol</th><th>Version</th></tr>';
 		$retval .= '</thead><tbody>';

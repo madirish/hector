@@ -86,15 +86,17 @@ my ($RUNASDAEMON)=0;
 my ($DAEMONLOGFILE)='/var/log/ossec2mysql.log';
 my ($DAEMONLOGERRORFILE) = '/var/log/ossec2mysql.err';
 my ($LOGGER)='ossec2mysql';
+
+use lib qw(/opt/hector/app/scripts);
 use ossecmysql;
 
 my %conf;
 $conf{dbhost}='localhost';
-$conf{database}='snort';
+$conf{database}='hector';
 $conf{debug}=5;
 $conf{dbport}='3306';
-$conf{dbpasswd}='password';
-$conf{dbuser}='user';
+$conf{dbpasswd}='root';
+$conf{dbuser}='';
 $conf{daemonize}=0;
 $conf{sensor}='sensor';
 $conf{hids_interface}='ossec';
@@ -470,7 +472,7 @@ sub db_select {
   my $id = 0;
 
   my $sth = $dbi->{dbh}->prepare($select_sql) || die("Couldn't prepare statement.");
-  if (! defined @sql_args) {
+  if (! @sql_args) {
     die("SQL args are undefined!\n");
   }
   $sth->execute(@sql_args) || die("Couldn't execute statement for $select_sql.");
@@ -517,7 +519,7 @@ sub daemonize {
                                or die "Can't write to $DAEMONLOGFILE: $!";
         defined(my $pid = fork) or die "Can't fork: $!";
         if ($pid){
-                open (PIDFILE , ">/var/run/ossec2base2.pid") ;
+                open (PIDFILE , ">/var/run/ossec2hector.pid") ;
                 print PIDFILE "$pid\n";
                 close (PIDFILE);
                 exit 0;

@@ -34,10 +34,6 @@ require_once('class.Maleable_Object.php');
  * @todo Implement at the data layer and create a method to fetch, parse, and import feeds
  */
 class Feed extends Maleable_Object implements Maleable_Object_Interface {
-    // --- ASSOCIATIONS ---
-
-
-
     // --- ATTRIBUTES ---
     /**
      * Instance of the Db

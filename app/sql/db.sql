@@ -97,15 +97,6 @@ CREATE TABLE IF NOT EXISTS `host` (
   UNIQUE KEY `host_ip` (`host_ip`)
 ) ENGINE = INNODB;
 
---  For end user notes about a host
-CREATE TABLE IF NOT EXISTS `hostnote` (
-	`hostnote_id` INT NOT NULL AUTO_INCREMENT,
-	`host_id` INT NOT NULL,
-	`hostnote_note` TEXT DEFAULT NULL,
-  PRIMARY KEY  (`hostnote_id`),
-  KEY `host_id` (`host_id`)
-) ENGINE = INNODB;
-
 -- Track alternative IP addresses and domain names
 CREATE TABLE IF NOT EXISTS `host_alts` (
 	`host_id` INT NOT NULL,

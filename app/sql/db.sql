@@ -361,7 +361,7 @@ CREATE TABLE IF NOT EXISTS `user_x_supportgroup` (
 -- Vulnerability classes
 CREATE TABLE IF NOT EXISTS `vuln` (
   `vuln_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `vuln_name` varchar(255),
+  `vuln_name` varchar(255) NOT NULL,
   `vuln_description` text,
   `vuln_cve` varchar(45),
   `vuln_osvdb` varchar(45),

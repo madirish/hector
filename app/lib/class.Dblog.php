@@ -76,6 +76,7 @@ Class Dblog {
 	 * 
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @param String Type of message (INFO, ERROR, ALERT, etc.)
 	 * @param String Message to log
 	 * @return void
 	 */

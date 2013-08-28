@@ -351,6 +351,23 @@ CREATE TABLE IF NOT EXISTS `vuln` (
   PRIMARY KEY (`vuln_id`)
 ) ENGINE = INNODB;
 
+-- Add URL for website with info on vuln
+CREATE TABLE IF NOT EXISTS `vuln_url` (
+  `vuln_url_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `vuln_id` INT UNSIGNED NOT NULL,
+  `url` VARCHAR(255) NOT NULL,
+  KEY `vuln_detail_id` (`vuln_id`)
+  PRIMARY KEY (`vuln_url_id`)
+) ENGINE = INNODB;
+
+-- Add ability to free tag vulnerabilities
+CREATE TABLE IF NOT EXISTS `vuln_x_tag` (
+  `vuln_id` INT UNSIGNED NOT NULL,
+  `tag_id` INT UNSIGNED NOT NULL,
+  KEY `vuln_id` (`vuln_id`),
+  KEY `tag_id` (`tag_id`)
+) ENGINE = INNODB;
+
 -- Vulnerablities details
 CREATE TABLE IF NOT EXISTS `vuln_detail` (
   `vuln_detail_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -363,17 +380,10 @@ CREATE TABLE IF NOT EXISTS `vuln_detail` (
   `vuln_detail_fixed_datetime` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
   `vuln_detail_fixedby_user_id` INT,
   `vuln_detail_fixed_notes` text,
+  `vuln_details_ticket` VARCHAR(255),
   `host_id` INT UNSIGNED NOT NULL,  
   `vuln_id` INT UNSIGNED NOT NULL,
   KEY `vuln_id` (`vuln_id`),
   KEY `host_id` (`host_id`),
 PRIMARY KEY (`vuln_detail_id`)
-) ENGINE = INNODB;
-
--- Add ability to free tag vulnerabilities
-CREATE TABLE IF NOT EXISTS `vuln_x_tag` (
-  `vuln_id` INT UNSIGNED NOT NULL,
-  `tag_id` INT UNSIGNED NOT NULL,
-  KEY `vuln_id` (`vuln_id`),
-  KEY `tag_id` (`tag_id`)
 ) ENGINE = INNODB;

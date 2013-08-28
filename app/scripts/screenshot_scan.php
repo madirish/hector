@@ -142,9 +142,8 @@ function populate_database() {
 	$hosts = get_hosts_by_port(80);
 	foreach ($hosts as $host) {
 		$db = Db::get_instance();
-		$sql= array('insert ignore into url set host_id=?i, host_ip=INET_ATON(\'?s\'), url_url=\'?s\'' ,
+		$sql= array('insert ignore into url set host_id=?i, url_url=\'?s\'' ,
 			$host->get_id() ,
-			$host->get_ip() ,
 			'http://' . $host->get_ip()
 		);
 		$db->iud_sql($sql);
@@ -152,9 +151,8 @@ function populate_database() {
 	$hosts = get_hosts_by_port(443);
 	foreach ($hosts as $host) {
 		$db = Db::get_instance();
-		$sql = array('insert ignore into url set host_id=?i, host_ip=INET_ATON(\'?s\'), url_url=\'?s\'' ,
+		$sql = array('insert ignore into url set host_id=?i, url_url=\'?s\'' ,
 			$host->get_id() ,
-			$host->get_ip() ,
 			'https://' . $host->get_ip()
 		);
 		$db->iud_sql($sql);

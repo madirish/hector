@@ -280,11 +280,11 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 					foreach($url_results as $url){
 						// Do some housekeeping to delete non-existent screenshots
 						global $approot;
-						if ( ! file_exists($approot . 'app/screenshots/' . $url->url_screenshot)) {
+						if ( ! file_exists($approot . 'screenshots/' . $url->url_screenshot)) {
 							$sql = array('update url set url_screenshot=NULL where url_id = ?i ',$url->url_id);	
 							$this->db->iud_sql($sql);
 						}
-						$this->urls[] = array($result->url_url, $result->url_screenshot);
+						$this->urls[] = array($url->url_url, $url->url_screenshot);
 					}
 				}
 				// Is there an exclusion?  Should it be honored?

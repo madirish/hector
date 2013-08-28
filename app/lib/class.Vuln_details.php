@@ -172,7 +172,7 @@ class Vuln_details extends Maleable_Object implements Maleable_Object_Interface 
 			$sql = array(
 				'SELECT vd.*, v.vuln_name, v.vuln_description, v.vuln_cve, v.vuln_osvdb, vh.host_id, h.host_name FROM vuln_details vd ' .
 				'inner join vuln v on v.vuln_id = vd.vuln_id ' .
-				'inner join vuln_x_host vh on vh.vuln_details_id = vd.vuln_details_id ' . 
+				'inner join vuln_details_x_host vh on vh.vuln_details_id = vd.vuln_details_id ' . 
 				'inner join host h on h.host_id = vh.host_id WHERE vd.vuln_details_id =?i',
 				$id
 			);
@@ -195,7 +195,7 @@ class Vuln_details extends Maleable_Object implements Maleable_Object_Interface 
 			$ids = array();
 			$sql = array(
 				'SELECT vd.vuln_details_id from vuln_details vd ' .
-				'inner join vuln_x_host vh on vh.vuln_details_id = vd.vuln_details_id ' . 
+				'inner join vuln_details_x_host vh on vh.vuln_details_id = vd.vuln_details_id ' . 
 				'inner join host h on h.host_id = vh.host_id ' .
 				'WHERE vh.host_id=?i and vd.vuln_id=?i and vd.vuln_details_text=\'?s\'',
 				$this->host_id,

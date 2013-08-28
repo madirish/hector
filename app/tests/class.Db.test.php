@@ -16,14 +16,24 @@ class TestOfDbClass extends UnitTestCase {
 		$this->assertIsA($arr, 'Array');
 		$this->assertTrue(count($arr) == 1);
 	}
-	/*function testDbIudSQL() {
-		$sql = array('INSERT INTO alert SET alert_string = \'?s\', host_id = ?i', array('test string', 0));
+	function testDbIudSQL() {
 		$db = DB::get_instance();
-		$db->iud_sql($sql);
-		$alerts = $db->fetch_object_array('SELECT * FROM alert WHERE host_id = 0')
+		$test_msg = 'test string';
+		$sql = array('INSERT INTO alert SET alert_string = \'?s\', host_id = ?i', $test_msg, 0);
+		$this->assertTrue($db->iud_sql($sql));
+		$alerts = $db->fetch_object_array('SELECT * FROM alert WHERE host_id = 0');
+		$this->assertEqual(count($alerts),1);
 		foreach ($alerts as $alert) {
-			
+			$this->assertEqual($alert->host_id, 0);
+			$this->assertEqual($alert->alert_string, $test_msg);
+			$newalert = new Alert($alert->alert_id);
+			$this->assertEqual($newalert->get_host_id(), 0);
+			$this->assertEqual($newalert->get_string(), $test_msg);
 		}
-	}*/
+		$sql = 'DELETE FROM alert WHERE host_id = 0';
+		$this->assertTrue($db->iud_sql($sql));
+		$alerts = $db->fetch_object_array('SELECT * FROM alert WHERE host_id = 0');
+		$this->assertEqual(count($alerts),0);
+	}
 }
 ?>

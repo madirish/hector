@@ -178,6 +178,14 @@ CREATE TABLE IF NOT EXISTS `malware` (
   `file` LONGBLOB
 ) ENGINE = InnoDB;
 
+-- Add ability to free tag malware
+CREATE TABLE IF NOT EXISTS `malware_x_tag` (
+  `malware_id` INT UNSIGNED NOT NULL,
+  `tag_id` INT UNSIGNED NOT NULL,
+  KEY `malware_id` (`malware_id`),
+  KEY `tag_id` (`tag_id`)
+) ENGINE = INNODB;
+
 -- Results of NMAP scans
 CREATE TABLE IF NOT EXISTS `nmap_result` (
 	`nmap_result_id` INT NOT NULL AUTO_INCREMENT,

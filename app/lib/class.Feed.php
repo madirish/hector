@@ -100,7 +100,7 @@ class Feed extends Maleable_Object implements Maleable_Object_Interface {
 			$result = $this->db->fetch_object_array($sql);
 			$this->set_id($result[0]->rss_id);
 			$this->set_name($result[0]->rss_name);
-			$this->set_url($result[0]->rss_ur)l;
+			$this->set_url($result[0]->rss_ur);
 		}
 	}
 
@@ -222,7 +222,7 @@ class Feed extends Maleable_Object implements Maleable_Object_Interface {
 	 * @return String The URL to the feed
 	 */
 	public function get_url() {
-		return urlencode($this->url);
+		return htmlspecialchars($this->url);
 	}
 
 	/**

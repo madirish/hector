@@ -6,6 +6,7 @@ require_once('class.Alert.test.php');
 require_once('class.Collection.test.php');
 require_once('class.Config.test.php');
 require_once('class.Db.test.php');
+require_once('class.Dblog.test.php');
 
 $GLOBALS['approot'] = '/opt/hector/app/';
 
@@ -18,6 +19,7 @@ class AllTests extends TestSuite {
         $this->add(new TestOfCollectionClass());
         $this->add(new TestOfConfigClass());
         $this->add(new TestOfDbClass());
+        $this->add(new TestOfDblogClass());
     }
 }
 ?>

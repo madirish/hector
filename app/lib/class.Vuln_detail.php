@@ -7,6 +7,7 @@ error_reporting(E_ALL);
  *
  * @author Josh Bauer <joshbauer3@gmail.com>
  * @package HECTOR
+ * @todo Filter access based on Support Group
  */
 
 if (0 > version_compare(PHP_VERSION, '5')) {
@@ -215,6 +216,8 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 	 *
 	 * @access public
 	 * @return String SQL select string
+	 * @param String SQL where clause extras, defaults to ''
+	 * @param String SQL order by clause, defaults to ''
 	 */
 	public function get_collection_definition($filter = '', $orderby = '') {
 		$query_args = array();
@@ -242,6 +245,13 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 		return array();
 	}
     
+    /**
+     * Return whether or not this vulnerability is fixed
+     * 
+     * @author justin
+     * @access public
+     * @return Boolean Whether or not this vulnerability is fixed.
+     */
     public function get_fixed() {
 		return (bool) $this->fixed;
     }

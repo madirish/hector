@@ -48,6 +48,18 @@ class TestOfAlertClass extends UnitTestCase {
   	$this->assertTrue($secondAlert->get_timestamp() > 0);
   }
   
+  function testAlertGetPort() {
+  	$this->alert = new Alert();
+  	$this->alert->set_string('Port 22 changed from filtered to open on 130.91.128.192');
+  	$this->assertEqual($this->alert->get_port(), 22);
+  }
+  
+  function testAlertGetHost() {
+  	$this->alert = new Alert();
+  	$this->alert->set_string('Port 22 changed from filtered to open on 130.91.128.192');
+  	$this->assertEqual($this->alert->get_host(), '130.91.128.192');
+  }
+  
   function testAlertDelete() {
   	$id = $this->alert_id;
   	$this->alert->delete();

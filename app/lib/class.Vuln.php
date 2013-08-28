@@ -324,10 +324,9 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
      * @package HECTOR 
      * @access public
-     * @param String $description
+     * @param String $description (Can be '' if we want to get rid of on old desc)
      */
-     public function set_description($description) {
-    	if ($description != '')
+     public function set_description($description='') {
     		$this->description = $description;
     }
     

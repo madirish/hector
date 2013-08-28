@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * This script is an atomic import of the results of an
  * NMAP scan run to produce an output XML file.  When the
  * contents of this script were combined with nmap_scan.php

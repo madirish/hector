@@ -30,6 +30,7 @@ require_once('class.Maleable_Object.php');
  * @author Josh Bauer <joshbauer3@gmail.com>
  * @package HECTOR
  * @todo Document this class
+ * @todo Update so that filtering happens on getters not setters
  */
 class Api_key extends Maleable_Object implements Maleable_Object_Interface {
 

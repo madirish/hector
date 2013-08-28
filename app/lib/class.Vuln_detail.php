@@ -19,6 +19,7 @@ require_once('class.Vuln.php');
 require_once('class.Db.php');
 require_once('class.Log.php');
 require_once('class.Collection.php');
+require_once('class.User.php');
 require_once('interface.Maleable_Object_Interface.php');
 require_once('class.Maleable_Object.php');
 
@@ -132,6 +133,17 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
     private $vuln_id = 0;
     
     /**
+     * The ticket (if any) associated with this vulnerability. 
+     * This could be a ticket number but is designed to be a
+     * URL to ticket details in a ticketing or trackign
+     * system (external to HECTOR)
+     *
+     * @access private
+     * @var String External ticket details URL.
+     */
+    private $ticket = null;
+    
+    /**
      * The unique ID of the associated Host so that we can 
      * instantiate a Host object to get more details.
      *
@@ -239,16 +251,29 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 	}
 	
 	/**
-	 * get_displays() is not used.
+	 * Displays for the template.
+	 * 
+     * @access public
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @return Array Array of details for this record for generic template.
 	 */
 	public function get_displays() {
-		return array();
+		return array('Text'=>'get_text',
+					'Vulnerability' => 'get_vuln_name',
+					'Fixed' => 'get_fixed',
+					'Fixed on:' => 'get_fixed_datetime',
+					'Fixed by:' => 'get_fixed_user_name',
+					'Notes on fix:' => 'get_fixed_notes',
+					'Ignored on:' => 'get_ignored_datetime',
+					'Ignored by:' => 'get_ignored_user_name',
+					'Ticket:' => 'get_ticket',
+			);
 	}
     
     /**
      * Return whether or not this vulnerability is fixed
      * 
-     * @author justin
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
      * @access public
      * @return Boolean Whether or not this vulnerability is fixed.
      */
@@ -268,10 +293,30 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
     	return intval($this->fixed_user_id);
     }
     
+    /**
+     * The name of the user who marked this detail as
+     * fixed, for display.
+     * 
+     * @access public
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @return String The name of the user who marked this fixed.
+     */
+    public function get_fixed_user_name() {
+    	$user = new User($this->fixed_user_id);
+    	return $user->get_name();
+    }
+    
     public function get_host_id() {
 		return intval($this->host_id);
     }
     
+    /**
+     * The Host object for the host that is associated 
+     * with this vulnerability detail.
+     * 
+     * @access public
+     * @return Host The Host object associated with this record.
+     */
     public function get_host() {
 		if ($this->host == NULL) {
 			$this->host = new Host($this->host_id);
@@ -279,6 +324,12 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 		return $this->host;
     }
     
+    /**
+     * The unique id for this object.
+     * 
+     * @access public
+     * @return Int The unique id for this object.
+     */
     public function get_id() {
 		return intval($this->id);
     }
@@ -295,10 +346,48 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
     	return intval($this->ignored_user_id);
     }
     
+    /**
+     * The name of the user who marked this detail as
+     * ignored, for display.
+     * 
+     * @access public
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @return String The name of the user who marked this ignored.
+     */
+    public function get_ignored_user_name() {
+    	$user = new User($this->ignored_user_id);
+    	return $user->get_name();
+    }
+    
+    /**
+     * Get the ticket URL associated with 
+     * this vulnerability detail.
+     * 
+     * @author Justin C. Klein Keane
+     * @access public
+     * @return String URL to the ticket
+     */
+    public function get_ticket() {
+    	return htmlentities($this->ticket);
+    }
+    
+    /**
+     * The text description of this vulnerability detail.
+     * 
+     * @access public
+     * @return String The description for this vulnerability detail.
+     */
     public function get_text() {
 		return htmlspecialchars($this->text);
     }
     
+    /**
+     * The associated Vuln object for this detail record.
+     * 
+     * @access public
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @return Vuln The Vuln object associated with this record.
+     */
     public function get_vuln() {
     	if ($this->vuln == NULL) {
     		$this->vuln = new Vuln($this->vuln_id);
@@ -306,6 +395,25 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
     	return $this->vuln;
     }
     
+    /**
+     * Get the name of the Vulnerability associated with
+     * this record, for display.
+     * 
+     * @access public
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @return String The name of the Vuln object associated with this record.
+     */
+    public function get_vuln_name() {
+    	$vuln = $this->get_vuln;
+    	return $vuln->get_name();
+    }
+    
+    /**
+     * Persist the object back to the database.
+     * 
+     * @access public
+     * @return null
+     */
     public function save() {
     	if ($this->id > 0 ) {
     		// Update an existing vuln_detail
@@ -329,35 +437,108 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
     	}
     }
     
-     public function set_fixed($fixed) {
+    /**
+     * Is this vulnerability fixed?
+     * 
+     * @access public
+     * @param Boolean Whether or not this is fixed (false=no, true=yes)
+     */
+    public function set_fixed($fixed) {
      	$this->fixed = (bool) $fixed;
     }
     
+    /**
+     * Record the datetime that this vulnerability detail 
+     * was marked fixed.
+     * 
+     * @access public
+     * @param Datetime The timestamp this vuln was fixed.
+     */
     public function set_fixed_datetime($fixed_datetime) {
-    	if ($fixed_datetime != '')
-    		$this->fixed_datetime = htmlspecialchars($fixed_datetime);
-    	elseif ($fixed_datetime == '')
-    		$this->fixed_datetime = '';
+    	$this->fixed_datetime = $fixed_datetime;
     }
     
-     public function set_fixed_notes($fixed_notes) {
-    	if ($fixed_notes != '')
-    		$this->fixed_notes = htmlspecialchars($fixed_notes);
-    	elseif ($fixed_notes == '')
-    		$this->fixed_notes = '';
+    /**
+     * Record any notes about this vulnerability.
+     * 
+     * @access public
+     * @param String Notes about the fix to this vuln detail.
+     */
+    public function set_fixed_notes($fixed_notes) {
+    	$this->fixed_notes = $fixed_notes;
     }
     
+    /**
+     * The user who is marking this record fixed.
+     * 
+     * @access public
+     * @param Int The ID of the User marking the record fixed.
+     */
+    public function set_fixed_user_id($user_id) {
+    	$this->fixed_user_id = intval($user_id);
+    }
+    
+    /**
+     * Is this vuln detail to be ignored?
+     * 
+     * @access public
+     * @param Boolean Whether or not to ignore this record.
+     */
     public function set_ignore($ignore) {
     	$this->ignore = (bool) $ignore;
     }
     
-    public function set_text($text) {
-    	if ($text != '')
-    		$this->text = htmlspecialchars($text);
-    	elseif ($text == '')
-    		$this->text = '';
+    /**
+     * The date this record is being marked to be ignored.
+     * 
+     * @access public
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @param Datetime The timestamp this record was ignored.
+     */
+    public function set_ignore_datetime($datetime) {
+    	$this->ignore_datetime = $datetime;
     }
     
+    /**
+     * Record the id of the User who is marking this 
+     * vulnerability description to be ignored from
+     * future reports.
+     * 
+     * @access public
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @param Int The ID of the User marking the record ignored.
+     */
+    public function set_ignore_user_id($user_id) {
+    	$this->ignore_user_id = intval($user_id);
+    }
+    
+    /**
+     * Set the text description for this vuln detail.
+     * 
+     * @access public
+     * @param String The description text.
+     */
+    public function set_text($text) {
+    		$this->text = $text;
+    }
+    
+    /**
+     * Set the URL to the ticket for this vuln detail.
+     * 
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @access public
+     * @param String The URL to the external ticket.
+     */
+    public function set_ticket($ticket) {
+    	$this->ticket = $ticket;
+    }
+    
+    /**
+     * Set the associated Vuln id
+     * 
+     * @access public
+     * @param Int The id of the associated Vuln object.
+     */
     public function set_vuln_id($id) {
     	$this->vuln_id = intval($id);
     }

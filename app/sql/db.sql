@@ -178,13 +178,6 @@ CREATE TABLE IF NOT EXISTS `malware` (
   `file` LONGBLOB
 ) ENGINE = InnoDB;
 
--- NMAP scan tracking table
-CREATE TABLE IF NOT EXISTS `nmap_scan` (
-	`nmap_scan_id` INT NOT NULL AUTO_INCREMENT,
-	`nmap_scan_datetime` DATETIME NOT NULL,
-	PRIMARY KEY (`nmap_scan_id`)
-) ENGINE = INNODB;
-
 -- Results of NMAP scans
 CREATE TABLE IF NOT EXISTS `nmap_result` (
 	`nmap_result_id` INT NOT NULL AUTO_INCREMENT,
@@ -245,15 +238,6 @@ CREATE TABLE IF NOT EXISTS `report` (
 	`report_monthly` TINYINT(1) DEFAULT 0,
 	PRIMARY KEY (`report_id`)
 );
-
--- RSS feed import table (for scheduling)
-CREATE TABLE IF NOT EXISTS `rss` (
-  `rss_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rss_name` varchar(255),
-  `rss_url` varchar(255) NOT NULL,
-  PRIMARY KEY (`rss_id`)
-) ENGINE = INNODB;
-
 
 -- Scans are a generic network poke for scheduling
 CREATE TABLE IF NOT EXISTS `scan` (

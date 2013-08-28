@@ -155,7 +155,7 @@ Class DB {
 	 * @return String The interpolated string with tokens replaced with 
 	 * SQL safe elements from input array.
 	 */
-	public function parse_query($sql) {
+	private function parse_query($sql) {
 		$retval = false;
 		if (is_array($sql)) {
 			if (count($sql) == 1) {

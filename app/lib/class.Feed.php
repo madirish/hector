@@ -37,12 +37,28 @@ class Feed extends Maleable_Object implements Maleable_Object_Interface {
     // --- ASSOCIATIONS ---
 
 
+
     // --- ATTRIBUTES ---
+    /**
+     * Instance of the Db
+     * 
+     * @access private
+     * @var Db An instance of the Db
+     */
+    private $db = null;
+    
+    /**
+     * Instance of the Log
+     * 
+     * @access private
+     * @var Log An instance of the Log
+     */
+    private $log = null;
 
     /**
      * Unique id
      *
-     * @access private
+     * @access protected
      * @var int
      */
     protected $id = null;
@@ -50,14 +66,16 @@ class Feed extends Maleable_Object implements Maleable_Object_Interface {
 	/**
 	 * Friendly name
 	 * 
-	 * @var String
+	 * @access private
+	 * @var String The name of the feed
 	 */
     private $name;
 
 	/**
-	 * Friendly name
+	 * URL to the feed
 	 * 
-	 * @var String
+	 * @access private
+	 * @var String The URL of the feed.
 	 */
     private $url;
 
@@ -68,24 +86,23 @@ class Feed extends Maleable_Object implements Maleable_Object_Interface {
      *
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @param  int id
+     * @param  Int The unique ID
      * @return void
      */
-		public function __construct($id = '') {
-			$this->db = Db::get_instance();
-			$this->log = Log::get_instance();
-			if ($id != '' && $id > 0) {
-				$sql = array(
-					'SELECT * FROM rss WHERE rss_id = ?i',
-								$id
-							);
-							$result = $this->db->fetch_object_array($sql);
-							$this->id = $result[0]->rss_id;
-							$this->name = $result[0]->rss_name;
-							$this->url = $result[0]->rss_url;
-				}
+	public function __construct($id = '') {
+		$this->db = Db::get_instance();
+		$this->log = Log::get_instance();
+		if ($id != '' && $id > 0) {
+			$sql = array(
+				'SELECT * FROM rss WHERE rss_id = ?i',
+							$id
+						);
+			$result = $this->db->fetch_object_array($sql);
+			$this->set_id($result[0]->rss_id);
+			$this->set_name($result[0]->rss_name);
+			$this->set_url($result[0]->rss_ur)l;
 		}
-
+	}
 
     /**
      * Delete the record from the database
@@ -108,6 +125,9 @@ class Feed extends Maleable_Object implements Maleable_Object_Interface {
 	/**
 	 * This is a functional method designed to return
 	 * the form associated with altering a feed.
+	 * 
+	 * @access public
+	 * @return Array An array for the CRUD template.
 	 */
 	public function get_add_alter_form() {
 
@@ -128,7 +148,8 @@ class Feed extends Maleable_Object implements Maleable_Object_Interface {
 	/**
 	 *  This function directly supports the Collection class.
 	 *
-	 * @return SQL select string
+	 * @access public
+	 * @return String SQL select string
 	 */
 	public function get_collection_definition($filter = '', $orderby = '') {
 		$query_args = array();
@@ -151,6 +172,9 @@ class Feed extends Maleable_Object implements Maleable_Object_Interface {
 	
 	/**
 	 * The method to return the HTML for the details on this specific host
+	 * 
+	 * @access public
+	 * @return String HTML string for display in the details template.
 	 */
 	public function get_details() {
 		$retval = '<table id="feed_details">' . "\n";
@@ -160,6 +184,12 @@ class Feed extends Maleable_Object implements Maleable_Object_Interface {
 		return $retval;
 	}
 
+	/**
+	 * Array for the displays template
+	 * 
+	 * @access public
+	 * @return Array Display array for template.
+	 */
 	public function get_displays() {
 		return array('Name'=>'get_name', 'URL'=>'get_url');
 	}
@@ -169,17 +199,17 @@ class Feed extends Maleable_Object implements Maleable_Object_Interface {
 	 *
 	 * @access public
 	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-	 * @return int
+	 * @return Int The unique Id
 	 */
 	public function get_id() {
-		return $this->id;
+		return intval($this->id);
 	}
 	
 	/**
 	 * Return the name string
 	 * 
 	 * @access public
-	 * @return String
+	 * @return String  The name of the feed (for admin display)
 	 */
 	public function get_name() {
 		return htmlspecialchars($this->name);
@@ -189,19 +219,20 @@ class Feed extends Maleable_Object implements Maleable_Object_Interface {
 	 * Return the url string
 	 * 
 	 * @access public
-	 * @return String
+	 * @return String The URL to the feed
 	 */
 	public function get_url() {
-		return htmlspecialchars($this->url);
+		return urlencode($this->url);
 	}
 
 	/**
 	 * Save the object for persistence
 	 * 
 	 * @access public
-	 * @return void
+	 * @return Boolen TRUE if everything worked, FALSE on error
 	 */
 	public function save() {
+		$retval = FALSE;
 		if ($this->id > 0 ) {
 			// Update an existing rss feed
 	    	$sql = array(
@@ -210,7 +241,7 @@ class Feed extends Maleable_Object implements Maleable_Object_Interface {
 	    		$this->get_url(),
 	    		$this->get_id()
 	    	);
-	    	$this->db->iud_sql($sql);
+	    	$retval = $this->db->iud_sql($sql);
 		}
 		else {
 			$sql = array(
@@ -218,14 +249,43 @@ class Feed extends Maleable_Object implements Maleable_Object_Interface {
 				$this->get_name(),
 				$this->get_url(),
 	    	);
-	    	$this->db->iud_sql($sql);
+	    	$retval = $this->db->iud_sql($sql);
+	    	// Now set the id
+	    	$sql = 'SELECT LAST_INSERT_ID() AS last_id';
+	    	$result = $this->db->fetch_object_array($sql);
+	    	if (isset($result[0]) && $result[0]->last_id > 0) {
+	    		$this->set_id($result[0]->last_id);
+	    	}
 		}
+		return $retval;
 	}
+    
+    /**
+     * Set the id attribute.
+     * 
+     * @access protected
+     * @param Int The unique ID from the data layer
+     */
+    protected function set_id($id) {
+    	$this->id = intval($id);
+    }
 
+	/**
+	 * Set the name of the feed
+	 * 
+	 * @access public
+	 * @param String The feed name (for admin display)
+	 */
 	public function set_name($name) {
 		$this->name = $name;
 	}
 
+	/**
+	 * Set the feed URL
+	 * 
+	 * @access public
+	 * @param String The URL for the RSS feed.
+	 */
 	public function set_url($url) {
 		$this->url = $url;
 	}

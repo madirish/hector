@@ -18,15 +18,15 @@ if (! isset($appuser)) {
 	if (! isset($_SESSION['user_id'])) die("<h2>Fatal error!<?h2>User not initialized.");
 	else $appuser = new User($_SESSION['user_id']);
 }
-$sql = 'SELECT COUNT(x.vuln_detail_id) AS vulncount ' .
-		'FROM vuln_detail d, vuln_detail_x_host x, host h ' .
-		'WHERE x.vuln_detail_id = d.vuln_detail_id AND ' .
-			'h.host_id = x.host_id AND ' .
+$sql = 'SELECT COUNT(d.vuln_detail_id) AS vulncount ' .
+		'FROM vuln_detail d, host h ' .
+		'WHERE ' .
+			'h.host_id = d.host_id AND ' .
 			'd.vuln_detail_ignore = 0 AND ' .
 			'd.vuln_detail_fixed = 0';
 if (isset($appuser) && ! $appuser->get_is_admin()) {
 			// Limit reports to hosts the user is responsible for
-			$sql .= ' AND x.host_id = h.host_id ' .
+			$sql .= ' AND d.host_id = h.host_id ' .
 					' AND h.supportgroup_id IN (' . implode(',', $appuser->get_supportgroup_ids()) . ')';
 }
 

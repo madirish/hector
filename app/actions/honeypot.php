@@ -3,8 +3,13 @@
  * Show honeypot data
  * @author Justin Klein Keane <jukeane@sas.upenn.edu>
  * @version 2012.11.27
+ * @package HECTOR
+ * @todo Move the SQL out of actions/honeypot.php and into a helper class
  */
 
+/**
+ * Necessary includes
+ */
 require_once($approot . 'lib/class.Db.php');
 $db = Db::get_instance();
 

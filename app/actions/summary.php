@@ -3,11 +3,15 @@
  * This is the default subcontroller for assets 
  * @author Justin Klein Keane <jukeane@sas.upenn.edu>
  * @version 2011.02.22
+ * @package HECTOR
+ * @todo Move the SQL out of actions/summary.php and into a helper class
  */
 
 
 // Queries (inefficiently done)
-
+/**
+ * Require the database
+ */
 require_once($approot . 'lib/class.Db.php');
 $db = Db::get_instance();
 global $appuser;

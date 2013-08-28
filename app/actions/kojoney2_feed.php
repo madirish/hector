@@ -1,8 +1,18 @@
 <?php
 /**
- * Show honeypot data
+ * Show honeypot data in CIF format as a consumable
+ * feed.
+ * 
  * @author Josh Bauer <joshbauer3@gmail.com>
  * @version 2013.7.12
+ * @package HECTOR
+ * @todo Move HTML output to a template 
+ * @todo Move SQL into a helper class
+ * @todo Report/log access denied messages
+ */
+ 
+/**
+ * Require the API key class
  */
 require_once($approot . 'lib/class.Api_key.php');
 require_once($approot . 'lib/class.Db.php');

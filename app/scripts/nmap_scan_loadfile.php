@@ -38,6 +38,12 @@ if(php_sapi_name() == 'cli') {
 	
 	// Make sure we have some functions that may come from nmap_scan
 	if (! function_exists("show_help")) {
+		/**
+		 * This function may not be instantiated if the script is 
+		 * called at the command line.
+		 * 
+		 * @ignore Don't document this duplicate function.
+		 */
 		function show_help($error) {
 			echo "Error from nmap_scan.php helper script nmap_scan_loadfile.php\n";
 			echo $error;
@@ -45,6 +51,12 @@ if(php_sapi_name() == 'cli') {
 		}
 	}
 	if (! function_exists("loggit")) {
+		/**
+		 * This function may not be instantiated if the script is 
+		 * called at the command line.
+		 * 
+		 * @ignore Don't document this duplicate function.
+		 */
 		function loggit($status, $message) {
 			global $log;
 			global $dblog;

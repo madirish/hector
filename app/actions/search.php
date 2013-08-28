@@ -1,5 +1,14 @@
 <?php
+/** 
+ * This is the report subcontroller for searches
+ * @author Justin Klein Keane <jukeane@sas.upenn.edu>
+ * @package HECTOR
+ * @todo Move HTML out of actions/search.php and into a template
+ */
 
+/**
+ * Require the XSRF safe form
+ */
 require_once($approot . 'lib/class.Form.php');
 $form = new Form();
 $formname = 'search_form';

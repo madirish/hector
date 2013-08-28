@@ -89,12 +89,12 @@ Class Log {
 	/**
 	 * Singleton interface
 	 *
-	 * @return $this->instance
+	 * @access public
+	 * @return Log Returns a reference to the signleton instance of the Log object
 	 */
 	public function get_instance() {
 		if (self::$instance == NULL)
 			self::$instance = new Log();
-
 		return self::$instance;
 
 	}
@@ -102,7 +102,7 @@ Class Log {
 	/**
 	 * Write an error to the log
 	 *
-	 * @param String $err
+	 * @param String The error message to write to the log
 	 */
 	public function write_error($err) {
 		$err = date('Y-m-d h:i:s') . "  ERROR: " .
@@ -122,7 +122,8 @@ Class Log {
 	/**
 	 * Write a message to the log
 	 *
-	 * @param String $msg
+	 * @access public
+	 * @param String The message to write to the log.
 	 */
 	public function write_message($msg) {
 		$msg = date('Y-m-d h:i:s') . "  MESSAGE: " .
@@ -137,7 +138,8 @@ Class Log {
 	/**
 	 * Return the contents of the log file
 	 *
-	 * @return String
+	 * @access public
+	 * @return String The error log file contents.
 	 */
 	public function return_error_log() {
 		$filename = $this->error_log_location;
@@ -150,7 +152,8 @@ Class Log {
 	/**
 	 * Return the contents of the message log
 	 *
-	 * @return String
+	 * @access public
+	 * @return String The contents of the message log.
 	 */
 	public function return_message_log() {
 		$filename = $this->message_log_location;
@@ -163,6 +166,7 @@ Class Log {
 	/**
 	 * Close the log files
 	 *
+	 * @access public
 	 */
 	public function close() {
 		fclose($this->error);
@@ -172,7 +176,7 @@ Class Log {
 	/**
 	 * This method gzips the current message log and renames it with a timestamp and starts a new log.
 	 *
-	 * @return boolean
+	 * @return Boolean True on success or false if there is an error.
 	 */
 	public function archive_message_log() {
 		$file = $this->message_log_location;
@@ -189,7 +193,7 @@ Class Log {
 	/**
 	 * This method gzips the current error log and renames it with a timestamp and starts a new log.
 	 *
-	 * @return boolean
+	 * @return Boolean True on success or false if there is an error.
 	 */
 	public function archive_error_log() {
 		$file = $this->error_log_location;
@@ -206,7 +210,8 @@ Class Log {
 
 	/**
 	 * This method toggles the status of the debugging in the config file
-	 *
+	 * 
+	 * @access public
 	 */
 	public function toggle_status() {
 		$contents = file_get_contents($this->config_location);

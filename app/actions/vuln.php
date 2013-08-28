@@ -10,6 +10,9 @@
  * 
  */
 
+/**
+ * Require the factory class
+ */
 require_once($approot . 'lib/class.Collection.php');
 $vuln_details = new Collection('Vuln_detail');
 

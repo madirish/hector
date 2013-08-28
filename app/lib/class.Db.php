@@ -16,6 +16,7 @@ require_once("class.Log.php");
 /**
  * This class provides the interface to the database.
  * @package HECTOR
+ * @subpackage util
  *
  */
 Class DB {
@@ -25,9 +26,10 @@ Class DB {
 	/**
 	 * Status set to 0 for errors
 	 *
+	 * @access private
 	 * @var int
 	 */
-	var $status = 1;
+	private $status = 1;
 
 	/**
 	 * Singleton implementation, contains Log()
@@ -53,7 +55,8 @@ Class DB {
 	/**
 	 * Construct the db connection and return it.  This function will die if magic quotes are left on.
 	 *
-	 * @return boolean
+	 * @access private
+	 * @return Boolean True if the singleton constructs, false if there was an issue.
 	 */
 	private function __construct() {
 		$this->log = Log::get_instance();
@@ -79,6 +82,12 @@ Class DB {
 		return true;
 	}
 
+	/**
+	 * Return an array of objects based on the query.
+	 * 
+	 * @param String A SQL statement.
+	 * @return Array An array of objects.
+	 */
 	public function fetch_object_array($sql) {
 		$retval = false;
 		$query = $this->parse_query($sql);
@@ -103,7 +112,7 @@ Class DB {
 	 * query.
 	 * 
 	 * @param array - query followed by args
-	 * @return boolean
+	 * @return Boolean True, or false if there was an error.
 	 */
 	public function iud_sql($sql) {
 		// Some queries in HECTOR take forever, make sure the database is still around
@@ -137,10 +146,14 @@ Class DB {
 	}
 
 	/**
+	 * Safety checking function that will parse a tokenized SQL query
+	 * string in order to perform replacements.
 	 *
-	 * @param Multi part array, the first element should be the actual
+	 * @param Array Multi part array, the first element should be the actual
 	 * tokenized SQL statement, all additional elements are the arguments
 	 * to be filtered in.
+	 * @return String The interpolated string with tokens replaced with 
+	 * SQL safe elements from input array.
 	 */
 	public function parse_query($sql) {
 		$retval = false;
@@ -200,6 +213,17 @@ Class DB {
 		return $retval;
 	}
 
+	/**
+	 * This utility function supports the parse_query() method and
+	 * performs SQL injection safety checks on all parameterized
+	 * input then returns a safe version of the input for SQL query.
+	 * 
+	 * @return String The SQL safe version of the input
+	 * @access private
+	 * @param String Portion of the actual SQL query
+	 * @param String The token to be replaced, indicating type
+	 * @param String The value that should be sanitized.
+	 */
 	private function token_replace($query, $token, $replace) {
 		$retval = '';
 		switch ($token) {
@@ -228,9 +252,12 @@ Class DB {
 	}
 
 	/**
-	 * This is the Singleton interface
+	 * This is the Singleton interface and should be used instead of the
+	 * constructor, which is private.  This ensures we create only one
+	 * DB connection per page call.
 	 *
-	 * @return Object
+	 * @access public
+	 * @return DB An reference to the singleton instance of the DB object.
 	 */
 	public function get_instance() {
 		if (self::$instance == NULL)
@@ -253,7 +280,9 @@ Class DB {
 
 	/**
 	 * Close the database connection
-	 *
+	 * 
+	 * @access public
+     * @return void
 	 */
 	public function close() {
 		mysql_close($this->db_connection);

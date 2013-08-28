@@ -7,6 +7,9 @@
  * @author Justin C. Klein Keane <justin@madirish.net>
  */
 
+/**
+ * Set up debugging
+ */
 define("DEBUG", 0);
 
 /**
@@ -16,12 +19,12 @@ require_once("class.Db.php");
 
 /**
  * This class provides logging to the database.
+ * 
  * @package HECTOR
+ * @subpackage util
  *
  */
 Class Dblog {
-    // --- ASSOCIATIONS ---
-
 
     // --- ATTRIBUTES ---
 	
@@ -61,7 +64,7 @@ Class Dblog {
 	 *
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-	 * @return Object
+	 * @return Dblog An instance of the Dblog object.
 	 */
 	public function get_instance() {
 		if (self::$instance == NULL) self::$instance = new Dblog();

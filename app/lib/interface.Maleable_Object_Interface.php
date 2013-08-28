@@ -1,6 +1,12 @@
 <?php
 /**
  * interface.Maleable_Object_Interface.php
+ * 
+ * @package HECTOR
+ */
+ 
+/**
+ * interface.Maleable_Object_Interface.php
  *
  * @abstract This interface is intended to allow for standard API throughout the application.
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>

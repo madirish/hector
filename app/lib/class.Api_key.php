@@ -1,13 +1,15 @@
 <?php
-
-error_reporting(E_ALL);
-
 /**
  * HECTOR - class.Api_key.php
  *
  * @author Josh Bauer <joshbauer3@gmail.com>
  * @package HECTOR
  */
+ 
+/**
+ * Set up error reporting
+ */
+error_reporting(E_ALL);
 
 if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
@@ -26,6 +28,8 @@ require_once('class.Maleable_Object.php');
  *
  * @access public
  * @author Josh Bauer <joshbauer3@gmail.com>
+ * @package HECTOR
+ * @todo Document this class
  */
 class Api_key extends Maleable_Object implements Maleable_Object_Interface {
 

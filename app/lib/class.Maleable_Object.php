@@ -6,6 +6,12 @@
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * @package HECTOR
  */
+ 
+/**
+ * Maleable object utility superclass to ensure standard API for each class.
+ * 
+ * @package HECTOR
+ */
 class Maleable_Object {
 
     /**
@@ -21,10 +27,9 @@ class Maleable_Object {
      *
      * @access public
      * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
-     * @return int The unique id from the data layer.
+     * @return Int The unique id from the data layer.
      */
-    public function get_id()
-    {
+    public function get_id() {
         return (int) $this->id;
     } 
 	
@@ -36,6 +41,7 @@ class Maleable_Object {
 	 * @access public
 	 * @param String Callback function to process values
 	 * @param String Value to pass to the callback function.
+     * @return void
 	 */
 	public function process_form($callback, $value) {
 		$this->$callback($value);

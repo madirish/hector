@@ -1,7 +1,4 @@
 <?php
-
-error_reporting(E_ALL);
-
 /**
  * HECTOR - class.Location.php
  *
@@ -11,6 +8,11 @@ error_reporting(E_ALL);
  * @package HECTOR
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  */
+ 
+/**
+ * Enable error reporting
+ */
+error_reporting(E_ALL);
 
 if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
@@ -25,9 +27,10 @@ require_once('interface.Maleable_Object_Interface.php');
 require_once('class.Maleable_Object.php');
 
 /**
- * Short description of class Location
+ * Location is the physical address for hosts in order
+ * to track them in an inventory.
  *
- * @access public
+ * @package HECTOR
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  */
 class Location extends Maleable_Object implements Maleable_Object_Interface {

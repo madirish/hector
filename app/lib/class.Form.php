@@ -1,7 +1,4 @@
 <?php
-
-error_reporting(E_ALL);
-
 /**
  * HECTOR - class.Form.php
  *
@@ -12,6 +9,11 @@ error_reporting(E_ALL);
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * @package HECTOR
  */
+ 
+/**
+ * Set up error reporting
+ */
+error_reporting(E_ALL);
 
 if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
@@ -24,8 +26,8 @@ require_once('class.Db.php');
  * Form class is used to create and track anti-XSRF tokens
  * in forms for the application
  *
- * @access public
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+ * @package HECTOR
  */
 class Form {
     // --- ATTRIBUTES ---

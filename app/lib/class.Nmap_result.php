@@ -1,7 +1,4 @@
 <?php
-
-error_reporting(E_ALL);
-
 /**
  * class.nmap_result.php
  *
@@ -10,6 +7,11 @@ error_reporting(E_ALL);
  * @package HECTOR
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  */
+ 
+/**
+ * Enable error reporting
+ */
+error_reporting(E_ALL);
 
 if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
@@ -28,12 +30,9 @@ require_once('class.Log.php');
  *
  * @access public
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
- * @todo capture banner strings
+ * @package HECTOR
  */
-class Nmap_result
-{
-    // --- ASSOCIATIONS ---
-
+class Nmap_result {
 
     // --- ATTRIBUTES ---
     

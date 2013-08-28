@@ -9,7 +9,9 @@
  * @version 2013.08.29
  */
 
-// Necessary includes
+/**
+ * Require the Vuln_details class
+ */ 
 require_once($approot . 'lib/class.Vuln_detail.php');
 
 $vuln_id = isset($_GET['id']) ? intval($_GET['id']) : '';

@@ -2,6 +2,12 @@
 /**
  * Report on dangerous hosts, that is, hosts with four or 
  * more common server ports open
+ * @author Justin Klein Keane <jukeane@sas.upenn.edu>
+ * @package HECTOR
+ */
+
+/**
+ * Setup defaults.
  */
 $content = '';
 require_once($approot . 'lib/class.Db.php');

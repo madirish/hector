@@ -5,8 +5,15 @@
  * 
  * by Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * Last updated 18 October, 2012
+ * 
+ * @author Justin Klein Keane <jukeane@sas.upenn.edu>
+ * @package HECTOR
+ * @todo Move the SQL out of this file into a utility class
  */
 
+/**
+ * Set up sane defaults
+ */
 $tagsin = '';
 $tagsex = '';
 if (isset($_POST['tagsin'])) {
@@ -15,7 +22,7 @@ if (isset($_POST['tagsin'])) {
 if (isset($_POST['tagsex'])) {
 	$tagsex = (is_array($_POST['tagsex'])) ? join(',',array_map("intval",$_POST['tagsex'])) : 0;
 }
-//print_r($tagsex);
+
 $content = '';
 require_once($approot . 'lib/class.Db.php');
 require_once($approot . 'lib/class.Host.php');

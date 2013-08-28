@@ -9,10 +9,14 @@
  * an argument to nmap_scan.php.
  * 
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+ * @package HECTOR
  * 
  * Last modified June 17, 2011  
  */
  
+/**
+ * Set up the defaults for expiry
+ */
 $months_old = 1;
 
 // Make sure of the environment

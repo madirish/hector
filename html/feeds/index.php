@@ -1,9 +1,14 @@
 <?php
 /**
- *  This is the feed supercontroller
+ *  This is the export feed supercontroller
  * 
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * @package HECTOR
+ * @todo Log/report access denied messages.
+ */
+ 
+/**
+ * Setup the session for access
  */
 session_name('HECTOR');
 session_start();

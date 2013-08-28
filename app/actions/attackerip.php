@@ -1,10 +1,15 @@
 <?php
 /**
  * Show attacker ip's from darknet or ossec logs
- * @author Justin Klein Keane <jukeane@sas.upenn.edu>
+ * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+ * @package HECTOR
  * @version 2011.11.28
+ * @todo Move the SQL from this file into a utility class
  */
 
+/**
+ * Get a form with XSRF protection
+ */
 require_once($approot . 'lib/class.Form.php');
 $form = new Form();
 $formname = 'search_attackerip_form';

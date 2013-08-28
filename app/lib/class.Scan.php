@@ -1,27 +1,26 @@
 <?php
-
-error_reporting(E_ALL);
-
 /**
- * @package HECTOR
- * @author Justin C. Klein Keane <justin@madirish.net>
  *
- * class.Scan.php is the holder object for the organization
+ * class.Scan.php 
+ *
+ * The holder object for the organization
  * of scanning schedule data (such as when to run the scan
  * and which host groups to apply it to).  The object
  * also contains information about the Scan_type object 
  * which defines the actual script to be run.
+ * 
+ * @package HECTOR
+ * @author Justin C. Klein Keane <justin@madirish.net>
  */
+ 
+/**
+ * Error reporting
+ */
+error_reporting(E_ALL);
 
 if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
 }
-
-/**
- *
- * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
- * @version .1
- */
 
 /* user defined includes */
 require_once('class.Scan_type.php');
@@ -36,11 +35,11 @@ require_once('class.Host_group.php');
 /* user defined constants */
 
 /**
- * Short description of class Scan
+ * The generic Scan object keeps track of schedules and
+ * names of Scan_type's that need to be run
  *
- * @access public
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
- * @version .1
+ * @package HECTOR
  */
 class Scan extends Maleable_Object implements Maleable_Object_Interface {
     // --- ASSOCIATIONS ---

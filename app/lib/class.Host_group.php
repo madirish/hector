@@ -1,7 +1,4 @@
 <?php
-
-error_reporting(E_ALL);
-
 /**
  * HECTOR - class.Host_group.php
  * This file is part of HECTOR.
@@ -11,19 +8,20 @@ error_reporting(E_ALL);
  * @package HECTOR
  * @version 2013.08.28
  */
+ 
+/**
+ * Enable error reporting
+ */
+error_reporting(E_ALL);
 
 if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
 }
 
-$explaination = "Host groups are logical aggregations of machines, generally assigned " .
+/*$explaination = "Host groups are logical aggregations of machines, generally assigned " .
 		"to a specific support provider.  Host groups can be used to target specific scans " .
-		"at targets.";
-/**
- *
- * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
- */
-
+		"at targets.";*/
+		
 /* user defined includes */
 require_once('class.Config.php');
 require_once('class.Db.php');
@@ -40,6 +38,7 @@ require_once('class.Maleable_Object.php');
  * organizational tool, used for group access and targeting scans.
  *
  * @access public
+ * @package HECTOR
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  */
 class Host_group extends Maleable_Object implements Maleable_Object_Interface {

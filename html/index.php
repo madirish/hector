@@ -1,18 +1,25 @@
 <?php
 /**
- *  This is the supercontroller
+ * This is the controller, all rivers flow from this source
  * 
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * @package HECTOR
  */
+
+//Start up a unique session
 session_name('HECTOR');
 session_start();
 // Global variables
 $approot = getcwd() . '/../app/';
 $templates = $approot . 'templates/';
 
-// Necessary includes 
+/**
+ * Include the Configs
+ */
 require_once($approot . 'lib/class.Config.php');
+/**
+ * Require the User object for access and permissions
+ */
 require_once($approot . 'lib/class.User.php');
 new Config();
 

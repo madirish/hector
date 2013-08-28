@@ -5,11 +5,14 @@
  * 
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * @todo Log the scan_id
+ * @package HECTOR
  * 
  * Last modified Feb 23, 2011  
  */
  
-// Make sure of the environment
+/**
+ * Make sure of the environment
+ */
 global $add_edit;
 if(php_sapi_name() != 'cli') {
 	$is_executable[] = array('nikto_scan.php' => 'Nikto Scan');

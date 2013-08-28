@@ -3,6 +3,13 @@
  * Display screenshot
  * @author Josh Bauer <joshbauer3@gmail.com>
  * @version 2013.7.18
+ * @package HECTOR
+ * @todo Move the SQL out of actions/display_screenshot.php and into the 
+ * Host class or a new Screenshot class
+ */
+
+/**
+ * Require the database
  */
 require_once($approot . 'lib/class.Db.php');
 $approot = getcwd() . '/../app/';

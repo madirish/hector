@@ -1,8 +1,16 @@
 <?php
 /**
- * This is the default subcontroller for assets
+ * This is the default subcontroller for handing off
+ * to alerts, search, or reports.
+ * 
+ * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+ * @package HECTOR
+ * @todo Deprecate this entire page.
  */
 
+/**
+ * Figure out what subcontroller to hand off to.
+ */
 $object = isset($_GET['object']) ? $_GET['object'] : '';
 
 if ($object == 'alerts') {

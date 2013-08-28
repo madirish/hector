@@ -5,6 +5,11 @@
  * 
  * @package HECTOR
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+ * @todo Move SQL out of actions/ossecalerts.php and into a class
+ */
+ 
+/**
+ * Require the database
  */
 require_once($approot . 'lib/class.Db.php');
 

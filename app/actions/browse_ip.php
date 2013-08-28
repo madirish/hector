@@ -11,8 +11,12 @@
  * @author Justin Klein Keane <jukeane@sas.upenn.edu>
  * @package HECTOR
  * @version 2013.08.28
+ * @todo Move the SQL out of this file and into a utility class
  */
 
+/**
+ * Include the DB library
+ */
 require_once($approot . 'lib/class.Db.php');
 require_once($approot . 'lib/class.Host.php');
 require_once($approot . 'lib/class.Collection.php');

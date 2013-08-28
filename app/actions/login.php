@@ -1,8 +1,14 @@
 <?php
 /**
- * @todo Create form token to protect against XSRF
+ * This is the controller for the login form.
+ * 
+ * @author Justin C. Klein Keane <jukeane@sas.upen.edu>
+ * @package HECTOR
  */
  
+/**
+ * Require XSRF protected forms.
+ */
 require_once($approot . 'lib/class.Form.php');
 
 $form = new Form();

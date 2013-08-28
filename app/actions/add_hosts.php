@@ -12,7 +12,10 @@
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * @version 2013.08.29
  */
- 
+
+/**
+ * Requre the Form for XSRF protection
+ */ 
 require_once($approot . 'lib/class.Form.php');
 
 include_once($approot . 'lib/class.Collection.php');

@@ -1,7 +1,4 @@
 <?php
-
-error_reporting(E_ALL);
-
 /**
  * class.Host.php
  *
@@ -11,16 +8,15 @@ error_reporting(E_ALL);
  * @package HECTOR
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  */
+ 
+/**
+ * Set up error reporting
+ */
+error_reporting(E_ALL);
 
 if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
 }
-
-/**
- * include Port
- *
- * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
- */
 
 /* user defined includes */
 require_once('class.Config.php');
@@ -40,6 +36,7 @@ require_once('class.Tag.php');
  *
  * @access public
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+ * @package HECTOR
  * @todo enable MAC address tracking
  */
 class Host extends Maleable_Object implements Maleable_Object_Interface {

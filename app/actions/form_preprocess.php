@@ -2,8 +2,14 @@
 /**
  * This is the form preprocessor, its main function is to
  * guard against XSRF by checking forms for valid tokens.
+ * 
+ * @author Justin Klein Keane <jukeane@sas.upenn.edu>
+ * @package HECTOR
  */
- 
+
+/**
+ * Necessary includes
+ */
 require_once($approot . 'lib/class.Form.php');
 
 $form = new Form();

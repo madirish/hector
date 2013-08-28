@@ -1,7 +1,4 @@
 <?php
-
-error_reporting(E_ALL);
-
 /**
  * @package HECTOR
  * @author Justin C. Klein Keane <justin@madirish.net>
@@ -12,6 +9,11 @@ error_reporting(E_ALL);
  * factory class and display them via the web interface.
  *
  */
+ 
+/**
+ * Error reporting
+ */
+error_reporting(E_ALL);
 
 if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
@@ -26,9 +28,13 @@ require_once('interface.Maleable_Object_Interface.php');
 require_once('class.Maleable_Object.php');
 
 /**
- * Scan_type is the holder object for scans of various types
+ * Scan_type is the specific setup of a scan that includes not
+ * only the scan script filename, but also configuration options
+ * that are set.  This allows multiple scans of the same type to
+ * be saved, with different configuration options.  Subsequently
+ * Scan objects can be used to schedule each Scan_type.
  *
- * @access public
+ * @package HECTOR
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * @version .1
  */

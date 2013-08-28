@@ -1,7 +1,4 @@
 <?php
-
-error_reporting(E_ALL);
-
 /**
  * HECTOR - class.Supportgroup.php
  *
@@ -11,6 +8,11 @@ error_reporting(E_ALL);
  * @package HECTOR
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  */
+
+/**
+ * Error reporting
+ */
+error_reporting(E_ALL);
 
 if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
@@ -28,7 +30,7 @@ require_once('class.Maleable_Object.php');
  * Support group is an object that refers to the organizational
  * unit responsible for supporting a particular host or hosts.
  *
- * @access public
+ * @package HECTOR
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  */
 class Supportgroup extends Maleable_Object implements Maleable_Object_Interface {

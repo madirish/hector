@@ -1,8 +1,17 @@
 <?php
 /**
- * This is the default subcontroller for assets
+ * This is the default subcontroller for the configuration
+ * of various aspects of hector.
+ * 
+ * @author Justin Klein Keane <jukeane@sas.upenn.edu>
+ * @package HECTOR
+ * @todo Get rid of actions/config.php and instead create
+ * specific subcontrollers for each action.
  */
 
+/**
+ * Setup defaults.
+ */
 $object = isset($_GET['object']) ? $_GET['object'] : '';
 
 if ($object == 'supportgroup') {

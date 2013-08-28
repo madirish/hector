@@ -5,8 +5,12 @@
  * @package HECTOR
  * @author Justin Klein Keane <jukeane@sas.upenn.edu>
  * @version 2013.08.28
+ * @todo Move the SQL out of actions/host_details.php and into a helper class
  */
- 
+
+/**
+ * Require the database
+ */
 require_once($approot . 'lib/class.Db.php');
 require_once($approot . 'lib/class.Host.php');
 require_once($approot . 'lib/class.Nmap_result.php');

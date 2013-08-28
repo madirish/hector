@@ -1,6 +1,14 @@
 <?php
 /**
- * This is the default subcontroller
+ * This is the default subcontroller to show OSSEC alerts
+ * 
+ * @author Justin Klein Keane <jukeane@sas.upenn.edu>
+ * @package HECTOR
+ * @todo Move the SQL out of this file and into a class
+ */
+
+/**
+ * Require the database
  */
 require_once($approot . 'lib/class.Db.php');
 require_once($approot . 'lib/class.Host.php');

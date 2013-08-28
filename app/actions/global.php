@@ -7,6 +7,10 @@
  * @package HECTOR
  * @version 2013.08.28
  */
+
+/**
+ * Necessary includes
+ */
 require_once($approot . 'lib/class.Db.php');
 global $appuser;
 $db = Db::get_instance();

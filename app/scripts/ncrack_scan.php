@@ -1,5 +1,13 @@
 <?php
 /**
+ * NCrack scan.
+ * 
+ * @author Justin C. Klein Keane <jukeane@sas.upen.edu>
+ * @package HECTOR
+ * @todo Fix the display description
+ */
+
+/**
  * Defined vars
  */
 if(php_sapi_name() == 'cli') {

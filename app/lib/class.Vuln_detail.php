@@ -1,7 +1,4 @@
 <?php
-
-error_reporting(E_ALL);
-
 /**
  * HECTOR - class.Vuln_detail.php
  *
@@ -9,6 +6,11 @@ error_reporting(E_ALL);
  * @package HECTOR
  * @todo Filter access based on Support Group
  */
+ 
+/**
+ * Error reporting
+ */
+error_reporting(E_ALL);
 
 if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
@@ -27,6 +29,7 @@ require_once('class.Maleable_Object.php');
  * Occurances of Vulnerabilities.
  *
  * @access public
+ * @package HECTOR
  * @author Josh Bauer <joshbauer3@gmail.com>
  */
 class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {

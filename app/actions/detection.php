@@ -1,11 +1,16 @@
 <?php
 /**
  * Show port detection from sensors
- * @author Justin Klein Keane <jukeane@sas.upenn.edu>
+ * 
  * @package HECTOR
  * @version 2013.08.29
+ * @author Justin Klein Keane <jukeane@sas.upenn.edu>
+ * @todo Move the SQL out of this file into helper classes.
  */
 
+/**
+ * Require the database
+ */
 require_once($approot . 'lib/class.Db.php');
 $db = Db::get_instance();
 	

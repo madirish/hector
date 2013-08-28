@@ -1,8 +1,13 @@
 <?php
 /**
-* This is the subcontroller for managing users. 
-**/
+ * This is the subcontroller for managing users. 
+ * @author Justin Klein Keane <jukeane@sas.upenn.edu>
+ * @package HECTOR
+ */
 
+/**
+ * Setup defaults
+ */
 if (! isset($_GET['object'])) {
 	// in case we don't have the right input
 	$template = 'default';

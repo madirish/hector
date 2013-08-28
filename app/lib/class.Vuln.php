@@ -1,7 +1,4 @@
 <?php
-
-error_reporting(E_ALL);
-
 /**
  * HECTOR - class.Vuln.php
  *
@@ -9,6 +6,11 @@ error_reporting(E_ALL);
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * @package HECTOR
  */
+ 
+/**
+ * Error reporting
+ */
+error_reporting(E_ALL);
 
 if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
@@ -27,6 +29,7 @@ require_once('class.Maleable_Object.php');
  *
  * @access public
  * @author Josh Bauer <joshbauer3@gmail.com>
+ * @package HECTOR
  */
 class Vuln extends Maleable_Object implements Maleable_Object_Interface {
 
@@ -267,7 +270,6 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
      * @access public
      * @author Josh Bauer <joshbauer3@gmail.com>
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @package HECTOR 
      */
     public function save() {
     	$sql = '';
@@ -308,7 +310,6 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
      * 
      * @author Josh Bauer <joshbauer3@gmail.com>
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @package HECTOR 
      * @access public
      * @param String $cve
      */
@@ -322,7 +323,6 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
      * 
      * @author Josh Bauer <joshbauer3@gmail.com>
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @package HECTOR 
      * @access public
      * @param String $description (Can be '' if we want to get rid of on old desc)
      */
@@ -335,7 +335,6 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
      * 
      * @author Josh Bauer <joshbauer3@gmail.com>
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @package HECTOR 
      * @access public
      * @param String $name
      */   
@@ -349,7 +348,6 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
      * 
      * @author Josh Bauer <joshbauer3@gmail.com>
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @package HECTOR 
      * @access public
      * @param String $osvdb
      */

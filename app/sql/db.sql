@@ -6,12 +6,12 @@ use hector;
 
 -- Alerts are OSSEC alerts
 CREATE TABLE IF NOT EXISTS `alert` (
-    `alert_id` INT NOT NULL AUTO_INCREMENT,
-    `alert_timestamp` TIMESTAMP,
-    `alert_string` VARCHAR(255),
-    `host_id` INT NOT NULL,
-    PRIMARY KEY  (`alert_id`),
-    KEY `host_id` (`host_id`)
+	`alert_id` INT NOT NULL AUTO_INCREMENT,
+	`alert_timestamp` TIMESTAMP,
+	`alert_string` VARCHAR(255),
+	`host_id` INT NOT NULL,
+	PRIMARY KEY  (`alert_id`),
+	KEY `host_id` (`host_id`)
 ) ENGINE = INNODB;
 
 -- API keys 
@@ -50,25 +50,25 @@ CREATE TABLE IF NOT EXISTS `article_x_vuln` (
 
 -- Darknet sensor
 CREATE TABLE IF NOT EXISTS `darknet` (
-    `id` INT NOT NULL AUTO_INCREMENT,
-    `src_ip` INT UNSIGNED NOT NULL,
-    `dst_ip` INT UNSIGNED NOT NULL,
-    `src_port` INT UNSIGNED NOT NULL,
-    `dst_port` INT UNSIGNED NOT NULL,
-    `proto` ENUM('tcp','udp','icmp'),
-    `received_at` TIMESTAMP,
-    PRIMARY KEY (`id`),
-    INDEX USING HASH (src_ip)
+	`id` INT NOT NULL AUTO_INCREMENT,
+	`src_ip` INT UNSIGNED NOT NULL,
+	`dst_ip` INT UNSIGNED NOT NULL,
+	`src_port` INT UNSIGNED NOT NULL,
+	`dst_port` INT UNSIGNED NOT NULL,
+	`proto` ENUM('tcp','udp','icmp'),
+	`received_at` TIMESTAMP,
+	PRIMARY KEY (`id`),
+	INDEX USING HASH (src_ip)
 ) ENGINE = INNODB;
 
 -- Form table is used for anti XSRF tokens
 CREATE TABLE IF NOT EXISTS `form` (
-    `form_id` INT NOT NULL AUTO_INCREMENT,
-    `form_name` VARCHAR(255) NOT NULL,
-    `form_token` VARCHAR(32) NOT NULL,
-    `form_ip` VARCHAR(15) NOT NULL,
-    `form_datetime` DATETIME NOT NULL,
-    PRIMARY KEY  (`form_id`)
+	`form_id` INT NOT NULL AUTO_INCREMENT,
+	`form_name` VARCHAR(255) NOT NULL,
+	`form_token` VARCHAR(32) NOT NULL,
+	`form_ip` VARCHAR(15) NOT NULL,
+	`form_datetime` DATETIME NOT NULL,
+	PRIMARY KEY  (`form_id`)
 ) ENGINE = INNODB;
 
 -- Hosts are IP based machines, the crux of the system
@@ -99,49 +99,49 @@ CREATE TABLE IF NOT EXISTS `host` (
 
 --  For end user notes about a host
 CREATE TABLE IF NOT EXISTS `hostnote` (
-    `hostnote_id` INT NOT NULL AUTO_INCREMENT,
-    `host_id` INT NOT NULL,
-    `hostnote_note` TEXT DEFAULT NULL,
+	`hostnote_id` INT NOT NULL AUTO_INCREMENT,
+	`host_id` INT NOT NULL,
+	`hostnote_note` TEXT DEFAULT NULL,
   PRIMARY KEY  (`hostnote_id`),
   KEY `host_id` (`host_id`)
 ) ENGINE = INNODB;
 
 -- Track alternative IP addresses and domain names
 CREATE TABLE IF NOT EXISTS `host_alts` (
-    `host_id` INT NOT NULL,
-    `host_alt_ip` varchar(15),
-    `host_alt_name` varchar(255),
+	`host_id` INT NOT NULL,
+	`host_alt_ip` varchar(15),
+	`host_alt_name` varchar(255),
   PRIMARY KEY  (`host_id`)
 ) ENGINE = INNODB;
 
 -- For grouping hosts (say, "HR Machines")
 CREATE TABLE IF NOT EXISTS `host_group` (
-    `host_group_id` INT NOT NULL AUTO_INCREMENT,
-    `host_group_name` VARCHAR(255) NOT NULL,
+	`host_group_id` INT NOT NULL AUTO_INCREMENT,
+	`host_group_name` VARCHAR(255) NOT NULL,
   PRIMARY KEY  (`host_group_id`)
 ) ENGINE = INNODB;
 
 -- Mapping table for hosts to groups
 CREATE TABLE IF NOT EXISTS `host_x_host_group` (
-    `host_group_id` INT NOT NULL,
-    `host_id` INT NOT NULL,
+	`host_group_id` INT NOT NULL,
+	`host_id` INT NOT NULL,
   KEY  (`host_group_id`),
   KEY `host_id` (`host_id`)
 ) ENGINE = INNODB;
 
 -- Free tagging of hosts
 CREATE TABLE IF NOT EXISTS `host_x_tag` (
-    `host_id` INT NOT NULL,
-    `tag_id` INT NOT NULL,
+	`host_id` INT NOT NULL,
+	`tag_id` INT NOT NULL,
   KEY `host_id` (`host_id`),
   KEY `tag_id` (`tag_id`)
 ) ENGINE = INNODB;
 
 -- Physical addresses for hosts
 CREATE TABLE IF NOT EXISTS `location` (
-    `location_id` INT NOT NULL AUTO_INCREMENT,
-    `location_name` VARCHAR(255) NOT NULL,
-    PRIMARY KEY (`location_id`)
+	`location_id` INT NOT NULL AUTO_INCREMENT,
+	`location_name` VARCHAR(255) NOT NULL,
+	PRIMARY KEY (`location_id`)
 );
 
 CREATE TABLE IF NOT EXISTS `koj_login_attempt` (
@@ -166,11 +166,11 @@ CREATE TABLE IF NOT EXISTS `koj_executed_command` (
 
 -- Log file table
 CREATE TABLE IF NOT EXISTS `log` (
-    `log_id` INT NOT NULL AUTO_INCREMENT,
-    `log_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `log_type` VARCHAR(255) DEFAULT NULL,
-    `log_message` text NOT NULL,
-    PRIMARY KEY (`log_id`)
+	`log_id` INT NOT NULL AUTO_INCREMENT,
+	`log_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`log_type` VARCHAR(255) DEFAULT NULL,
+	`log_message` text NOT NULL,
+	PRIMARY KEY (`log_id`)
 );
 
 CREATE TABLE IF NOT EXISTS `malware` (
@@ -189,24 +189,24 @@ CREATE TABLE IF NOT EXISTS `malware` (
 
 -- NMAP scan tracking table
 CREATE TABLE IF NOT EXISTS `nmap_scan` (
-    `nmap_scan_id` INT NOT NULL AUTO_INCREMENT,
-    `nmap_scan_datetime` DATETIME NOT NULL,
-    PRIMARY KEY (`nmap_scan_id`)
+	`nmap_scan_id` INT NOT NULL AUTO_INCREMENT,
+	`nmap_scan_datetime` DATETIME NOT NULL,
+	PRIMARY KEY (`nmap_scan_id`)
 ) ENGINE = INNODB;
 
 -- Results of NMAP scans
 CREATE TABLE IF NOT EXISTS `nmap_result` (
-    `nmap_result_id` INT NOT NULL AUTO_INCREMENT,
-    `host_id` INT NOT NULL,
+	`nmap_result_id` INT NOT NULL AUTO_INCREMENT,
+	`host_id` INT NOT NULL,
     `state_id` INT NOT NULL,
     `scan_id` INT NOT NULL,
-    `nmap_result_port_number` INT NOT NULL,
+	`nmap_result_port_number` INT NOT NULL,
     `nmap_result_protocol` varchar(4),
     `nmap_result_service_name` VARCHAR(50) NOT NULL,
     `nmap_result_service_version` VARCHAR(255) NOT NULL,
-    `nmap_result_is_new` INT NOT NULL DEFAULT 1,
-    `nmap_result_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`nmap_result_id`),
+	`nmap_result_is_new` INT NOT NULL DEFAULT 1,
+	`nmap_result_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (`nmap_result_id`),
   KEY `host_id` (`host_id`),
   KEY `nmap_result_port_number` (`nmap_result_port_number`),
   KEY `scan_id` (`scan_id`)
@@ -214,45 +214,45 @@ CREATE TABLE IF NOT EXISTS `nmap_result` (
 
 -- OSSEC alerts from clients
 CREATE TABLE IF NOT EXISTS `ossec_alert` (
-    `alert_id` INT NOT NULL AUTO_INCREMENT,
-    `alert_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `host_id` INT NOT NULL,
-    `alert_log` VARCHAR(255) DEFAULT NULL,
-    `rule_id` INT NOT NULL,
-    `rule_src_ip` VARCHAR(15) DEFAULT NULL,
-    `rule_src_ip_numeric` INT,
-    `rule_user` VARCHAR(20) DEFAULT NULL,
-    `rule_log` TEXT DEFAULT NULL,
-    `alert_ossec_id` VARCHAR(50) NOT NULL,
-    PRIMARY KEY (`alert_id`),
-    KEY `host_id` (`host_id`),
-    KEY `rule_id` (`rule_id`),
-    INDEX USING HASH (rule_src_ip_numeric),
+	`alert_id` INT NOT NULL AUTO_INCREMENT,
+	`alert_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`host_id` INT NOT NULL,
+	`alert_log` VARCHAR(255) DEFAULT NULL,
+	`rule_id` INT NOT NULL,
+	`rule_src_ip` VARCHAR(15) DEFAULT NULL,
+	`rule_src_ip_numeric` INT,
+	`rule_user` VARCHAR(20) DEFAULT NULL,
+	`rule_log` TEXT DEFAULT NULL,
+	`alert_ossec_id` VARCHAR(50) NOT NULL,
+	PRIMARY KEY (`alert_id`),
+	KEY `host_id` (`host_id`),
+	KEY `rule_id` (`rule_id`),
+	INDEX USING HASH (rule_src_ip_numeric),
   INDEX USING HASH (rule_id),
   INDEX USING HASH (host_id),
-    INDEX USING BTREE (alert_date)
+	INDEX USING BTREE (alert_date)
 ) ENGINE = INNODB;
 
 -- OSSEC rules (defined in the server)
 CREATE TABLE IF NOT EXISTS `ossec_rule` (
-    `rule_id` INT NOT NULL AUTO_INCREMENT,
-    `rule_number` INT NOT NULL,
-    `rule_level` INT NOT NULL,
-    `rule_message` VARCHAR(255) NOT NULL,
-    PRIMARY KEY (`rule_id`),
-    KEY `rule_number` (`rule_number`),
-    KEY `rule_level` (`rule_level`)
+	`rule_id` INT NOT NULL AUTO_INCREMENT,
+	`rule_number` INT NOT NULL,
+	`rule_level` INT NOT NULL,
+	`rule_message` VARCHAR(255) NOT NULL,
+	PRIMARY KEY (`rule_id`),
+	KEY `rule_number` (`rule_number`),
+	KEY `rule_level` (`rule_level`)
 );
 
 -- Table for regularly generated reports
 CREATE TABLE IF NOT EXISTS `report` (
-    `report_id` INT NOT NULL AUTO_INCREMENT,
-    `report_title` VARCHAR(255),
-    `report_filename` VARCHAR(255),
-    `report_daily` TINYINT(1) DEFAULT 0,
-    `report_weekly` TINYINT(1) DEFAULT 0,
-    `report_monthly` TINYINT(1) DEFAULT 0,
-    PRIMARY KEY (`report_id`)
+	`report_id` INT NOT NULL AUTO_INCREMENT,
+	`report_title` VARCHAR(255),
+	`report_filename` VARCHAR(255),
+	`report_daily` TINYINT(1) DEFAULT 0,
+	`report_weekly` TINYINT(1) DEFAULT 0,
+	`report_monthly` TINYINT(1) DEFAULT 0,
+	PRIMARY KEY (`report_id`)
 );
 
 -- RSS feed import table (for scheduling)
@@ -266,41 +266,41 @@ CREATE TABLE IF NOT EXISTS `rss` (
 
 -- Scans are a generic network poke for scheduling
 CREATE TABLE IF NOT EXISTS `scan` (
-    `scan_id` INT NOT NULL AUTO_INCREMENT,
-    `scan_type_id` INT NOT NULL,
-    `scan_name` VARCHAR(255),
-    `scan_daily` INT(1) DEFAULT 0,
-    `scan_dayofweek` INT DEFAULT 0,
-    `scan_dayofmonth` INT DEFAULT 0,
-    `scan_dayofyear` INT DEFAULT 0,
-    PRIMARY KEY (`scan_id`)
+	`scan_id` INT NOT NULL AUTO_INCREMENT,
+	`scan_type_id` INT NOT NULL,
+	`scan_name` VARCHAR(255),
+	`scan_daily` INT(1) DEFAULT 0,
+	`scan_dayofweek` INT DEFAULT 0,
+	`scan_dayofmonth` INT DEFAULT 0,
+	`scan_dayofyear` INT DEFAULT 0,
+	PRIMARY KEY (`scan_id`)
 ) ENGINE = INNODB;
 
 -- Scan process refers to the type of program to run (NMAP, Nikto, etc.)
 CREATE TABLE IF NOT EXISTS `scan_type` (
-    `scan_type_id` INT NOT NULL AUTO_INCREMENT,
-    `scan_type_name` VARCHAR(255) NOT NULL, -- Friendly name of the program
-    `scan_type_flags` VARCHAR(255) DEFAULT NULL,
-    `scan_type_script` VARCHAR(255) NOT NULL, -- Actual system path to the php controller
-    PRIMARY KEY (`scan_type_id`)
+	`scan_type_id` INT NOT NULL AUTO_INCREMENT,
+	`scan_type_name` VARCHAR(255) NOT NULL, -- Friendly name of the program
+	`scan_type_flags` VARCHAR(255) DEFAULT NULL,
+	`scan_type_script` VARCHAR(255) NOT NULL, -- Actual system path to the php controller
+	PRIMARY KEY (`scan_type_id`)
 ) ENGINE = INNODB;
 INSERT INTO `scan_type` SET `scan_type_name` = 'NMAP network scanner', 
-    `scan_type_id`=1, 
-    `scan_type_script`='nmap_scan.php' ON DUPLICATE KEY UPDATE `scan_type_id`=1;
+	`scan_type_id`=1, 
+	`scan_type_script`='nmap_scan.php' ON DUPLICATE KEY UPDATE `scan_type_id`=1;
 
 -- Map scans to host groups
 CREATE TABLE IF NOT EXISTS `scan_x_host_group` (
-    `host_group_id` INT NOT NULL,
-    `scan_id` INT NOT NULL,
+	`host_group_id` INT NOT NULL,
+	`scan_id` INT NOT NULL,
   KEY `host_group_id` (`host_group_id`),
   KEY `scan_id` (`scan_id`)
 ) ENGINE = INNODB;
 
 -- Port states (1=open, 2=closed, 3=filtered) but room for more
 CREATE TABLE IF NOT EXISTS `state` (
-    `state_id` INT NOT NULL AUTO_INCREMENT,
-    `state_state` VARCHAR(50),
-    PRIMARY KEY (`state_id`)
+	`state_id` INT NOT NULL AUTO_INCREMENT,
+	`state_state` VARCHAR(50),
+	PRIMARY KEY (`state_id`)
 );
 INSERT INTO `state` SET `state_id`=1, `state_state`='open' ON DUPLICATE KEY UPDATE `state_state` = 'open';
 INSERT INTO `state` SET `state_id`=2, `state_state`='closed' ON DUPLICATE KEY UPDATE `state_state` = 'closed';
@@ -312,9 +312,9 @@ INSERT INTO `state` SET `state_id`=5, `state_state`='other' ON DUPLICATE KEY UPD
 -- Support groups are entities composed of individuals that
 -- handle host support
 CREATE TABLE IF NOT EXISTS `supportgroup` (
-    `supportgroup_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `supportgroup_name` VARCHAR(255) NOT NULL,
-    `supportgroup_email` varchar(100) DEFAULT NULL, -- Distribution e-mail alias
+	`supportgroup_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`supportgroup_name` VARCHAR(255) NOT NULL,
+	`supportgroup_email` varchar(100) DEFAULT NULL, -- Distribution e-mail alias
   PRIMARY KEY  (`supportgroup_id`)
 ) ENGINE = INNODB;
 
@@ -337,25 +337,25 @@ CREATE TABLE IF NOT EXISTS `url` (
 
 -- Finally the user table
 CREATE TABLE IF NOT EXISTS `user` (
-    `user_id` INT NOT NULL AUTO_INCREMENT,
-    `user_name` VARCHAR(255) NOT NULL,
-    `user_pass` VARCHAR(255) NOT NULL,
-    `user_is_admin` INT(1) DEFAULT 0,
+	`user_id` INT NOT NULL AUTO_INCREMENT,
+	`user_name` VARCHAR(255) NOT NULL,
+	`user_pass` VARCHAR(255) NOT NULL,
+	`user_is_admin` INT(1) DEFAULT 0,
   PRIMARY KEY  (`user_id`),
   UNIQUE KEY `user_name` (`user_name`)
 ) ENGINE = INNODB;
 INSERT INTO `user` set `user_id`=1, 
-    `user_name`='administrator', 
-    `user_pass`='$1$afQP7QmR$4cRYamEz5Z7lyxpsRTow/1', -- just "password" 
-    `user_is_admin`=1 
-    ON DUPLICATE KEY UPDATE `user_id` = 1;
-    
+	`user_name`='administrator', 
+	`user_pass`='$1$afQP7QmR$4cRYamEz5Z7lyxpsRTow/1', -- just "password" 
+	`user_is_admin`=1 
+	ON DUPLICATE KEY UPDATE `user_id` = 1;
+	
 -- Map users to support groups
 CREATE TABLE IF NOT EXISTS `user_x_supportgroup` (
   `user_id` INT NOT NULL,
-  `supportgroup_id` INT NOT NULL,   
+  `supportgroup_id` INT NOT NULL,	
   KEY `user_id` (`user_id`),
-  KEY `supportgroup_id` (`supportgroup_id`)     
+  KEY `supportgroup_id` (`supportgroup_id`)		
 ) ENGINE = INNODB;
 
 -- Vulnerability classes
@@ -368,24 +368,22 @@ CREATE TABLE IF NOT EXISTS `vuln` (
   PRIMARY KEY (`vuln_id`)
 ) ENGINE = INNODB;
 
--- Vulnerabilities discovered
-CREATE TABLE IF NOT EXISTS `vuln_detail_x_host` (
-  `vuln_detail_id` INT UNSIGNED NOT NULL,
-  `host_id` INT UNSIGNED NOT NULL,  
-  KEY `vuln_detail_id` (`vuln_detail_id`),
-  KEY `host_id` (`host_id`)     
-) ENGINE = INNODB;
-
 -- Vulnerablities details
 CREATE TABLE IF NOT EXISTS `vuln_detail` (
   `vuln_detail_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `vuln_detail_text` text,
   `vuln_detail_datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `vuln_detail_ignore` int(1) NOT NULL DEFAULT '0',
+  `vuln_detail_ignore_datetime` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `vuln_detail_ignoredby_user_id` INT,
   `vuln_detail_fixed` int(1) NOT NULL DEFAULT '0',
-  `vuln_detail_fixed_datetime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `vuln_detail_fixed_datetime` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `vuln_detail_fixedby_user_id` INT,
   `vuln_detail_fixed_notes` text,
+  `host_id` INT UNSIGNED NOT NULL,  
   `vuln_id` INT UNSIGNED NOT NULL,
+  KEY `vuln_id` (`vuln_id`),
+  KEY `host_id` (`host_id`),
 PRIMARY KEY (`vuln_detail_id`)
 ) ENGINE = INNODB;
 

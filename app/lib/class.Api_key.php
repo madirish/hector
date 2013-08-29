@@ -236,7 +236,7 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
      * @return String The HTML display safe contact email of the key holder
 	 */
     public function get_holder_email() {
-		return htmlspecialchars($this->holder_email);
+		return filter_var($this->holder_email, FILTER_SANITIZE_EMAIL);
     }
 
 	/**
@@ -361,9 +361,15 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
      * @author Josh Bauer <joshbauer3@gmail.com>
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
      * @param String The email address of the key holder
+     * @return Boolean False if e-mail is invalid
      */
 	public function set_holder_email($holder_email) {
-    	$this->holder_email = $holder_email;
+		$retval = FALSE;
+		if (filter_var($holder_email, FILTER_VALIDATE_EMAIL)) {
+			$this->holder_email = $holder_email;
+			$retval = TRUE;
+		}
+    	return $retval;
     }
     
     /**

@@ -33,9 +33,22 @@ require_once('class.Maleable_Object.php');
  * @package HECTOR
  */
 class Api_key extends Maleable_Object implements Maleable_Object_Interface {
-
-
     // --- ATTRIBUTES ---
+    /**
+     * Instance of the Db
+     * 
+     * @access private
+     * @var Db An instance of the Db
+     */
+    private $db = null;
+    
+    /**
+     * Instance of the Log
+     * 
+     * @access private
+     * @var Log An instance of the Log
+     */
+    private $log = null;
 
     /**
      * Unique Id from the data layer

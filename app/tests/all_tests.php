@@ -16,6 +16,7 @@ require_once('class.Location.test.php');
 require_once('class.Log.test.php');
 require_once('class.Maleable_Object.test.php');
 require_once('class.Nmap_result.test.php');
+require_once('class.Scan.test.php');
 require_once('class.Supportgroup.test.php');
 require_once('class.Tag.test.php');
 require_once('class.Vuln.test.php');
@@ -40,6 +41,7 @@ class AllTests extends TestSuite {
         $this->add(new TestOfLogClass());
         $this->add(new TestOfMaleable_ObjectClass());
         $this->add(new TestOfNmap_resultClass());
+        $this->add(new TestOfScanClass());
         $this->add(new TestOfSupportgroupClass());
         $this->add(new TestOfTagClass());
         $this->add(new TestOfVulnClass());

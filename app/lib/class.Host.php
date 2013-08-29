@@ -377,21 +377,6 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 			}
 		}
 	}
-	
-	/**
-	 * Check the ip to make sure it doesn't contain
-	 * any illegal characters and is of the correct
-	 * format.
-	 *
-	 * @access private
-	 * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
-	 * @param IP address
-	 * @return boolean
-	 */
-	function check_ip($ip) {
-			if (! ip2long($ip)) return false;
-			else return true;
-	}
 
 	/**
 	 * This function is designed to avoid collisions
@@ -1420,13 +1405,16 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 * @access public
 	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @param  ip
-	 * @return void
+	 * @return Boolean False if the IP doesn't validate
 	 * @todo Validate the IP
 	 */
 	public function set_ip($ip) {
-		if ($this->check_ip($ip)) {			
+		$retval = FALSE;
+		if ($ip = filter_var($ip, FILTER_VALIDATE_IP)) {
 			$this->ip = $ip;
+			$retval = TRUE;
 		}
+		return $retval;
 	}
 		
 	/**
@@ -1435,10 +1423,15 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 * @access public
 	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @param  String $link
-	 * @return void
+	 * @return Boolean False if the link doesn't validate
 	 */
 	public function set_link($link) {
-		$this->link = $link;
+		$retval = FALSE;
+		if ($link = filter_var($link, FILTER_VALIDATE_URL)) {
+			$this->link = $link;
+			$retval = TRUE;
+		}
+		return $retval;
 	}
 	
 	/**

@@ -116,15 +116,15 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
      * @return Boolean True if the delete succeeds, False otherwise.
      */
     public function delete() {
+    	$retval = FALSE;
     	if ($this->id > 0 ) {
     		$sql=array('Delete FROM vuln WHERE vuln_id =?i',
     			$this->get_id()
     		);
     		$retval = $this->db->iud_sql($sql);
     		if ($retval) $this->id = null;
-    		return $retval;
     	}
-    	return false;
+    	return $retval;
     }
     
 	/**

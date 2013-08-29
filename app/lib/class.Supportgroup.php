@@ -34,24 +34,36 @@ require_once('class.Maleable_Object.php');
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  */
 class Supportgroup extends Maleable_Object implements Maleable_Object_Interface {
-    // --- ASSOCIATIONS ---
-
-
-    // --- ATTRIBUTES ---
+     // --- ATTRIBUTES ---
+    /**
+     * Instance of the Db
+     * 
+     * @access private
+     * @var Db An instance of the Db
+     */
+    private $db = null;
+    
+    /**
+     * Instance of the Log
+     * 
+     * @access private
+     * @var Log An instance of the Log
+     */
+    private $log = null;
 
     /**
      * Unique id
      *
      * @access protected
-     * @var int
+     * @var Int The unique ID from the data layer
      */
     protected $id = null;
 
 	/**
 	 * Name of the Support group
 	 * 
-   * @access private
-	 * @var String
+	 * @access private
+	 * @var String The name of the support group
 	 */
     private $name;
     
@@ -59,7 +71,7 @@ class Supportgroup extends Maleable_Object implements Maleable_Object_Interface 
      * The contact e-mail for the group
      * 
      * @access private
-     * @var String
+     * @var String The e-mail address for the support group
      */
     private $email;
 
@@ -71,7 +83,8 @@ class Supportgroup extends Maleable_Object implements Maleable_Object_Interface 
 	 * until get_host_ids method is called 
 	 * explicitly.
 	 * 
-	 * @var Array
+	 * @access public
+	 * @var Array Array of host_id's for the Supportgroup
 	 */
     public $host_ids = array();
 
@@ -86,20 +99,20 @@ class Supportgroup extends Maleable_Object implements Maleable_Object_Interface 
      * @return void
      */
     public function __construct($id = '') {
-			$this->db = Db::get_instance();
-			$this->log = Log::get_instance();
-			if ($id != '') {
-				$sql = array(
-					'SELECT * FROM supportgroup WHERE supportgroup_id = ?i',
-						$id
-				);
-				$result = $this->db->fetch_object_array($sql);
-				if (is_array($result) && isset($result[0])) {
-					$this->id = $result[0]->supportgroup_id;
-					$this->name = $result[0]->supportgroup_name;
-					$this->email = $result[0]->supportgroup_email;
-				}
+		$this->db = Db::get_instance();
+		$this->log = Log::get_instance();
+		if ($id != '') {
+			$sql = array(
+				'SELECT * FROM supportgroup WHERE supportgroup_id = ?i',
+					$id
+			);
+			$result = $this->db->fetch_object_array($sql);
+			if (is_array($result) && isset($result[0])) {
+				$this->set_id($result[0]->supportgroup_id);
+				$this->set_name($result[0]->supportgroup_name);
+				$this->set_emai($result[0]->supportgroup_email);
 			}
+		}
     }
 
 
@@ -108,25 +121,31 @@ class Supportgroup extends Maleable_Object implements Maleable_Object_Interface 
      *
      * @access public
      * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
-     * @return void
+     * @return Boolean False if something goes awry
      */
     public function delete() {
+    	$retval = FALSE;
     	if ($this->id > 0 ) {
     		// Delete an existing record
 	    	$sql = array(
 	    		'DELETE FROM supportgroup WHERE supportgroup_id = \'?i\'',
 	    		$this->get_id()
 	    	);
-	    	$this->db->iud_sql($sql);
+	    	$this->set_id(null);
+	    	$retval = $this->db->iud_sql($sql);
     	}
+    	return $retval;
     }
 
 	/**
 	 * This is a functional method designed to return
 	 * the form associated with altering a tag.
+	 * 
+	 * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return Array An array to suppor the standard CRUD template
 	 */
 	public function get_add_alter_form() {
-
 		return array (
 			array('label'=>'Support Group name',
 					'type'=>'text',
@@ -143,8 +162,10 @@ class Supportgroup extends Maleable_Object implements Maleable_Object_Interface 
 
     /**
      *  This function directly supports the Collection class.
-	 *
-	 * @return SQL select string
+	 * 
+	 * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+	 * @return String SQL select string
 	 */
 	public function get_collection_definition($filter = '', $orderby = '') {
 		$query_args = array();
@@ -167,6 +188,10 @@ class Supportgroup extends Maleable_Object implements Maleable_Object_Interface 
 	
 	/**
 	 * The method to return the HTML for the details on this specific host
+	 * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return String HTML for the display template
+     * @todo Move this HTML into a template and out of the class.
 	 */
 	public function get_details() {
 		$retval = '<table id="supportgroup_details">' . "\n";
@@ -175,13 +200,27 @@ class Supportgroup extends Maleable_Object implements Maleable_Object_Interface 
 		$retval .= '</table>';
 		return $retval;
 	}
-
+	
+	/**
+	 * Return the display array for the default display template.
+	 * 
+	 * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return String HTML for the display template
+	 */
 	public function get_displays() {
 		return array('Name'=>'get_name','Contact e-mail'=>'get_email');
 	}
-	
+		
+	/**
+	 * Return the support group e-mail
+	 * 
+	 * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return String The e-mail contact for the Supportgroup
+	 */
 	public function get_email() {
-		return htmlspecialchars($this->email);
+		return filter_var($this->email, FILTER_SANITIZE_EMAIL);
 	}
 	
 	/**
@@ -191,7 +230,7 @@ class Supportgroup extends Maleable_Object implements Maleable_Object_Interface 
 	 * 
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-	 * @return array of host id's
+	 * @return Array An array of host id's
 	 */
 	public function get_host_ids() {
 		$sql = array(
@@ -207,57 +246,89 @@ class Supportgroup extends Maleable_Object implements Maleable_Object_Interface 
 	    return $this->host_ids;
 	}
 
-    /**
-     * Short description of method get_id
-     *
-     * @access public
-     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @return int
-     */
-    public function get_id() {
-       return $this->id;
-    }
-
+	/**
+	 * Return the support group name
+	 * 
+	 * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return String The HTML display safe name of the Supportgroup
+	 */
     public function get_name() {
-			return $this->name; 
+			return htmlspecialchars($this->name); 
     }
-
-    public function save() {if ($this->id > 0 ) {
+    
+	/**
+	 * Persist the Supportgroup to the data layer
+	 * 
+	 * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return Boolean False if something goes awry
+	 */
+    public function save() {
+    	$retval = FALSE;
+    	if ($this->id > 0 ) {
     		// Update an existing user
 	    	$sql = array(
-	    		'UPDATE supportgroup SET supportgroup_name = \'?s\', supportgroup_email = \'?s\' WHERE supportgroup_id = \'?i\'',
+	    		'UPDATE supportgroup ' .
+	    			'SET supportgroup_name = \'?s\', ' .
+	    			'supportgroup_email = \'?s\' ' .
+	    			'WHERE supportgroup_id = \'?i\'',
 	    		$this->get_name(),
 	    		$this->get_email(),
 	    		$this->get_id()
 	    	);
-	    	$this->db->iud_sql($sql);
+	    	$retval = $this->db->iud_sql($sql);
     	}
     	else {
     		$sql = array(
-				'INSERT INTO supportgroup SET supportgroup_name = \'?s\', supportgroup_email = \'?s\'',
+				'INSERT INTO supportgroup ' .
+					'SET supportgroup_name = \'?s\', ' .
+					'supportgroup_email = \'?s\'',
     			$this->get_name(),
     			$this->get_email()
 	    	);
-	    	$this->db->iud_sql($sql);
+	    	$retval = $this->db->iud_sql($sql);
+	    	// Now set the id
+	    	$sql = 'SELECT LAST_INSERT_ID() AS last_id';
+	    	$result = $this->db->fetch_object_array($sql);
+	    	if (isset($result[0]) && $result[0]->last_id > 0) {
+	    		$this->set_id($result[0]->last_id);
+	    	}
     	}
+    	return $retval;
     }
-
+    
+	/**
+	 * Validate and set the Supportgroup e-mail
+	 * 
+	 * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @param String The e-mail address of the Supportgroup
+     * @return Boolean False if the address doesn't validate
+	 */
     public function set_email($email) {
+    	$retval = FALSE;
     	if(eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$", $email)) {
 			$this->email = $email;
+			$retval = TRUE;
     	}
 		else {
   			// Invalid e-mail address
   			$this->log->write_error('Illegal e-mail address specified, class.Supportgroup.php');
   			$this->email = '';
 		}
+		return $retval;
     }
 
+	/**
+	 * Set the name of the Supportgroup
+	 * 
+	 * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @param The name of the Supportgroup
+	 */
     public function set_name($name) {
-    	if ($name != '')
-    		$this->name = htmlspecialchars($name);
-    	elseif ($name == '')
-    		$this->name = '';
+    	$this->name = $name;
     }
 
 } /* end of class Supportgroup */

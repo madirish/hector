@@ -34,23 +34,36 @@ require_once('class.Maleable_Object.php');
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  */
 class Location extends Maleable_Object implements Maleable_Object_Interface {
-    // --- ASSOCIATIONS ---
-
-
     // --- ATTRIBUTES ---
-
+    /**
+     * Instance of the Db
+     * 
+     * @access private
+     * @var Db An instance of the Db
+     */
+    private $db = null;
+    
+    /**
+     * Instance of the Log
+     * 
+     * @access private
+     * @var Log An instance of the Log
+     */
+    private $log = null;
+    
     /**
      * Unique id
      *
      * @access private
-     * @var int
+     * @var Int Unique id from the data layer
      */
     protected $id = null;
 
 	/**
 	 * Location name
 	 * 
-	 * @var String
+	 * @access private
+	 * @var String Name of the location
 	 */
     private $name;
 
@@ -62,7 +75,8 @@ class Location extends Maleable_Object implements Maleable_Object_Interface {
 	 * until get_host_ids method is called 
 	 * explicitly.
 	 * 
-	 * @var Array
+	 * @access public
+	 * @var Array Array of host_ids for Hosts with this Location
 	 */
     public $host_ids = array();
 
@@ -73,11 +87,10 @@ class Location extends Maleable_Object implements Maleable_Object_Interface {
      *
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @param  int id
+     * @param  Int Optional unique ID of the location
      * @return void
      */
-    public function __construct($id = '')
-    {
+    public function __construct($id = '') {
         $this->db = Db::get_instance();
 		$this->log = Log::get_instance();
 		if ($id != '' && $id > 0) {
@@ -86,8 +99,8 @@ class Location extends Maleable_Object implements Maleable_Object_Interface {
 				$id
 			);
 			$result = $this->db->fetch_object_array($sql);
-			$this->id = $result[0]->location_id;
-			$this->name = $result[0]->location_name;
+			$this->set_id($result[0]->location_id);
+			$this->set_name($result[0]->location_name);
 		}
     }
 
@@ -97,22 +110,28 @@ class Location extends Maleable_Object implements Maleable_Object_Interface {
      *
      * @access public
      * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
-     * @return void
+     * @return Boolean False if something goes awry
      */
     public function delete() {
+    	$retval = FALSE;
     	if ($this->id > 0 ) {
     		// Delete an existing record
 	    	$sql = array(
 	    		'DELETE FROM location WHERE location_id = \'?i\'',
 	    		$this->get_id()
 	    	);
-	    	$this->db->iud_sql($sql);
+	    	$retval = $this->db->iud_sql($sql);
     	}
+    	return $retval;
     }
 
 	/**
 	 * This is a functional method designed to return
 	 * the form associated with altering a location.
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return Array Array for use with the default CRUD template.
 	 */
 	public function get_add_alter_form() {
 
@@ -128,7 +147,8 @@ class Location extends Maleable_Object implements Maleable_Object_Interface {
     /**
      *  This function directly supports the Collection class.
 	 *
-	 * @return SQL select string
+	 * @access public
+	 * @return String SQL select string
 	 */
 	public function get_collection_definition($filter = '', $orderby = '') {
 		$query_args = array();
@@ -151,6 +171,10 @@ class Location extends Maleable_Object implements Maleable_Object_Interface {
 	
 	/**
 	 * The method to return the HTML for the details on this specific host
+	 * 
+	 * @access public
+	 * @return String HTML for display in the template.
+	 * @todo Move this material to a template
 	 */
 	public function get_details() {
 		$retval = '<table id="location_details">' . "\n";
@@ -158,7 +182,14 @@ class Location extends Maleable_Object implements Maleable_Object_Interface {
 		$retval .= '</table>';
 		return $retval;
 	}
-
+	
+	/**
+	 * Get the generic displays for templates
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+	 * @return Array An array of display fields and lookup methods
+	 */
 	public function get_displays() {
 		return array('Name'=>'get_name');
 	}
@@ -170,7 +201,7 @@ class Location extends Maleable_Object implements Maleable_Object_Interface {
 	 * 
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-	 * @return array of host id's
+	 * @return Array An array of host id's
 	 */
 	public function get_host_ids() {
 		$sql = array(
@@ -186,34 +217,26 @@ class Location extends Maleable_Object implements Maleable_Object_Interface {
 	    return $this->host_ids;
 	}
 
-    /**
-     * Return the unique id
-     *
-     * @access public
-     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @return int
-     */
-    public function get_id() {
-       return $this->id;
-    }
-
 	/**
 	 * Return the name string
 	 * 
 	 * @access public
-	 * @return String
+	 * @return String HTML display safe Location name
 	 */
     public function get_name() {
-		return $this->name;
+		return htmlentities($this->name);
     }
 
-	/**
-	 * Save the object for persistence
-	 * 
+    /**
+     * Persist the object to the data layer. On the save of 
+     * a new record the id parameter is populated.
+     * 
 	 * @access public
-	 * @return void
-	 */
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return Boolean True if the save worked properly, false otherwise.
+     */
     public function save() {
+    	$retval = FALSE;
     	if ($this->id > 0 ) {
     		// Update an existing user
 	    	$sql = array(
@@ -221,22 +244,32 @@ class Location extends Maleable_Object implements Maleable_Object_Interface {
 	    		$this->get_name(),
 	    		$this->get_id()
 	    	);
-	    	$this->db->iud_sql($sql);
+	    	$retval = $this->db->iud_sql($sql);
     	}
     	else {
     		$sql = array(
 				'INSERT INTO location SET location_name = \'?s\'',
     			$this->get_name()
 	    	);
-	    	$this->db->iud_sql($sql);
+	    	$retval = $this->db->iud_sql($sql);
+	    	// Now set the id
+	    	$sql = 'SELECT LAST_INSERT_ID() AS last_id';
+	    	$result = $this->db->fetch_object_array($sql);
+	    	if (isset($result[0]) && $result[0]->last_id > 0) {
+	    		$this->set_id($result[0]->last_id);
+	    	}
     	}
+    	return $retval;
     }
 
+	/**
+	 * Set the name of the Location
+	 * 
+	 * @access public
+	 * @param String Name of the Location
+	 */
     public function set_name($name) {
-    	if ($name != '')
-    		$this->name = htmlspecialchars($name);
-    	elseif ($name == '')
-    		$this->name = '';
+    	$this->name = $name;
     }
 
 } /* end of class Location */

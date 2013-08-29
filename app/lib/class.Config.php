@@ -33,6 +33,10 @@ Class Config {
 	public function __construct($config='') {
 		
 		global $approot;
+		// Use defaults otherwise
+		if ($approot == '') {
+			$approot = '/opt/hector/app/';
+		}
 		$this->config_file = $approot . 'conf/config.ini';
 	
 		//allow the config file location to be overwritten

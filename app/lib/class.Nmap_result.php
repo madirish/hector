@@ -33,14 +33,28 @@ require_once('class.Log.php');
  * @package HECTOR
  */
 class Nmap_result {
-
     // --- ATTRIBUTES ---
+    /**
+     * Instance of the Db
+     * 
+     * @access private
+     * @var Db An instance of the Db
+     */
+    private $db = null;
+    
+    /**
+     * Instance of the Log
+     * 
+     * @access private
+     * @var Log An instance of the Log
+     */
+    private $log = null;
     
     /**
      * The internal id of the record
      *
      * @access private
-     * @var int
+     * @var Int The unique id from the data layer
      */
     private $id = 0;
     
@@ -53,14 +67,15 @@ class Nmap_result {
      * 5 = other
      *
      * @access private
-     * @var int
+     * @var Int The state of the port from the state table
      */
     private $state = null;
+    
     /**
      * The state id from the database
      *
      * @access private
-     * @var int
+     * @var Int The unique ID of the corresponding State
      */
     private $state_id = null;
     
@@ -68,7 +83,7 @@ class Nmap_result {
      * The port number of the scan
      *
      * @access private
-     * @var int
+     * @var Int The port number
      */
     private $port_number = null;
     
@@ -76,7 +91,7 @@ class Nmap_result {
      * tcp or udp
      * 
      * @access private
-     * @var string
+     * @var String TCP or UDP depending
      */
     private $protocol = null;
     
@@ -84,14 +99,15 @@ class Nmap_result {
      * The host record id
      * 
      * @access private
-     * @var int
+     * @var Int The unique id of the corresponding Host
      */
     private $host_id = null;
+    
     /**
      * The scan_id which should be a Unix timestamp
      * 
      * @access private
-     * @var int
+     * @var Int The scan_id which should be a Unix timestamp
      */
     private $scan_id = null;
     
@@ -99,7 +115,7 @@ class Nmap_result {
      * The name of the service running on the port
      * 
      * @access private
-     * @var String
+     * @var String The name of the port service
      */
     private $service_name = null;
     
@@ -107,7 +123,7 @@ class Nmap_result {
      * The version of the service running on the port
      * 
      * @access private
-     * @var String
+     * @var String The service version string from the scan
      */
     private $service_version = null;
     
@@ -115,7 +131,7 @@ class Nmap_result {
      * The timestamp when the port observation was made
      * 
      * @access private
-     * @var timestamp
+     * @var Timestamp The timestamp when the port observation was made
      */
     private $timestamp = null;
   
@@ -127,7 +143,7 @@ class Nmap_result {
      *
      * @access public
      * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
-     * @param  int id
+     * @param  Int The (optional) unique id of the Nmap_result
      * @return void
      */
     public function __construct($id = '') {
@@ -146,16 +162,16 @@ class Nmap_result {
 					print "Incorrect nmap_result constructor with id [" . $id . "]\n";
 				}
 				else {
-					$this->id = $result[0]->nmap_result_id;
-					$this->host_id = $result[0]->host_id;
-					$this->port_number = $result[0]->nmap_result_port_number;
-					$this->protocol = $result[0]->nmap_result_protocol;
-					$this->scan_id = $result[0]->scan_id;
-					$this->state_id = $result[0]->state_id;
+					$this->set_id($result[0]->nmap_result_id);
+					$this->set_host_id($result[0]->host_id);
+					$this->set_port_number($result[0]->nmap_result_port_number);
+					$this->set_protocol($result[0]->nmap_result_protocol);
+					$this->set_scan_id($result[0]->scan_id);
+					$this->set_state_id($result[0]->state_id);
 					$this->state = $result[0]->state_state;
-					$this->timestamp = $result[0]->nmap_result_timestamp;
-					$this->service_name = $result[0]->nmap_result_service_name;
-					$this->service_version = $result[0]->nmap_result_service_version;
+					$this->set_timestamp($result[0]->nmap_result_timestamp);
+					$this->set_service_name($result[0]->nmap_result_service_name);
+					$this->set_service_version($result[0]->nmap_result_service_version);
 				}
 				
 			}
@@ -166,17 +182,19 @@ class Nmap_result {
      *
      * @access public
      * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
-     * @return void
+     * @return Boolean False if something goes awry
      */
     public function delete() {
+    	$retval = FALSE;
     	if ($this->id > 0 ) {
     		// Delete an existing record
 	    	$sql = array(
 	    		'DELETE FROM nmap_result WHERE nmap_result_id = \'?i\'',
 	    		$this->get_id()
 	    	);
-	    	$this->db->iud_sql($sql);
+	    	$retval = $this->db->iud_sql($sql);
     	}
+    	return $retval;
     }
     
     /** 
@@ -184,7 +202,9 @@ class Nmap_result {
      * 
 	 * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-	 * @return SQL select string
+	 * @return String SQL select string
+	 * @param String The optional filter for the SQL WHERE clause
+	 * @param String The optional additions to the SQL ORDER BY clause
 	 */
 	public function get_collection_definition($filter = '', $orderby = '') {
 		$query_args = array();
@@ -203,35 +223,35 @@ class Nmap_result {
 		}
 		return $sql;
 	}
-
-    /**
-     * Get the unique id for this result.
-     *
-     * @access public
-     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @return int
-     */
-    public function get_id() {
-        return (int) $this->id;
-    }
     
      /**
      * Get the host_id to build or refer to a Host object
      *
      * @access public
      * @author Sam Oldak, <sam@oldaks.com>
-     * @return int
+     * @return Int The Host id associated with this scan
      */
     public function get_host_id() {
         return (int) $this->host_id;
     }
     
     /**
+     * Return the unique id from the data layer
+     *
+     * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return Int The unique id from the data layer.
+     */
+    public function get_id() {
+        return (int) $this->id;
+    } 
+    
+    /**
      * Get the structured table row to display this result
      *
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @return String
+     * @return String HTML for the standard display template.
      */
     public function get_details() {
     	$class = ($this->get_state() == "open") ? "open" : "closed";
@@ -251,7 +271,7 @@ class Nmap_result {
      *
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @return String
+     * @return String The actual state of the port.
      */
     public function get_state() {
     	return $this->state;
@@ -262,7 +282,7 @@ class Nmap_result {
      *
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @return int
+     * @return Int The unique ID of the state from the database
      */
     public function get_state_id() {
     	return $this->state_id;
@@ -273,10 +293,9 @@ class Nmap_result {
      *
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @return int
+     * @return Int The port number
      */
-    public function get_port_number()
-    {
+    public function get_port_number() {
         return (int) $this->port_number;
     }
     
@@ -285,7 +304,7 @@ class Nmap_result {
      * 
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @return String
+     * @return String The protocol of the port, defaults to TCP
      */
     public function get_protocol() {
     	if ($this->protocol == null) $this->protocol = 'tcp'; // default
@@ -297,7 +316,7 @@ class Nmap_result {
      *
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @return String
+     * @return Int The scan id as a Unix timestamp
      */
     public function get_scan_id() {
     	return $this->scan_id;
@@ -309,7 +328,7 @@ class Nmap_result {
      *
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @return String
+     * @return String The HTML safe service name for the port
      */
     public function get_service_name() {
        return htmlentities($this->service_name);
@@ -321,7 +340,7 @@ class Nmap_result {
      *
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @return String
+     * @return String The HTML safe version of the service
      */
     public function get_service_version() {
        return htmlentities($this->service_version);
@@ -332,22 +351,21 @@ class Nmap_result {
      *
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @return Datetime
+     * @return Datetime The timestamp of the scan.
      */
     public function get_timestamp() {
        return $this->timestamp;
     }
     
     /**
-     * Look up an existing scan result, or if one 
-     * cannot be found create a new one.
+     * Look up the latest result from an existing scan result.
      * 
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @return null
-     * @param int $host_id
-     * @param int $port_number
-     * @param String $protocol
+     * @return void
+     * @param Int The unique Host id
+     * @param Int The port number of interest
+     * @param String The protocol we're looking up
      */
     public function lookup_scan($host_id, $port_number, $protocol) {
     	$sql = array(
@@ -355,23 +373,24 @@ class Nmap_result {
 				'FROM nmap_result nsr, state s ' .
 				'WHERE s.state_id = nsr.state_id AND nsr.host_id = ?i ' .
 				'AND nsr.nmap_result_port_number = ?i ' .
-				'AND nsr.nmap_result_protocol = \'?s\'',
+				'AND nsr.nmap_result_protocol = \'?s\' ' .
+				'ORDER BY nsr.nmap_result_timestamp DESC LIMIT 1',
 				$host_id,
 				$port_number,
 				$protocol
 			);
 			$result = $this->db->fetch_object_array($sql);
 			if (isset($result[0]) && is_object($result[0])) {
-				$this->id = $result[0]->nmap_result_id;
-				$this->host_id = $result[0]->host_id;
-				$this->port_number = $result[0]->nmap_result_port_number;
-				$this->protocol = $result[0]->nmap_result_protocol;
-				$this->scan_id = $result[0]->scan_id;
-				$this->state_id = $result[0]->state_id;
-				$this->state = $result[0]->state_state;
-				$this->timestamp = $result[0]->nmap_result_timestamp;
-				$this->service_name = $result[0]->nmap_result_service_name;
-				$this->service_version = $result[0]->nmap_result_service_version;
+				$this->set_id($result[0]->nmap_result_id);
+				$this->set_host_id($result[0]->host_id);
+				$this->set_port_number($result[0]->nmap_result_port_number);
+				$this->set_protocol($result[0]->nmap_result_protocol);
+				$this->set_scan_id($result[0]->scan_id);
+				$this->set_state_id($result[0]->state_id);
+				$this->set_state = $result[0]->state_state;
+				$this->set_timestamp($result[0]->nmap_result_timestamp);
+				$this->set_service_name($result[0]->nmap_result_service_name);
+				$this->set_service_version($result[0]->nmap_result_service_version);
 			}
     }
 
@@ -385,57 +404,68 @@ class Nmap_result {
      * 
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @return boolean
+     * @return Boolean False if something goes awry
 	 */    
     public function save() {
-			if($this->host_id != NULL && $this->port_number != NULL && $this->state_id != NULL && $this->scan_id != NULL) {
-				// Clean out any old records for this port
-				$sql = array('DELETE from nmap_result where host_id = ?i and nmap_result_port_number = ?i',
-    					$this->host_id,
-    					$this->port_number);
-    		$this->db->iud_sql($sql);
-    		
-				if ($this->id != NULL ) {
-					$sql = array('UPDATE nmap_result set state_id=?i, ' .
-							' nmap_result_port_number=?i, nmap_result_protocol=\'?s\', host_id=?i, nmap_result_service_name=\'?s\', ' .
-							' nmap_result_service_version=\'?s\', nmap_result_timestamp=NOW(), ' .
-							' nmap_result_is_new=0, scan_id=?i ' .
-							' where nmap_result_id = ?i', 
+    	$retval = FALSE;
+		if($this->host_id != NULL && 
+			$this->port_number != NULL && 
+			$this->state_id != NULL && 
+			$this->scan_id != NULL) {
+			// Clean out any old records for this port
+			$sql = array('DELETE from nmap_result where host_id = ?i and nmap_result_port_number = ?i',
+					$this->host_id,
+					$this->port_number);
+			$this->db->iud_sql($sql);
+		
+			if ($this->id != NULL ) {
+				$sql = array('UPDATE nmap_result set state_id=?i, ' .
+						' nmap_result_port_number=?i, nmap_result_protocol=\'?s\', host_id=?i, nmap_result_service_name=\'?s\', ' .
+						' nmap_result_service_version=\'?s\', nmap_result_timestamp=NOW(), ' .
+						' nmap_result_is_new=0, scan_id=?i ' .
+						' where nmap_result_id = ?i', 
+						$this->state_id,
+						$this->port_number,
+						$this->protocol,
+						$this->host_id,
+						$this->service_name,
+						$this->service_version,
+						$this->scan_id,
+						$this->id
+						);
+				$retval = $this->db->iud_sql($sql);
+			}
+			else {
+				$sql = array('INSERT INTO nmap_result ' . 
+							'(state_id, nmap_result_port_number, nmap_result_protocol, host_id, nmap_result_service_name, ' .
+							'scan_id, nmap_result_service_version, nmap_result_timestamp) ' . 
+							' VALUES (?i, ?i, \'?s\', ?i, \'?s\', ?i, \'?s\', NOW())',
 							$this->state_id,
 							$this->port_number,
 							$this->protocol,
 							$this->host_id,
 							$this->service_name,
-							$this->service_version,
 							$this->scan_id,
-							$this->id
-							);
-				}
-				else {
-					$sql = array('INSERT INTO nmap_result ' . 
-								'(state_id, nmap_result_port_number, nmap_result_protocol, host_id, nmap_result_service_name, ' .
-								'scan_id, nmap_result_service_version, nmap_result_timestamp) ' . 
-								' VALUES (?i, ?i, \'?s\', ?i, \'?s\', ?i, \'?s\', NOW())',
-								$this->state_id,
-								$this->port_number,
-								$this->protocol,
-								$this->host_id,
-								$this->service_name,
-								$this->scan_id,
-								$this->service_version);
-				}
-				$this->db->iud_sql($sql);
+							$this->service_version);
+				$retval = $this->db->iud_sql($sql);
+				// Now set the id
+		    	$sql = 'SELECT LAST_INSERT_ID() AS last_id';
+		    	$result = $this->db->fetch_object_array($sql);
+		    	if (isset($result[0]) && $result[0]->last_id > 0) {
+		    		$this->set_id($result[0]->last_id);
+		    	}
 			}
-			else {
-				if ($this->scan_id == NULL) $this->log->write_error("Can't save nmap_result as scan_id is NULL");
-				if ($this->host_id == NULL) $this->log->write_error("Can't save nmap_result as host_id is NULL");
-				if ($this->port_number == NULL) $this->log->write_error("Can't save nmap_result as port_number is NULL");
-				if ($this->protocol == NULL) $this->log->write_error("Can't save nmap_result as protocol is NULL");
-				if ($this->state_id == NULL) {
-					$this->log->write_error("Can't save nmap_result as state_id is NULL");
-				}
-				return false;
+		}
+		else {
+			if ($this->scan_id == NULL) $this->log->write_error("Can't save nmap_result as scan_id is NULL");
+			if ($this->host_id == NULL) $this->log->write_error("Can't save nmap_result as host_id is NULL");
+			if ($this->port_number == NULL) $this->log->write_error("Can't save nmap_result as port_number is NULL");
+			if ($this->protocol == NULL) $this->log->write_error("Can't save nmap_result as protocol is NULL");
+			if ($this->state_id == NULL) {
+				$this->log->write_error("Can't save nmap_result as state_id is NULL");
 			}
+		}
+		return $retval;
     }
     
     /**
@@ -443,10 +473,17 @@ class Nmap_result {
      *
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @param int $number
+     * @param Int The port number
+     * @return Boolean False if something goes awry
      */
     public function set_port_number($number) {
-    	$this->port_number = intval($number);
+    	$retval = FALSE;
+    	$number = intval($number);
+    	if ($number > -1 && $number < 65536) {
+    		$this->port_number = intval($number);
+    		$retval = TRUE;
+    	}
+    	return $retval;
     }
     
     /**
@@ -454,12 +491,16 @@ class Nmap_result {
      *
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @param String $proto
+     * @param String The protocol ('tcp' or 'udp')
+     * @return Boolean False if something goes awry
      */
     public function set_protocol($proto) {
+    	$retval = FALSE;
     	if ($proto == 'tcp' || $proto == 'udp') {
     		$this->protocol = $proto;
+    		$retval = TRUE;
     	}
+    	return $retval;
     }
     
     /**
@@ -467,7 +508,7 @@ class Nmap_result {
      *
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @param int $id
+     * @param Int the unique id of the scan
      */
     public function set_scan_id($id) {
     	$this->scan_id = intval($id);
@@ -478,16 +519,18 @@ class Nmap_result {
      *
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @param int $state
+     * @param Int The unique id fo the state
+     * @return False if something goes awry (for instance, state_id > 5 or < 0)
      */
     public function set_state_id($state) {
+    	$retval = TRUE;
     	$state = intval($state);
     	// restrict to good values
-    	if ($state < 0 || $state > 5) return false;
+    	if ($state < 0 || $state > 5) $retval =  false;
     	else {
     		$this->state_id = $state;
     	}
-    	return true;
+    	return $retval;
     }
 
 	/**
@@ -495,7 +538,7 @@ class Nmap_result {
      *
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @param int $id
+     * @param Int The unique host id
 	 * @todo Check to make sure the host exists?
 	 */    
     public function set_host_id($id) {
@@ -507,7 +550,7 @@ class Nmap_result {
      *
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @param String $name
+     * @param String The name of the service
      */
     public function set_service_name($name) {
     	$this->service_name = $name;
@@ -518,7 +561,7 @@ class Nmap_result {
      *
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @param String $ver
+     * @param String The service version string
      */
     public function set_service_version($ver) {
     	$this->service_version = $ver;
@@ -534,6 +577,6 @@ class Nmap_result {
     	$this->timestamp = date( 'Y-m-d H:i:s' );
     }
 
-} /* end of class nmap_result */
+} /* end of class Nmap_result */
 
 ?>

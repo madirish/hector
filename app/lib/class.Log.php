@@ -23,47 +23,49 @@ Class Log {
 	/**
 	 * internal error tracking
 	 *
-	 * @var boolean
+	 * @var Boolean Whether there was an error
 	 */
 	private $error = FALSE;
 	/**
 	 * indicates a message for internal error tracking
 	 *
-	 * @var string
+	 * @var String Message string for internal errors
 	 */
 	private $message;
 
 	/**
 	 * Singleton implementation, contains Log()
 	 *
-	 * @var object
+	 * @var Log The singleton Log object.
 	 */
 	static private $instance = NULL;
 
 	/**
 	 * This variable contains the filesystem location of the error log.
 	 *
-	 * @var String
+	 * @var String The filesystem location of the error log
 	 */
 	private $error_log_location = '';
 
 	/**
 	 * This variable contains the filesystem location of the message log.
 	 *
-	 * @var String
+	 * @var String The filesystem location fo the message log
 	 */
 	private $message_log_location = '';
 
 	/**
 	 * This is the location on the filesystem of the config file
 	 *
-	 * @var String
+	 * @var String The filesystem location of the config file
 	 */
 	private $config_location = '';
 
 	/**
 	 * Open and provide the error and message logs, create them if necessary.
 	 *
+	 * @access private
+	 * @return void
 	 */
 	private function __construct() {
 		
@@ -85,6 +87,16 @@ Class Log {
 		$this->error = fopen($this->error_log_location, 'a') or die('The web server could not open the error log (permissions problem?).  Please contact a system administrator.');
 		$this->message = fopen($this->message_log_location, 'a') or die('The web server could not open the message log (permissions problem?).  Please contact a system administrator.');
 	}
+	
+	/**
+	 * Conan the Destructor
+	 * 
+	 * @access public
+	 * @return void
+	 */
+	public function __destruct() {
+		$this->close();
+	}
 
 	/**
 	 * Singleton interface
@@ -102,7 +114,9 @@ Class Log {
 	/**
 	 * Write an error to the log
 	 *
+	 * @access public
 	 * @param String The error message to write to the log
+	 * @return void
 	 */
 	public function write_error($err) {
 		$err = date('Y-m-d h:i:s') . "  ERROR: " .
@@ -167,6 +181,7 @@ Class Log {
 	 * Close the log files
 	 *
 	 * @access public
+	 * @return void
 	 */
 	public function close() {
 		fclose($this->error);
@@ -179,10 +194,11 @@ Class Log {
 	 * @return Boolean True on success or false if there is an error.
 	 */
 	public function archive_message_log() {
+		global $approot;
 		$file = $this->message_log_location;
 		$timestamp = time();
 		$zip_error_log_filename = 'message_log_' . $timestamp . '.gz';
-		if (! $zp = gzopen('logs/' . $zip_error_log_filename, "w9")) return false;
+		if (! $zp = gzopen($approot . 'logs/' . $zip_error_log_filename, "w9")) return false;
 		$contents = $this->return_message_log();
 		if (! gzwrite($zp,$contents)) return false;
 		if (! unlink($file)) return false;
@@ -196,10 +212,11 @@ Class Log {
 	 * @return Boolean True on success or false if there is an error.
 	 */
 	public function archive_error_log() {
+		global $approot;
 		$file = $this->error_log_location;
 		$timestamp = time();
 		$zip_error_log_filename = 'error_log_' . $timestamp . '.gz';
-		if (! $zp = gzopen('logs/' . $zip_error_log_filename, "w9")) return false;
+		if (! $zp = gzopen($approot . 'logs/' . $zip_error_log_filename, "w9")) return false;
 		$contents = $this->return_message_log();
 		if (! gzwrite($zp,$contents)) return false;
 		if (! unlink($file)) return false;

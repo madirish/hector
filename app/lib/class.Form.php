@@ -117,6 +117,17 @@ class Form {
 		$sql = 'DELETE FROM form WHERE form_datetime < DATE_SUB(NOW(), INTERVAL 20 MINUTE)';
 		return $this->db->iud_sql($sql);
     }
+
+    /**
+     * Return the unique id from the data layer
+     *
+     * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return Int The unique id from the data layer.
+     */
+    public function get_id() {
+        return (int) $this->id;
+    } 
 	
 	/**
 	 * Return the form name
@@ -175,6 +186,18 @@ class Form {
     		$this->set_id($result[0]->last_id);
     	}
     	return $retval;
+    }
+	
+    /**
+     * Set the object's unique id
+     *
+     * @access protected
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @param  int The unique id for hte object
+     * @return void
+     */
+    protected function set_id($id) {
+       $this->id = (int) $id;
     }
 
     /**

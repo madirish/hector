@@ -314,16 +314,16 @@ class Supportgroup extends Maleable_Object implements Maleable_Object_Interface 
 	 */
     public function set_email($email) {
     	$retval = FALSE;
-    	if(eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$", $email)) {
+		if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			$this->email = $email;
 			$retval = TRUE;
-    	}
+		}
 		else {
   			// Invalid e-mail address
   			$this->log->write_error('Illegal e-mail address specified, class.Supportgroup.php');
   			$this->email = '';
 		}
-		return $retval;
+    	return $retval;
     }
 
 	/**

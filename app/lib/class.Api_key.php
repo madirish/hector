@@ -285,9 +285,8 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
 	private function new_key_value() {
         $key = time();
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        for ($i = 0; $i < 12; $i++) 
-        {
-            $key.= $characters[rand(0, strlen($characters))];
+        for ($i = 0; $i < 12; $i++)  {
+            $key.= $characters[rand(0, strlen($characters)-1)];
         }
         return sha1($key); 
     }
@@ -319,13 +318,15 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
 	    	$retval = $this->db->iud_sql($sql);
     	}
     	else {
+    		// Set the internal key value
+    		$this->key_value = $this->new_key_value();
     		$sql = array(
 				'INSERT INTO api_key SET api_key_value = \'?s\', ' .
 					'api_key_resource = \'?s\', ' .
 					'api_key_holder_name = \'?s\', ' .
 					'api_key_holder_affiliation = \'?s\', ' .
 					'api_key_holder_email = \'?s\'',
-    			$this->new_key_value(),
+    			$this->key_value,
     			$this->get_key_resource(),
 	    		$this->get_holder_name(),
 	    		$this->get_holder_affiliation(),

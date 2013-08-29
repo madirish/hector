@@ -247,6 +247,14 @@ CREATE TABLE IF NOT EXISTS `report` (
 	PRIMARY KEY (`report_id`)
 );
 
+-- RSS feed import table (for scheduling)
+CREATE TABLE IF NOT EXISTS `rss` (
+  `rss_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `rss_name` varchar(255),
+  `rss_url` varchar(255) NOT NULL,
+  PRIMARY KEY (`rss_id`)
+) ENGINE = INNODB;
+
 -- Scans are a generic network poke for scheduling
 CREATE TABLE IF NOT EXISTS `scan` (
 	`scan_id` INT NOT NULL AUTO_INCREMENT,

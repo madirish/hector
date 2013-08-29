@@ -42,39 +42,90 @@ require_once('class.Host_group.php');
  * @package HECTOR
  */
 class Scan extends Maleable_Object implements Maleable_Object_Interface {
-    // --- ASSOCIATIONS ---
-
-
     // --- ATTRIBUTES ---
+    /**
+     * Instance of the Db
+     * 
+     * @access private
+     * @var Db An instance of the Db
+     */
+    private $db = null;
+    
+    /**
+     * Instance of the Log
+     * 
+     * @access private
+     * @var Log An instance of the Log
+     */
+    private $log = null;
+    
+    /**
+     * The name of the scan
+     * 
+     * @access private
+     * @var String The name of the scan
+     */
     private $name;
     
+    /**
+     * The scan type
+     * 
+     * @access private
+     * @var Scan_type The Scan_type for this scan
+     */
     private $type = null;
     
     /**
      * Id's of the host groups included in the scan
+     * 
+     * @access private
+     * @var Array An array of group_ids for this SCan
      */
     private $group_ids = array();
     
+    /**
+     * Whether or not this scan is scheduled daily
+     * 
+     * @access private
+     * @var Int One for a daily scan, zero otherwise
+     */
     private $daily = null; // 1 or 0
     
+    /**
+     * The day of the week for the scan
+     * 
+     * @access private
+     * @var Int Day of the week Int, 0 for no, 1=Sunday, 7=Saturday
+     */
     private $dayofweek = null; // 1-7, 0 for no
     
+    /**
+     * Day of the month to run the scan
+     * 
+     * @access private
+     * @var Int The day of the month, 1-32, 0 for no, to run the scan
+     */
     private $dayofmonth = null; // 1-32(?), 0 for no
     
+    /**
+     * The day of the year to run the scan
+     * 
+     * @access private
+     * @var Int The day of the year to run the scan, 0 for no or 1-365
+     */
     private $dayofyear = null; // 1-365(?), 0 for no
 
     // --- OPERATIONS ---
 
     /**
-     * Short description of method __construct
+     * Construct a new instance of the scan object.
      *
      * @access public
      * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
-     * @param  int id
+     * @param  Int The unique ID
      * @return void
      */
-    public function __construct($id = '')
-    {
+    public function __construct($id = '') {
 		$this->db = Db::get_instance();
 		$this->log = Log::get_instance();
 		if ($id != '') {
@@ -83,13 +134,13 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
 				$id
 			);
 			$result = $this->db->fetch_object_array($sql);
-			$this->id = $result[0]->scan_id;
-			$this->name = $result[0]->scan_name;
-			$this->daily = $result[0]->scan_daily;
-			$this->dayofweek = $result[0]->scan_dayofweek;
-			$this->dayofmonth = $result[0]->scan_dayofmonth;
-			$this->dayofyear = $result[0]->scan_dayofyear;
-			$this->type = new Scan_type($result[0]->scan_type_id);
+			$this->set_id($result[0]->scan_id);
+			$this->set_name($result[0]->scan_name);
+			$this->set_daily($result[0]->scan_daily);
+			$this->set_dayofweek($result[0]->scan_dayofweek);
+			$this->set_dayofmonth($result[0]->scan_dayofmonth);
+			$this->set_dayofyear($result[0]->scan_dayofyear);
+			$this->set_type(new Scan_type($result[0]->scan_type_id));
 			$sql = array(
 	    		'SELECT host_group_id from scan_x_host_group where scan_id = ?i',
 	    		$this->get_id()
@@ -108,19 +159,28 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
      *
      * @access public
      * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
-     * @return void
+     * @return Boolean False if something goes awry
      */
     public function delete() {
+    	$retval = FALSE;
     	if ($this->id > 0 ) {
     		// Delete an existing record
 	    	$sql = array(
 	    		'DELETE FROM scan WHERE scan_id = \'?i\'',
 	    		$this->get_id()
 	    	);
-	    	$this->db->iud_sql($sql);
+	    	$retval = $this->db->iud_sql($sql);
+	    	$this->set_id(null);
     	}
+    	return $retval;
     }
 	
+	/**
+	 * Get the Array for the CRUD template
+	 * 
+	 * @acces public
+	 * @return Array The Array for the CRUD template
+	 */
 	public function get_add_alter_form() {
 		// set up the displays
 		$hostgroups = array();
@@ -194,9 +254,13 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
 		);
 	}
     
-    /* This function directly supports the Collection class.
+    /**
+     * This function directly supports the Collection class.
 	 * 
-	 * @return SQL select string
+	 * @access public
+	 * @param String The filter string for the WHERE clause
+	 * @param String The ORDER BY clause for the SQL statement
+	 * @return String SQL select string
 	 */
 	public function get_collection_definition($filter = '', $orderby = '') {
 		$query_args = array();
@@ -214,6 +278,12 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
 		return $sql;
 	}
 	
+	/**
+	 * Get the Array for the display template
+	 * 
+	 * @access public
+	 * @return Array The array for the displays template
+	 */
 	public function get_displays() {
 		return array('Name'=>'get_name', 
 					'Scan type'=>'get_type_name', 
@@ -225,62 +295,143 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
 					);
 	}
     
+    /**
+     * Return whether or not this scan is daily
+     * 
+     * @access public
+     * @return Int Zero or one.
+     */
     public function get_daily() {
-    	return $this->daily;
+    	$retval = 0;
+    	if (intval($this->daily) == 1) {
+    		$retval = 1;
+    	}
+    	return $retval;
     }
     
+    /**
+     * Return the day of the month for the scan
+     * 
+     * @access public
+     * @return Int Zero to 32
+     */
     public function get_dayofmonth() {
-    	return $this->dayofmonth;
+    	$retval = 0;
+    	if (intval($this->dayofmonth) > 32) {
+    		$retval = 0;
+    	}
+    	else {
+    		$retval = intval($this->dayofmonth);
+    	}
+    	return $retval;
     }
     
+    /**
+     * Return the day of week for the scan
+     * 
+     * @access public
+     * @return Int From zero, for none, to 7
+     */
     public function get_dayofweek() {
-    	return $this->dayofweek;
+    	$retval = intval($this->dayofweek);
+    	if ($retval < 0 || $retval > 7) {
+    		$retval = 0;
+    	}
+    	return $retval;
     }
     
+    /**
+     * Return the day of the year
+     * 
+     * @access public
+     * @return Int From zero, for none, to 366
+     */
     public function get_dayofyear() {
-    	return $this->dayofyear;
+    	$retval = intval($this->dayofyear);
+    	if ($retval < 0 || $retval > 366) {
+    		$retval = 0;
+    	}
+    	return $retval;
     }
     
+    /**
+     * Return the string representation for whether or
+     * not we run this scan daily.
+     * 
+     * @access public
+     * @return String 'Yes' or ''
+     */
     public function get_friendly_daily() {
-			return ($this->daily > 0) ? "Yes" : "";
-		}
+		return ($this->daily > 0) ? "Yes" : "";
+	}
     
+    /**
+     * Return the friendly string representation of the dayofmonth
+     * 
+     * @access public
+     * @return String The dayofmonth
+     */
     public function get_friendly_dayofmonth() {
-			return ($this->dayofmonth > 0) ? $this->dayofmonth : "";
-		}
+		return ($this->dayofmonth > 0) ? $this->dayofmonth : "";
+	}
     
+    /**
+     * Return the friendly string representation of the dayofyear
+     * 
+     * @access public
+     * @return String The dayofmonth
+     */   
     public function get_friendly_dayofyear() {
-			return ($this->dayofyear > 0) ? $this->dayofyear : "";
-		}
+		return ($this->dayofyear > 0) ? $this->dayofyear : "";
+	}
     
+    /**
+     * Return the friendly string for the day of the week
+     * 
+     * @access public
+     * @return String The name of the day of the week.
+     */
     public function get_friendly_dayofweek() {
-			$days =  array("", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
-			return $days[$this->dayofweek];
-		}
+		$days =  array("", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
+		return $days[$this->dayofweek];
+	}
 		
-		/**
-		 * Allow flags to be set for specific scans, rather
-		 * than by scan types.  This way we can set up a 
-		 * generic scan type (say for web ports) and schedule
-		 * scans of various host groups.
-		 * 
-		 * @return Scan type name
-		 */
-		public function get_group_flags() {
-			$retval = '';
-			switch ($this->type->get_script()) {
-				case('nmap_scan.php'):
-					if (count($this->group_ids)>0) 
-						$retval = '-g=' . implode(',', $this->group_ids);
-					break;
-			}
-			return $retval;
+	/**
+	 * Allow flags to be set for specific scans, rather
+	 * than by scan types.  This way we can set up a 
+	 * generic scan type (say for web ports) and schedule
+	 * scans of various host groups.
+	 * 
+	 * @access public
+	 * @return String The flags for the scan for which groups
+	 */
+	public function get_group_flags() {
+		$retval = '';
+		switch ($this->type->get_script()) {
+			case('nmap_scan.php'):
+				if (count($this->group_ids)>0) 
+					$retval = '-g=' . implode(',', $this->group_ids);
+				break;
 		}
+		return $retval;
+	}
     
+    /**
+     * Return the ids of the groups on this scan
+     * 
+     * @access public
+     * @return Array Return the array of the group_ids for this scan
+     */
     public function get_group_ids() {
     	return $this->group_ids;
     }
 	
+	/**
+	 * Get the names for the host groups
+	 * 
+	 * @access public
+	 * @return String A comma separated list of host group names
+	 */
 	public function get_host_groups_readable() {
 		$retval = '';
 		if (is_array($this->group_ids)) {
@@ -293,24 +444,51 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
 		return $retval;
 	}
     
+    /**
+     * Get the name of the scan
+     * 
+     * @access public
+     * @return String The HTML display safe string
+     */
     public function get_name() {
-    	return $this->name;
+    	return htmlspecialchars($this->name);
     }
     
     /**
+     * Return the Scan_type
      * 
-     * @return Scan_type
+     * @access public
+     * @return Scan_type The Scan_type associated with this scan
      */
     public function get_type() {
-    	return $this->type;
+    	if (is_a($this->type, 'Scan_type')) {
+    		$retval = $this->type;
+    	}
+    	else {
+    		$retval = new Scan_type();
+    	}
+    	return $retval;
     }
     
+    /**
+     * Get the associate id for the Scan_type
+     * 
+     * @access public
+     * @return Int The unique ID for the Scan_type
+     */
     public function get_scan_type_id() {
     	$retval = 0;
     	if (isset($this->type) && is_object($this->type)) $retval = $this->type->get_id();
     	return $retval;
     }
     
+    /**
+     * Return the Type name for this Scan
+     * 
+     * 
+     * @access public
+     * @return String The name of the associated Scan.
+     */
     public function get_type_name() {
     	$retval = '';
     	if (is_object($this->get_type()))
@@ -318,7 +496,14 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
     	return $retval;
     }
     
+    /**
+     * Persist the object to the data layer.
+     * 
+     * @access public
+     * @return Boolean False if anything goes awry
+     */
     public function save() {
+    	$retval = FALSE;
     	if ($this->get_id() > 0 ) {
     		// Update an existing scan
 	    	$sql = array(
@@ -338,7 +523,7 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
 	    		$this->get_dayofyear(),
 	    		$this->get_id()
 	    	);
-	    	$this->db->iud_sql($sql);
+	    	$retval = $this->db->iud_sql($sql);
     	}
     	else {
     		// Insert a new value
@@ -357,7 +542,7 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
 	    		$this->get_dayofmonth(),
 	    		$this->get_dayofyear()
 	    	);
-	    	$this->db->iud_sql($sql);
+	    	$retval = $this->db->iud_sql($sql);
 	    	// Now set the id
 	    	$sql = array(
 	    		'SELECT scan_id FROM scan WHERE scan_name = \'?s\' AND ' .
@@ -386,32 +571,63 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
     		$sql = array('INSERT INTO scan_x_host_group SET scan_id = ?i, host_group_id = ?i', $this->get_id(), $id);
 			$this->db->iud_sql($sql);
     	}
+	    return $retval;
     }
     
+    /**
+     * Set whether or not this is a daily scan
+     * 
+     * @access public
+     * @param Int Is this a daily scan, 0=No, 1=Yes
+     */
     public function set_daily($int) {
     	$int = (int) $int;
     	if ($int != 1) $int = 0;
     	$this->daily = $int;
     }
     
+    /**
+     * Set what day of the month to scan on
+     * 
+     * @access public
+     * @param Int The day of the month to scan.
+     */
     public function set_dayofmonth($int) {
     	$int = (int) $int;
     	if ($int > 32 || $int < 1) $int = 0;
     	$this->dayofmonth = $int;
     }
     
+    /**
+     * The day of the week to scan.
+     * 
+     * @access public
+     * @param Int The day of the week (0-7) to scan, 0=No
+     */
     public function set_dayofweek($int) {
     	$int = (int) $int;
     	if ($int > 7 || $int < 1) $int = 0;
     	$this->dayofweek = $int;
     }
     
+    /**
+     * Set the day of the year for the scan
+     * 
+     * @access public
+     * @param Int The day of the year for the scan
+     */
     public function set_dayofyear($int) {
     	$int = (int) $int;
     	if ($int > 365 || $int < 1) $int = 0;
     	$this->dayofyear = $int;    	
     }
     
+    /**
+     * Set the group id's to scan
+     * 
+     * @access public
+     * @param Array An array of the group id's that should be scanned
+     */
     public function set_group_ids($ids) {
     	$retval = array();
     	if (is_array($ids)) {
@@ -423,14 +639,32 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
     	$this->group_ids = $retval;
     }
     
+    /**
+     * Set the name of this scan
+     * 
+     * @access public
+     * @param String The name of the scan.
+     */
     public function set_name($name) {
-    	$this->name = htmlspecialchars($name);
+    	$this->name = $name;
     }
     
+    /**
+     * Set the type of the scan
+     * 
+     * @access public
+     * @param Scan_type The Scan_type for this scan
+     */
     public function set_type(Scan_type $type) {
     	$this->type = $type;
     }
     
+    /**
+     * Set the type for the Scan
+     * 
+     * @access public
+     * @param Int The unique ID for the Scan_type
+     */
     public function set_type_by_id($id) {
     	$this->type = new Scan_type(intval($id));
     }

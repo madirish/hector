@@ -16,9 +16,9 @@ require_once('class.Log.test.php');
 require_once('class.Maleable_Object.test.php');
 require_once('class.Nmap_result.test.php');
 require_once('class.Tag.test.php');
+require_once('class.Vuln.test.php');
 
 $GLOBALS['approot'] = '/opt/hector/app/';
-
 
 class AllTests extends TestSuite {
     function __construct() {
@@ -38,6 +38,7 @@ class AllTests extends TestSuite {
         $this->add(new TestOfMaleable_ObjectClass());
         $this->add(new TestOfNmap_resultClass());
         $this->add(new TestOfTagClass());
+        $this->add(new TestOfVulnClass());
     }
 }
 ?>

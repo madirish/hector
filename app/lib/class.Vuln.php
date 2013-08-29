@@ -113,15 +113,18 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
      *
      * @access public
      * @author Josh Bauer <joshbauer3@gmail.com>
-     * @return void
+     * @return Boolean True if the delete succeeds, False otherwise.
      */
     public function delete() {
     	if ($this->id > 0 ) {
     		$sql=array('Delete FROM vuln WHERE vuln_id =?i',
     			$this->get_id()
     		);
-    		$this->db->iud_sql($sql);
+    		$retval = $this->db->iud_sql($sql);
+    		if ($retval) $this->id = null;
+    		return $retval;
     	}
+    	return false;
     }
     
 	/**
@@ -270,6 +273,7 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
      * @access public
      * @author Josh Bauer <joshbauer3@gmail.com>
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @return Boolean True if the save worked properly, false otherwise.
      */
     public function save() {
     	$sql = '';
@@ -288,6 +292,7 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
 	    		$this->get_osvdb(),
 	    		$this->get_id()
 	    	);
+	    	$retval = $this->db->iud_sql($sql);
     	}
     	else {
     		$sql = array(
@@ -301,8 +306,15 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
 	    		$this->get_cve(),
 	    		$this->get_osvdb()
 	    	);
+	    	$retval = $this->db->iud_sql($sql);
+	    	// Now set the id
+	    	$sql = 'SELECT LAST_INSERT_ID() AS last_id';
+	    	$result = $this->db->fetch_object_array($sql);
+	    	if (isset($result[0]) && $result[0]->last_id > 0) {
+	    		$this->id = $result[0]->last_id;
+	    	}
     	}
-    	if ($sql !== '') $this->db->iud_sql($sql);
+    	return $retval;
     }
     
     /**

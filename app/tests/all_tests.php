@@ -2,6 +2,7 @@
 require_once(dirname(__FILE__) . '/../software/simpletest/autorun.php');
 // Require each test file
 require_once('class_testfiles.php');
+require_once('class.Api_key.test.php');
 require_once('class.Alert.test.php');
 require_once('class.Collection.test.php');
 require_once('class.Config.test.php');
@@ -25,6 +26,7 @@ class AllTests extends TestSuite {
         parent::__construct();
         $this->add(new TestOfTestFiles());
         $this->add(new TestOfAlertClass());
+        $this->add(new TestOfApi_keyClass());
         $this->add(new TestOfCollectionClass());
         $this->add(new TestOfConfigClass());
         $this->add(new TestOfDbClass());

@@ -19,7 +19,7 @@ class TestOfAlertClass extends UnitTestCase {
   }
   
   function testAlertSave() {
-  	$this->assertNull($this->alert->get_id());
+  	$this->assertEqual($this->alert->get_id(), 0);
   	$this->alert->set_host_id(1);
   	$this->alert->set_string('Test string');
   	$this->assertTrue($this->alert->save());
@@ -64,6 +64,6 @@ class TestOfAlertClass extends UnitTestCase {
   	$id = $this->alert_id;
   	$this->alert->delete();
   	$secondAlert = new Alert($id);
-  	$this->assertNull($this->alert->get_id());
+  	$this->assertEqual($this->alert->get_id(), 0);
   }
 }

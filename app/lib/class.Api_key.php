@@ -410,9 +410,9 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
     public function validate($key) {
     	$retval = FALSE;
     	if ($key != '') {
-    		$sql=array('SELECT * FROM api_key WHERE api_key_value=\'?s\'',$key);
-    		$result=$this->db->fetch_object_array($sql);
-    		if (isset($result[0]) && is_int($result[0]->api_key_id)) {
+    		$sql=array('SELECT * FROM api_key WHERE api_key_value=\'?s\'',$key); 
+    		$result=$this->db->fetch_object_array($sql); 
+    		if (isset($result[0]) && intval($result[0]->api_key_id) !== 0) {
     			$retval = TRUE;
     		}
     	}

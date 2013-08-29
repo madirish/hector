@@ -3,6 +3,7 @@
  * HECTOR - class.Api_key.php
  *
  * @author Josh Bauer <joshbauer3@gmail.com>
+ * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * @package HECTOR
  */
  
@@ -24,13 +25,12 @@ require_once('interface.Maleable_Object_Interface.php');
 require_once('class.Maleable_Object.php');
 
 /**
- * API keys allow access to APIs'.
+ * API keys allow access to export feeds
  *
  * @access public
  * @author Josh Bauer <joshbauer3@gmail.com>
+ * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * @package HECTOR
- * @todo Document this class
- * @todo Update so that filtering happens on getters not setters
  */
 class Api_key extends Maleable_Object implements Maleable_Object_Interface {
 
@@ -38,45 +38,46 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
     // --- ATTRIBUTES ---
 
     /**
-     * Short description of attribute id
+     * Unique Id from the data layer
      *
-     * @access private
-     * @var int
+     * @access protected
+     * @var Int Unique ID from the data layer
      */
     protected $id = null;
 
 	/**
 	 * Key resource
 	 * 
-	 * @var String
+	 * @access private
+	 * @var String The resource URL this key protects
 	 */
 	private $key_resource;
 	
 	/**
 	 * Holder name
 	 * 
-	 * @var String
+	 * @var String The name of the principle the key was assigned to
 	 */
     private $holder_name;
     
     /**
 	 * Holder affiliation
 	 * 
-	 * @var String
+	 * @var String The holder's affiliation
 	 */
 	private $holder_affiliation;
 	
 	/**
 	 * Holder email
 	 * 
-	 * @var String
+	 * @var String The email address to contact holder of the key
 	 */
 	private $holder_email;
 	
 	/**
 	 * Key value
 	 * 
-	 * @var String
+	 * @var String The hash value of the key
 	 */
 	private $key_value;
 
@@ -84,10 +85,11 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
     // --- OPERATIONS ---
 
     /**
-     * Short description of method __construct
+     * Create a new instance of the Api_key
      *
      * @access public
      * @author Josh Bauer <joshbauer3@gmail.com>
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
      * @param  int id
      * @return void
      */
@@ -101,12 +103,14 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
 				$id
 			);
 			$result = $this->db->fetch_object_array($sql);
-			$this->id = $result[0]->api_key_id;
-			$this->key_value = $result[0]->api_key_value;
-			$this->key_resource = $result[0]->api_key_resource;
-			$this->holder_name = $result[0]->api_key_holder_name;
-			$this->holder_affiliation = $result[0]->api_key_holder_affiliation;
-			$this->holder_email = $result[0]->api_key_holder_email;
+			if (isset($result[0])) { // Ensure the id is valid
+				$this->set_id($result[0]->api_key_id);
+				$this->set_key_value($result[0]->api_key_value);
+				$this->set_key_resource($result[0]->api_key_resource);
+				$this->set_holder_name($result[0]->api_key_holder_name);
+				$this->set_holder_affiliation($result[0]->api_key_holder_affiliation);
+				$this->set_holder_email($result[0]->api_key_holder_email);
+			}
 			
 		}
     }
@@ -116,20 +120,28 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
      *
      * @access public
      * @author Josh Bauer <joshbauer3@gmail.com>
-     * @return void
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @return Boolean False if something goes awry
      */
     public function delete() {
+    	$retval = FALSE;
     	if ($this->id > 0 ) {
     		$sql=array('Delete FROM api_key WHERE api_key_id =?i',
     			$this->get_id()
     		);
-    		$this->db->iud_sql($sql);
+    		$retval = $this->db->iud_sql($sql);
     	}
+    	return $retval;
     }
     
 	/**
 	 * This is a functional method designed to return
 	 * the form associated with altering api_key information.
+	 * 
+	 * @access public
+     * @author Josh Bauer <joshbauer3@gmail.com>
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return Array The Array for supporting default CRUD template
 	 */
 	public function get_add_alter_form() {
 
@@ -160,7 +172,10 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
     /**
      *  This function directly supports the Collection class.
 	 *
-	 * @return SQL select string
+	 * @access public
+     * @author Josh Bauer <joshbauer3@gmail.com>
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return String SQL select string to build the Collection
 	 */
 	public function get_collection_definition($filter = '', $orderby = '') {
 		$query_args = array();
@@ -181,6 +196,15 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
 		return $sql;
 	}
 
+	/**
+	 * Get the displays for default overview template
+	 * 
+	 * 
+	 * @access public
+     * @author Josh Bauer <joshbauer3@gmail.com>
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @return Array The array for default overview template
+	 */
 	public function get_displays() {
 		return array('Id'=>'get_id',
 			'Value'=>'get_key_value',
@@ -191,32 +215,74 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
 		);
 	}
 
+	/**
+	 * Get the holder affiliation
+	 * 
+	 * @access public
+     * @author Josh Bauer <joshbauer3@gmail.com>
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @return String The HTML display safe affiliation of the key holder
+	 */
 	public function get_holder_affiliation() {
-		return $this->holder_affiliation;
+		return htmlspecialchars($this->holder_affiliation);
     }
-    
+
+	/**
+	 * Get the holder email
+	 * 
+	 * @access public
+     * @author Josh Bauer <joshbauer3@gmail.com>
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @return String The HTML display safe contact email of the key holder
+	 */
     public function get_holder_email() {
-		return $this->holder_email;
+		return htmlspecialchars($this->holder_email);
     }
-    
+
+	/**
+	 * Get the holder name
+	 * 
+	 * @access public
+     * @author Josh Bauer <joshbauer3@gmail.com>
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @return String The HTML display safe name of the key holder
+	 */
     public function get_holder_name() {
-		return $this->holder_name;
+		return htmlspecialchars($this->holder_name);
     }
-    
-    public function get_id()
-    {
-       return $this->id;
-    }
-      
+
+	/**
+	 * Get the resource to which this key allows access
+	 * 
+	 * @access public
+     * @author Josh Bauer <joshbauer3@gmail.com>
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @return String The HTML display safe resource this key grants access to
+	 */
     public function get_key_resource() {
-		return $this->key_resource;
+		return htmlspecialchars($this->key_resource);
     }
-    
+
+	/**
+	 * Get the actual key
+	 * 
+	 * @access public
+     * @author Josh Bauer <joshbauer3@gmail.com>
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @return String The HTML display safe key value
+	 */
     public function get_key_value() {
-		return $this->key_value;
+		return htmlspecialchars($this->key_value);
     }
-    
-	public function new_key_value() {
+
+	/**
+	 * Generate a new key
+	 * 
+	 * @access private
+     * @author Josh Bauer <joshbauer3@gmail.com>
+     * @return String The SHA1 hash value of the new key
+	 */
+	private function new_key_value() {
         $key = time();
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         for ($i = 0; $i < 12; $i++) 
@@ -225,68 +291,125 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
         }
         return sha1($key); 
     }
-    
-    public function save() {if ($this->id > 0 ) {
+
+	/**
+	 * Persist the Api_key to the database
+	 * 
+	 * @access public
+     * @author Josh Bauer <joshbauer3@gmail.com>
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @return Boolean False if something goes awry
+	 */
+    public function save() {
+    	$retval = FALSE;
+    	if ($this->id > 0 ) {
     		// Update an existing api key
 	    	$sql = array(
-	    		'UPDATE api_key SET api_key_resource = \'?s\', api_key_holder_name = \'?s\', api_key_holder_affiliation = \'?s\', api_key_holder_email = \'?s\' WHERE api_key_id = \'?i\'',
+	    		'UPDATE api_key SET api_key_resource = \'?s\', ' .
+	    			'api_key_holder_name = \'?s\', ' .
+	    			'api_key_holder_affiliation = \'?s\', ' .
+	    			'api_key_holder_email = \'?s\' ' .
+	    		'WHERE api_key_id = \'?i\'',
 	    		$this->get_key_resource(),
 	    		$this->get_holder_name(),
 	    		$this->get_holder_affiliation(),
 	    		$this->get_holder_email(),
 	    		$this->get_id()
 	    	);
-	    	$this->db->iud_sql($sql);
+	    	$retval = $this->db->iud_sql($sql);
     	}
     	else {
     		$sql = array(
-				'INSERT INTO api_key SET api_key_value = \'?s\', api_key_resource = \'?s\', api_key_holder_name = \'?s\', api_key_holder_affiliation = \'?s\', api_key_holder_email = \'?s\'',
+				'INSERT INTO api_key SET api_key_value = \'?s\', ' .
+					'api_key_resource = \'?s\', ' .
+					'api_key_holder_name = \'?s\', ' .
+					'api_key_holder_affiliation = \'?s\', ' .
+					'api_key_holder_email = \'?s\'',
     			$this->new_key_value(),
     			$this->get_key_resource(),
 	    		$this->get_holder_name(),
 	    		$this->get_holder_affiliation(),
 	    		$this->get_holder_email()
 	    	);
-	    	$this->db->iud_sql($sql);
+	    	$retval = $this->db->iud_sql($sql);
+	    	// Now set the id
+	    	$sql = 'SELECT LAST_INSERT_ID() AS last_id';
+	    	$result = $this->db->fetch_object_array($sql);
+	    	if (isset($result[0]) && $result[0]->last_id > 0) {
+	    		$this->set_id($result[0]->last_id);
+	    	}
     	}
+    	return $retval;
     }
     
+    /**
+     * Set the key holder affiliation
+	 * 
+	 * @access public
+     * @author Josh Bauer <joshbauer3@gmail.com>
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @param String The affiliation of the key holder
+     */
 	public function set_holder_affiliation($holder_affiliation) {
-    	if ($holder_affiliation != '')
-    		$this->holder_affiliation = htmlspecialchars($holder_affiliation);
-    	elseif ($holder_affiliation == '')
-    		$this->holder_affiliation = '';
+    	$this->holder_affiliation = $holder_affiliation;
     }
     
-     public function set_holder_email($holder_email) {
-    	if ($holder_email != '')
-    		$this->holder_email = htmlspecialchars($holder_email);
-    	elseif ($holder_email == '')
-    		$this->holder_email = '';
+    /**
+     * Set the key holder email
+	 * 
+	 * @access public
+     * @author Josh Bauer <joshbauer3@gmail.com>
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @param String The email address of the key holder
+     */
+	public function set_holder_email($holder_email) {
+    	$this->holder_email = $holder_email;
     }
     
+    /**
+     * Set the key holder name
+	 * 
+	 * @access public
+     * @author Josh Bauer <joshbauer3@gmail.com>
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @param String The name of the key holder
+     */
     public function set_holder_name($holder_name) {
-    	if ($holder_name != '')
-    		$this->holder_name = htmlspecialchars($holder_name);
-    	elseif ($holder_name == '')
-    		$this->holder_name = '';
+    		$this->holder_name = $holder_name;
     }
     
-     public function set_key_resource($key_resource) {
-    	if ($key_resource != '')
-    		$this->key_resource = htmlspecialchars($key_resource);
-    	elseif ($key_resource == '')
-    		$this->key_resource = '';
+    /**
+     * Set the key resource
+	 * 
+	 * @access public
+     * @author Josh Bauer <joshbauer3@gmail.com>
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @param String The resource to which the key applies
+     */
+    public function set_key_resource($key_resource) {
+    	$this->key_resource = $key_resource;
     }
     
-     public function validate($key) {
-    	if ($key != '')
-    	{
+    /**
+     * Validate the key
+	 * 
+	 * @access public
+     * @author Josh Bauer <joshbauer3@gmail.com>
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @param String The key value
+     * @return Boolean True if the key validates, False otherwise.
+     * @todo Validate the resource as a second parameter
+     */
+    public function validate($key) {
+    	$retval = FALSE;
+    	if ($key != '') {
     		$sql=array('SELECT * FROM api_key WHERE api_key_value=\'?s\'',$key);
     		$result=$this->db->fetch_object_array($sql);
-    		if($result) return true;
+    		if (isset($result[0]) && is_int($result[0]->api_key_id)) {
+    			$retval = TRUE;
+    		}
     	}
-    	return false;
+    	return $retval;
     }
 
 } /* end of class Api_key */

@@ -131,8 +131,14 @@ class Supportgroup extends Maleable_Object implements Maleable_Object_Interface 
 	    		'DELETE FROM supportgroup WHERE supportgroup_id = \'?i\'',
 	    		$this->get_id()
 	    	);
+	    	if($retval = $this->db->iud_sql($sql)) {
+		    	$sql = array(
+		    		'DELETE FROM user_x_supportgroup WHERE supportgroup_id = \'?i\'',
+		    		$this->get_id()
+		    	);
+		    	$retval = $this->db->iud_sql($sql);
+	    	}
 	    	$this->set_id(null);
-	    	$retval = $this->db->iud_sql($sql);
     	}
     	return $retval;
     }

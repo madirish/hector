@@ -43,12 +43,27 @@ require_once('class.Maleable_Object.php');
  */
 class Host_group extends Maleable_Object implements Maleable_Object_Interface {
     // --- ATTRIBUTES ---
+    /**
+     * Instance of the Db
+     * 
+     * @access private
+     * @var Db An instance of the Db
+     */
+    private $db = null;
+    
+    /**
+     * Instance of the Log
+     * 
+     * @access private
+     * @var Log An instance of the Log
+     */
+    private $log = null;
 
     /**
      * Unique id for the group from the database
      *
-     * @access private
-     * @var int
+     * @access protected
+     * @var Int	The unique ID
      */
 	protected $id = null;
 	
@@ -56,7 +71,7 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
      * Name for the group
      *
      * @access private
-     * @var String
+     * @var String The name of the Host_group
      */
     private $name = null;
 
@@ -68,11 +83,10 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
      *
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @param  int id
+     * @param  Int The Host_group id, or none for a blank object
      * @return void
      */
-    public function __construct($id = '')
-    {
+    public function __construct($id = '') {
         $this->db = Db::get_instance();
 		$this->log = Log::get_instance();
 		if ($id != '') {
@@ -91,19 +105,19 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
      * 
      * @access public
      * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
-     * @param Host id
-     * @return boolean
+     * @param Int The Host unique id
+     * @return Boolen False if something goes wrong
      */
     public function add_host_to_group($host_id) {
     	$host_id = intval($host_id);
     	$retval = FALSE;
-    	if ($host_id > 0) {
+    	if ($host_id != 0 ) {
     		$sql = array(
     				'INSERT INTO host_x_host_group ' .
     				'set host_group_id = \'?i\', host_id = \'?i\'',
     				$this->id,
     				$host_id);
-    		if ($this->db->iud_sql($sql)) $retval = TRUE;
+    		$retval = $this->db->iud_sql($sql);
     	}
     	return $retval;
     }
@@ -113,23 +127,25 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
      *
      * @access public
      * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
-     * @return void
+     * @return Boolean FALSE if something goes awry
      */
     public function delete() {
+    	$retval = FALSE;
     	if ($this->id > 0 ) {
     		// Delete an existing record
 	    	$sql = array(
 	    		'DELETE FROM host_group WHERE host_group_id = \'?i\'',
 	    		$this->get_id()
 	    	);
-	    	$this->db->iud_sql($sql);
+	    	$retval = $this->db->iud_sql($sql);
 	    	// Remove old mappings
 	    	$sql = array(
 	    		'DELETE FROM host_x_host_group WHERE host_group_id = \'?i\'',
 	    		$this->get_id()
 	    	);
-	    	$this->db->iud_sql($sql);
+	    	$retval = $this->db->iud_sql($sql);
     	}
+    	return $retval;
     }
     
     /**
@@ -137,13 +153,13 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
      * 
      * @access public
      * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
-     * @param Host id
-     * @return boolean
+     * @param Int The Host id
+     * @return Boolean False if soemthing goes wrong.
      */
     public function delete_host_from_group($host_id) {
     	$host_id = intval($host_id);
     	$retval = FALSE;
-    	if ($host_id > 0) {
+    	if ($host_id != 0) {
     		$sql = array(
     				'DELETE FROM host_x_host_group ' .
     				'WHERE host_group_id = \'?i\' AND host_id = \'?i\'',
@@ -158,7 +174,9 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
 	 * Generate the HTML for the form used to add or 
 	 * edit a host group.
 	 * 
+     * @access public
 	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @return Array Array used to populate the default CRUD form
 	 */
 	public function get_add_alter_form() {
 		// get the host groups array
@@ -198,19 +216,24 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
 	}
 	
 	/**
+	 * This method supports the get_add_alter_form method.
+	 * 
 	 * Applying the host_group to all hosts should only
 	 * be done on add/edit, default to this query should
 	 * always be 'no'.
 	 * 
 	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @access private
+	 * @return Int Zero
 	 */
-	public function get_applytoall() {
+	private function get_applytoall() {
 		return 0;
 	}
 
     /**
      * This function directly supports the Collection class.
 	 *
+     * @access public
 	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @return String The SQL select string
 	 */
@@ -238,6 +261,7 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
 	 * 
 	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @access public
+	 * @return Array Display details for the default template
 	 */
 	public function get_displays() {
 		return array('Group name'=>'get_name');
@@ -258,21 +282,10 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
 				$this->id);
 			$result = $this->db->fetch_object_array($sql);
 			if (is_array($result)) {
-				foreach($result as $record) $retval[] = $record->host_id;
+				foreach($result as $record) $retval[] = intval($record->host_id);
 			}
 		}
 		return $retval;
-	}
-	
-	/**
-	 * Return the unique id for this object.
-	 * 
-	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-	 * @access public
-	 * @return Int The integer identifier of this object
-	 */
-	public function get_id() {
-		return $this->id;
 	}
 
 	/**
@@ -291,39 +304,49 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
      * 
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
      * @access public
+     * @return Boolean False if something goes wrong.
      */
     public function save() {
-    	if ($this->id > 0 ) {
+    	$retval = FALSE;
+    	if ($this->get_id() > 0 ) {
     		// Update an existing user
 	    	$sql = array(
 	    		'UPDATE host_group SET host_group_name = \'?s\' WHERE host_group_id = \'?i\'',
-	    		$this->name,
-	    		$this->id
+	    		$this->get_name(),
+	    		$this->get_id()
 	    	);
-	    	$this->db->iud_sql($sql);
+	    	$retval = $this->db->iud_sql($sql);
     	}
     	else {
     		// Check if the name exists
     		$sql = array(
 				'select host_group_id from host_group where host_group_name = \'?s\'',
-				$this->name
+				$this->get_name(),
 			);
 			$result = $this->db->fetch_object_array($sql);
 			if (isset($result[0]->host_group_id)) {
 				$this->id = $result[0]->host_group_id;
+				$this->log->write_message('Attempt to add duplicate host_group: ' . $this->get_name());
+				// Return true but don't actually add the new group
+				$retval = TRUE;
 			}
 			else {
 	    		// Insert a new value
 		    	$sql = array(
 		    		'INSERT INTO host_group SET host_group_name = \'?s\'',
-		    		$this->name
+		    		$this->get_name(),
 		    	);
-		    	$this->db->iud_sql($sql);
+		    	$retval = $this->db->iud_sql($sql);
 		    	// Now set the id
-		    	$this->id = mysql_insert_id();
+		    	$sql = 'SELECT LAST_INSERT_ID() AS last_id';
+		    	$result = $this->db->fetch_object_array($sql);
+		    	if (isset($result[0]) && $result[0]->last_id > 0) {
+		    		$this->set_id($result[0]->last_id);
+		    	}
 		    	$this->log->write_message('Added new host group: ' . $this->get_name());	
 			}
     	}
+		return $retval;
     }
     
     /**
@@ -332,9 +355,12 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
      * 
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
      * @access public
+     * @param Int Non-zero indicates apply to all
+     * @return Boolean False if something goes awry
      */
     public function set_applytoall($applytoall) {
-    	if ($applytoall) {
+    	$retval = FALSE;
+    	if (intval($applytoall) > 0) {
 	    	if (! isset($this->id)) {
 	    		//We need to save the object so we can do the update
 	    		$this->save();
@@ -342,10 +368,11 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
 	  		$sql = array(
 	  			'INSERT INTO host_x_host_group (host_group_id, host_id) ' . 
 	  			'SELECT ?i, host_id from host',
-	  			$this->id
+	  			$this->get_id()
 	  		);
-	  		$this->db->iud_sql($sql);
+	  		$retval = $this->db->iud_sql($sql);
     	}
+    	return $retval;
     }
 
 	/**

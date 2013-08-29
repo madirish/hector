@@ -191,17 +191,6 @@ class Feed extends Maleable_Object implements Maleable_Object_Interface {
 	}
 	
 	/**
-	 * Return the unique id
-	 *
-	 * @access public
-	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-	 * @return Int The unique Id
-	 */
-	public function get_id() {
-		return intval($this->id);
-	}
-	
-	/**
 	 * Return the name string
 	 * 
 	 * @access public
@@ -255,16 +244,6 @@ class Feed extends Maleable_Object implements Maleable_Object_Interface {
 		}
 		return $retval;
 	}
-    
-    /**
-     * Set the id attribute.
-     * 
-     * @access protected
-     * @param Int The unique ID from the data layer
-     */
-    protected function set_id($id) {
-    	$this->id = intval($id);
-    }
 
 	/**
 	 * Set the name of the feed

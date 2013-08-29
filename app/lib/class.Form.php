@@ -31,63 +31,112 @@ require_once('class.Db.php');
  */
 class Form {
     // --- ATTRIBUTES ---
-
     /**
-     * Short description of attribute id
-     *
-     * @access public
-     * @var int
+     * Instance of the Db
+     * 
+     * @access private
+     * @var Db An instance of the Db
      */
-    private $id = 0;
+    private $db = null;
+    
+    /**
+     * Instance of the Log
+     * 
+     * @access private
+     * @var Log An instance of the Log
+     */
+    private $log = null;
+    
+    /**
+     * Unique ID from the data layer
+     *
+     * @access private
+     * @var Int The unique ID from the data layer
+     */
+    private $id = null;
 
     /**
-     * Short description of attribute token
+     * Anti XSRF token
      *
-     * @access public
-     * @var int
+     * @access private
+     * @var String MD5sum based anti XSRF token
      */
     private $token = 0;
 
     /**
-     * Short description of attribute name
+     * The form name
      *
-     * @access public
-     * @var String
+     * @access private
+     * @var String The Form name
      */
     private $name = null;
 
     // --- OPERATIONS ---
     
+    /**
+     * Create a new instance of the Form object
+     * 
+     * @access public
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @return void
+     */
     public function __construct() {
     	$this->db = Db::get_instance();
 		$this->log = Log::get_instance();
 		
 		// do a little housekeeping
 		$this->expunge_forms();
+    }   
+    
+    /**
+     * Delete the record from the database
+     *
+     * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return void
+     */
+    public function delete() {
+    	if ($this->id > 0 ) {
+    		// Delete an existing record
+	    	$sql = array(
+	    		'DELETE FROM form WHERE form_id = \'?i\'',
+	    		$this->get_id()
+	    	);
+	    	$this->db->iud_sql($sql);
+    	}
     }
 
     /**
-     * Short description of method expunge_forms
+     * Get rid of older forms (20 min expiry)
      *
      * @access private
      * @author Justin Klein Keane, <jukeane@sas.upenn.edu>
-     * @return void
+     * @return Boolean False if there were any problems.
      */
-    private function expunge_forms()
-    {
+    private function expunge_forms() {
 		$sql = 'DELETE FROM form WHERE form_datetime < DATE_SUB(NOW(), INTERVAL 20 MINUTE)';
-		$this->db->iud_sql($sql);
+		return $this->db->iud_sql($sql);
     }
+	
+	/**
+	 * Return the form name
+	 *
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return String The name of the form
+	 */
+	public function get_name() {
+		return htmlspecialchars($this->name);
+	}
 
     /**
-     * Short description of method get_token
+     * Return the XSRF token
      *
      * @access public
      * @author Justin Klein Keane, <jukeane@sas.upenn.edu>
-     * @return String
+     * @return String MD5sum based anti XSRF token
      */
-    public function get_token()
-    {
+    public function get_token() {
     	if ($this->token == 0) {
     		$this->token = md5(time());
     	}
@@ -95,14 +144,14 @@ class Form {
     }
 
     /**
-     * Short description of method save
+     * Persist the form to the data layer
      *
      * @access public
      * @author Justin Klein Keane, <jukeane@sas.upenn.edu>
-     * @return void
+     * @return Boolean False if something went wrong
      */
-    public function save()
-    {
+    public function save() {
+    	$retval = FALSE;
         if (! $this->name) {
         	$this->log->write_error('unspecified form_name in save(), class.Form.php');
         	$this->set_name('Unknonwn form');
@@ -114,46 +163,51 @@ class Form {
         			'form_ip = \'?s\', ' .
         			'form_datetime = \'?d\'',
         		$this->name,
-        		$this->token,
+        		$this->get_token(),
         		$_SERVER['REMOTE_ADDR'], 
         		date( 'Y-m-d H:i:s', time())
         		);
-        $this->db->iud_sql($sql);
+        $retval = $this->db->iud_sql($sql);
+        // Now set the id
+    	$sql = 'SELECT LAST_INSERT_ID() AS last_id';
+    	$result = $this->db->fetch_object_array($sql);
+    	if (isset($result[0]) && $result[0]->last_id > 0) {
+    		$this->set_id($result[0]->last_id);
+    	}
+    	return $retval;
     }
 
     /**
-     * Short description of method set_name
+     * Set the form name
      *
      * @access public
      * @author Justin Klein Keane, <jukeane@sas.upenn.edu>
-     * @param  String name
+     * @param  String Form name (used for lookups)
      * @return void
      */
-    public function set_name($name)
-    {
-        $this->name = htmlspecialchars($name);
+    public function set_name($name) {
+        $this->name = $name;
     }
 
     /**
-     * Short description of method validate
+     * Validate the form
      *
      * @access public
      * @author Justin Klein Keane, <jukeane@sas.upenn.edu>
-     * @param  form_name
-     * @param  token
-     * @param  ip
-     * @return boolean
+     * @param  String The form name
+     * @param  String The anti-XSRF token
+     * @param  String The IP address of the form submission
+     * @return Boolean True if the form validates, False otherwise
      */
-    public function validate($form_name,$token,$ip)
-    {
-    	$retval = false;
+    public function validate($form_name,$token,$ip) {
+    	$retval = FALSE;
         $sql = array('SELECT form_id FROM form WHERE form_name=\'?s\' AND form_token=\'?s\' AND form_ip =\'?s\'',
         			$form_name,
         			$token,
         			$ip);
         $result = $this->db->fetch_object_array($sql);
 		if (isset($result[0]) && $result[0]->form_id > 0) {
-			$retval = true;
+			$retval = TRUE;
 			if ($_SESSION['debug']) $this->log->write_message('Form ' . htmlspecialchars($form_name) . ' validated.');
 		}
 			

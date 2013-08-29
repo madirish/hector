@@ -193,16 +193,6 @@ class Alert {
     	$splitstring = explode(' ', $string);
     	return $splitstring[ count($splitstring) - 1 ];
 	}
-    /**
-     * Return the unique id of the Alert object
-     *
-     * @access public
-     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @return Int The unique ID of the alert object.
-     */
-    public function get_id() {
-       return $this->id;
-    }
     
     /**
      * Get the second element of the message, which should be the port
@@ -287,17 +277,6 @@ class Alert {
      */
     public function set_host_id($id) {
     	$this->host_id = intval($id);
-    }
-    
-    /**
-     * Set the unique id from the data layer
-     * 
-	 * @access private
-     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
-     * @param Int The unique ID
-     */
-    private function set_id($id) {
-    	$this->id = intval($id);
     }
     
     /**

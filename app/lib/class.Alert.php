@@ -116,8 +116,9 @@ class Alert {
 	    		'DELETE FROM alert WHERE alert_id = \'?i\'',
 	    		$this->get_id()
 	    	);
-	    	return $this->db->iud_sql($sql);
+	    	$retval = $this->db->iud_sql($sql);
     	}
+    	$this->set_id(null);
     	return false;
     }
     

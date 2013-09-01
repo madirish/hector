@@ -43,7 +43,6 @@ class TestOfAlertClass extends UnitTestCase {
   }
   
   function testAlertTimeStamp() {
-  	$this->alert = new Alert();
   	$this->alert->set_host_id(1);
   	$this->alert->set_string('test string');
   	$this->alert->save();
@@ -53,13 +52,11 @@ class TestOfAlertClass extends UnitTestCase {
   }
   
   function testAlertGetPort() {
-  	$this->alert = new Alert();
   	$this->alert->set_string('Port 22 changed from filtered to open on 130.91.128.192');
   	$this->assertEqual($this->alert->get_port(), 22);
   }
   
   function testAlertGetHost() {
-  	$this->alert = new Alert();
   	$this->alert->set_string('Port 22 changed from filtered to open on 130.91.128.192');
   	$this->assertEqual($this->alert->get_host(), '130.91.128.192');
   }

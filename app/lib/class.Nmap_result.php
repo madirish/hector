@@ -544,6 +544,18 @@ class Nmap_result {
     public function set_host_id($id) {
     	$this->host_id = intval($id);
     }
+	
+    /**
+     * Set the object's unique id
+     *
+     * @access protected
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @param  int The unique id for hte object
+     * @return void
+     */
+    protected function set_id($id) {
+       $this->id = (int) $id;
+    }
     
     /**
      * Set the service name

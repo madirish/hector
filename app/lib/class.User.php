@@ -37,44 +37,59 @@ require_once('class.Log.php');
  * @version .1
  */
 class User extends Maleable_Object implements Maleable_Object_Interface {
-    // --- ASSOCIATIONS ---
-
-
     // --- ATTRIBUTES ---
+    /**
+     * Instance of the Db
+     * 
+     * @access private
+     * @var Db An instance of the Db
+     */
+    private $db = null;
+    
+    /**
+     * Instance of the Log
+     * 
+     * @access private
+     * @var Log An instance of the Log
+     */
+    private $log = null;
 
     /**
      * The username (for login)
      *
-     * @access public
-     * @var String
+     * @access private
+     * @var String The username for login
      */
     private $name = null;
-
-    /**
-     * Id of the corresponding person object.
-     *
-     * @access public
-     * @var int
-     */
-    private $person_id = 0;
     
     /**
      * Unique id for the persistence layer.
      * 
      * @access protected
-     * @var int
+     * @var Int Unique ID from the data layer
      */
-    protected $id;
+    protected $id = null;
     
-    private $is_admin = 0;
+    /**
+     * Whether or not the user is admin
+     * 
+     * @access private
+     * @var Booleane True if the user is an admin
+     */
+    private $is_admin = FALSE;
     
-    // Array of support group ids
+    /**
+     * Array of support group ids
+     * 
+     * @access private
+     * @var Array An array of the support groups to which this User belongs
+     */ 
     private $supportgroup_ids = array();
 
     // --- OPERATIONS ---
 
     /**
-     * Short description of method __construct
+     * Instantiate a new User object
      *
      * @access public
      * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
@@ -90,18 +105,20 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 					$id
 				);
 				$result = $this->db->fetch_object_array($sql);
-				$this->id = $result[0]->user_id;
-				$this->name = $result[0]->user_name;
-				$this->is_admin = $result[0]->user_is_admin;
+				$this->set_id($result[0]->user_id);
+				$this->set_name($result[0]->user_name);
+				$this->set_is_admin($result[0]->user_is_admin);
 				// Set up support groups
 				$sql = array(
 					'select supportgroup_id from user_x_supportgroup where user_id = ?i',
 					$id);
 				$result = $this->db->fetch_object_array($sql);
 				if (is_array($result)) {
+					$supportgroup_ids = array();
 					foreach($result as $row) {
-						$this->supportgroup_ids[] = $row->supportgroup_id;
+						$supportgroup_ids[] = $row->supportgroup_id;
 					}
+					$this->set_supportgroup_ids($supportgroup_ids);
 				}
 			}
     }
@@ -111,19 +128,31 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
      *
      * @access public
      * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
-     * @return void
+     * @return Boolean False if something goes awry
      */
     public function delete() {
+    	$retval = FALSE;
     	if ($this->id > 0 ) {
     		// Delete an existing user
 	    	$sql = array(
 	    		'DELETE FROM user WHERE user_id = \'?i\'',
 	    		$this->get_id()
 	    	);
-	    	$this->db->iud_sql($sql);
+	    	$retval = $this->db->iud_sql($sql);
+	    	if ($retval) {
+	    		$this->set_id(NULL);
+	    	}
     	}
+    	return $retval;
     }
 	
+	/**
+	 * Return the Array for CRUD template
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return Arry The array for the CRUD template.
+	 */
 	public function get_add_alter_form() {
 		// get the Support groups array
 		$supportgroups = array();
@@ -163,24 +192,31 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 	 * function is used in conjunction with CoSign
 	 * for external authentication.
 	 * 
-	 * @param string $name
-	 * @return void
+	 * @param String The name of the user
+	 * @return Boolean False if something goes awry or the lookup fails
 	 */
 	public function get_by_name($name) {
+		$retval = FALSE;
 		$sql = array(
 				'SELECT * FROM user WHERE user_name = \'?s\'',
 				$name);
 		$result = $this->db->fetch_object_array($sql); 
 		if (is_array($result) && is_object($result[0])){  
-			$this->id = $result[0]->user_id;
-			$this->name = $result[0]->user_name;
-			$this->is_admin = $result[0]->user_is_admin;
+			$this->set_id($result[0]->user_id);
+			$this->set_name($result[0]->user_name);
+			$this->set_is_admin($result[0]->user_is_admin);
 		}
+		if ($this->get_id() > 0) $retval = TRUE;
+		return $retval;
 	}
     
-    /* This function directly supports the Collection class.
+    /** 
+     * This function directly supports the Collection class.
 	 * 
-	 * @return SQL select string
+	 * @access public
+	 * @param String The optional additional SQL WHERE clause arguments
+	 * @param String The optional SQL ORDER BY clause arguments
+	 * @return String SQL select string
 	 */
 	public function get_collection_definition($filter = '', $orderby = '') {
 		$query_args = array();
@@ -198,61 +234,71 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 		return $sql;
 	}
 	
+	/**
+	 * Return an array for the default display template
+	 * 
+	 * @access public
+	 * @return Array The Array for the default display template
+	 */
 	public function get_displays() {
 		return array('User name'=>'get_name', 'Is Admin?'=>'get_is_admin_readable');
 	}
 	
-	public function get_id() {
-		return (isset($this->id)) ? $this->id : null;
-	}
-	
+	/**
+	 * Return whether or not this user is an admin
+	 * 
+	 * @access public
+	 * @return Boolean True if admin, False otherwise
+	 */
 	public function get_is_admin() {
-		return (int) $this->is_admin;
+		return (bool) $this->is_admin;
 	}
 	
+	/**
+	 * Return a String for whether or not this User is an admin
+	 * 
+	 * @access public
+	 * @return String 'Yes' if admin, 'No' otherwise
+	 */
 	public function get_is_admin_readable()  {
 		$retval = 'No';
-		if ((int) $this->is_admin > 0 ) $retval = 'Yes';
+		if ((boolean) $this->is_admin) $retval = 'Yes';
 		return $retval;
 	}
 
-	    /**
-	 * Short description of method get_name
+	/**
+	 * Get the HTML display safe user name
 	 *
 	 * @access public
 	 * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
-	 * @return String
+	 * @return String The HTML display safe user name
 	 */
 	public function get_name() {
 	    return $this->name;
 	}
 	
 	/**
-	 * Short description of method get_person_id
-	 *
+	 * Get an array of the Supportgroup IDs
+	 * 
 	 * @access public
-	 * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
-	 * @return int
+	 * @return Array An Array of Supportgroup ids
 	 */
-	public function get_person_id() {
-	    $returnValue = (int) 0;
-	
-	    // section 127-0-0-1-6ee0c3aa:1262303b691:-8000:0000000000001000 begin
-	    // section 127-0-0-1-6ee0c3aa:1262303b691:-8000:0000000000001000 end
-	
-	    return (int) $returnValue;
-	}
-	
 	public function get_supportgroup_ids() {
 		return $this->supportgroup_ids;
 	}
 	
+	/**
+	 * Set whether or not the person is an admin
+	 * 
+	 * @acces spublic
+	 * @param Boolean Whether or not the person is an admin
+	 */
 	public function set_is_admin($val) {
-		$this->is_admin = (intval($val) < 1) ? 0 : 1;
+		$this->is_admin = (bool) $val;
 	}
 	
 	/**
-	 * Short description of method set_name
+	 * Set the name of the user
 	 *
 	 * @access public
 	 * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
@@ -260,15 +306,35 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 	 * @return void
 	 */
 	public function set_name($name) {
-		$this->name = htmlspecialchars($name);
+		$this->name = $name;
+	}
+	
+	/**
+	 * Add a new Supportgroup ID to the array
+	 * 
+	 * @access public
+	 * @param Int The unique id of the Supportgroup
+	 */
+	public function set_add_supportgroup_id($id) {
+		$retval = FALSE;
+		$id = intval($id);
+		// Make sure we get a valid id
+		if ($id > 0) {
+			// Don't insert dupes
+			if (! array_search($id, $this->supportgroup_ids)) {
+				$this->supportgroup_ids[] = $id;
+				$retval = TRUE;
+			}
+		}
+		return $retval;
 	}
      
 	/**
-	 * Set the support group id array
+	 * Reset the support group id array
 	 * 
 	 * @access public
 	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-	 * @param  Array of Host_group ids
+	 * @param  Array The array of Supportgroup ids
 	 * @return void
 	 */
 	public function set_supportgroup_ids($array) {
@@ -280,44 +346,61 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 	}
 	
 	/**
-	 * Short description of method set_password
+	 * Set the user password
 	 *
 	 * @access public
 	 * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
-	 * @param  password
+	 * @param String The new password
 	 * @return void
 	 */
 	public function set_password($password) {
-	    $this->password = crypt($password);
+		$salt = sha1(time() + rand(0,1000));
+	    $this->password = crypt($password, $salt);
 	}
 	
+	/**
+	 * Persist the object to the data layer
+	 * 
+	 * @access public
+	 * @return Boolean False if something goes awry
+	 */
 	public function save() {
+		$retval = FALSE;
+		// Don't allow blank passwords
+		if ($this->password == '') {
+			return FALSE;
+		}
 		if ($this->id > 0 ) {
 			// Update an existing user
 	    	$sql = array(
-	    		'UPDATE user SET user_name = \'?s\', user_pass = \'?s\', user_is_admin = \'?i\' WHERE user_id = \'?i\'',
+	    		'UPDATE user SET user_name = \'?s\', ' .
+	    			'user_pass = \'?s\', ' .
+	    			'user_is_admin = \'?i\' ' .
+    			'WHERE user_id = \'?i\'',
 	    		$this->get_name(),
 	    		$this->password,
 	    		$this->get_is_admin(),
 	    		$this->get_id()
 	    	);
-	    	$this->db->iud_sql($sql);
+	    	$retval = $this->db->iud_sql($sql);
 		}
 		else {
 			$sql = array(
-				'INSERT INTO user SET user_name = \'?s\', user_pass = \'?s\', user_is_admin = \'?i\'',
+				'INSERT INTO user ' .
+					'SET user_name = \'?s\', ' .
+					'user_pass = \'?s\', ' .
+					'user_is_admin = \'?i\'',
 				$this->get_name(),
 	    		$this->password,
 	    		$this->get_is_admin()
 	    	);
-	    	$this->db->iud_sql($sql);
-	    	// Set the uid for support group assignment
-	    	$sql = array('SELECT user_id FROM user where user_name = \'?s\' AND user_pass = \'?s\'',
-	    		$this->get_name(),
-	    		$this->password
-	    	);
-				$result = $this->db->fetch_object_array($sql);
-				$this->id = $result[0]->user_id;
+	    	$retval = $this->db->iud_sql($sql);
+	    	// Now set the id
+	    	$sql = 'SELECT LAST_INSERT_ID() AS last_id';
+	    	$result = $this->db->fetch_object_array($sql);
+	    	if (isset($result[0]) && $result[0]->last_id > 0) {
+	    		$this->set_id($result[0]->last_id);
+	    	}
 		}
 		// Update the support groups (if any)
 		$sql = array(
@@ -333,16 +416,17 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 				$this->db->iud_sql($sql);
 			}
 		}
+		return $retval;
 	}
 	
 	/**
-	 * Short description of method validate
+	 * Validate a set of user credentials
 	 *
 	 * @access public
 	 * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
 	 * @param username
 	 * @param password
-	 * @return boolean
+	 * @return Boolean False if the username/password combo doens't validate
 	 */
 	public function validate($username, $password) {
 		$retval = false;

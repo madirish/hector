@@ -182,7 +182,11 @@ if (! (isset($appuser) && $appuser->get_is_admin())) {
 
 // if this is the results page
 if ($tempTablePopulated > 0) {
-	$host_results = $db->fetch_object_array('select host_id from tmp_search');
+	$sql = 'SELECT max(n.nmap_result_timestamp) AS maxtime, t.host_id ' .
+			'FROM tmp_search t, nmap_result n ' .
+			'WHERE n.host_id = t.host_id ' .
+			'GROUP BY t.host_id';
+	$host_results = $db->fetch_object_array($sql);
 	if (count(array_keys($host_results)) < 1) $host_results = null;
 	$content .= '<h4>' . count($host_results) . ' records found</h4>';
 	$content .= '<table id="table-port-result" class="table table-striped">';
@@ -200,7 +204,7 @@ if ($tempTablePopulated > 0) {
 			$content .= '<tr><td>' . $host->get_name_linked() . '</td>' .
 					'<td>' . $supportgroup->get_name() . '</td>' .
 					'<td>' . $host->get_ip() . '</td>' .
-					'<td>' . $ret->nmap_result_timestamp . '</td></tr>';
+					'<td>' . $ret->maxtime . '</td></tr>';
 		}
 		if (count($host_results) < 1) {
 			$content .= '<tr><td colspan="4">No results available ';

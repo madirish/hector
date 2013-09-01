@@ -33,6 +33,14 @@ class TestOfHostClass extends UnitTestCase {
 		$this->assertEqual($this->host->get_ip(), $ip);
 	}
 	
+	function testAltHostnames() {
+		$althostname = 'foo.example.com';
+		$this->host->set_alt_hostname($althostname);
+		$altnames = $this->host->get_alt_hostnames();
+		$this->assertIsA($altnames, 'Array');
+		$this->assertEqual($altnames[0], $althostname);
+	}
+	
 	function testGetAddAlterForm() {
 		$this->assertIsA($this->host->get_add_alter_form(), 'Array');
 	}

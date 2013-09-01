@@ -19,6 +19,7 @@ require_once('class.Nmap_result.test.php');
 require_once('class.Scan.test.php');
 require_once('class.Supportgroup.test.php');
 require_once('class.Tag.test.php');
+require_once('class.User.test.php');
 require_once('class.Vuln.test.php');
 
 $GLOBALS['approot'] = '/opt/hector/app/';
@@ -44,6 +45,7 @@ class AllTests extends TestSuite {
         $this->add(new TestOfScanClass());
         $this->add(new TestOfSupportgroupClass());
         $this->add(new TestOfTagClass());
+        $this->add(new TestOfUserClass());
         $this->add(new TestOfVulnClass());
     }
 }

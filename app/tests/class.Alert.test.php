@@ -66,8 +66,8 @@ class TestOfAlertClass extends UnitTestCase {
   	$this->alert->set_string('Test string');
   	$this->assertTrue($this->alert->save());
   	$id = $this->alert->get_id();
+  	$this->assertTrue($id > 0);
   	$this->alert->delete();
-  	$secondAlert = new Alert($id);
   	$this->assertEqual($this->alert->get_id(), 0);
   }
 }

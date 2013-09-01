@@ -8,6 +8,10 @@ class TestOfFormClass extends UnitTestCase {
 	function setUp() {
 		$this->form = new Form();
 	}
+  
+  function tearDown() {
+  	$this->form->delete();
+  }
 	
 	function testformClass() {
 		$this->assertIsA($this->form, 'Form');

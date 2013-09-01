@@ -9,6 +9,10 @@ class TestOfNmap_resultClass extends UnitTestCase {
 		$this->nr = new Nmap_result();
 	}
 	
+	function tearDown() {
+		$this->nr->delete();
+	}
+	
 	function testLocationClass() {
 		$this->assertIsA($this->nr, 'Nmap_result');
 	}

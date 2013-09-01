@@ -9,6 +9,10 @@ class TestOfHost_groupClass extends UnitTestCase {
 		$this->host_group = new Host_group();
 	}
 	
+	function tearDown() {
+		$this->host_group->delete();
+	}
+	
 	function testHost_groupClass() {
 		$this->assertIsA($this->host_group, 'Host_group');
 	}

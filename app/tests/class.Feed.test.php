@@ -8,6 +8,10 @@ class TestOfFeedClass extends UnitTestCase {
 	function setUp() {
 		$this->feed = new Feed();
 	}
+  
+  function tearDown() {
+  	$this->feed->delete();
+  }
 	
 	function testFeedClass() {
 		$this->assertIsA($this->feed, 'Feed');

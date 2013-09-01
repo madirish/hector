@@ -13,6 +13,10 @@ class TestOfAlertClass extends UnitTestCase {
   function setUp() {
   	$this->alert = new Alert();
   }
+  
+  function tearDown() {
+  	$this->alert->delete();
+  }
 
   function testAlertConstructor() {
   	$this->assertIsA($this->alert, 'Alert');

@@ -13,6 +13,10 @@ class TestOfVulnClass extends UnitTestCase {
   function setUp() {
   	$this->vuln = new Vuln();
   }
+	
+  function tearDown() {
+    $this->vuln->delete();
+  }
 
   function testVulnConstructor() {
   	$this->assertIsA($this->vuln, 'Vuln');

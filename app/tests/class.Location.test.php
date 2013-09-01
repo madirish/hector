@@ -9,6 +9,10 @@ class TestOfLocationClass extends UnitTestCase {
 		$this->location = new Location();
 	}
 	
+	function tearDown() {
+		$this->location->delete();
+	}
+	
 	function testLocationClass() {
 		$this->assertIsA($this->location, 'Location');
 	}

@@ -93,10 +93,12 @@ class Alert {
 				$id
 			);
 			$result = $this->db->fetch_object_array($sql);
-			$this->id = $result[0]->alert_id;
-			$this->string = $result[0]->alert_string;
-			$this->timestamp = $result[0]->alert_timestamp;
-			$this->host_id = $result[0]->host_id;
+			if (is_array($result) && isset($result[0])) {
+				$this->set_id($result[0]->alert_id);
+				$this->set_string($result[0]->alert_string);
+				$this->set_timestamp($result[0]->alert_timestamp);
+				$this->set_host_id($result[0]->host_id);	
+			}
 		}
     }
 
@@ -311,6 +313,17 @@ class Alert {
      */
     public function set_string($string) {
     	$this->string = $string;
+    }
+    
+    /**
+     * Set the Alert timestamp
+     * 
+	 * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @param Timestamp The timestamp for the alert
+     */
+    public function set_timestamp($stamp) {
+    	$this->timestamp = $stamp;
     }
     
 

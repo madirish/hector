@@ -65,7 +65,10 @@ class TestOfAlertClass extends UnitTestCase {
   }
   
   function testAlertDelete() {
-  	$id = $this->alert_id;
+  	$this->alert->set_host_id(1);
+  	$this->alert->set_string('Test string');
+  	$this->assertTrue($this->alert->save());
+  	$id = $this->alert->get_id();
   	$this->alert->delete();
   	$secondAlert = new Alert($id);
   	$this->assertEqual($this->alert->get_id(), 0);

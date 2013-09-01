@@ -43,7 +43,7 @@ if(php_sapi_name() != 'cli') {
 	$javascripts[] = <<<EOT
 	<script type="text/javascript">
 		function xprobe2_display() {
-			var xprobe2HTML = "<p>Xprobe2 uses port data from the database to determine operating systems and update host records.</p/>";
+			var xprobe2HTML = "<p>Xprobe2 uses port data from the database to determine operating systems and update host records.</p>";
 			xprobe2HTML += "<p>xprobe2  is  an  active  operating system fingerprinting tool with a different approach to operating system";
 			xprobe2HTML += "fingerprinting. xprobe2 relies on fuzzy signature matching, probabilistic guesses, multiple matches  simul-";
 			xprobe2HTML += "taneously, and a signature database.</p>";
@@ -98,7 +98,7 @@ else {
 	
 	// Parse through the command line arguments
 	foreach ($argv as $arg) {
-		if (substr($arg, -13) == 'xprobe2_scan.php') continue;
+		if (substr($arg, -16) == 'xprobe2_scan.php') continue;
 		$flag = substr(strtolower($arg),0,2);
 		if ($flag == '-g') $groups = substr($arg,strpos($arg,'=')+1);
 	}

@@ -18,7 +18,7 @@ $db = Db::get_instance();
 $sql = 'SELECT a.*, r.rule_level, r.rule_message ' .
 		'FROM ossec_alert a, ossec_rule r ' .
 		'WHERE r.rule_id = a.rule_id ' .
-		'ORDER BY a.alert_date ' .
+		'ORDER BY a.alert_date desc ' .
 		'LIMIT 100';
 $alerts = $db->fetch_object_array($sql);
 

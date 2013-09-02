@@ -1584,7 +1584,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
     	$id = intval($id);
     	if ($id > 0) {
     		$this->location = new Location($id);
-    		if ($this->location->get_id > 0) {
+    		if ($this->location->get_id() > 0) {
     			$retval = TRUE;
     		}
     	}
@@ -1604,7 +1604,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
     	$id = intval($id[0]);
     	if ($id > 0) {
     		$this->supportgroup = new Supportgroup($id);
-    		if ($this->supportgroup->get_id > 0) {
+    		if ($this->supportgroup->get_id() > 0) {
     			$retval = TRUE;
     		}
     	}

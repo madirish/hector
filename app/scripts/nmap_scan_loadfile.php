@@ -91,7 +91,7 @@ if(php_sapi_name() == 'cli') {
 		$nmap_scans = array();
 	
 		foreach ($nmaphost->ports->port as $port) {
-			$result = new Nmap_scan();
+			$result = new Nmap_result();
 			$result->set_host_id($host->get_id());
 			$result->set_port_number($port['portid']);
 			$result->set_protocol($port['protocol']);
@@ -112,7 +112,7 @@ if(php_sapi_name() == 'cli') {
 		}			
 	
 		foreach($nmap_scans as $scan) {
-			$old_scan_result = new Nmap_scan();
+			$old_scan_result = new Nmap_result();
 			$old_scan_result->lookup_scan($scan->get_host_id(), $scan->get_port_number(), $scan->get_protocol());
 			if ($old_scan_result->get_id() > 0) {
 				if ($scan->get_state_id() == 1 && $old_scan_result->get_state_id() > 1) {

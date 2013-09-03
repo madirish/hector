@@ -20,7 +20,7 @@
 			echo '<td>' . $alert->alert_log . '</td>'; 
 			echo '<td>' . $alert->rule_message . '</td>'; 
 			echo '<td>' . $alert->rule_level . '</td>'; 
-			echo '<td>' . $alert->alert_src_ip . '</td>'; 
+			echo '<td>' . $alert->rule_src_ip . '</td>'; 
 			echo '<td>' . $alert->rule_log . '</td></tr>'; 
 			echo "\n";
 		}

@@ -114,7 +114,7 @@ foreach($host->get_urls() as $url) {
 	<tr>
 		<td><?php echo $url[0];?></td>
 		<td><?php
-			if ($url[1] !== '')  {
+			if ($url[1] !== null)  {
 				?>
 				<a href='?action=display_screenshot&ajax&url=<?php echo urlencode($url[0]);?>'>
 				<img width=150 alt="Screenshot" src='?action=display_screenshot&ajax&url=<?php echo urlencode($url[0]);?>'/>

@@ -1,7 +1,4 @@
 <?php
-
-error_reporting(E_ALL);
-
 /**
  * HECTOR - class.Alert.php
  *
@@ -10,6 +7,11 @@ error_reporting(E_ALL);
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * @package HECTOR
  */
+
+/**
+ *  Set up error reporting 
+ */
+error_reporting(E_ALL);
 
 if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
@@ -29,7 +31,7 @@ require_once('class.Host.php');
  *
  * @access public
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
- * @todo enable MAC address tracking
+ * @package HECTOR
  */
 class Alert {
     // --- ASSOCIATIONS ---

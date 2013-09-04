@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * This script is an atomic import of the results of an
  * NMAP scan run to produce an output XML file.  When the
  * contents of this script were combined with nmap_scan.php
@@ -29,7 +29,7 @@ if(php_sapi_name() == 'cli') {
 	require_once($approot . 'lib/class.Dblog.php');
 	require_once($approot . 'lib/class.Host.php');
 	require_once($approot . 'lib/class.Log.php');
-	require_once($approot . 'lib/class.Nmap_scan_result.php');
+	require_once($approot . 'lib/class.Nmap_result.php');
 		
 	// Set high mem limit to prevent resource exhaustion
 	ini_set('memory_limit', '512M');
@@ -38,6 +38,12 @@ if(php_sapi_name() == 'cli') {
 	
 	// Make sure we have some functions that may come from nmap_scan
 	if (! function_exists("show_help")) {
+		/**
+		 * This function may not be instantiated if the script is 
+		 * called at the command line.
+		 * 
+		 * @ignore Don't document this duplicate function.
+		 */
 		function show_help($error) {
 			echo "Error from nmap_scan.php helper script nmap_scan_loadfile.php\n";
 			echo $error;
@@ -45,6 +51,12 @@ if(php_sapi_name() == 'cli') {
 		}
 	}
 	if (! function_exists("loggit")) {
+		/**
+		 * This function may not be instantiated if the script is 
+		 * called at the command line.
+		 * 
+		 * @ignore Don't document this duplicate function.
+		 */
 		function loggit($status, $message) {
 			global $log;
 			global $dblog;
@@ -88,10 +100,10 @@ if(php_sapi_name() == 'cli') {
 		// look up the host
 		$host = $hosts[(string)$nmaphost->address['addr']]; 
 		// Track new results via variables
-		$nmap_scan_results = array();
+		$nmap_scans = array();
 	
 		foreach ($nmaphost->ports->port as $port) {
-			$result = new Nmap_scan_result();
+			$result = new Nmap_result();
 			$result->set_host_id($host->get_id());
 			$result->set_port_number($port['portid']);
 			$result->set_protocol($port['protocol']);
@@ -108,11 +120,11 @@ if(php_sapi_name() == 'cli') {
 			if (isset($port->service['servicefp']))  $version_info .= ' ' . $port->service['servicefp'];
 			if ($version_info != ' ') $result->set_service_version($version_info);
 			$result->set_service_name($port->service['name']);
-			$nmap_scan_results[] = $result;
+			$nmap_scans[] = $result;
 		}			
 	
-		foreach($nmap_scan_results as $scan) {
-			$old_scan_result = new Nmap_scan_result();
+		foreach($nmap_scans as $scan) {
+			$old_scan_result = new Nmap_result();
 			$old_scan_result->lookup_scan($scan->get_host_id(), $scan->get_port_number(), $scan->get_protocol());
 			if ($old_scan_result->get_id() > 0) {
 				if ($scan->get_state_id() == 1 && $old_scan_result->get_state_id() > 1) {

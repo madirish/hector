@@ -1,7 +1,14 @@
 <?php
 /**
-* This is the generic subcontroller for adding new objects.
-**/
+ * This is the generic subcontroller for adding new objects.
+ * 
+ * @package HECTOR
+ * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+ */
+
+/**
+ * Include the Form in order to have XSRF protection
+ */
 require_once($approot . 'lib/class.Form.php');
 $add_edit = 1;
 if (! isset($_GET['object'])) {

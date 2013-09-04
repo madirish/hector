@@ -90,8 +90,8 @@ function get_hosts_by_port($hasport) {
 	$host_ids = array();
 	// Restrict machines based on port specifications
 	if ($hasport != null) {
-		$filter .= ' AND nsr.state_id=1 AND nsr.nmap_scan_result_port_number in (' . mysql_real_escape_string($hasport) . ')';
-		$prevscan = new Collection('Nmap_scan_result', $filter);
+		$filter .= ' AND nsr.state_id=1 AND nsr.nmap_result_port_number in (' . mysql_real_escape_string($hasport) . ')';
+		$prevscan = new Collection('Nmap_result', $filter);
 		if (isset($prevscan->members) && is_array($prevscan->members)) {
 			// rebuild the $hosts and $host_ids arrays
 			foreach($prevscan->members as $seenhosts) {
@@ -142,9 +142,8 @@ function populate_database() {
 	$hosts = get_hosts_by_port(80);
 	foreach ($hosts as $host) {
 		$db = Db::get_instance();
-		$sql= array('insert ignore into url set host_id=?i, host_ip=INET_ATON(\'?s\'), url_url=\'?s\'' ,
+		$sql= array('insert ignore into url set host_id=?i, url_url=\'?s\'' ,
 			$host->get_id() ,
-			$host->get_ip() ,
 			'http://' . $host->get_ip()
 		);
 		$db->iud_sql($sql);
@@ -152,9 +151,8 @@ function populate_database() {
 	$hosts = get_hosts_by_port(443);
 	foreach ($hosts as $host) {
 		$db = Db::get_instance();
-		$sql = array('insert ignore into url set host_id=?i, host_ip=INET_ATON(\'?s\'), url_url=\'?s\'' ,
+		$sql = array('insert ignore into url set host_id=?i, url_url=\'?s\'' ,
 			$host->get_id() ,
-			$host->get_ip() ,
 			'https://' . $host->get_ip()
 		);
 		$db->iud_sql($sql);

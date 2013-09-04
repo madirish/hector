@@ -3,19 +3,24 @@
  * Show honeypot data
  * @author Justin Klein Keane <jukeane@sas.upenn.edu>
  * @version 2012.11.27
+ * @package HECTOR
+ * @todo Move the SQL out of actions/honeypot.php and into a helper class
  */
 
+/**
+ * Necessary includes
+ */
 require_once($approot . 'lib/class.Db.php');
 $db = Db::get_instance();
 
 // Latest auth attempts
-$sql = 'select ip, time, username, password from koj_login_attempts ' .
+$sql = 'select ip, time, username, password from koj_login_attempt ' .
 		'order by time desc limit 30;';
 $login_attempts = $db->fetch_object_array($sql);
 array_map(htmlspecialchars, $login_attempts);
 
 // Get the latest sessions:
-$sql = 'select time, ip, command from koj_executed_commands ' .
+$sql = 'select time, ip, command from koj_executed_command ' .
 		'where time > date_sub(curdate(), interval 2 day) order by time desc';
 $commands = $db->fetch_object_array($sql);
 

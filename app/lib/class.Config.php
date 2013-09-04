@@ -1,19 +1,17 @@
 <?php
 /**
  * class.config.php
- *
  * @package HECTOR
- * @author Justin C. Klein Keane <justin@madirish.net>
- * @abstract The purpose of this class is simply to load the config file into globals for use within other classes.
- *
- * @todo Fail more gracefully.
  */
-
-
-
+ 
 /**
  * This [singleton] class loads config variables from the config file found in /conf/conf.ini into global variables
- * @package migallery
+ * 
+ * @package HECTOR
+ * @subpackage util
+ * @author Justin C. Klein Keane <justin@madirish.net>
+ * @abstract The purpose of this class is simply to load the config file into globals for use within other classes.
+ * @todo Fail more gracefully.
  */
 Class Config {
 	
@@ -27,6 +25,10 @@ Class Config {
 	/**
 	 * The constructor meerly checks to make guides the class.
 	 *
+	 * @access public
+	 * @author Justin C. Klein Keane <justin@madirish.net>
+	 * @param String The filepath to the config file if not the default conf/config.ini
+     * @return void
 	 */
 	public function __construct($config='') {
 		
@@ -45,6 +47,8 @@ Class Config {
 	/**
 	 * Check to see if the file exists.
 	 *
+	 * @access private
+	 * @author Justin C. Klein Keane <justin@madirish.net>
 	 * @return true | die
 	 */
 	private function check_file() {
@@ -61,6 +65,9 @@ Class Config {
 	/**
 	 * Parse over the config.ini file and load the configs into globals.
 	 *
+	 * @access private
+	 * @author Justin C. Klein Keane <justin@madirish.net>
+     * @return void
 	 */
 	private function load_configs() {
 		$ini_array = parse_ini_file($this->config_file, 'true');

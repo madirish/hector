@@ -1,15 +1,17 @@
 <?php
-
-error_reporting(E_ALL);
-
 /**
- * class.Nmap_scan_result.php
+ * class.nmap_result.php
  *
  * This file is part of HECTOR.
  *
  * @package HECTOR
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  */
+ 
+/**
+ * Enable error reporting
+ */
+error_reporting(E_ALL);
 
 if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
@@ -21,19 +23,16 @@ require_once('class.Db.php');
 require_once('class.Log.php');
 
 /**
- * Nmap_scan_result represents a single line of an 
+ * nmap_result represents a single line of an 
  * NMAP scan of a target Host, so there is only 
  * one port/protocol and the state that was observed
  * from a scan.
  *
  * @access public
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
- * @todo capture banner strings
+ * @package HECTOR
  */
-class Nmap_scan_result
-{
-    // --- ASSOCIATIONS ---
-
+class Nmap_result {
 
     // --- ATTRIBUTES ---
     
@@ -137,26 +136,26 @@ class Nmap_scan_result
 			if ($id != '') {
 				$sql = array(
 					'SELECT nsr.*, s.state_state ' .
-					'FROM nmap_scan_result nsr, state s ' .
-					'WHERE s.state_id = nsr.state_id AND nsr.nmap_scan_result_id = ?i',
+					'FROM nmap_result nsr, state s ' .
+					'WHERE s.state_id = nsr.state_id AND nsr.nmap_result_id = ?i',
 					$id
 				);
 				$result = $this->db->fetch_object_array($sql);
 				if (! is_object($result[0])) {
-					$this->log->write_error("Incorrect nmap_scan_result constructor with id " . $id);
-					print "Incorrect nmap_scan_result constructor with id [" . $id . "]\n";
+					$this->log->write_error("Incorrect nmap_result constructor with id " . $id);
+					print "Incorrect nmap_result constructor with id [" . $id . "]\n";
 				}
 				else {
-					$this->id = $result[0]->nmap_scan_result_id;
+					$this->id = $result[0]->nmap_result_id;
 					$this->host_id = $result[0]->host_id;
-					$this->port_number = $result[0]->nmap_scan_result_port_number;
-					$this->protocol = $result[0]->nmap_scan_result_protocol;
+					$this->port_number = $result[0]->nmap_result_port_number;
+					$this->protocol = $result[0]->nmap_result_protocol;
 					$this->scan_id = $result[0]->scan_id;
 					$this->state_id = $result[0]->state_id;
 					$this->state = $result[0]->state_state;
-					$this->timestamp = $result[0]->nmap_scan_result_timestamp;
-					$this->service_name = $result[0]->nmap_scan_result_service_name;
-					$this->service_version = $result[0]->nmap_scan_result_service_version;
+					$this->timestamp = $result[0]->nmap_result_timestamp;
+					$this->service_name = $result[0]->nmap_result_service_name;
+					$this->service_version = $result[0]->nmap_result_service_version;
 				}
 				
 			}
@@ -173,7 +172,7 @@ class Nmap_scan_result
     	if ($this->id > 0 ) {
     		// Delete an existing record
 	    	$sql = array(
-	    		'DELETE FROM nmap_scan_result WHERE nmap_scan_result_id = \'?i\'',
+	    		'DELETE FROM nmap_result WHERE nmap_result_id = \'?i\'',
 	    		$this->get_id()
 	    	);
 	    	$this->db->iud_sql($sql);
@@ -189,9 +188,9 @@ class Nmap_scan_result
 	 */
 	public function get_collection_definition($filter = '', $orderby = '') {
 		$query_args = array();
-		$sql = 'SELECT nsr.nmap_scan_result_id ' . 
-				'FROM nmap_scan_result nsr, state s ' .
-				'WHERE nsr.state_id = s.state_id and nsr.nmap_scan_result_id > 0';
+		$sql = 'SELECT nsr.nmap_result_id ' . 
+				'FROM nmap_result nsr, state s ' .
+				'WHERE nsr.state_id = s.state_id and nsr.nmap_result_id > 0';
 		if ($filter != '' && is_array($filter))  {
 			$sql .= ' ' . array_shift($filter);
 			$sql = $this->db->parse_query(array($sql, $filter));
@@ -353,26 +352,26 @@ class Nmap_scan_result
     public function lookup_scan($host_id, $port_number, $protocol) {
     	$sql = array(
 				'SELECT nsr.*, s.state_state ' .
-				'FROM nmap_scan_result nsr, state s ' .
+				'FROM nmap_result nsr, state s ' .
 				'WHERE s.state_id = nsr.state_id AND nsr.host_id = ?i ' .
-				'AND nsr.nmap_scan_result_port_number = ?i ' .
-				'AND nsr.nmap_scan_result_protocol = \'?s\'',
+				'AND nsr.nmap_result_port_number = ?i ' .
+				'AND nsr.nmap_result_protocol = \'?s\'',
 				$host_id,
 				$port_number,
 				$protocol
 			);
 			$result = $this->db->fetch_object_array($sql);
 			if (isset($result[0]) && is_object($result[0])) {
-				$this->id = $result[0]->nmap_scan_result_id;
+				$this->id = $result[0]->nmap_result_id;
 				$this->host_id = $result[0]->host_id;
-				$this->port_number = $result[0]->nmap_scan_result_port_number;
-				$this->protocol = $result[0]->nmap_scan_result_protocol;
+				$this->port_number = $result[0]->nmap_result_port_number;
+				$this->protocol = $result[0]->nmap_result_protocol;
 				$this->scan_id = $result[0]->scan_id;
 				$this->state_id = $result[0]->state_id;
 				$this->state = $result[0]->state_state;
-				$this->timestamp = $result[0]->nmap_scan_result_timestamp;
-				$this->service_name = $result[0]->nmap_scan_result_service_name;
-				$this->service_version = $result[0]->nmap_scan_result_service_version;
+				$this->timestamp = $result[0]->nmap_result_timestamp;
+				$this->service_name = $result[0]->nmap_result_service_name;
+				$this->service_version = $result[0]->nmap_result_service_version;
 			}
     }
 
@@ -391,17 +390,17 @@ class Nmap_scan_result
     public function save() {
 			if($this->host_id != NULL && $this->port_number != NULL && $this->state_id != NULL && $this->scan_id != NULL) {
 				// Clean out any old records for this port
-				$sql = array('DELETE from nmap_scan_result where host_id = ?i and nmap_scan_result_port_number = ?i',
+				$sql = array('DELETE from nmap_result where host_id = ?i and nmap_result_port_number = ?i',
     					$this->host_id,
     					$this->port_number);
     		$this->db->iud_sql($sql);
     		
 				if ($this->id != NULL ) {
-					$sql = array('UPDATE nmap_scan_result set state_id=?i, ' .
-							' nmap_scan_result_port_number=?i, nmap_scan_result_protocol=\'?s\', host_id=?i, nmap_scan_result_service_name=\'?s\', ' .
-							' nmap_scan_result_service_version=\'?s\', nmap_scan_result_timestamp=NOW(), ' .
-							' nmap_scan_result_is_new=0, scan_id=?i ' .
-							' where nmap_scan_result_id = ?i', 
+					$sql = array('UPDATE nmap_result set state_id=?i, ' .
+							' nmap_result_port_number=?i, nmap_result_protocol=\'?s\', host_id=?i, nmap_result_service_name=\'?s\', ' .
+							' nmap_result_service_version=\'?s\', nmap_result_timestamp=NOW(), ' .
+							' nmap_result_is_new=0, scan_id=?i ' .
+							' where nmap_result_id = ?i', 
 							$this->state_id,
 							$this->port_number,
 							$this->protocol,
@@ -413,9 +412,9 @@ class Nmap_scan_result
 							);
 				}
 				else {
-					$sql = array('INSERT INTO nmap_scan_result ' . 
-								'(state_id, nmap_scan_result_port_number, nmap_scan_result_protocol, host_id, nmap_scan_result_service_name, ' .
-								'scan_id, nmap_scan_result_service_version, nmap_scan_result_timestamp) ' . 
+					$sql = array('INSERT INTO nmap_result ' . 
+								'(state_id, nmap_result_port_number, nmap_result_protocol, host_id, nmap_result_service_name, ' .
+								'scan_id, nmap_result_service_version, nmap_result_timestamp) ' . 
 								' VALUES (?i, ?i, \'?s\', ?i, \'?s\', ?i, \'?s\', NOW())',
 								$this->state_id,
 								$this->port_number,
@@ -428,12 +427,12 @@ class Nmap_scan_result
 				$this->db->iud_sql($sql);
 			}
 			else {
-				if ($this->scan_id == NULL) $this->log->write_error("Can't save nmap_scan_result as scan_id is NULL");
-				if ($this->host_id == NULL) $this->log->write_error("Can't save nmap_scan_result as host_id is NULL");
-				if ($this->port_number == NULL) $this->log->write_error("Can't save nmap_scan_result as port_number is NULL");
-				if ($this->protocol == NULL) $this->log->write_error("Can't save nmap_scan_result as protocol is NULL");
+				if ($this->scan_id == NULL) $this->log->write_error("Can't save nmap_result as scan_id is NULL");
+				if ($this->host_id == NULL) $this->log->write_error("Can't save nmap_result as host_id is NULL");
+				if ($this->port_number == NULL) $this->log->write_error("Can't save nmap_result as port_number is NULL");
+				if ($this->protocol == NULL) $this->log->write_error("Can't save nmap_result as protocol is NULL");
 				if ($this->state_id == NULL) {
-					$this->log->write_error("Can't save nmap_scan_result as state_id is NULL");
+					$this->log->write_error("Can't save nmap_result as state_id is NULL");
 				}
 				return false;
 			}
@@ -535,6 +534,6 @@ class Nmap_scan_result
     	$this->timestamp = date( 'Y-m-d H:i:s' );
     }
 
-} /* end of class Nmap_scan_result */
+} /* end of class nmap_result */
 
 ?>

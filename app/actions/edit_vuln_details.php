@@ -3,11 +3,16 @@
  * This is the default subcontroller for editing vulnerability
  * details
  * 
- *  by Josh Bauer <joshbauer3@gmail.com>
- * 
+ *  
+ * @author Josh Bauer <joshbauer3@gmail.com>
+ * @package HECTOR
  */
-include_once($templates. 'admin_headers.tpl.php');
-require_once($approot . 'lib/class.Vuln_details.php');
+
+/**
+ * Necessary includes
+ */
+require_once($approot . 'lib/class.Vuln_detail.php');
+
 if (isset($_GET['id']) && ($_GET['id'] != '')) {
 	$vuln_details= new Vuln_details(intval($_GET['id']));
 	
@@ -27,9 +32,9 @@ if (isset($_GET['id']) && ($_GET['id'] != '')) {
 		if (isset($_POST['fixed_notes'])) $vuln_details->set_fixed_notes($_POST['fixed_notes']);
 		
 		$vuln_details->save();
-		echo 'Record updated';
+		// echo 'Record updated';
 		$vuln_details= new Vuln_details(intval($_GET['id']));
-		include_once($templates . 'vuln_details.tpl.php');
+		$edit_vuln_template = $templates . 'vuln_details.tpl.php';
 	}
 	else
 	{
@@ -38,7 +43,9 @@ if (isset($_GET['id']) && ($_GET['id'] != '')) {
 		$form->set_name($form_name);
 		$token = $form->get_token();
 		$form->save();
-		include_once($templates . 'edit_vuln_details.tpl.php');
+		$edit_vuln_template = $templates . 'edit_vuln_details.tpl.php';
 	}
 }
+include_once($templates. 'admin_headers.tpl.php');
+include_once($edit_vuln_template);
 ?>

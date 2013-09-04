@@ -1,6 +1,14 @@
 <?php
 /**
- * This is the default subcontroller
+ * This is the default subcontroller for displaying system
+ * alerts
+ * 
+ * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+ * @package HECTOR
+ */
+ 
+/**
+ * Include the Alert class
  */
 require_once($approot . 'lib/class.Alert.php');
 

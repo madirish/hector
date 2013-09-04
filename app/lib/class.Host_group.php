@@ -1,7 +1,4 @@
 <?php
-
-error_reporting(E_ALL);
-
 /**
  * HECTOR - class.Host_group.php
  * This file is part of HECTOR.
@@ -9,21 +6,22 @@ error_reporting(E_ALL);
  *
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * @package HECTOR
+ * @version 2013.08.28
  */
+ 
+/**
+ * Enable error reporting
+ */
+error_reporting(E_ALL);
 
 if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
 }
 
-$explaination = "Host groups are logical aggregations of machines, generally assigned " .
+/*$explaination = "Host groups are logical aggregations of machines, generally assigned " .
 		"to a specific support provider.  Host groups can be used to target specific scans " .
-		"at targets.";
-/**
- *
- * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
- */
-require_once('class.Nmap_scan_result.php');
-
+		"at targets.";*/
+		
 /* user defined includes */
 require_once('class.Config.php');
 require_once('class.Db.php');
@@ -32,21 +30,18 @@ require_once('class.Collection.php');
 require_once('interface.Maleable_Object_Interface.php');
 require_once('class.Maleable_Object.php');
 
-/* user defined constants */
-// section 127-0-0-1--4d23d2c8:125a23d9458:-8000:0000000000000CDE-constants begin
-// section 127-0-0-1--4d23d2c8:125a23d9458:-8000:0000000000000CDE-constants end
 
 /**
- * Short description of class Host_group
+ * Host_groups are containers for hosts in order to distinguish them.
+ * For instance, Host_groups could be created for LAN machines,
+ * DMZ servers, critical hosts, or web servers.  This is merely an
+ * organizational tool, used for group access and targeting scans.
  *
  * @access public
+ * @package HECTOR
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  */
 class Host_group extends Maleable_Object implements Maleable_Object_Interface {
-    // --- ASSOCIATIONS ---
-
-
-
     // --- ATTRIBUTES ---
 
     /**
@@ -159,6 +154,12 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
     	return $retval;
     }
 
+	/**
+	 * Generate the HTML for the form used to add or 
+	 * edit a host group.
+	 * 
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 */
 	public function get_add_alter_form() {
 		// get the host groups array
 		$hostgroups = array();
@@ -200,14 +201,18 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
 	 * Applying the host_group to all hosts should only
 	 * be done on add/edit, default to this query should
 	 * always be 'no'.
+	 * 
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 */
 	public function get_applytoall() {
 		return 0;
 	}
 
-    /* This function directly supports the Collection class.
+    /**
+     * This function directly supports the Collection class.
 	 *
-	 * @return SQL select string
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return String The SQL select string
 	 */
 	public function get_collection_definition($filter = '', $orderby = '') {
 		$query_args = array();
@@ -228,10 +233,23 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
 		return $sql;
 	}
 
+	/**
+	 * Get the display criteria for the add/edit/alter form.
+	 * 
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @access public
+	 */
 	public function get_displays() {
 		return array('Group name'=>'get_name');
 	}
 
+	/**
+	 * Get all the hosts that are assigned to this group.
+	 * 
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @access public
+	 * @return Array List of host_id integers
+	 */
 	public function get_host_ids() {
 		$retval = array();
 		if ($this->id != null) {
@@ -246,17 +264,33 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
 		return $retval;
 	}
 	
+	/**
+	 * Return the unique id for this object.
+	 * 
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @access public
+	 * @return Int The integer identifier of this object
+	 */
 	public function get_id() {
 		return $this->id;
 	}
 
+	/**
+	 * Return the name of this host group.
+	 * 
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @access public
+	 * @return String The name of this host group.
+	 */
     public function get_name() {
     	return $this->name;
     }
 
     /**
-     *
-     * @todo prevent duplicate names
+     * Save the object, assuming it is new, otherwise simply update it.
+     * 
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @access public
      */
     public function save() {
     	if ($this->id > 0 ) {
@@ -269,20 +303,35 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
 	    	$this->db->iud_sql($sql);
     	}
     	else {
-    		// Insert a new value
-	    	$sql = array(
-	    		'INSERT INTO host_group SET host_group_name = \'?s\'',
-	    		$this->name
-	    	);
-	    	$this->db->iud_sql($sql);
-	    	// Now set the id
-	    	$this->id = mysql_insert_id();
+    		// Check if the name exists
+    		$sql = array(
+				'select host_group_id from host_group where host_group_name = \'?s\'',
+				$this->name
+			);
+			$result = $this->db->fetch_object_array($sql);
+			if (isset($result[0]->host_group_id)) {
+				$this->id = $result[0]->host_group_id;
+			}
+			else {
+	    		// Insert a new value
+		    	$sql = array(
+		    		'INSERT INTO host_group SET host_group_name = \'?s\'',
+		    		$this->name
+		    	);
+		    	$this->db->iud_sql($sql);
+		    	// Now set the id
+		    	$this->id = mysql_insert_id();
+		    	$this->log->write_message('Added new host group: ' . $this->get_name());	
+			}
     	}
     }
     
     /**
      * Allows us to create new host groups and apply them to all the
      * hosts we currently track.
+     * 
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @access public
      */
     public function set_applytoall($applytoall) {
     	if ($applytoall) {
@@ -299,6 +348,13 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
     	}
     }
 
+	/**
+	 * Set the sanitized name of this host group.
+	 * 
+	 * @param String The name of the host_group
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @access public
+	 */
     public function set_name($name) {
     	$this->name = htmlspecialchars($name);
     }

@@ -68,7 +68,9 @@ if [ ! -d $HECTOR_PATH ] ; then
 fi
 cp -rf app $HECTOR_PATH
 cp -rf html $HECTOR_PATH
-mkdir ${HECTOR_PATH}/app/screenshots
+if [ ! -d $HECTOR_PATH/app/screenshots ] ; then
+  mkdir ${HECTOR_PATH}/app/screenshots
+fi
 chmod -R 0755 $HECTOR_PATH
 
 echo " [+] Files moved"
@@ -132,8 +134,6 @@ echo
 if ! cat /etc/crontab | grep -q "HECTOR" ; then
   echo "#HECTOR scans" >> /etc/crontab
   echo "01 0 * * * /usr/bin/php $HECTOR_PATH/app/scripts/scan_cron.php" >> /etc/crontab
-  echo "#HECTOR OSSEC monitor restart (for log rotates)" >> /etc/crontab
-  echo "#01 0 * * * service hector-ossec-mysql restart" >> /etc/crontab
   echo " [+] cron scheduled in /etc/crontab"
 else
   echo " [+] HECTOR crontab seems to already exist"
@@ -150,28 +150,34 @@ if [ ! -d /var/ossec ] ; then
   ${HECTOR_PATH}/app/software/ossec-hids-2.7/install.sh
 fi
 
-echo " [+] Adding OSSEC local_rule so it can monitor darknet sensors."
-echo "<group name=\"local,syslog,\">" >> /var/ossec/rules/local_rules.xml
-echo "  <rule id=\"100001\" level=\"3\">" >> /var/ossec/rules/local_rules.xml
-echo "    <if_sid>4100</if_sid>" >> /var/ossec/rules/local_rules.xml
-echo "    <match>iptables</match>" >> /var/ossec/rules/local_rules.xml
-echo "    <description>Darknet sensor detection for HECTOR.</description>\n" >> /var/ossec/rules/local_rules.xml
-echo "  </rule>" >> /var/ossec/rules/local_rules.xml
-echo "</group>" >> /var/ossec/rules/local_rules.xml
+echo " [+] Adding OSSEC decoder so it can monitor darknet sensors."
+if grep -Fxq "HECTOR" /var/ossec/etc/decoder.xml ; then
+  echo "     Looks like the HECTOR decoders are already there..."
+else
+  cat app/software/ossec-hector-decoder.xml >> /var/ossec/etc/decoder.xml
+fi
+echo " [+] Adding OSSEC local_rules for kojoney2 and darknet sensors."
+if grep -Fxq "HECTOR" /var/ossec/rules/local_rules.xml ; then
+  echo "     Looks like the rules are already there..."
+else
+  cat app/software/ossec-hector-rules.xml >> /var/ossec/rules/local_rules.xml
+fi
+
 
 echo " [+] Scheduling OSSEC monitoring services."
-sed -i "s/USERNAME = 'root'/USERNAME = 'hector'/g" ${HECTOR_PATH}/app/scripts/hector-ossec-mysql.py
-sed -i "s/PASSWORD = ''/PASSWORD = '${HECTORPASS}'/g" ${HECTOR_PATH}/app/scripts/hector-ossec-mysql.py
-cp ${HECTOR_PATH}/app/scripts/hector-ossec-mysql /etc/init.d/
-chmod +x /etc/init.d/hector-ossec-mysql
-/sbin/chkconfig --add hector-ossec-mysql
-/sbin/chkconfig --level 345 hector-ossec-mysql on
+mv ${HECTOR_PATH}/app/scripts/ossec2mysql.conf /etc/
+sed -i "s/dbuser=youruser/dbuser=hector/g" /etc/ossec2mysql.conf
+sed -i "s/dbpasswd=yourpassword/dbpasswd=${HECTORPASS}/g" /etc/ossec2mysql.conf
+mv ${HECTOR_PATH}/app/scripts/ossec2hector /etc/init.d/
+chmod +x /etc/init.d/ossec2hector
+/sbin/chkconfig --add ossec2hector
+/sbin/chkconfig --level 345 ossec2hector on
 /sbin/service ossec restart
-/sbin/service hector-ossec-mysql start
+/sbin/service ossec2hector start
 
 echo -e "Do you wish to allow remote OSSEC (UDP 1514)? (y/n):"
 read configiptables
-if [ $configiptables == 'y' ] ; then
+if [ $configiptables == "y" ] ; then
   if ! cat /etc/sysconfig/iptables | grep -q "udp \-\-dport 1514 \-j ACCEPT" ; then
     sed -i "s/--dport 22 -j ACCEPT/--dport 22 -j ACCEPT\\n-A INPUT -m state --state NEW -m udp -p udp --dport 1514 -j ACCEPT/" /etc/sysconfig/iptables
     echo " [+] Committing firewall updates"

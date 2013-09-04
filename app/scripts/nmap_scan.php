@@ -44,7 +44,7 @@ require_once($approot . 'lib/class.Dblog.php');
 require_once($approot . 'lib/class.Host.php');
 require_once($approot . 'lib/class.Host_group.php');
 require_once($approot . 'lib/class.Log.php');
-require_once($approot . 'lib/class.Nmap_scan_result.php');
+require_once($approot . 'lib/class.Nmap_result.php');
 require_once($approot . 'lib/class.Scan_type.php');
 	
 // Make sure of the environment
@@ -304,15 +304,15 @@ else {
 	if ($hasport != null || $hasudpport != null) {
 		if ($hasport != null) {
 			$filter .= ' AND  ' .
-				'(nsr.state_id=1 AND nsr.nmap_scan_result_protocol = "tcp" AND nsr.nmap_scan_result_port_number in (' . mysql_real_escape_string($hasport) . ')';
+				'(nsr.state_id=1 AND nsr.nmap_result_protocol = "tcp" AND nsr.nmap_result_port_number in (' . mysql_real_escape_string($hasport) . ')';
 			$filter .= ' AND nsr.host_id IN (' . implode(',',$host_ids) . ')';
 		}
 		if ($hasudpport != null) {
 			$filter .= ' AND ' .
-				'(nsr.state_id=1 AND nsr.nmap_scan_result_protocol = "udp" AND nsr.nmap_scan_result_port_number in (' . mysql_real_escape_string($hasudpport) . ')';
+				'(nsr.state_id=1 AND nsr.nmap_result_protocol = "udp" AND nsr.nmap_result_port_number in (' . mysql_real_escape_string($hasudpport) . ')';
 			$filter .= ' AND nsr.host_id IN (' . implode(',',$host_ids) . ')';
 		}
-		$prevscan = new Collection('Nmap_scan_result', $filter);
+		$prevscan = new Collection('Nmap_result', $filter);
 		if (isset($prevscan->members) && is_array($prevscan->members)) {
 			// rebuild the $hosts and $host_ids arrays
 			$hosts = array();
@@ -350,7 +350,7 @@ else {
 	// Shut down nicely
 	loggit("nmap_scan.php status", "Nmap scan complete.");
 	$db->close();
-	syslog(LOG_INFO, 'Nmap_scan.php complete.');
+	syslog(LOG_INFO, 'nmap_scan.php complete.');
 }
 
 function show_help($error) {

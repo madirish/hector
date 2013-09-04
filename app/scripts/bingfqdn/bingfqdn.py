@@ -29,8 +29,8 @@ except Exception as err:
 #look up IP's for web servers
 cursor = conn.cursor()
 sql = """select distinct(host_id) 
-    from nmap_scan_result 
-    where nmap_scan_result_port_number IN (80,443,8000,8080) 
+    from nmap_scan 
+    where nmap_scan_port_number IN (80,443,8000,8080) 
       and state_id = 1 """
 cursor.execute(sql)
 host_ids = cursor.fetchall()

@@ -5,17 +5,19 @@ $class = (isset($_GET['classB'])) ? 'classC' : 'classB';
 if (isset($hosts) && is_array($hosts)) {
 	print "<table class='table table-striped'><th>Hostname</th><th>IP</th><th>Open Ports</th><th>OS</th></tr>";
 	foreach ($hosts as $host) {
-		print "<tr><td><a href='?action=details&object=Host&id=" . $host->get_id();
-		print "'>".$host->get_name()."</a></td><td>".$host->get_ip()."</td>";
-		print "<td>" . $host->get_open_ports() . "</td>";
-		print "<td>" . $host->get_os() . "</td>";
+		$name = ($host->host_name !== '') ? $host->host_name : $host->host_ip;
+		print "<tr><td><a href='?action=host_details&id=" . $host->host_id;
+		print "'>".htmlspecialchars($name)."</a></td><td>".htmlspecialchars($host->host_ip)."</td>";
+		print "<td>" . $host->portcount . "</td>";
+		print "<td>" . htmlspecialchars($host->host_os) . "</td>";
 		print "</tr>";
 	}
 	print "</table>";
 }
 else {
 	print "<ul class='nav nav-tabs nav-stacked'>";
-	foreach($result as $row) {
+	foreach($ip_ranges as $row) {
+		print "<!-- row -->";
 		print "<li><a href='?action=browse_ip&$class=". $row->ipclass ."'>";
 		print $row->ipclass . " <span class='badge badge-info'>" . $row->thecount . " hosts</span></a></li>";
 	}

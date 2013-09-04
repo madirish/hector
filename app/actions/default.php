@@ -5,8 +5,13 @@
  * 
  * @author Justin Klein Keane <jukeane@sas.upenn.edu>
  * @version 2011.02.22
+ * @package HECTOR
+ * @todo Move SQL to helper objects
  */
 
+/**
+ * Require the database
+ */
 require_once($approot . 'lib/class.Db.php');
 require_once($approot . 'lib/class.Host.php');
 require_once($approot . 'lib/class.Collection.php');

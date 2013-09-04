@@ -1,7 +1,4 @@
 <?php
-
-error_reporting(E_ALL);
-
 /**
  * HECTOR - class.User.php
  *
@@ -12,18 +9,17 @@ error_reporting(E_ALL);
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * @version .1
  */
+ 
+/**
+ * Error reporting
+ */
+error_reporting(E_ALL);
+
+
 
 if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
 }
-
-/**
- * include Person
- *
- * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
- * @version .1
- */
-require_once('class.Person.php');
 
 /* user defined includes */
 require_once('class.Config.php');
@@ -33,14 +29,10 @@ require_once('class.Collection.php');
 require_once('class.Db.php');
 require_once('class.Log.php');
 
-/* user defined constants */
-// section 127-0-0-1--4d23d2c8:125a23d9458:-8000:0000000000000D1F-constants begin
-// section 127-0-0-1--4d23d2c8:125a23d9458:-8000:0000000000000D1F-constants end
-
 /**
- * Short description of class User
+ * User is the base object for user accounts and access.
  *
- * @access public
+ * @package HECTOR
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * @version .1
  */

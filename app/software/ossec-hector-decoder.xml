@@ -1,0 +1,21 @@
+  <!-- HECTOR -->
+  <!--  Kojoney2 Decoder -->
+  <!--  Ex:              -->
+  <!-- 2013-08-16 14:20:22-0400 [SSHService ssh-userauth on SSHServerTransport,0,192.168.0.41] root authenticated with keyboard-interactive -->
+  <decoder name="kojoney2">
+    <prematch>\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d-\d\d\d\d [SSH</prematch>
+  </decoder>
+
+  <decoder name="kojoney2-command">
+    <parent>kojoney2</parent>
+    <prematch>COMMAND IS</prematch>
+    <regex offset="after_parent">,(\d+),(\d+.\d+.\d+.\d+)] COMMAND IS : (\.*)</regex>
+    <order>id, srcip, extra_data</order>
+  </decoder>
+
+  <decoder name="kojoney2-login">
+    <parent>kojoney2</parent>
+    <prematch>login attempt</prematch>
+    <regex offset="after_parent">,(\d+),(\d+.\d+.\d+.\d+)] login attempt [(\S+) </regex>
+    <order>id, srcip, user</order>
+  </decoder>

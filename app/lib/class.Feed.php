@@ -1,7 +1,4 @@
 <?php
-
-error_reporting(E_ALL);
-
 /**
  * HECTOR - class.Feed.php
  *
@@ -11,6 +8,11 @@ error_reporting(E_ALL);
  * @package HECTOR
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  */
+ 
+/**
+ * Set up error reporting
+ */
+error_reporting(E_ALL);
 
 if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
@@ -27,8 +29,9 @@ require_once('class.Maleable_Object.php');
 /**
  * Feed is just an object for tracking RSS feed urls
  *
- * @access public
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+ * @package HECTOR
+ * @todo Implement at the data layer and create a method to fetch, parse, and import feeds
  */
 class Feed extends Maleable_Object implements Maleable_Object_Interface {
     // --- ASSOCIATIONS ---

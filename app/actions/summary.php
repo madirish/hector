@@ -3,11 +3,15 @@
  * This is the default subcontroller for assets 
  * @author Justin Klein Keane <jukeane@sas.upenn.edu>
  * @version 2011.02.22
+ * @package HECTOR
+ * @todo Move the SQL out of actions/summary.php and into a helper class
  */
 
 
 // Queries (inefficiently done)
-
+/**
+ * Require the database
+ */
 require_once($approot . 'lib/class.Db.php');
 $db = Db::get_instance();
 global $appuser;
@@ -17,23 +21,23 @@ if (! isset($appuser)) {
 } 
 
 // Count of top 10 ports
-$sql = "select distinct(n.nmap_scan_result_port_number) as port_number, " .
-		"count(n.nmap_scan_result_id) as portcount from nmap_scan_result n ";
+$sql = 'SELECT DISTINCT(CONCAT(n.nmap_result_port_number, "/", n.nmap_result_protocol)) AS port_number, '  .
+		'COUNT(n.nmap_result_id) AS portcount ' .
+		'FROM nmap_result n ';
 if ($appuser->get_is_admin()) {
-	$sql .= "where n.state_id = 1 " .
-		"group by nmap_scan_result_port_number " .
-		"order by portcount desc " .
-		"limit 10 ";
+	$sql .= 'WHERE n.state_id = 1 ' .
+		'GROUP BY nmap_result_port_number ' .
+		'ORDER BY portcount DESC ' .
+		'LIMIT 10 ';
 }
 else {
 	$sql .= ", host h, user_x_supportgroup x " .
 			"WHERE n.host_id = h.host_id AND h.supportgroup_id = x.supportgroup_id " .
 			"AND x.user_id = " . $appuser->get_id() . " AND n.state_id = 1 " .
-			"GROUP BY nmap_scan_result_port_number " .
+			"GROUP BY nmap_result_port_number " .
 			"ORDER BY portcount desc " .
 			"LIMIT 10 ";
 }
-
 $port_result = $db->fetch_object_array($sql);
 
 if ($appuser->get_is_admin())

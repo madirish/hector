@@ -1,5 +1,6 @@
 <?php
-if (isset($_SESSION['user_id'])) include_once($approot . 'actions/global.php');
+// Necessary includes
+require_once($approot . 'actions/global.php');
 require_once($approot . 'lib/class.Form.php');
 $ip_search = new Form();
 $ip_search_name = 'search_ip_form';
@@ -15,6 +16,7 @@ $ip_search->save();
       <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-globe"></i> Asset Management <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li><a href="?action=browse_ip">Browse</a></li>
+        <li><a href="?action=ossec">OSSEC Clients</a></li>
         <li class="divider"></li>
         <li class="nav-header">Search</li>
         <li><a href="?action=assets&object=search">Search</a></li>
@@ -28,12 +30,12 @@ $ip_search->save();
       </ul>
     </li>
     <li class="dropdown">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $vuln_badge;?><i class="icon-list-alt"></i> Reports <b class="caret"></b></a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> <?php echo $reports ?> <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li><a href="?action=reports&report=by_port">Ports detected</a></li>
         <li><a href="?action=reports&report=danger_host">Dangerous hosts</a></li>
         <li><a href="?action=reports&report=nonisuswebservers">Non ISUS Server Report</a></li>
-        <li><a href="?action=vuln">Vulnerabilities<?php echo $vuln_badge ;?></a></li>
+        <li><a href="?action=vuln">Vulnerabilities <?php echo $vuln_badge ;?></a></li>
       </ul>
     </li>
     <li class="dropdown">
@@ -42,6 +44,7 @@ $ip_search->save();
         <li><a href="?action=detection">Detection summary</a></li>
         <li><a href="?action=honeypot">Honeypot data</a></li>
         <li><a href="?action=attackerip">Malicious IP database</a></li>
+        <li><a href="?action=ossecalerts">OSSEC Alerts</a></li>
       </ul>
     </li>
     <li class="dropdown">

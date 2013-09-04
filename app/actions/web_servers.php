@@ -2,6 +2,12 @@
 /**
  * Report on dangerous hosts, that is, hosts with four or 
  * more common server ports open
+ * @author Justin Klein Keane <jukeane@sas.upenn.edu>
+ * @package HECTOR
+ */
+
+/**
+ * Setup defaults
  */
 $content = '';
 require_once($approot . 'lib/class.Db.php');
@@ -12,10 +18,10 @@ $content .= '<h3>Web servers</h3>' .
 		'<h4>Hosts with port 80 or 443 open excluding Skype and machines tagged as printers.</h4>';
 
 $query = 'select n.host_id, h.supportgroup_id ' .
-		'from nmap_scan_result n, host h ' .
+		'from nmap_result n, host h ' .
 		'where n.host_id = h.host_id and n.state_id=1 ' .
-		'and n.nmap_scan_result_port_number in (80,443) ' .
-		'AND LOWER(n.nmap_scan_result_service_version) NOT LIKE \'%skype%\' ' .
+		'and n.nmap_result_port_number in (80,443) ' .
+		'AND LOWER(n.nmap_result_service_version) NOT LIKE \'%skype%\' ' .
 		'AND h.host_id NOT IN (SELECT host_id from host_x_tag) ' .
 		'order by h.supportgroup_id';
 $host_results = $db->fetch_object_array($query);

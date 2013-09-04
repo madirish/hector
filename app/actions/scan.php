@@ -1,5 +1,13 @@
 <?php
+/** 
+ * This is the report subcontroller for scans
+ * @author Justin Klein Keane <jukeane@sas.upenn.edu>
+ * @package HECTOR
+ */
 
+/**
+ * Require the factory class
+ */
 include_once($approot . 'lib/class.Collection.php');
 include_once($approot . 'lib/class.Scan.php');
 include_once($approot . 'lib/class.Scan_type.php');

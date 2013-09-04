@@ -1,13 +1,15 @@
 <?php
-
-error_reporting(E_ALL);
-
 /**
  * HECTOR - class.Tag.php
  *
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * @package HECTOR
  */
+
+/**
+ * Error reporting
+ */
+error_reporting(E_ALL);
 
 if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
@@ -24,7 +26,7 @@ require_once('class.Maleable_Object.php');
 /**
  * Tags are free taxonomies used to group hosts.
  *
- * @access public
+ * @package HECTOR
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  */
 class Tag extends Maleable_Object implements Maleable_Object_Interface {

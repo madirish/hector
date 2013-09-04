@@ -1,10 +1,15 @@
 <?php
 /**
  * Show attacker ip's from darknet or ossec logs
- * @author Justin Klein Keane <jukeane@sas.upenn.edu>
+ * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+ * @package HECTOR
  * @version 2011.11.28
+ * @todo Move the SQL from this file into a utility class
  */
 
+/**
+ * Get a form with XSRF protection
+ */
 require_once($approot . 'lib/class.Form.php');
 $form = new Form();
 $formname = 'search_attackerip_form';
@@ -27,17 +32,17 @@ if ($ip != '') {
 			'where src_ip = inet_aton(\'' . $ip . '\') order by received_at desc';
 	$darknet_drops = $db->fetch_object_array($sql);
 	
-	$sql = 'select count(id) as thecount from koj_login_attempts where ip_numeric = inet_aton(\'' . $ip . '\')';
+	$sql = 'select count(id) as thecount from koj_login_attempt where ip_numeric = inet_aton(\'' . $ip . '\')';
 	$honeypot_logins = $db->fetch_object_array($sql);
 	$login_attempts = $honeypot_logins[0]->thecount;
 	if ($login_attempts == '') $login_attempts = 'no';
 	
-	$sql = 'select count(id) as thecount from koj_executed_commands where ip = \'' . $ip . '\'';
+	$sql = 'select count(id) as thecount from koj_executed_command where ip = \'' . $ip . '\'';
 	$honeypot_commands = $db->fetch_object_array($sql);
 	$commands = $honeypot_commands[0]->thecount;
 	if ($commands == '') $commands = 'no';
 	
-	$sql = 'select a.alert_date, a.rule_log, r.rule_level from ossec_alerts a, ossec_rules r ' .
+	$sql = 'select a.alert_date, a.rule_log, r.rule_level from ossec_alert a, ossec_rule r ' .
 			'where a.rule_id = r.rule_id and r.rule_level >= 7 AND ' .
 			'a.rule_src_ip_numeric = inet_aton(\'' . $ip . '\') order by alert_date DESC';
 	$ossec_alerts = $db->fetch_object_array($sql);

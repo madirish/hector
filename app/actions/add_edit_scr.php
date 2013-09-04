@@ -1,6 +1,11 @@
 <?php
 /**
-* This is the generic subcontroller for adding new objects.
+* This is the generic subcontroller for modifying objects.
+* The file expects a GET id element and a POST array that
+* matches up to the object specified.
+* 
+* @package HECTOR
+* @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 **/
 
 if (! isset($_GET['object'])) {
@@ -11,6 +16,9 @@ else {
 	$object = ucfirst(urldecode($_GET['object']));	
 	$file = $approot . 'lib/class.' . $object . '.php';
 	if (is_file($file)) {
+		/**
+		 * Include the source file for the class we want to modify
+		 */
 		include_once($file);
 		$id = isset($_GET['id']) ? intval($_GET['id']) : '';
 		$generic = new $object($id);

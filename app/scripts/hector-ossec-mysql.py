@@ -39,9 +39,9 @@ class LogEntry:
   host_id = None
   # The log the alert came from (ex: (www.sas.upenn.edu) 128.91.55.19->/var/log/httpd/error_log)
   alert_log = None
-  # The rule id from the hector.ossec_rules table
+  # The rule id from the hector.ossec_rule table
   rule_id = None
-  # The actual body of the log entry that caused the alert, into ossec_alerts.rule_log
+  # The actual body of the log entry that caused the alert, into ossec_alert.rule_log
   message = None
   
   # Other self explanatory messages
@@ -171,7 +171,7 @@ class LogEntry:
     
   # Rule: 31410 (level 3) -> 'PHP Warning message.'
   def set_new_rule(self, rulestr):
-    """Set the rule_id from the database, or addd a new rule to ossec_rules."""
+    """Set the rule_id from the database, or addd a new rule to ossec_rule."""
     rulestr = str(rulestr).strip()
     rulesplit = rulestr.split(' ')
     number = rulesplit[1]
@@ -180,7 +180,7 @@ class LogEntry:
     if DEBUG : syslog.syslog("Attempting to set new rule number %s" % number)
     try:
       cursor = self.conn.cursor()
-      sql = 'insert into ossec_rules set '
+      sql = 'insert into ossec_rule set '
       sql += ' rule_number = %s, '
       sql += ' rule_message = %s, '
       sql += ' rule_level = %s'
@@ -214,7 +214,7 @@ class LogEntry:
     rule_number = int(id)
     try:
       cursor = self.conn.cursor()
-      sql = 'select rule_id from ossec_rules where rule_number = %s'
+      sql = 'select rule_id from ossec_rule where rule_number = %s'
       cursor.execute(sql , (rule_number)) 
       rule_id = int(cursor.fetchone()[0])
       print "Rule id is %d" % rule_id
@@ -246,7 +246,7 @@ class LogEntry:
       # Make sure we have a valid entry to cut down on db interacts
       if self.get_ossec_alert_id() > 0 and self.get_src_ip() > 0:
         cursor = self.conn.cursor()
-        sql = 'insert into ossec_alerts set '
+        sql = 'insert into ossec_alert set '
         sql += ' alert_date = STR_TO_DATE(%s,\'%%Y %%b %%d %%H:%%i:%%s\'), ' # 2011 Feb 14 11:55:59
         sql += ' host_id = %s, '
         sql += ' alert_log = %s, '
@@ -374,7 +374,7 @@ class TestLogEntry(unittest.TestCase):
   def test_get_rule_id(self):
     """Test the rule_id persistence using a SQL query."""
     cursor = self.conn.cursor()
-    sql = 'select rule_id from ossec_rules where rule_level = "3" '
+    sql = 'select rule_id from ossec_rule where rule_level = "3" '
     sql += 'AND rule_message = "PHP Warning message." AND rule_number = "31410"'
     cursor.execute(sql) 
     rule_id = cursor.fetchone()[0]

@@ -1,7 +1,4 @@
 <?php
-
-error_reporting(E_ALL);
-
 /**
  * class.Host.php
  *
@@ -11,17 +8,15 @@ error_reporting(E_ALL);
  * @package HECTOR
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  */
+ 
+/**
+ * Set up error reporting
+ */
+error_reporting(E_ALL);
 
 if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
 }
-
-/**
- * include Port
- *
- * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
- */
-require_once('class.Nmap_scan_result.php');
 
 /* user defined includes */
 require_once('class.Config.php');
@@ -30,6 +25,7 @@ require_once('class.Log.php');
 require_once('class.Collection.php');
 require_once('interface.Maleable_Object_Interface.php');
 require_once('class.Maleable_Object.php');
+require_once('class.Nmap_result.php');
 require_once('class.Host_group.php');
 require_once('class.Supportgroup.php');
 require_once('class.Location.php');
@@ -40,6 +36,7 @@ require_once('class.Tag.php');
  *
  * @access public
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+ * @package HECTOR
  * @todo enable MAC address tracking
  */
 class Host extends Maleable_Object implements Maleable_Object_Interface {
@@ -275,10 +272,16 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 					$this->ignoredfor_days = $result[0]->host_ignoredfor_days;
 					$this->ignored_timestamp = $result[0]->host_ignored_timestamp;
 					$this->ignored_note = $result[0]->host_ignored_note;
-					$sql= array('SELECT url_url, url_screenshot from url where host_id = ?i', $id);
-					$results = $this->db->fetch_object_array($sql);
-					foreach($results as $result){
-						$this->urls[] = array($result->url_url, $result->url_screenshot);
+					$sql= array('SELECT url_id, url_url, url_screenshot from url where host_id = ?i', $id);
+					$url_results = $this->db->fetch_object_array($sql);
+					foreach($url_results as $url){
+						// Do some housekeeping to delete non-existent screenshots
+						global $approot;
+						if ( ! file_exists($approot . 'screenshots/' . $url->url_screenshot)) {
+							$sql = array('update url set url_screenshot=NULL where url_id = ?i ',$url->url_id);	
+							$this->db->iud_sql($sql);
+						}
+						$this->urls[] = array($url->url_url, $url->url_screenshot);
 					}
 				}
 				// Is there an exclusion?  Should it be honored?
@@ -670,7 +673,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	public function get_collection_by_port($port, $orderby='') {
 		global $appuser;
 		$portnum = intval($port);
-		$sql = 'select h.host_id from host h, nmap_scan_result n ';
+		$sql = 'select h.host_id from host h, nmap_result n ';
 		if (isset($appuser) && ! $appuser->get_is_admin()) {
 			$sql .= ', user_x_supportgroup x ';
 		}
@@ -679,7 +682,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 			$sql .= 'h.supportgroup_id = x.supportgroup_id AND' .
 					'x.user_id = ' . $appuser->get_id() . ' AND ';
 		}
-		$sql .= 'n.nmap_scan_result_port_number = ' . $portnum .' and n.state_id=1';
+		$sql .= 'n.nmap_result_port_number = ' . $portnum .' and n.state_id=1';
 		return $sql; 
 	}
 	
@@ -694,7 +697,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	public function get_collection_by_version($version, $orderby='') {
 		global $appuser;
 		$portnum = strtolower(mysql_real_escape_string($version));
-		$sql = 'select h.host_id from host h, nmap_scan_result n ';
+		$sql = 'select h.host_id from host h, nmap_result n ';
 		if (isset($appuser) && ! $appuser->get_is_admin()) {
 			$sql .= ', user_x_supportgroup x ';
 		}
@@ -713,86 +716,11 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 * @access public
 	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @return HTML chunk
+	 * @deprecated 2013.08.28 - Aug 28, 2013
 	 */
 	public function get_details() {
-		require_once('class.Nmap_scan_result.php');
-		//$scans = new Collection('Nmap_scan_result', ' and host_id = ' . $this->id . ' and s.state_state != \'closed\'', '', 'ORDER BY nmap_scan_result_port_number');
-		$scans = new Collection('Nmap_scan_result', ' AND nsr.host_id = ' . $this->id, '', 'GROUP BY nsr.nmap_scan_result_protocol ORDER BY nsr.nmap_scan_result_port_number');
-		$retval = '<div class="row"><div class="span5">';
-		$retval .= '<table id="host_details" class="table">' . "\n";
-		$retval .= '<tr id="name"><td>Hostname</td><td>' . $this->get_name() . '</td></tr>' . "\n";
-		$retval .= '<tr id="ip"><td>IP Address</td><td>' . $this->get_ip() . '</td></tr>' . "\n";
-		$retval .= '<tr id="ip"><td>Operating System</td><td>' . $this->get_os() . '</td></tr>' . "\n";
-		$retval .= '<tr id="technical"><td>Technical contact:</td><td>' . $this->get_technical() . '</td></tr>' . "\n";
-		$retval .= '<tr id="sponsor"><td>Sponsor:</td><td>' . $this->get_sponsor() . '</td></tr>' . "\n";
-		$retval .= '<tr id="location"><td>Location:</td><td>' . $this->location->get_name() . '</td></tr>' . "\n";
-		$retval .= '<tr id="supportgroup"><td>Support Group:</td><td>' . $this->supportgroup->get_name() . '</td></tr>' . "\n";
-		$retval .= '<tr id="link"><td>External URL:</td><td><a href="' . $this->get_link() . '">' 
-			. $this->get_link() . '</a></td></tr>' . "\n";
-		$retval .= '<tr id="notes"><td>Notes:</td><td>' . $this->get_note() . '</td></tr>' . "\n";
-		$retval .= '<tr id="policy"><td>Covered by policy:</td><td>';
-		$retval .= ($this->get_policy()) ? 'Yes' : 'No';
-		$retval .= '</td></tr>' . "\n";
-		$retval .= '<tr id="policy"><td>Excluded from portscan alerts?:</td><td>';
-		$retval .= ($this->get_portscan_exclusion()) ? 'Yes' : 'No';
-		$retval .= '</td></tr>' . "\n";
-		$retval .= '<tr id="notes"><td>Tags:</td><td>';
-		$retval .= implode(',', $this->get_tag_names());
-		$retval .= '</td></tr>' . "\n";
-		if ($this->get_portscan_exclusion()) {
-			$retval .= '<tr id="excludedby"><td>Excluded by:</td><td>' . $this->get_excludedby_name() . '</td></tr>' . "\n";
-			$retval .= '<tr id="excludedon"><td>Excluded on:</td><td>' . $this->get_excludedon() . '</td></tr>' . "\n";
-			$excludedfor = ($this->get_excludedfor() < 0) ? 'forever' : $this->get_excludedfor() . ' days';
-			$retval .= '<tr id="excludedfor"><td>Excluded for:</td><td>' . $excludedfor . '</td></tr>' . "\n";
-			$retval .= '<tr id="excludedreason"><td>Reason:</td><td>' . $this->get_excludedreason() . '</td></tr>' . "\n";
-		}
-		$retval .= '<tr id="groups"><td><a href="?action=details&object=host_group">Host groups</a>:</td><td>' . $this->get_host_groups_readable() . '</td></tr>' . "\n";
-		$retval .= '</table>';
-		$retval .= '</div><div class="span6"><p class="well well-small">NMAP scan results:</p>' . "\n";
-		$retval .= '<table class="table table-striped"><thead>';
-		$retval .= '<tr><th>Port</th><th>State</th><th>Date</th><th>Protocol</th><th>Version</th></tr>';
-		$retval .= '</thead><tbody>';
-		if (isset($scans->members) && is_array($scans->members)) {
-			foreach ($scans->members as $scan) $retval .= $scan->get_details();
-		}
-		$retval .= '</tbody></table>';
-				$retval .= '</div></div>';
-		$retval .= '<div class="row"><div class="span5"><table id="screenshotstable" class="table table-striped">' . "\n";
-		$retval .= '<thead><tr><th>URL</th><th>Screenshot</th></tr></thead><tbody>';
-		$approot = getcwd() . '/../app/';
-		foreach($this->get_urls() as $url) {
-			$retval .= '<tr><td>' . $url[0] . '</td><td>';
-			if ($url[1] and file_exists($approot . 'screenshots/' . $url[1]))  {
-				$retval .= '<a href=\'?action=display_screenshot&ajax&url=' . urlencode($url[0]) . '\'>';
-				$retval .= '<img width=150 alt="No image found" src=\'?action=display_screenshot&ajax&url=' . urlencode($url[0]) . '\'></img></a>';
-				
-			}
-			else { 
-				$retval .='No image available';
-				$sql = array('update url set url_screenshot=NULL where url_url=\'?s\'',$url[0]);
-				$this->db->iud_sql($sql); 
-			}
-		}
-			$retval .= '</td></tr>';
-		$retval .= '</tbody></table>';
-		$retval .= '</div><div class="span6">';
-		$retval .= '<p class="well well-small">Vulnerabilities:</p>';
-		$retval .= '<table id="vulntable" class="table table-striped">';
-		$retval .= '<thead><tr><th>Type</th><th>Text</th><th>Dicovered</th><th>Fixed</th><th>Ignore</th></tr></thead><tbody>';
-		$sql = array('select v.vuln_name, vd.vuln_details_id, vd.vuln_details_text, vd.vuln_details_datetime, vd.vuln_details_ignore, vd.vuln_details_fixed ' .
-				'from vuln_details vd inner join vuln v on vd.vuln_id = v.vuln_id ' .
-				'inner join vuln_x_host vh on vh.vuln_details_id = vd.vuln_details_id ' .
-				'where vh.host_id = ?i order by vd.vuln_details_datetime desc', $this->get_id());
-		$vulns = $this->db->fetch_object_array($sql);
-		foreach($vulns as $vuln) {
-			$retval .= '<tr><td><a href=?action=vuln_details&id=' . $vuln->vuln_details_id . '>' . $vuln->vuln_name . '</a></td>';
-			$retval .= '<td>' . $vuln->vuln_details_text . '</td>';
-			$retval .= '<td>' . $vuln->vuln_details_datetime . '</td>';
-			$retval .= '<td>' . ($vuln->vuln_details_fixed==1 ? '<i class="icon-ok"></i>':'') . '</td>';
-			$retval .= '<td>' . ($vuln->vuln_details_ignore==1 ? '<i class="icon-ok"></i>':'') . '</td></tr>';
-		}
-		$retval .= '</tbody></table></div></div>';
-		return $retval;
+		// This function is deprecated
+		return true;
 	}
 
 	/**
@@ -956,6 +884,17 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	}
 	
 	/**
+	 * Return the name for the Location of the host
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return Int
+	 */
+	public function get_location_name() {
+		return (is_object($this->location)) ? $this->location->get_name() : null;
+	}
+	
+	/**
 	 * Return the hostname for this host
 	 * 
 	 * @access public
@@ -987,7 +926,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 			$name = gethostbyaddr($this->ip);
 			$this->set_name($name);
 		}
-		$retval = '<a href="?action=details&object=host&id=' .
+		$retval = '<a href="?action=host_details&id=' .
 			$this->get_id() . '">' .
 			$this->get_name() . '</a>';
 		return $retval;
@@ -1025,8 +964,8 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 */
 	public function get_open_ports() {
 		$retval = 0;
-		$sql = array('select count(nmap_scan_result_id) as portcount ' .
-				'from nmap_scan_result ' .
+		$sql = array('select count(nmap_result_id) as portcount ' .
+				'from nmap_result ' .
 				'where host_id = ?i ' .
 				'and state_id = 1',
 				$this->id
@@ -1060,7 +999,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		return (boolean) $this->policy;
 	}
 	/**
-	 * Get a collection of ports as Nmap_scan_result 
+	 * Get a collection of ports as nmap_result 
 	 * objects using the Collection factory.
 	 * 
 	 * @access public
@@ -1069,7 +1008,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 */
 	public function get_ports() {
 		if ($this->ports == null) {
-			$ports = new Collection('Nmap_scan_result', 'and nsr.host_id = ' . $this->get_id() . ' order by nsr.nmap_scan_result_port_number asc');
+			$ports = new Collection('Nmap_result', 'and nsr.host_id = ' . $this->get_id() . ' order by nsr.nmap_result_port_number asc');
 			if (isset($ports->members) && is_array($ports->members)) {
 				foreach ($ports->members as $port) {
 					$this->ports[] = $port;
@@ -1100,6 +1039,18 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 */
 	public function get_supportgroup_id() {
 		return (is_object($this->supportgroup)) ? $this->supportgroup->get_id() : null;
+	}
+	
+	/**
+	 * Name for the Support_groups to which this
+	 * host is assigned.
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return int
+	 */
+	public function get_supportgroup_name() {
+		return (is_object($this->supportgroup)) ? $this->supportgroup->get_name() : null;
 	}
 	
 	/**
@@ -1161,6 +1112,83 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 */
 	public function get_urls() {
 		return $this->urls;
+	}
+	
+	/**
+	 * Populate this object from data that may
+	 * already exist.
+	 * 
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @access public
+	 */
+	public function lookup_by_ip() {
+		if (! isset($this->ip)) return;
+		$sql = array(
+					'SELECT * from host h where h.host_ip = \'?s\'',
+					$this->ip
+				);
+		$result = $this->db->fetch_object_array($sql);
+		if (is_array($result) && is_object($result[0])) {			
+			$this->id = $result[0]->host_id;
+			$this->ip = $result[0]->host_ip;
+			$this->name = $result[0]->host_name;
+			$this->os = $result[0]->host_os;
+			$this->sponsor = $result[0]->host_sponsor;
+			$this->link = $result[0]->host_link;
+			$this->note = $result[0]->host_note;
+			$this->supportgroup = new Supportgroup($result[0]->supportgroup_id);
+			$this->location = new Location($result[0]->location_id);
+			$this->technical = $result[0]->host_technical;
+			$this->policy = $result[0]->host_policy;
+			$this->ignore_portscan = $result[0]->host_ignore_portscan;
+			$this->ignore_portscan_byuserid = $result[0]->host_ignoredby_user_id;
+			$this->ignoredfor_days = $result[0]->host_ignoredfor_days;
+			$this->ignored_timestamp = $result[0]->host_ignored_timestamp;
+			$this->ignored_note = $result[0]->host_ignored_note;
+			$sql= array('SELECT url_url, url_screenshot from url where host_id = ?i', $this->id);
+			$results = $this->db->fetch_object_array($sql);
+			foreach($results as $result){
+				$this->urls[] = array($result->url_url, $result->url_screenshot);
+			}
+			// Populate the host groups
+			$sql = array(
+				'SELECT x.host_group_id from host_x_host_group x, host_group g ' .
+				'WHERE g.host_group_id = x.host_group_id ' .
+				'AND x.host_id = ?i order by g.host_group_name',
+				$this->id
+			);
+			$result = $this->db->fetch_object_array($sql);
+			if (is_array($result)) {
+				foreach ($result as $record) $this->host_group_ids[] = $record->host_group_id;
+			}
+			// Populate the alterantive names
+			$sql = array(
+				'SELECT host_alt_name from host_alts WHERE host_id = ?i',
+				$this->id
+			);
+			$result = $this->db->fetch_object_array($sql);
+			if (is_array($result)) {
+				foreach ($result as $record) $this->alt_hostnames[] = $record->host_alt_name;
+			}
+			// Populate the alternative IP's
+			$sql = array(
+				'SELECT host_alt_ip from host_alts WHERE host_id = ?i',
+				$this->id
+			);
+			$result = $this->db->fetch_object_array($sql);
+			if (is_array($result)) {
+				foreach ($result as $record) $this->alt_ips[] = $record->host_alt_ip;
+			}
+			// Populate the tags
+			$sql = array(
+				'SELECT tag_id from host_x_tag WHERE host_id = ?i',
+				$this->id
+			);
+			$result = $this->db->fetch_object_array($sql);
+			if (is_array($result)) {
+				foreach ($result as $record) $this->tag_ids[] = $record->tag_id;
+			}
+		}			
 	}
 
 	/**
@@ -1396,7 +1424,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 * @todo Validate the IP
 	 */
 	public function set_ip($ip) {
-		if ($this->check_ip($ip)) {
+		if ($this->check_ip($ip)) {			
 			$this->ip = $ip;
 		}
 	}

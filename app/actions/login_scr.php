@@ -2,9 +2,14 @@
 /**
  * This is the subcontroller that handles login form
  * posts and validates credentials.
+ * @author Justin C. Klein Keane <jukeane@sas.upen.edu>
+ * @package HECTOR
  */
-
-require_once($approot . 'lib/class.User.php');
+ 
+/**
+ * Require User objects
+ */
+ require_once($approot . 'lib/class.User.php');
 
 $user = new User();
 $username = isset($_POST['username']) ? $_POST['username'] : '';

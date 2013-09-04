@@ -5,8 +5,15 @@
  * 
  * by Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * Last updated 18 October, 2012
+ * 
+ * @author Justin Klein Keane <jukeane@sas.upenn.edu>
+ * @package HECTOR
+ * @todo Move the SQL out of this file into a utility class
  */
 
+/**
+ * Set up sane defaults
+ */
 $tagsin = '';
 $tagsex = '';
 if (isset($_POST['tagsin'])) {
@@ -15,7 +22,7 @@ if (isset($_POST['tagsin'])) {
 if (isset($_POST['tagsex'])) {
 	$tagsex = (is_array($_POST['tagsex'])) ? join(',',array_map("intval",$_POST['tagsex'])) : 0;
 }
-//print_r($tagsex);
+
 $content = '';
 require_once($approot . 'lib/class.Db.php');
 require_once($approot . 'lib/class.Host.php');
@@ -43,8 +50,8 @@ $tempTablePopulated = 0;
 if ($anyports != 0) {
 	$query = 'insert into tmp_search (' .
 				'select distinct(host_id) ' .
-				'from nmap_scan_result ' .
-				'where nmap_scan_result_port_number in (' . $anyports . ') ' .
+				'from nmap_result ' .
+				'where nmap_result_port_number in (' . $anyports . ') ' .
 				'AND state_id = 1) ';
 	$db->iud_sql($query);
 	$tempTablePopulated = 1;
@@ -53,8 +60,8 @@ if ($allports != 0) {
 	$hosts = array(); 
 	$ports_num = explode(',', $allports);
 	foreach ($ports_num as $port) {
-		$query = 'select host_id from nmap_scan_result ' .
-				'where nmap_scan_result_port_number = ' . intval($port) . ' and state_id = 1';
+		$query = 'select host_id from nmap_result ' .
+				'where nmap_result_port_number = ' . intval($port) . ' and state_id = 1';
 		$results = $db->fetch_object_array($query);
 		$query_results = array();
 		foreach ($results as $id) $query_results[] = $id->host_id;
@@ -87,8 +94,8 @@ if ($portsex != 0) {
 		foreach (explode(',',$portsex) as $portnum) {
 			foreach ($results->host_id as $id) {
 				$query = 'select count(host_id) as theCount ' .
-						'from nmap_scan_result ' .
-						'where nmap_scan_result_port_number = ' . $portnum . ' and state_id = 1';
+						'from nmap_result ' .
+						'where nmap_result_port_number = ' . $portnum . ' and state_id = 1';
 				$countquery = $db->fetch_object_array($query);
 				if ($countquery->theCount > 0) {
 					$db->iud_sql('delete from tmp_search where host_id = ' . $id);
@@ -102,8 +109,8 @@ if ($portsex != 0) {
 		$db->iud_sql($query);
 		foreach (explode(',',$portsex) as $port) {
 			$query = 'select host_id ' .
-					'from nmap_scan_result ' .
-					'where nmap_scan_result_port_number = ' . $port . ' and state_id = 1';
+					'from nmap_result ' .
+					'where nmap_result_port_number = ' . $port . ' and state_id = 1';
 			$countquery = $db->fetch_object_array($query);
 			foreach ($countquery as $host) $db->iud_sql('delete from tmp_search where host_id = ' . $host->host_id);
 		}
@@ -193,7 +200,7 @@ if ($tempTablePopulated > 0) {
 			$content .= '<tr><td>' . $host->get_name_linked() . '</td>' .
 					'<td>' . $supportgroup->get_name() . '</td>' .
 					'<td>' . $host->get_ip() . '</td>' .
-					'<td>' . $ret->nmap_scan_result_timestamp . '</td></tr>';
+					'<td>' . $ret->nmap_result_timestamp . '</td></tr>';
 		}
 		if (count($host_results) < 1) {
 			$content .= '<tr><td colspan="4">No results available ';

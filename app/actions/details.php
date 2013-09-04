@@ -1,9 +1,14 @@
 <?php
 /**
-* This is the generic subcontroller.  It is in fact a factory
-* That produces the detailed view of the specified object.
-**/
+ * This is the generic subcontroller.  It is in fact a factory
+ * That produces the detailed view of the specified object.
+ * @author Justin Klein Keane <jukeane@sas.upenn.edu>
+ * @package HECTOR
+ */
 
+/**
+ * Setup defaults.
+ */
 if (! isset($_GET['object'])) {
 	// in case we don't have the right input
 	$template = 'default';

@@ -34,8 +34,6 @@ require_once('class.Host.php');
  * @package HECTOR
  */
 class Alert {
-    // --- ASSOCIATIONS ---
-
 
     // --- ATTRIBUTES ---
     
@@ -98,9 +96,12 @@ class Alert {
     	}
     }
     
-    /* This function directly supports the Collection class.
+    /** 
+     * This function directly supports the Collection class.
 	 * 
 	 * @return SQL select string
+	 * @param String Filter for the SQL WHERE clause
+	 * @param String Optional ORDER BY clause for SQL
 	 */
 	public function get_collection_definition($filter = '', $orderby = ' ORDER BY alert_timestamp DESC') {
 		$query_args = array();
@@ -118,10 +119,21 @@ class Alert {
 		return $sql;
 	}
 	
+	/**
+	 * Get the generic displays for templates
+	 * 
+	 * @return Array An array of display fields and lookup methods
+	 */
 	public function get_displays() {
 		return array('Timestamp'=>'get_timestamp', 'Alert'=>'get_string', 'Host'=>'get_host_linked');
 	}
 
+	/**
+	 * Get an HTML link to the host details page
+	 * 
+	 * @access public
+	 * @return String An HTML link to the host details page.
+	 */
 	public function get_host_linked() {
 		$host = new Host($this->get_host_id());
 		$retval = '<a href="?action=details&object=host&id=' . 
@@ -130,26 +142,41 @@ class Alert {
 		return $retval;
 	}
 	
-	private function get_host_id() {
+	/**
+	 * Return the unique ID for the host associated with this object
+	 * 
+	 * @access public
+	 * @return Int The unique id for the host
+	 */
+	public function get_host_id() {
 		return intval($this->host_id);
 	}
 	
+	/**
+	 * Get the name of the host as the last entry in the message string
+	 * 
+	 * @access public
+	 * @return String The last element of the string, which should be the host name.
+	 */
 	public function get_host() {
     	$string = $this->get_string();
     	$splitstring = explode(' ', $string);
     	return $splitstring[ count($splitstring) - 1 ];
 	}
     /**
-     * Short description of method get_id
+     * Return the unique id of the Alert object
      *
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @return int
+     * @return Int The unique ID of the alert object.
      */
-    private function get_id() {
+    public function get_id() {
        return $this->id;
     }
     
+    /**
+     * Get the second element of the message, which should be the port
+     */
     public function get_port() {
     	$string = $this->get_string();
     	$splitstring = explode(' ', $string);
@@ -188,11 +215,23 @@ class Alert {
     			$this->host_id,
     			$this->id);
     	}
-	    $this->db->iud_sql($sql);
+    	$retval = $this->db->iud_sql($sql);
+    	
+    	// Now set the id
+    	$sql = 'SELECT LAST_INSERT_ID() AS last_id';
+    	$result = $this->db->fetch_object_array($sql);
+    	if (isset($result[0]) && $result[0]->last_id > 0) {
+    		$this->set_id($result[0]->last_id);
+    	}
+    	return $retval;
     }
     
     public function set_host_id($id) {
     	$this->host_id = intval($id);
+    }
+    
+    private function set_id($id) {
+    	$this->id = intval($id);
     }
     
     public function set_string($string) {

@@ -73,7 +73,7 @@ Class Collection {
 		$db = Db::get_instance();
 		$this->log = Log::get_instance();
 		$retval = FALSE;
-		$this->debug = $_SESSION['debug'];An array of Objects
+		$this->debug = $_SESSION['debug'];
 		
 		if ($this->debug) $this->log->write_message('Creating collection '.$collection_name.' with filter '.$filter);
 

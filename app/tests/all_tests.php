@@ -4,6 +4,9 @@ require_once(dirname(__FILE__) . '/../software/simpletest/autorun.php');
 require_once('class_testfiles.php');
 require_once('class.Alert.test.php');
 
+$GLOBALS['approot'] = '/opt/hector/app/';
+
+
 class AllTests extends TestSuite {
     function __construct() {
         parent::__construct();

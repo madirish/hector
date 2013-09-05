@@ -356,7 +356,7 @@ CREATE TABLE IF NOT EXISTS `vuln_url` (
   `vuln_url_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `vuln_id` INT UNSIGNED NOT NULL,
   `url` VARCHAR(255) NOT NULL,
-  KEY `vuln_detail_id` (`vuln_id`)
+  KEY `vuln_detail_id` (`vuln_id`),
   PRIMARY KEY (`vuln_url_id`)
 ) ENGINE = INNODB;
 

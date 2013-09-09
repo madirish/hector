@@ -25,11 +25,9 @@ $sql = array('SELECT v.vuln_name, ' .
 					'd.vuln_detail_ignore, ' .
 					'd.vuln_detail_fixed ' .
 				'FROM vuln_detail d, ' .
-					'vuln v, ' .
-					'vuln_detail_x_host x ' .
+					'vuln v ' .
 				'WHERE d.vuln_id = v.vuln_id AND ' .
-					'd.vuln_detail_id = x.vuln_detail_id AND ' .
-					'x.host_id = ?i ' .
+					'd.host_id = ?i ' .
 				'ORDER BY d.vuln_detail_datetime DESC', 
 				$host->get_id());
 $vulns = $db->fetch_object_array($sql);

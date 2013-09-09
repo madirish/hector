@@ -144,11 +144,11 @@ foreach($host->get_urls() as $url) {
 </thead>
 <tbody>
 <?php foreach($vulns as $vuln) { ?>
-	<tr><td><a href=?action=vuln_details&id=<?php echo $vuln->vuln_details_id;?>><?php echo $vuln->vuln_name;?></a></td>
-	<td><?php echo $vuln->vuln_details_text;?></td>
-	<td><?php echo $vuln->vuln_details_datetime;?></td>
-	<td><?php echo ($vuln->vuln_details_fixed==1 ? '<i class="icon-ok"></i>':'');?></td>
-	<td><?php echo ($vuln->vuln_details_ignore==1 ? '<i class="icon-ok"></i>':'');?></td></tr>
+	<tr><td><a href=?action=vuln_details&id=<?php echo $vuln->vuln_detail_id;?>><?php echo $vuln->vuln_name;?></a></td>
+	<td><?php echo $vuln->vuln_detail_text;?></td>
+	<td><?php echo $vuln->vuln_detail_datetime;?></td>
+	<td><?php echo ($vuln->vuln_detail_fixed==1 ? '<i class="icon-ok"></i>':'');?></td>
+	<td><?php echo ($vuln->vuln_detail_ignore==1 ? '<i class="icon-ok"></i>':'');?></td></tr>
 <?php } ?> 
 </tbody>
 </table>

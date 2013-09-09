@@ -12,6 +12,7 @@
  * @package HECTOR
  * @todo Remove testing output
  * @todo Filter hosts by open ports
+ * @todo Determine correct vuln_id (currently hardcoded to 1)
  */
  
 /**

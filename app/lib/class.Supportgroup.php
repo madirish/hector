@@ -110,7 +110,7 @@ class Supportgroup extends Maleable_Object implements Maleable_Object_Interface 
 			if (is_array($result) && isset($result[0])) {
 				$this->set_id($result[0]->supportgroup_id);
 				$this->set_name($result[0]->supportgroup_name);
-				$this->set_emai($result[0]->supportgroup_email);
+				$this->set_email($result[0]->supportgroup_email);
 			}
 		}
     }

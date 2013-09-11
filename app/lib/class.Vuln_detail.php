@@ -31,6 +31,7 @@ require_once('class.Maleable_Object.php');
  * @access public
  * @package HECTOR
  * @author Josh Bauer <joshbauer3@gmail.com>
+ * @todo Refactor code to change vuln_details_ticke to vuln_detail_ticket (make column name singular)
  */
 class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
     // --- ATTRIBUTES ---

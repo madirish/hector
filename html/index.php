@@ -12,6 +12,7 @@ session_start();
 // Global variables
 $approot = getcwd() . '/../app/';
 $templates = $approot . 'templates/';
+$javascripts = '';
 
 /**
  * Include the Configs
@@ -76,11 +77,40 @@ if (isset($_SESSION['user_id']) && $_SESSION['user_id'] != null) {
 	}
 }
 
+// Set the HTML 5 Content Security Policy and Reporting
+$proto = (isset($_SERVER['HTTPS'])) ? 'https://' : 'http://';
+$policy = ' default-src ' . $proto . $_SERVER['SERVER_NAME'] . ' \'self\';';
+$policy .= ' img-src \'self\' http://www.sas.upenn.edu http://www.upenn.edu;';
+$policy .= ' frame-src \'none\';';
+$policy .= ' object-src \'none\';';
+$policy .= ' style-src \'self\';';
+$policy .= ' script-src \'self\' \'unsafe-eval\';';
+$policy .= ' report-uri /hector/?action=csp-report;';
+header("Content-Security-Policy: $policy");
+//header("X-Content-Security-Policy: $policy");
+
 /**
  * Hand off to subcontrollers
  */
-if (! isset($_GET['ajax']) && ! isset($ajax)) include_once($templates . 'header.tpl.php');
-include_once($approot . 'actions/' . $action . '.php');
-if (! isset($_GET['ajax'])) include_once($templates . 'footer.tpl.php');
- 
+if ($_GET['action'] == 'csp-report') {
+	include_once($approot . 'actions/csp-report.php');
+}
+else {
+	if (! isset($_SESSION['user_id']) || $_SESSION['user_id'] == null || $action == 'logout') {
+		// User isn't logged in, use static header template
+		include_once($templates . 'header.tpl.php');
+	}
+	else {
+		// Necessary includes for search form
+		require_once($approot . 'actions/global.php');
+		require_once($approot . 'lib/class.Form.php');
+		$ip_search = new Form();
+		$ip_search_name = 'search_ip_form';
+		$ip_search->set_name($ip_search_name);
+		$ip_search_token = $ip_search->get_token();
+		$ip_search->save();
+	}
+	include_once($approot . 'actions/' . $action . '.php');
+	if (! isset($_GET['ajax'])) include_once($templates . 'footer.tpl.php');
+}
 ?>

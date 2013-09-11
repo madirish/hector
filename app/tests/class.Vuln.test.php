@@ -8,8 +8,6 @@ class TestOfVulnClass extends UnitTestCase {
 	
   private $vuln;
   
-  private $vuln_id;
-  
   function setUp() {
   	$this->vuln = new Vuln();
   }
@@ -29,8 +27,7 @@ class TestOfVulnClass extends UnitTestCase {
   	$this->vuln->set_cve('Test string');
   	$this->vuln->set_osvdb('Test string');
   	$this->assertTrue($this->vuln->save());
-  	$this->vuln_id = $this->vuln->get_id();
-  	$this->assertTrue($this->vuln_id > 0);
+  	$this->assertTrue($this->vuln->get_id() > 0);
   }
   function testSetVulnCVE() {
   	$testval = 'Test string';
@@ -57,8 +54,6 @@ class TestOfVulnClass extends UnitTestCase {
   }
   
   function testVulnDelete() {
-  	$id = $this->vuln_id;
-  	$this->vuln = new Vuln($id);
   	$this->vuln->set_name('Test');
   	$this->assertFalse($this->vuln->delete());
   	$this->assertTrue($this->vuln->save());

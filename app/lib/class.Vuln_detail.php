@@ -31,7 +31,6 @@ require_once('class.Maleable_Object.php');
  * @access public
  * @package HECTOR
  * @author Josh Bauer <joshbauer3@gmail.com>
- * @todo Refactor code to change vuln_details_ticke to vuln_detail_ticket (make column name singular)
  */
 class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
     // --- ATTRIBUTES ---
@@ -387,21 +386,6 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
     }
     
     /**
-     * The Host object for the host that is associated 
-     * with this vulnerability detail.
-     * 
-     * @access public
-     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
-     * @return Host The Host object associated with this record.
-     */
-    public function get_host() {
-		if ($this->host == NULL) {
-			$this->host = new Host($this->host_id);
-		}
-		return $this->host;
-    }
-    
-    /**
      * Should this report be ignored for reporting purposes?
      * 
      * @access public
@@ -500,10 +484,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
      * @return Int The unique id of the Vuln object associated with this record.
      */
     public function get_vuln_id() {
-    	if ($this->vuln == NULL) {
-    		$this->vuln = new Vuln($this->vuln_id);
-    	}
-    	return $this->vuln->get_id();
+    	return (int) $this->vuln_id;
     }
     
     /**
@@ -666,6 +647,17 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
     public function set_fixed_user_id($user_id) {
     	$this->fixed_user_id = intval($user_id);
     }
+    
+    /**
+     * Set the associated Host
+     * 
+     * @access public
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @param Int The unique id of the associated Host object
+     */
+     public function set_host_id($id) {
+     	$this->host_id = (int) $id;
+     }
     
     /**
      * Is this vuln detail to be ignored?

@@ -17,6 +17,7 @@ require_once('class.Log.test.php');
 require_once('class.Maleable_Object.test.php');
 require_once('class.Nmap_result.test.php');
 require_once('class.Scan.test.php');
+require_once('class.Scan_type.test.php');
 require_once('class.Supportgroup.test.php');
 require_once('class.Tag.test.php');
 require_once('class.User.test.php');

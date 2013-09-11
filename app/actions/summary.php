@@ -58,7 +58,28 @@ $probe_result = $db->fetch_object_array($sql);
 
 $count = $hostcount[0]->hostcount;
 $nohosts = "No hosts tracked.  <a href='?action=config&object=add_hosts'>Add hosts</a>.";
+$javascripts .= "<script type='text/javascript' src='js/bootstrap-modal.js'></script>\n";
+$javascripts .= "<script type='text/javascript' src='js/jquery.js'></script>\n";
+$javascripts .= "<script type='text/javascript' src='js/Chart.js'></script>\n";
 $count = ($count == "0") ? $nohosts : number_format($count);
+if ($count == 0) {
+	$javascripts .= '<script type="text/javascript">$(document).ready( function(){$("#addHostsModal").modal("show");} )</script>' . "\n";
+}
+$javascripts .= "<script type='text/javascript' src='js/portSummaryChart.js'></script>\n";
+$javascripts .= "<script type='text/javascript' src='js/darknetSummaryChart.js'></script>\n";
+
+$portSummaryLabels = "";
+$portSummaryCounts = "";
+$darknetSummaryLabels = "";
+$darknetSummaryCounts = "";
+foreach ($port_result as $row) {
+	$portSummaryLabels .= $row->port_number . ',';
+	$portSummaryCounts .= $row->portcount . ',';
+} 
+foreach ($probe_result as $row) {
+	$darknetSummaryLabels .= $row->port . ',';
+	$darknetSummaryCounts .= $row->cnt . ',';
+}
 
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates . 'summary.tpl.php');

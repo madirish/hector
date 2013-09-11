@@ -1,41 +1,27 @@
-<script src="js/jquery.js" type="text/javascript"></script>
-<script type="text/javascript">
-$(document).ready(function() 
-    { 
-        $("#darknet-probes-summary").tablesorter(); 
-        $("#top-ports-detected").tablesorter(); 
-    } 
-); 
-</script>
-<script src="js/Chart.js" type="text/javascript"></script>
 <p class="lead"><?php echo $count;?> Hosts Tracked</p>
+
+    <div id="addHostsModal" class="modal hide fade" aria-hidden="true">
+    <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>No hosts tracked</h3>
+    </div>
+    <div class="modal-body">
+    <p>You currently have no hosts tracked in the database.</p>
+    </div>
+    <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    <a href="?action=add_hosts" class="btn btn-primary">Go to add hosts</a>
+    </div>
+    </div>
 
 
 <div class="row">
   <div class="span6">
   	<h3>Scanner:  Top Ports Detected</h3>
+  	<div id="portSummaryChartLabels" class="hidden"><?php echo $portSummaryLabels;?></div>
+  	<div id="portSummaryChartData" class="hidden"><?php echo $portSummaryCounts;?></div>
 	<canvas id="topPortsChart" width="400"></canvas>
-	<script>
-	var data = {
-	  labels : [<?php
-	  	foreach ($port_result as $row) {
-	  		print '"' . $row->port_number . '",';
-	  	} 
-	  ?>],
-	  datasets : [ 
-			{ 
-				fillColor : "rgba(220,220,220,0.2)",
-				strokeColor : "rgba(220,220,220,1)",
-				data : [<?php
-					foreach ($port_result as $row) {
-				  		print $row->portcount . ',';
-				  	}
-				?>]
-			}
-		]
-	}
-	var myNewChart = new Chart(document.getElementById("topPortsChart").getContext("2d")).Bar(data);
-	</script>
+	
 	
 	<table class="table table-striped" id="top-ports-dectected">
 	<thead>
@@ -57,27 +43,9 @@ $(document).ready(function()
 	</div><div class="span6">
 	<h3>Darknet:  Top Port Probes in Last 4 Days</h3>
 	<canvas id="darknetChart"  width="400"></canvas>
-	<script>
-	var data = {
-	  labels : [<?php
-	  	foreach ($probe_result as $row) {
-	  		print '"' . $row->port . '",';
-	  	} 
-	  ?>],
-	  datasets : [ 
-			{ 
-				fillColor : "rgba(220,220,220,0.2)",
-				strokeColor : "rgba(220,220,220,1)",
-				data : [<?php
-					foreach ($probe_result as $row) {
-				  		print $row->cnt . ',';
-				  	}
-				?>]
-			}
-		]
-	}
-	var myNewChart = new Chart(document.getElementById("darknetChart").getContext("2d")).Bar(data);
-	</script>
+
+	<div id="darknetSummaryChartLabels" class="hidden"><?php echo $darknetSummaryLabels;?></div>
+  	<div id="darknetSummaryChartData" class="hidden"><?php echo $darknetSummaryCounts;?></div>
 	<table class="table table-striped table-condensed" id="darknet-probes-summary">
 	<thead>
 	<tr><th>#</th><th>Port Number</th><th>Total darknet probes</th></tr>

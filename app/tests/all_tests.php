@@ -23,6 +23,7 @@ require_once('class.Tag.test.php');
 require_once('class.User.test.php');
 require_once('class.Vuln.test.php');
 require_once('class.Vuln_detail.test.php');
+require_once('test_web.php');
 
 $GLOBALS['approot'] = '/opt/hector/app/';
 

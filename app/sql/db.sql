@@ -388,7 +388,7 @@ CREATE TABLE IF NOT EXISTS `vuln_detail` (
   `vuln_detail_fixed_datetime` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
   `vuln_detail_fixedby_user_id` INT,
   `vuln_detail_fixed_notes` text,
-  `vuln_details_ticket` VARCHAR(255),
+  `vuln_detail_ticket` VARCHAR(255),
   `host_id` INT UNSIGNED NOT NULL,  
   `vuln_id` INT UNSIGNED NOT NULL,
   KEY `vuln_id` (`vuln_id`),

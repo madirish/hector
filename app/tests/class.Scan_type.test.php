@@ -6,6 +6,8 @@ require_once(dirname(__FILE__) . '/../lib/class.Scan_type.php');
 class TestOfScan_typeClass extends UnitTestCase {
 	
 	function setup() {
+		global $approot;
+		$approot = '/opt/hector/app';
 		$this->scan_type = new Scan_type();
 	}
 	

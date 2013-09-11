@@ -204,8 +204,8 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 				$this->set_id($r->vuln_detail_id);
 				$this->set_text($r->vuln_detail_text);
 				$this->set_ignore($r->vuln_detail_ignore);
-				$this->set_ignored_datetime($r->vuln_detail_ignored_datetime);
-				$this->set_ignored_user_id($r->vuln_detail_ignoredby_user_id);
+				$this->set_ignore_datetime($r->vuln_detail_ignored_datetime);
+				$this->set_ignore_user_id($r->vuln_detail_ignoredby_user_id);
 				$this->set_fixed($r->vuln_detail_fixed);
 				$this->set_fixed_datetime($r->vuln_detail_fixed_datetime);
 				$this->set_fixed_notes($r->vuln_detail_fixed_notes);

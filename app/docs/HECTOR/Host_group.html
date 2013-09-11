@@ -259,11 +259,9 @@ Source Location: /app/lib/class.Host_group.php<br /><br />
     <li><a href="../HECTOR/Host_group.html#methoddelete">delete</a></li>
     <li><a href="../HECTOR/Host_group.html#methoddelete_host_from_group">delete_host_from_group</a></li>
     <li><a href="../HECTOR/Host_group.html#methodget_add_alter_form">get_add_alter_form</a></li>
-    <li><a href="../HECTOR/Host_group.html#methodget_applytoall">get_applytoall</a></li>
     <li><a href="../HECTOR/Host_group.html#methodget_collection_definition">get_collection_definition</a></li>
     <li><a href="../HECTOR/Host_group.html#methodget_displays">get_displays</a></li>
     <li><a href="../HECTOR/Host_group.html#methodget_host_ids">get_host_ids</a></li>
-    <li><a href="../HECTOR/Host_group.html#methodget_id">get_id</a></li>
     <li><a href="../HECTOR/Host_group.html#methodget_name">get_name</a></li>
     <li><a href="../HECTOR/Host_group.html#methodsave">save</a></li>
     <li><a href="../HECTOR/Host_group.html#methodset_applytoall">set_applytoall</a></li>
@@ -336,11 +334,14 @@ Host_groups are containers for hosts in order to distinguish them.<br /><br /><p
 	<a name="var$id"></a>
 	<p></p>
 	<h4>$id = <span class="value">&nbsp;null</span></h4>
-	<p>[line 53]</p>
+	<p>[line 68]</p>
   Unique id for the group from the database<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>var:</b>&nbsp;&nbsp;</td><td>The unique ID</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>protected</td>
   </tr>
@@ -352,7 +353,7 @@ Host_groups are containers for hosts in order to distinguish them.<br /><br /><p
   <table border="0" cellspacing="0" cellpadding="0">
     <tr>
       <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>int</td>
+      <td>Int</td>
     </tr>
         <tr>
       <td><b>Overrides:</b>&nbsp;&nbsp;</td>
@@ -370,12 +371,12 @@ Host_groups are containers for hosts in order to distinguish them.<br /><br /><p
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 74]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line 89]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void __construct(
-[int
+[Int
 $id = ''])</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -399,9 +400,9 @@ $id = ''])</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">int&nbsp;&nbsp;</td>
+        <td class="type">Int&nbsp;&nbsp;</td>
         <td><b>$id</b>&nbsp;&nbsp;</td>
-        <td>id</td>
+        <td>The Host_group id, or none for a blank object</td>
       </tr>
         </table>
     </div><br />
@@ -409,12 +410,12 @@ $id = ''])</code>
   </div>
   <hr />
 	<a name="methodadd_host_to_group"></a>
-	<h3>method add_host_to_group <span class="smalllinenumber">[line 97]</span></h3>
+	<h3>method add_host_to_group <span class="smalllinenumber">[line 111]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>boolean add_host_to_group(
-<a href="../HECTOR/Host.html">Host</a>
+		<code>Boolen add_host_to_group(
+Int
 $host_id)</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -423,6 +424,9 @@ $host_id)</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if something goes wrong</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -438,9 +442,9 @@ $host_id)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type"><a href="../HECTOR/Host.html">Host</a>&nbsp;&nbsp;</td>
+        <td class="type">Int&nbsp;&nbsp;</td>
         <td><b>$host_id</b>&nbsp;&nbsp;</td>
-        <td>id</td>
+        <td>The Host unique id</td>
       </tr>
         </table>
     </div><br />
@@ -448,11 +452,11 @@ $host_id)</code>
   </div>
   <hr />
 	<a name="methoddelete"></a>
-	<h3>method delete <span class="smalllinenumber">[line 118]</span></h3>
+	<h3>method delete <span class="smalllinenumber">[line 132]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void delete(
+		<code>Boolean delete(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -461,6 +465,9 @@ $host_id)</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>FALSE if something goes awry</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -481,12 +488,12 @@ $host_id)</code>
   </div>
   <hr />
 	<a name="methoddelete_host_from_group"></a>
-	<h3>method delete_host_from_group <span class="smalllinenumber">[line 143]</span></h3>
+	<h3>method delete_host_from_group <span class="smalllinenumber">[line 159]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>boolean delete_host_from_group(
-<a href="../HECTOR/Host.html">Host</a>
+		<code>Boolean delete_host_from_group(
+Int
 $host_id)</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -495,6 +502,9 @@ $host_id)</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if soemthing goes wrong.</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -510,9 +520,9 @@ $host_id)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type"><a href="../HECTOR/Host.html">Host</a>&nbsp;&nbsp;</td>
+        <td class="type">Int&nbsp;&nbsp;</td>
         <td><b>$host_id</b>&nbsp;&nbsp;</td>
-        <td>id</td>
+        <td>The Host id</td>
       </tr>
         </table>
     </div><br />
@@ -520,11 +530,11 @@ $host_id)</code>
   </div>
   <hr />
 	<a name="methodget_add_alter_form"></a>
-	<h3>method get_add_alter_form <span class="smalllinenumber">[line 163]</span></h3>
+	<h3>method get_add_alter_form <span class="smalllinenumber">[line 181]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_add_alter_form(
+		<code>Array get_add_alter_form(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -533,6 +543,9 @@ $host_id)</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>Array used to populate the default CRUD form</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -552,36 +565,8 @@ $host_id)</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
-	<a name="methodget_applytoall"></a>
-	<h3>method get_applytoall <span class="smalllinenumber">[line 207]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_applytoall(
-)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Applying the host_group to all hosts should only  be done on add/edit, default to this query should  always be 'no'.<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
-  </tr>
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-	
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
 	<a name="methodget_collection_definition"></a>
-	<h3>method get_collection_definition <span class="smalllinenumber">[line 217]</span></h3>
+	<h3>method get_collection_definition <span class="smalllinenumber">[line 240]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -634,11 +619,11 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_displays"></a>
-	<h3>method get_displays <span class="smalllinenumber">[line 242]</span></h3>
+	<h3>method get_displays <span class="smalllinenumber">[line 266]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_displays(
+		<code>Array get_displays(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -647,6 +632,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>Display details for the default template</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -667,7 +655,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_host_ids"></a>
-	<h3>method get_host_ids <span class="smalllinenumber">[line 253]</span></h3>
+	<h3>method get_host_ids <span class="smalllinenumber">[line 277]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -697,44 +685,8 @@ $orderby = ''])</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
-	<a name="methodget_id"></a>
-	<h3>method get_id <span class="smalllinenumber">[line 274]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>Int get_id(
-)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Return the unique id for this object.<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>The integer identifier of this object</td>
-  </tr>
-  <tr>
-    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
-  </tr>
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-			<hr class="separator" />
-		<div class="notes">Implementation of:</div>
-			<dl>
-			<dt><a href="../HECTOR/Maleable_Object_Interface.html#methodget_id">Maleable_Object_Interface::get_id()</a></dt>
-					</dl>
-		Overrides <a href="../HECTOR/Maleable_Object.html#methodget_id">Maleable_Object::get_id()</a> (Return the unique id from the data layer)<br /><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
 	<a name="methodget_name"></a>
-	<h3>method get_name <span class="smalllinenumber">[line 285]</span></h3>
+	<h3>method get_name <span class="smalllinenumber">[line 298]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -765,11 +717,11 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodsave"></a>
-	<h3>method save <span class="smalllinenumber">[line 295]</span></h3>
+	<h3>method save <span class="smalllinenumber">[line 309]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void save(
+		<code>Boolean save(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -778,6 +730,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if something goes wrong.</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -798,12 +753,12 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodset_applytoall"></a>
-	<h3>method set_applytoall <span class="smalllinenumber">[line 336]</span></h3>
+	<h3>method set_applytoall <span class="smalllinenumber">[line 361]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void set_applytoall(
-
+		<code>Boolean set_applytoall(
+Int
 $applytoall)</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -812,6 +767,9 @@ $applytoall)</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if something goes awry</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -827,9 +785,9 @@ $applytoall)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">Int&nbsp;&nbsp;</td>
         <td><b>$applytoall</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>Non-zero indicates apply to all</td>
       </tr>
         </table>
     </div><br />
@@ -837,7 +795,7 @@ $applytoall)</code>
   </div>
   <hr />
 	<a name="methodset_name"></a>
-	<h3>method set_name <span class="smalllinenumber">[line 358]</span></h3>
+	<h3>method set_name <span class="smalllinenumber">[line 385]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -879,7 +837,7 @@ $name)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Wed, 28 Aug 2013 09:39:18 -0400 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Wed, 11 Sep 2013 09:34:45 -0400 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

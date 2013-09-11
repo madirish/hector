@@ -248,6 +248,12 @@ Source Location: /app/lib/class.Scan_type.php<br /><br />
         
 </td>
 
+<td valign="top">
+<h3><a href="#class_vars">Variables</a></h3>
+<ul>
+    <li><a href="../HECTOR/Scan_type.html#var$id">$id</a></li>
+  </ul>
+</td>
 
 
 <td valign="top">
@@ -260,7 +266,6 @@ Source Location: /app/lib/class.Scan_type.php<br /><br />
     <li><a href="../HECTOR/Scan_type.html#methodget_displays">get_displays</a></li>
     <li><a href="../HECTOR/Scan_type.html#methodget_flags">get_flags</a></li>
     <li><a href="../HECTOR/Scan_type.html#methodget_footer_scripts">get_footer_scripts</a></li>
-    <li><a href="../HECTOR/Scan_type.html#methodget_id">get_id</a></li>
     <li><a href="../HECTOR/Scan_type.html#methodget_name">get_name</a></li>
     <li><a href="../HECTOR/Scan_type.html#methodget_script">get_script</a></li>
     <li><a href="../HECTOR/Scan_type.html#methodsave">save</a></li>
@@ -278,20 +283,6 @@ Source Location: /app/lib/class.Scan_type.php<br /><br />
 
 
 
-<td valign="top">
-<h3>Inherited Variables</h3>
-<div class="tags">
-<h4>Class: <a href="../HECTOR/Maleable_Object.html">Maleable_Object</a></h4>
-<dl>
-<dt>
-  <a href="../HECTOR/Maleable_Object.html#var$id">Maleable_Object::$id</a>
-  </dt>
-<dd>
-   
-</dd>
-</dl>
-</div>
-</td>
 
 <td valign="top">
 <h3>Inherited Methods</h3>
@@ -342,6 +333,42 @@ Scan_type is the specific setup of a scan that includes not<br /><br /><p>only t
 </div><br /><br />
 <div class="top">[ <a href="#top">Top</a> ]</div><br />
 
+<hr />
+<a name="class_vars"></a>
+<h3>Class Variables</h3>
+<div class="tags">
+	<a name="var$id"></a>
+	<p></p>
+	<h4>$id = <span class="value">&nbsp;null</span></h4>
+	<p>[line 59]</p>
+  Unique ID from the data layer<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>var:</b>&nbsp;&nbsp;</td><td>Unique id</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>protected</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>int</td>
+    </tr>
+        <tr>
+      <td><b>Overrides:</b>&nbsp;&nbsp;</td>
+      <td>Array</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+</div><br />
 
 <hr />
 <a name="class_methods"></a>
@@ -350,7 +377,7 @@ Scan_type is the specific setup of a scan that includes not<br /><br /><p>only t
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 61]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line 103]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -389,11 +416,11 @@ $id = ''])</code>
   </div>
   <hr />
 	<a name="methoddelete"></a>
-	<h3>method delete <span class="smalllinenumber">[line 84]</span></h3>
+	<h3>method delete <span class="smalllinenumber">[line 126]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void delete(
+		<code>Boolean delete(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -402,6 +429,9 @@ $id = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if something goes awry</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -422,7 +452,7 @@ $id = ''])</code>
   </div>
   <hr />
 	<a name="methodget_add_alter_form"></a>
-	<h3>method get_add_alter_form <span class="smalllinenumber">[line 101]</span></h3>
+	<h3>method get_add_alter_form <span class="smalllinenumber">[line 154]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -435,6 +465,9 @@ $id = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The Array for the default CRUD template</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -455,11 +488,11 @@ $id = ''])</code>
   </div>
   <hr />
 	<a name="methodget_collection_definition"></a>
-	<h3>method get_collection_definition <span class="smalllinenumber">[line 205]</span></h3>
+	<h3>method get_collection_definition <span class="smalllinenumber">[line 260]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>SQL get_collection_definition(
+		<code>String get_collection_definition(
 [
 $filter = ''], [
 $orderby = ''])</code>
@@ -471,7 +504,7 @@ $orderby = ''])</code>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>select string</td>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>SQL select string</td>
   </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
@@ -508,11 +541,11 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_displays"></a>
-	<h3>method get_displays <span class="smalllinenumber">[line 227]</span></h3>
+	<h3>method get_displays <span class="smalllinenumber">[line 283]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_displays(
+		<code>Array get_displays(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -521,6 +554,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>Array for the default display template</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -541,7 +577,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_flags"></a>
-	<h3>method get_flags <span class="smalllinenumber">[line 237]</span></h3>
+	<h3>method get_flags <span class="smalllinenumber">[line 294]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -555,7 +591,7 @@ $orderby = ''])</code>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>The flags set up for the script.</td>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The HTML display safe flags set up for the script.</td>
   </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
@@ -572,7 +608,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_footer_scripts"></a>
-	<h3>method get_footer_scripts <span class="smalllinenumber">[line 143]</span></h3>
+	<h3>method get_footer_scripts <span class="smalllinenumber">[line 196]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -585,6 +621,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>HTML to put into the template footer to enable dynamic CRUD templates</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -599,50 +638,23 @@ $orderby = ''])</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
-	<a name="methodget_id"></a>
-	<h3>method get_id <span class="smalllinenumber">[line 241]</span></h3>
+	<a name="methodget_name"></a>
+	<h3>method get_name <span class="smalllinenumber">[line 304]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_id(
+		<code>String get_name(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Get the scan type name<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The HTML dislay safe name of the scan</td>
   </tr>
-</table>
-</div>
-<br /><br />
-
-			<hr class="separator" />
-		<div class="notes">Implementation of:</div>
-			<dl>
-			<dt><a href="../HECTOR/Maleable_Object_Interface.html#methodget_id">Maleable_Object_Interface::get_id()</a></dt>
-					</dl>
-		Overrides <a href="../HECTOR/Maleable_Object.html#methodget_id">Maleable_Object::get_id()</a> (Return the unique id from the data layer)<br /><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodget_name"></a>
-	<h3>method get_name <span class="smalllinenumber">[line 245]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_name(
-)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		<br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -655,19 +667,22 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_script"></a>
-	<h3>method get_script <span class="smalllinenumber">[line 249]</span></h3>
+	<h3>method get_script <span class="smalllinenumber">[line 314]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_script(
+		<code>String get_script(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		The script name<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The HTML display safe name of the executable script.</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -680,11 +695,11 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodsave"></a>
-	<h3>method save <span class="smalllinenumber">[line 259]</span></h3>
+	<h3>method save <span class="smalllinenumber">[line 325]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void save(
+		<code>Boolean save(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -693,6 +708,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>Fasle if something goes awry</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -713,17 +731,17 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodset_flags"></a>
-	<h3>method set_flags <span class="smalllinenumber">[line 294]</span></h3>
+	<h3>method set_flags <span class="smalllinenumber">[line 370]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void set_flags(
-
+String
 $flags)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Set up any flags for the executable<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -739,9 +757,9 @@ $flags)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$flags</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>Any command line arguments that need to be passed to the scan executable.</td>
       </tr>
         </table>
     </div><br />
@@ -749,17 +767,17 @@ $flags)</code>
   </div>
   <hr />
 	<a name="methodset_name"></a>
-	<h3>method set_name <span class="smalllinenumber">[line 298]</span></h3>
+	<h3>method set_name <span class="smalllinenumber">[line 380]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void set_name(
-
+String
 $name)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		The name<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -775,9 +793,9 @@ $name)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$name</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The name to distinguish this scan type.</td>
       </tr>
         </table>
     </div><br />
@@ -785,17 +803,17 @@ $name)</code>
   </div>
   <hr />
 	<a name="methodset_script"></a>
-	<h3>method set_script <span class="smalllinenumber">[line 302]</span></h3>
+	<h3>method set_script <span class="smalllinenumber">[line 390]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void set_script(
-
+String
 $script)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		The executable script.<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -811,9 +829,9 @@ $script)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$script</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The filename of the executable that this script will run, in the app/scripts directory.  The filenae is filtered with PHP escapeshellcmd function.</td>
       </tr>
         </table>
     </div><br />
@@ -824,7 +842,7 @@ $script)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Wed, 28 Aug 2013 09:39:18 -0400 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Wed, 11 Sep 2013 09:34:45 -0400 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

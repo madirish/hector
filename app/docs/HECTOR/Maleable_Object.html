@@ -264,7 +264,7 @@ Source Location: /app/lib/class.Maleable_Object.php<br /><br />
 </dl>
 <dl>
 <dt><a href="../HECTOR/Api_key.html">Api_key</a></dt>
-	<dd>API keys allow access to APIs'.</dd>
+	<dd>API keys allow access to export feeds</dd>
 </dl>
 <dl>
 <dt><a href="../HECTOR/Vuln.html">Vuln</a></dt>
@@ -390,48 +390,12 @@ Maleable object utility superclass to ensure standard API for each class.<br /><
 
 	<p>Overridden in child classes as:<br />
 		<dl>
-	<dt><a href="../HECTOR/Host_group.html#methodget_id">Host_group::get_id()</a></dt>
-		<dd>Return the unique id for this object.</dd>
-	</dl>
-		<dl>
-	<dt><a href="../HECTOR/Api_key.html#methodget_id">Api_key::get_id()</a></dt>
-		<dd></dd>
-	</dl>
-		<dl>
 	<dt><a href="../HECTOR/Vuln.html#methodget_id">Vuln::get_id()</a></dt>
 		<dd>Return the unique id from the data layer</dd>
 	</dl>
 		<dl>
-	<dt><a href="../HECTOR/Location.html#methodget_id">Location::get_id()</a></dt>
-		<dd>Return the unique id</dd>
-	</dl>
-		<dl>
-	<dt><a href="../HECTOR/Host.html#methodget_id">Host::get_id()</a></dt>
-		<dd>Return the unique ID for this host</dd>
-	</dl>
-		<dl>
-	<dt><a href="../HECTOR/Feed.html#methodget_id">Feed::get_id()</a></dt>
-		<dd>Return the unique id</dd>
-	</dl>
-		<dl>
 	<dt><a href="../HECTOR/Tag.html#methodget_id">Tag::get_id()</a></dt>
-		<dd>Short description of method get_id</dd>
-	</dl>
-		<dl>
-	<dt><a href="../HECTOR/User.html#methodget_id">User::get_id()</a></dt>
-		<dd></dd>
-	</dl>
-		<dl>
-	<dt><a href="../HECTOR/Supportgroup.html#methodget_id">Supportgroup::get_id()</a></dt>
-		<dd>Short description of method get_id</dd>
-	</dl>
-		<dl>
-	<dt><a href="../HECTOR/Scan_type.html#methodget_id">Scan_type::get_id()</a></dt>
-		<dd></dd>
-	</dl>
-		<dl>
-	<dt><a href="../HECTOR/Vuln_detail.html#methodget_id">Vuln_detail::get_id()</a></dt>
-		<dd>The unique id for this object.</dd>
+		<dd>Get the unique ID for the object</dd>
 	</dl>
 	</p>
 	
@@ -514,6 +478,12 @@ $id)</code>
 </div>
 <br /><br />
 
+	<p>Overridden in child classes as:<br />
+		<dl>
+	<dt><a href="../HECTOR/Tag.html#methodset_id">Tag::set_id()</a></dt>
+		<dd>Set the id attribute.</dd>
+	</dl>
+	</p>
 	
         <h4>Parameters:</h4>
     <div class="tags">
@@ -532,7 +502,7 @@ $id)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Wed, 28 Aug 2013 09:39:18 -0400 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Wed, 11 Sep 2013 09:34:45 -0400 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

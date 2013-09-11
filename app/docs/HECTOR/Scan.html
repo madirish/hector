@@ -357,17 +357,17 @@ The generic Scan object keeps track of schedules and  names of Scan_type's that 
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 76]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line 128]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void __construct(
-[int
+[Int
 $id = ''])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Short description of method __construct<br /><br /><br /><br />
+		Construct a new instance of the scan object.<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -386,9 +386,9 @@ $id = ''])</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">int&nbsp;&nbsp;</td>
+        <td class="type">Int&nbsp;&nbsp;</td>
         <td><b>$id</b>&nbsp;&nbsp;</td>
-        <td>id</td>
+        <td>The unique ID</td>
       </tr>
         </table>
     </div><br />
@@ -396,11 +396,11 @@ $id = ''])</code>
   </div>
   <hr />
 	<a name="methoddelete"></a>
-	<h3>method delete <span class="smalllinenumber">[line 113]</span></h3>
+	<h3>method delete <span class="smalllinenumber">[line 164]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void delete(
+		<code>Boolean delete(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -409,6 +409,9 @@ $id = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if something goes awry</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -429,19 +432,22 @@ $id = ''])</code>
   </div>
   <hr />
 	<a name="methodget_add_alter_form"></a>
-	<h3>method get_add_alter_form <span class="smalllinenumber">[line 124]</span></h3>
+	<h3>method get_add_alter_form <span class="smalllinenumber">[line 184]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_add_alter_form(
+		<code>Array get_add_alter_form(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Get the Array for the CRUD template<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The Array for the CRUD template</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -459,21 +465,24 @@ $id = ''])</code>
   </div>
   <hr />
 	<a name="methodget_collection_definition"></a>
-	<h3>method get_collection_definition <span class="smalllinenumber">[line 201]</span></h3>
+	<h3>method get_collection_definition <span class="smalllinenumber">[line 265]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_collection_definition(
-[
-$filter = ''], [
+		<code>String get_collection_definition(
+[String
+$filter = ''], [String
 $orderby = ''])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		This function directly supports the Collection class.<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>SQL select string</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -491,14 +500,14 @@ $orderby = ''])</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$filter</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The filter string for the WHERE clause</td>
       </tr>
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$orderby</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The ORDER BY clause for the SQL statement</td>
       </tr>
         </table>
     </div><br />
@@ -506,19 +515,22 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_daily"></a>
-	<h3>method get_daily <span class="smalllinenumber">[line 228]</span></h3>
+	<h3>method get_daily <span class="smalllinenumber">[line 304]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_daily(
+		<code>Int get_daily(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Return whether or not this scan is daily<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>Zero or one.</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -531,19 +543,22 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_dayofmonth"></a>
-	<h3>method get_dayofmonth <span class="smalllinenumber">[line 232]</span></h3>
+	<h3>method get_dayofmonth <span class="smalllinenumber">[line 318]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_dayofmonth(
+		<code>Int get_dayofmonth(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Return the day of the month for the scan<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>Zero to 32</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -556,19 +571,22 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_dayofweek"></a>
-	<h3>method get_dayofweek <span class="smalllinenumber">[line 236]</span></h3>
+	<h3>method get_dayofweek <span class="smalllinenumber">[line 335]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_dayofweek(
+		<code>Int get_dayofweek(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Return the day of week for the scan<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>From zero, for none, to 7</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -581,19 +599,22 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_dayofyear"></a>
-	<h3>method get_dayofyear <span class="smalllinenumber">[line 240]</span></h3>
+	<h3>method get_dayofyear <span class="smalllinenumber">[line 349]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_dayofyear(
+		<code>Int get_dayofyear(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Return the day of the year<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>From zero, for none, to 366</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -606,19 +627,22 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_displays"></a>
-	<h3>method get_displays <span class="smalllinenumber">[line 217]</span></h3>
+	<h3>method get_displays <span class="smalllinenumber">[line 287]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_displays(
+		<code>Array get_displays(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Get the Array for the display template<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The array for the displays template</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -636,19 +660,22 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_friendly_daily"></a>
-	<h3>method get_friendly_daily <span class="smalllinenumber">[line 244]</span></h3>
+	<h3>method get_friendly_daily <span class="smalllinenumber">[line 364]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_friendly_daily(
+		<code>String get_friendly_daily(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Return the string representation for whether or  not we run this scan daily.<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>'Yes' or ''</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -661,19 +688,22 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_friendly_dayofmonth"></a>
-	<h3>method get_friendly_dayofmonth <span class="smalllinenumber">[line 248]</span></h3>
+	<h3>method get_friendly_dayofmonth <span class="smalllinenumber">[line 374]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_friendly_dayofmonth(
+		<code>String get_friendly_dayofmonth(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Return the friendly string representation of the dayofmonth<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The dayofmonth</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -686,19 +716,22 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_friendly_dayofweek"></a>
-	<h3>method get_friendly_dayofweek <span class="smalllinenumber">[line 256]</span></h3>
+	<h3>method get_friendly_dayofweek <span class="smalllinenumber">[line 394]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_friendly_dayofweek(
+		<code>String get_friendly_dayofweek(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Return the friendly string for the day of the week<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The name of the day of the week.</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -711,19 +744,22 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_friendly_dayofyear"></a>
-	<h3>method get_friendly_dayofyear <span class="smalllinenumber">[line 252]</span></h3>
+	<h3>method get_friendly_dayofyear <span class="smalllinenumber">[line 384]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_friendly_dayofyear(
+		<code>String get_friendly_dayofyear(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Return the friendly string representation of the dayofyear<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The dayofmonth</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -736,11 +772,11 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_group_flags"></a>
-	<h3>method get_group_flags <span class="smalllinenumber">[line 269]</span></h3>
+	<h3>method get_group_flags <span class="smalllinenumber">[line 408]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code><a href="../HECTOR/Scan.html">Scan</a> get_group_flags(
+		<code>String get_group_flags(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -750,7 +786,7 @@ $orderby = ''])</code>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>type name</td>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The flags for the scan for which groups</td>
   </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
@@ -764,19 +800,22 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_group_ids"></a>
-	<h3>method get_group_ids <span class="smalllinenumber">[line 280]</span></h3>
+	<h3>method get_group_ids <span class="smalllinenumber">[line 425]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_group_ids(
+		<code>Array get_group_ids(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Return the ids of the groups on this scan<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>Return the array of the group_ids for this scan</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -789,19 +828,22 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_host_groups_readable"></a>
-	<h3>method get_host_groups_readable <span class="smalllinenumber">[line 284]</span></h3>
+	<h3>method get_host_groups_readable <span class="smalllinenumber">[line 435]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_host_groups_readable(
+		<code>String get_host_groups_readable(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Get the names for the host groups<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>A comma separated list of host group names</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -814,19 +856,22 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_name"></a>
-	<h3>method get_name <span class="smalllinenumber">[line 296]</span></h3>
+	<h3>method get_name <span class="smalllinenumber">[line 453]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_name(
+		<code>String get_name(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Get the name of the scan<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The HTML display safe string</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -839,19 +884,22 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_scan_type_id"></a>
-	<h3>method get_scan_type_id <span class="smalllinenumber">[line 308]</span></h3>
+	<h3>method get_scan_type_id <span class="smalllinenumber">[line 479]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_scan_type_id(
+		<code>Int get_scan_type_id(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Get the associate id for the Scan_type<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The unique ID for the Scan_type</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -864,7 +912,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_type"></a>
-	<h3>method get_type <span class="smalllinenumber">[line 304]</span></h3>
+	<h3>method get_type <span class="smalllinenumber">[line 463]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -873,10 +921,13 @@ $orderby = ''])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Return the Scan_type<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The Scan_type associated with this scan</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -889,19 +940,22 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_type_name"></a>
-	<h3>method get_type_name <span class="smalllinenumber">[line 314]</span></h3>
+	<h3>method get_type_name <span class="smalllinenumber">[line 492]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_type_name(
+		<code>String get_type_name(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Return the Type name for this Scan<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The name of the associated Scan.</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -914,19 +968,22 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodsave"></a>
-	<h3>method save <span class="smalllinenumber">[line 321]</span></h3>
+	<h3>method save <span class="smalllinenumber">[line 505]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void save(
+		<code>Boolean save(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Persist the object to the data layer.<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if anything goes awry</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -944,17 +1001,17 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodset_daily"></a>
-	<h3>method set_daily <span class="smalllinenumber">[line 391]</span></h3>
+	<h3>method set_daily <span class="smalllinenumber">[line 583]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void set_daily(
-
+Int
 $int)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Set whether or not this is a daily scan<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -970,9 +1027,9 @@ $int)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">Int&nbsp;&nbsp;</td>
         <td><b>$int</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>Is this a daily scan, 0=No, 1=Yes</td>
       </tr>
         </table>
     </div><br />
@@ -980,17 +1037,17 @@ $int)</code>
   </div>
   <hr />
 	<a name="methodset_dayofmonth"></a>
-	<h3>method set_dayofmonth <span class="smalllinenumber">[line 397]</span></h3>
+	<h3>method set_dayofmonth <span class="smalllinenumber">[line 595]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void set_dayofmonth(
-
+Int
 $int)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Set what day of the month to scan on<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -1006,9 +1063,9 @@ $int)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">Int&nbsp;&nbsp;</td>
         <td><b>$int</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The day of the month to scan.</td>
       </tr>
         </table>
     </div><br />
@@ -1016,17 +1073,17 @@ $int)</code>
   </div>
   <hr />
 	<a name="methodset_dayofweek"></a>
-	<h3>method set_dayofweek <span class="smalllinenumber">[line 403]</span></h3>
+	<h3>method set_dayofweek <span class="smalllinenumber">[line 607]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void set_dayofweek(
-
+Int
 $int)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		The day of the week to scan.<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -1042,9 +1099,9 @@ $int)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">Int&nbsp;&nbsp;</td>
         <td><b>$int</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The day of the week (0-7) to scan, 0=No</td>
       </tr>
         </table>
     </div><br />
@@ -1052,17 +1109,17 @@ $int)</code>
   </div>
   <hr />
 	<a name="methodset_dayofyear"></a>
-	<h3>method set_dayofyear <span class="smalllinenumber">[line 409]</span></h3>
+	<h3>method set_dayofyear <span class="smalllinenumber">[line 619]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void set_dayofyear(
-
+Int
 $int)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Set the day of the year for the scan<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -1078,9 +1135,9 @@ $int)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">Int&nbsp;&nbsp;</td>
         <td><b>$int</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The day of the year for the scan</td>
       </tr>
         </table>
     </div><br />
@@ -1088,17 +1145,17 @@ $int)</code>
   </div>
   <hr />
 	<a name="methodset_group_ids"></a>
-	<h3>method set_group_ids <span class="smalllinenumber">[line 415]</span></h3>
+	<h3>method set_group_ids <span class="smalllinenumber">[line 631]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void set_group_ids(
-
+Array
 $ids)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Set the group id's to scan<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -1114,9 +1171,9 @@ $ids)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">Array&nbsp;&nbsp;</td>
         <td><b>$ids</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>An array of the group id's that should be scanned</td>
       </tr>
         </table>
     </div><br />
@@ -1124,17 +1181,17 @@ $ids)</code>
   </div>
   <hr />
 	<a name="methodset_name"></a>
-	<h3>method set_name <span class="smalllinenumber">[line 426]</span></h3>
+	<h3>method set_name <span class="smalllinenumber">[line 648]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void set_name(
-
+String
 $name)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Set the name of this scan<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -1150,9 +1207,9 @@ $name)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$name</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The name of the scan.</td>
       </tr>
         </table>
     </div><br />
@@ -1160,7 +1217,7 @@ $name)</code>
   </div>
   <hr />
 	<a name="methodset_type"></a>
-	<h3>method set_type <span class="smalllinenumber">[line 430]</span></h3>
+	<h3>method set_type <span class="smalllinenumber">[line 658]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1170,7 +1227,7 @@ $type)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Set the type of the scan<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -1188,7 +1245,7 @@ $type)</code>
           <tr>
         <td class="type"><a href="../HECTOR/Scan_type.html">Scan_type</a>&nbsp;&nbsp;</td>
         <td><b>$type</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The Scan_type for this scan</td>
       </tr>
         </table>
     </div><br />
@@ -1196,17 +1253,17 @@ $type)</code>
   </div>
   <hr />
 	<a name="methodset_type_by_id"></a>
-	<h3>method set_type_by_id <span class="smalllinenumber">[line 434]</span></h3>
+	<h3>method set_type_by_id <span class="smalllinenumber">[line 668]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void set_type_by_id(
-
+Int
 $id)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Set the type for the Scan<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -1222,9 +1279,9 @@ $id)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">Int&nbsp;&nbsp;</td>
         <td><b>$id</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The unique ID for the Scan_type</td>
       </tr>
         </table>
     </div><br />
@@ -1235,7 +1292,7 @@ $id)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Wed, 28 Aug 2013 09:39:18 -0400 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Wed, 11 Sep 2013 09:34:45 -0400 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

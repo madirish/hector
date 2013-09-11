@@ -258,15 +258,14 @@ Source Location: /app/lib/class.Vuln_detail.php<br /><br />
     <li><a href="../HECTOR/Vuln_detail.html#methoddelete">delete</a></li>
     <li><a href="../HECTOR/Vuln_detail.html#methodget_add_alter_form">get_add_alter_form</a></li>
     <li><a href="../HECTOR/Vuln_detail.html#methodget_collection_definition">get_collection_definition</a></li>
+    <li><a href="../HECTOR/Vuln_detail.html#methodget_datetime">get_datetime</a></li>
     <li><a href="../HECTOR/Vuln_detail.html#methodget_displays">get_displays</a></li>
     <li><a href="../HECTOR/Vuln_detail.html#methodget_fixed">get_fixed</a></li>
     <li><a href="../HECTOR/Vuln_detail.html#methodget_fixed_datetime">get_fixed_datetime</a></li>
     <li><a href="../HECTOR/Vuln_detail.html#methodget_fixed_notes">get_fixed_notes</a></li>
     <li><a href="../HECTOR/Vuln_detail.html#methodget_fixed_user_id">get_fixed_user_id</a></li>
     <li><a href="../HECTOR/Vuln_detail.html#methodget_fixed_user_name">get_fixed_user_name</a></li>
-    <li><a href="../HECTOR/Vuln_detail.html#methodget_host">get_host</a></li>
     <li><a href="../HECTOR/Vuln_detail.html#methodget_host_id">get_host_id</a></li>
-    <li><a href="../HECTOR/Vuln_detail.html#methodget_id">get_id</a></li>
     <li><a href="../HECTOR/Vuln_detail.html#methodget_ignore">get_ignore</a></li>
     <li><a href="../HECTOR/Vuln_detail.html#methodget_ignored_user_id">get_ignored_user_id</a></li>
     <li><a href="../HECTOR/Vuln_detail.html#methodget_ignored_user_name">get_ignored_user_name</a></li>
@@ -274,12 +273,15 @@ Source Location: /app/lib/class.Vuln_detail.php<br /><br />
     <li><a href="../HECTOR/Vuln_detail.html#methodget_text">get_text</a></li>
     <li><a href="../HECTOR/Vuln_detail.html#methodget_ticket">get_ticket</a></li>
     <li><a href="../HECTOR/Vuln_detail.html#methodget_vuln">get_vuln</a></li>
+    <li><a href="../HECTOR/Vuln_detail.html#methodget_vuln_id">get_vuln_id</a></li>
     <li><a href="../HECTOR/Vuln_detail.html#methodget_vuln_name">get_vuln_name</a></li>
     <li><a href="../HECTOR/Vuln_detail.html#methodsave">save</a></li>
+    <li><a href="../HECTOR/Vuln_detail.html#methodset_datetime">set_datetime</a></li>
     <li><a href="../HECTOR/Vuln_detail.html#methodset_fixed">set_fixed</a></li>
     <li><a href="../HECTOR/Vuln_detail.html#methodset_fixed_datetime">set_fixed_datetime</a></li>
     <li><a href="../HECTOR/Vuln_detail.html#methodset_fixed_notes">set_fixed_notes</a></li>
     <li><a href="../HECTOR/Vuln_detail.html#methodset_fixed_user_id">set_fixed_user_id</a></li>
+    <li><a href="../HECTOR/Vuln_detail.html#methodset_host_id">set_host_id</a></li>
     <li><a href="../HECTOR/Vuln_detail.html#methodset_ignore">set_ignore</a></li>
     <li><a href="../HECTOR/Vuln_detail.html#methodset_ignore_datetime">set_ignore_datetime</a></li>
     <li><a href="../HECTOR/Vuln_detail.html#methodset_ignore_user_id">set_ignore_user_id</a></li>
@@ -354,11 +356,14 @@ Occurances of Vulnerabilities.<br /><br /><br /><br />
 	<a name="var$id"></a>
 	<p></p>
 	<h4>$id = <span class="value">&nbsp;null</span></h4>
-	<p>[line 46]</p>
+	<p>[line 59]</p>
   The unique ID from the database.<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>var:</b>&nbsp;&nbsp;</td><td>The unique ID from the data layer.</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>protected</td>
   </tr>
@@ -370,7 +375,7 @@ Occurances of Vulnerabilities.<br /><br /><br /><br />
   <table border="0" cellspacing="0" cellpadding="0">
     <tr>
       <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>int</td>
+      <td>Int</td>
     </tr>
         <tr>
       <td><b>Overrides:</b>&nbsp;&nbsp;</td>
@@ -388,12 +393,12 @@ Occurances of Vulnerabilities.<br /><br /><br /><br />
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 172]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line 193]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void __construct(
-[int
+[Int
 $id = ''])</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -423,9 +428,9 @@ $id = ''])</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">int&nbsp;&nbsp;</td>
+        <td class="type">Int&nbsp;&nbsp;</td>
         <td><b>$id</b>&nbsp;&nbsp;</td>
-        <td>Unique id for the Vuln_detail</td>
+        <td>The optional unique id for the Vuln_detail</td>
       </tr>
         </table>
     </div><br />
@@ -433,11 +438,11 @@ $id = ''])</code>
   </div>
   <hr />
 	<a name="methoddelete"></a>
-	<h3>method delete <span class="smalllinenumber">[line 206]</span></h3>
+	<h3>method delete <span class="smalllinenumber">[line 227]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void delete(
+		<code>Boolean delete(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -446,6 +451,12 @@ $id = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if something goes awry</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Josh Bauer &lt;<a href="mailto:joshbauer3@gmail.com">joshbauer3@gmail.com</a>&gt;</td>
   </tr>
@@ -466,7 +477,7 @@ $id = ''])</code>
   </div>
   <hr />
 	<a name="methodget_add_alter_form"></a>
-	<h3>method get_add_alter_form <span class="smalllinenumber">[line 225]</span></h3>
+	<h3>method get_add_alter_form <span class="smalllinenumber">[line 248]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -502,7 +513,7 @@ $id = ''])</code>
   </div>
   <hr />
 	<a name="methodget_collection_definition"></a>
-	<h3>method get_collection_definition <span class="smalllinenumber">[line 237]</span></h3>
+	<h3>method get_collection_definition <span class="smalllinenumber">[line 260]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -551,8 +562,39 @@ $orderby = ''])</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodget_datetime"></a>
+	<h3>method get_datetime <span class="smalllinenumber">[line 286]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>Datetime get_datetime(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		The time the vuln report was generated<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The time when this report was generated, when the vuln was observed.</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methodget_displays"></a>
-	<h3>method get_displays <span class="smalllinenumber">[line 263]</span></h3>
+	<h3>method get_displays <span class="smalllinenumber">[line 302]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -588,7 +630,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_fixed"></a>
-	<h3>method get_fixed <span class="smalllinenumber">[line 283]</span></h3>
+	<h3>method get_fixed <span class="smalllinenumber">[line 322]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -602,7 +644,7 @@ $orderby = ''])</code>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>Whether or not this vulnerability is fixed.</td>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if this vulnerability isn't fixed, True otherwise</td>
   </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
@@ -619,19 +661,25 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_fixed_datetime"></a>
-	<h3>method get_fixed_datetime <span class="smalllinenumber">[line 287]</span></h3>
+	<h3>method get_fixed_datetime <span class="smalllinenumber">[line 333]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_fixed_datetime(
+		<code>Datetime get_fixed_datetime(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		The time the vuln was addressed<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The time when this report was addressed, or null.</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -644,19 +692,25 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_fixed_notes"></a>
-	<h3>method get_fixed_notes <span class="smalllinenumber">[line 291]</span></h3>
+	<h3>method get_fixed_notes <span class="smalllinenumber">[line 349]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_fixed_notes(
+		<code>String get_fixed_notes(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Notes associated with the fix<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The HTML display safe notes for any fix that was completed.</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -669,19 +723,25 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_fixed_user_id"></a>
-	<h3>method get_fixed_user_id <span class="smalllinenumber">[line 295]</span></h3>
+	<h3>method get_fixed_user_id <span class="smalllinenumber">[line 360]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_fixed_user_id(
+		<code>Int get_fixed_user_id(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		The User who marked this vuln report fixed.<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The user who reported this vuln fixed.</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -694,7 +754,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_fixed_user_name"></a>
-	<h3>method get_fixed_user_name <span class="smalllinenumber">[line 307]</span></h3>
+	<h3>method get_fixed_user_name <span class="smalllinenumber">[line 372]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -724,48 +784,26 @@ $orderby = ''])</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
-	<a name="methodget_host"></a>
-	<h3>method get_host <span class="smalllinenumber">[line 323]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code><a href="../HECTOR/Host.html">Host</a> get_host(
-)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		The Host object for the host that is associated  with this vulnerability detail.<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>The Host object associated with this record.</td>
-  </tr>
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-	
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
 	<a name="methodget_host_id"></a>
-	<h3>method get_host_id <span class="smalllinenumber">[line 312]</span></h3>
+	<h3>method get_host_id <span class="smalllinenumber">[line 384]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_host_id(
+		<code>Int get_host_id(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Get the associated Host id<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The unique Host id for the Host to which this report refers.</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -774,56 +812,29 @@ $orderby = ''])</code>
 <br /><br />
 
 	
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodget_id"></a>
-	<h3>method get_id <span class="smalllinenumber">[line 336]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>Int get_id(
-)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		The unique id for this object.<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>The unique id for this object.</td>
-  </tr>
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-			<hr class="separator" />
-		<div class="notes">Implementation of:</div>
-			<dl>
-			<dt><a href="../HECTOR/Maleable_Object_Interface.html#methodget_id">Maleable_Object_Interface::get_id()</a></dt>
-					</dl>
-		Overrides <a href="../HECTOR/Maleable_Object.html#methodget_id">Maleable_Object::get_id()</a> (Return the unique id from the data layer)<br /><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodget_ignore"></a>
-	<h3>method get_ignore <span class="smalllinenumber">[line 340]</span></h3>
+	<h3>method get_ignore <span class="smalllinenumber">[line 395]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_ignore(
+		<code>Boolean get_ignore(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Should this report be ignored for reporting purposes?<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>True if Vuln_detail should be ignored for reporting purposes.</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -836,19 +847,25 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_ignored_user_id"></a>
-	<h3>method get_ignored_user_id <span class="smalllinenumber">[line 348]</span></h3>
+	<h3>method get_ignored_user_id <span class="smalllinenumber">[line 422]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_ignored_user_id(
+		<code>Int get_ignored_user_id(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		The unique ID of the User who marked the record ignored.<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The id of the User who marked this record ignored.</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -861,7 +878,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_ignored_user_name"></a>
-	<h3>method get_ignored_user_name <span class="smalllinenumber">[line 360]</span></h3>
+	<h3>method get_ignored_user_name <span class="smalllinenumber">[line 434]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -892,19 +909,25 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_ignore_datetime"></a>
-	<h3>method get_ignore_datetime <span class="smalllinenumber">[line 344]</span></h3>
+	<h3>method get_ignore_datetime <span class="smalllinenumber">[line 406]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_ignore_datetime(
+		<code>Datetime get_ignore_datetime(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		The time the vuln was addressed<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The time when this report was ignored, or null.</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -917,7 +940,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_text"></a>
-	<h3>method get_text <span class="smalllinenumber">[line 383]</span></h3>
+	<h3>method get_text <span class="smalllinenumber">[line 461]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -931,7 +954,10 @@ $orderby = ''])</code>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>The description for this vulnerability detail.</td>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The HTML display safe description for this vulnerability detail.</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane</td>
   </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
@@ -945,7 +971,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_ticket"></a>
-	<h3>method get_ticket <span class="smalllinenumber">[line 373]</span></h3>
+	<h3>method get_ticket <span class="smalllinenumber">[line 447]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -959,7 +985,7 @@ $orderby = ''])</code>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>URL to the ticket</td>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The URL to any ticket associated with this report.</td>
   </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane</td>
@@ -976,7 +1002,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_vuln"></a>
-	<h3>method get_vuln <span class="smalllinenumber">[line 394]</span></h3>
+	<h3>method get_vuln <span class="smalllinenumber">[line 472]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1006,8 +1032,39 @@ $orderby = ''])</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodget_vuln_id"></a>
+	<h3>method get_vuln_id <span class="smalllinenumber">[line 486]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>Int get_vuln_id(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		The unique id fo the Vuln object for this detail record.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The unique id of the Vuln object associated with this record.</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methodget_vuln_name"></a>
-	<h3>method get_vuln_name <span class="smalllinenumber">[line 409]</span></h3>
+	<h3>method get_vuln_name <span class="smalllinenumber">[line 498]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1038,11 +1095,11 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodsave"></a>
-	<h3>method save <span class="smalllinenumber">[line 420]</span></h3>
+	<h3>method save <span class="smalllinenumber">[line 510]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>null save(
+		<code>Boolean save(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -1051,6 +1108,12 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if something goes awry</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -1067,8 +1130,50 @@ $orderby = ''])</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodset_datetime"></a>
+	<h3>method set_datetime <span class="smalllinenumber">[line 594]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>Boolean set_datetime(
+Datetime
+$time)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Set the datetime on this object<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if the timestamp doesnt' validate with PHP strtotime</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">Datetime&nbsp;&nbsp;</td>
+        <td><b>$time</b>&nbsp;&nbsp;</td>
+        <td>The datetime stamp that the vuln was observed.</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methodset_fixed"></a>
-	<h3>method set_fixed <span class="smalllinenumber">[line 449]</span></h3>
+	<h3>method set_fixed <span class="smalllinenumber">[line 609]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1104,11 +1209,11 @@ $fixed)</code>
   </div>
   <hr />
 	<a name="methodset_fixed_datetime"></a>
-	<h3>method set_fixed_datetime <span class="smalllinenumber">[line 460]</span></h3>
+	<h3>method set_fixed_datetime <span class="smalllinenumber">[line 622]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void set_fixed_datetime(
+		<code>Boolean set_fixed_datetime(
 Datetime
 $fixed_datetime)</code>
     </td></tr></table>
@@ -1118,6 +1223,12 @@ $fixed_datetime)</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if the timestamp doesnt' validate with PHP strtotime</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -1140,7 +1251,7 @@ $fixed_datetime)</code>
   </div>
   <hr />
 	<a name="methodset_fixed_notes"></a>
-	<h3>method set_fixed_notes <span class="smalllinenumber">[line 470]</span></h3>
+	<h3>method set_fixed_notes <span class="smalllinenumber">[line 637]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1176,7 +1287,7 @@ $fixed_notes)</code>
   </div>
   <hr />
 	<a name="methodset_fixed_user_id"></a>
-	<h3>method set_fixed_user_id <span class="smalllinenumber">[line 480]</span></h3>
+	<h3>method set_fixed_user_id <span class="smalllinenumber">[line 647]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1211,8 +1322,47 @@ $user_id)</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodset_host_id"></a>
+	<h3>method set_host_id <span class="smalllinenumber">[line 658]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void set_host_id(
+Int
+$id)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Set the associated Host<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">Int&nbsp;&nbsp;</td>
+        <td><b>$id</b>&nbsp;&nbsp;</td>
+        <td>The unique id of the associated Host object</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methodset_ignore"></a>
-	<h3>method set_ignore <span class="smalllinenumber">[line 490]</span></h3>
+	<h3>method set_ignore <span class="smalllinenumber">[line 668]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1248,11 +1398,11 @@ $ignore)</code>
   </div>
   <hr />
 	<a name="methodset_ignore_datetime"></a>
-	<h3>method set_ignore_datetime <span class="smalllinenumber">[line 501]</span></h3>
+	<h3>method set_ignore_datetime <span class="smalllinenumber">[line 680]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void set_ignore_datetime(
+		<code>Boolean set_ignore_datetime(
 Datetime
 $datetime)</code>
     </td></tr></table>
@@ -1262,6 +1412,9 @@ $datetime)</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if the timestamp doesnt' validate with PHP strtotime</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -1287,7 +1440,7 @@ $datetime)</code>
   </div>
   <hr />
 	<a name="methodset_ignore_user_id"></a>
-	<h3>method set_ignore_user_id <span class="smalllinenumber">[line 514]</span></h3>
+	<h3>method set_ignore_user_id <span class="smalllinenumber">[line 698]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1326,7 +1479,7 @@ $user_id)</code>
   </div>
   <hr />
 	<a name="methodset_text"></a>
-	<h3>method set_text <span class="smalllinenumber">[line 524]</span></h3>
+	<h3>method set_text <span class="smalllinenumber">[line 708]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1362,11 +1515,11 @@ $text)</code>
   </div>
   <hr />
 	<a name="methodset_ticket"></a>
-	<h3>method set_ticket <span class="smalllinenumber">[line 535]</span></h3>
+	<h3>method set_ticket <span class="smalllinenumber">[line 720]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void set_ticket(
+		<code>Boolean set_ticket(
 String
 $ticket)</code>
     </td></tr></table>
@@ -1376,6 +1529,9 @@ $ticket)</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if the URL doesn't validate.</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -1401,7 +1557,7 @@ $ticket)</code>
   </div>
   <hr />
 	<a name="methodset_vuln_id"></a>
-	<h3>method set_vuln_id <span class="smalllinenumber">[line 545]</span></h3>
+	<h3>method set_vuln_id <span class="smalllinenumber">[line 735]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1440,7 +1596,7 @@ $id)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Wed, 28 Aug 2013 09:39:19 -0400 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Wed, 11 Sep 2013 09:34:46 -0400 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

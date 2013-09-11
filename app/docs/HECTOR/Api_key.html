@@ -224,11 +224,12 @@ Source Location: /app/lib/class.Api_key.php<br /><br />
 <pre><a href="../HECTOR/Maleable_Object.html">Maleable_Object</a>
    |
    --Api_key</pre><br />
-<div class="description">API keys allow access to APIs'.</div><br /><br />
+<div class="description">API keys allow access to export feeds</div><br /><br />
 <h4>Author(s):</h4>
 <ul>
           <li>Josh Bauer &lt;<a href="mailto:joshbauer3@gmail.com">joshbauer3@gmail.com</a>&gt;</li>
-                  </ul>
+              <li>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</li>
+            </ul>
 
 
 
@@ -262,10 +263,8 @@ Source Location: /app/lib/class.Api_key.php<br /><br />
     <li><a href="../HECTOR/Api_key.html#methodget_holder_affiliation">get_holder_affiliation</a></li>
     <li><a href="../HECTOR/Api_key.html#methodget_holder_email">get_holder_email</a></li>
     <li><a href="../HECTOR/Api_key.html#methodget_holder_name">get_holder_name</a></li>
-    <li><a href="../HECTOR/Api_key.html#methodget_id">get_id</a></li>
     <li><a href="../HECTOR/Api_key.html#methodget_key_resource">get_key_resource</a></li>
     <li><a href="../HECTOR/Api_key.html#methodget_key_value">get_key_value</a></li>
-    <li><a href="../HECTOR/Api_key.html#methodnew_key_value">new_key_value</a></li>
     <li><a href="../HECTOR/Api_key.html#methodsave">save</a></li>
     <li><a href="../HECTOR/Api_key.html#methodset_holder_affiliation">set_holder_affiliation</a></li>
     <li><a href="../HECTOR/Api_key.html#methodset_holder_email">set_holder_email</a></li>
@@ -317,8 +316,8 @@ Source Location: /app/lib/class.Api_key.php<br /><br />
 <a name="class_details"></a>
 <h3>Class Details</h3>
 <div class="tags">
-[line 34]<br />
-API keys allow access to APIs'.<br /><br /><br /><br />
+[line 35]<br />
+API keys allow access to export feeds<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -326,7 +325,7 @@ API keys allow access to APIs'.<br /><br /><br /><br />
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Josh Bauer &lt;<a href="mailto:joshbauer3@gmail.com">joshbauer3@gmail.com</a>&gt;</td>
   </tr>
   <tr>
-    <td><b>todo:</b>&nbsp;&nbsp;</td><td>Document this class</td>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
@@ -343,11 +342,14 @@ API keys allow access to APIs'.<br /><br /><br /><br />
 	<a name="var$id"></a>
 	<p></p>
 	<h4>$id = <span class="value">&nbsp;null</span></h4>
-	<p>[line 45]</p>
-  Short description of attribute id<br /><br /><br /><br />
+	<p>[line 59]</p>
+  Unique Id from the data layer<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>var:</b>&nbsp;&nbsp;</td><td>Unique ID from the data layer</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>protected</td>
   </tr>
@@ -359,7 +361,7 @@ API keys allow access to APIs'.<br /><br /><br /><br />
   <table border="0" cellspacing="0" cellpadding="0">
     <tr>
       <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>int</td>
+      <td>Int</td>
     </tr>
         <tr>
       <td><b>Overrides:</b>&nbsp;&nbsp;</td>
@@ -377,7 +379,7 @@ API keys allow access to APIs'.<br /><br /><br /><br />
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 93]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line 109]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -387,10 +389,13 @@ $id = ''])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Short description of method __construct<br /><br /><br /><br />
+		Create a new instance of the Api_key<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Josh Bauer &lt;<a href="mailto:joshbauer3@gmail.com">joshbauer3@gmail.com</a>&gt;</td>
   </tr>
@@ -416,11 +421,11 @@ $id = ''])</code>
   </div>
   <hr />
 	<a name="methoddelete"></a>
-	<h3>method delete <span class="smalllinenumber">[line 120]</span></h3>
+	<h3>method delete <span class="smalllinenumber">[line 139]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void delete(
+		<code>Boolean delete(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -429,6 +434,12 @@ $id = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if something goes awry</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Josh Bauer &lt;<a href="mailto:joshbauer3@gmail.com">joshbauer3@gmail.com</a>&gt;</td>
   </tr>
@@ -449,11 +460,11 @@ $id = ''])</code>
   </div>
   <hr />
 	<a name="methodget_add_alter_form"></a>
-	<h3>method get_add_alter_form <span class="smalllinenumber">[line 133]</span></h3>
+	<h3>method get_add_alter_form <span class="smalllinenumber">[line 159]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_add_alter_form(
+		<code>Array get_add_alter_form(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -462,6 +473,15 @@ $id = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The Array for supporting default CRUD template</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Josh Bauer &lt;<a href="mailto:joshbauer3@gmail.com">joshbauer3@gmail.com</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -479,11 +499,11 @@ $id = ''])</code>
   </div>
   <hr />
 	<a name="methodget_collection_definition"></a>
-	<h3>method get_collection_definition <span class="smalllinenumber">[line 164]</span></h3>
+	<h3>method get_collection_definition <span class="smalllinenumber">[line 193]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>SQL get_collection_definition(
+		<code>String get_collection_definition(
 [
 $filter = ''], [
 $orderby = ''])</code>
@@ -495,7 +515,13 @@ $orderby = ''])</code>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>select string</td>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>SQL select string to build the Collection</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Josh Bauer &lt;<a href="mailto:joshbauer3@gmail.com">joshbauer3@gmail.com</a>&gt;</td>
   </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
@@ -529,19 +555,28 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_displays"></a>
-	<h3>method get_displays <span class="smalllinenumber">[line 183]</span></h3>
+	<h3>method get_displays <span class="smalllinenumber">[line 221]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_displays(
+		<code>Array get_displays(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Get the displays for default overview template<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The array for default overview template</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Josh Bauer &lt;<a href="mailto:joshbauer3@gmail.com">joshbauer3@gmail.com</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -559,19 +594,28 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_holder_affiliation"></a>
-	<h3>method get_holder_affiliation <span class="smalllinenumber">[line 193]</span></h3>
+	<h3>method get_holder_affiliation <span class="smalllinenumber">[line 239]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_holder_affiliation(
+		<code>String get_holder_affiliation(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Get the holder affiliation<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The HTML display safe affiliation of the key holder</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Josh Bauer &lt;<a href="mailto:joshbauer3@gmail.com">joshbauer3@gmail.com</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -584,19 +628,28 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_holder_email"></a>
-	<h3>method get_holder_email <span class="smalllinenumber">[line 197]</span></h3>
+	<h3>method get_holder_email <span class="smalllinenumber">[line 251]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_holder_email(
+		<code>String get_holder_email(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Get the holder email<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The HTML display safe contact email of the key holder</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Josh Bauer &lt;<a href="mailto:joshbauer3@gmail.com">joshbauer3@gmail.com</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -609,19 +662,28 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_holder_name"></a>
-	<h3>method get_holder_name <span class="smalllinenumber">[line 201]</span></h3>
+	<h3>method get_holder_name <span class="smalllinenumber">[line 263]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_holder_name(
+		<code>String get_holder_name(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Get the holder name<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The HTML display safe name of the key holder</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Josh Bauer &lt;<a href="mailto:joshbauer3@gmail.com">joshbauer3@gmail.com</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -630,53 +692,32 @@ $orderby = ''])</code>
 <br /><br />
 
 	
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodget_id"></a>
-	<h3>method get_id <span class="smalllinenumber">[line 205]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_id(
-)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		<br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-			<hr class="separator" />
-		<div class="notes">Implementation of:</div>
-			<dl>
-			<dt><a href="../HECTOR/Maleable_Object_Interface.html#methodget_id">Maleable_Object_Interface::get_id()</a></dt>
-					</dl>
-		Overrides <a href="../HECTOR/Maleable_Object.html#methodget_id">Maleable_Object::get_id()</a> (Return the unique id from the data layer)<br /><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodget_key_resource"></a>
-	<h3>method get_key_resource <span class="smalllinenumber">[line 210]</span></h3>
+	<h3>method get_key_resource <span class="smalllinenumber">[line 275]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_key_resource(
+		<code>String get_key_resource(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Get the resource to which this key allows access<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The HTML display safe resource this key grants access to</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Josh Bauer &lt;<a href="mailto:joshbauer3@gmail.com">joshbauer3@gmail.com</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -689,44 +730,28 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_key_value"></a>
-	<h3>method get_key_value <span class="smalllinenumber">[line 214]</span></h3>
+	<h3>method get_key_value <span class="smalllinenumber">[line 287]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_key_value(
+		<code>String get_key_value(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Get the actual key<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The HTML display safe key value</td>
   </tr>
-</table>
-</div>
-<br /><br />
-
-	
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodnew_key_value"></a>
-	<h3>method new_key_value <span class="smalllinenumber">[line 218]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void new_key_value(
-)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		<br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Josh Bauer &lt;<a href="mailto:joshbauer3@gmail.com">joshbauer3@gmail.com</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -739,19 +764,28 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodsave"></a>
-	<h3>method save <span class="smalllinenumber">[line 228]</span></h3>
+	<h3>method save <span class="smalllinenumber">[line 315]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void save(
+		<code>Boolean save(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Persist the Api_key to the database<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if something goes awry</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Josh Bauer &lt;<a href="mailto:joshbauer3@gmail.com">joshbauer3@gmail.com</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -769,20 +803,26 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodset_holder_affiliation"></a>
-	<h3>method set_holder_affiliation <span class="smalllinenumber">[line 253]</span></h3>
+	<h3>method set_holder_affiliation <span class="smalllinenumber">[line 367]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void set_holder_affiliation(
-
+String
 $holder_affiliation)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Set the key holder affiliation<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Josh Bauer &lt;<a href="mailto:joshbauer3@gmail.com">joshbauer3@gmail.com</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -795,9 +835,9 @@ $holder_affiliation)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$holder_affiliation</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The affiliation of the key holder</td>
       </tr>
         </table>
     </div><br />
@@ -805,20 +845,29 @@ $holder_affiliation)</code>
   </div>
   <hr />
 	<a name="methodset_holder_email"></a>
-	<h3>method set_holder_email <span class="smalllinenumber">[line 260]</span></h3>
+	<h3>method set_holder_email <span class="smalllinenumber">[line 380]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void set_holder_email(
-
+		<code>Boolean set_holder_email(
+String
 $holder_email)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Set the key holder email<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if e-mail is invalid</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Josh Bauer &lt;<a href="mailto:joshbauer3@gmail.com">joshbauer3@gmail.com</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -831,9 +880,9 @@ $holder_email)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$holder_email</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The email address of the key holder</td>
       </tr>
         </table>
     </div><br />
@@ -841,20 +890,26 @@ $holder_email)</code>
   </div>
   <hr />
 	<a name="methodset_holder_name"></a>
-	<h3>method set_holder_name <span class="smalllinenumber">[line 267]</span></h3>
+	<h3>method set_holder_name <span class="smalllinenumber">[line 397]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void set_holder_name(
-
+String
 $holder_name)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Set the key holder name<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Josh Bauer &lt;<a href="mailto:joshbauer3@gmail.com">joshbauer3@gmail.com</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -867,9 +922,9 @@ $holder_name)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$holder_name</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The name of the key holder</td>
       </tr>
         </table>
     </div><br />
@@ -877,20 +932,26 @@ $holder_name)</code>
   </div>
   <hr />
 	<a name="methodset_key_resource"></a>
-	<h3>method set_key_resource <span class="smalllinenumber">[line 274]</span></h3>
+	<h3>method set_key_resource <span class="smalllinenumber">[line 409]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void set_key_resource(
-
+String
 $key_resource)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Set the key resource<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Josh Bauer &lt;<a href="mailto:joshbauer3@gmail.com">joshbauer3@gmail.com</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -903,9 +964,9 @@ $key_resource)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$key_resource</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The resource to which the key applies</td>
       </tr>
         </table>
     </div><br />
@@ -913,20 +974,32 @@ $key_resource)</code>
   </div>
   <hr />
 	<a name="methodvalidate"></a>
-	<h3>method validate <span class="smalllinenumber">[line 281]</span></h3>
+	<h3>method validate <span class="smalllinenumber">[line 423]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void validate(
-
+		<code>Boolean validate(
+String
 $key)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Validate the key<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>True if the key validates, False otherwise.</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Josh Bauer &lt;<a href="mailto:joshbauer3@gmail.com">joshbauer3@gmail.com</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>todo:</b>&nbsp;&nbsp;</td><td>Validate the resource as a second parameter</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -939,9 +1012,9 @@ $key)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$key</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The key value</td>
       </tr>
         </table>
     </div><br />
@@ -952,7 +1025,7 @@ $key)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Wed, 28 Aug 2013 09:39:18 -0400 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Wed, 11 Sep 2013 09:34:45 -0400 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

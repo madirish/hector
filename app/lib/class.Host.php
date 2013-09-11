@@ -1250,9 +1250,9 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	    			'location_id = \'?i\', ' .
 	    			'supportgroup_id = \'?i\', ' .
 	    			'host_note = \'?s\', ' .
-	    			'host_policy = \'?i\', ' .
+	    			'host_policy = ?b, ' .
 	    			'host_link = \'?s\', ' .
-	    			'host_ignore_portscan = \'?i\', ' .
+	    			'host_ignore_portscan = ?b, ' .
 	    			'host_ignoredby_user_id = \'?i\', ' .
 	    			'host_ignoredfor_days = \'?i\', ' .
 	    			'host_ignored_timestamp = now(), ' .
@@ -1289,7 +1289,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	    			'host_link = \'?s\', ' .
 	    			'host_name = \'?s\', ' .
 	    			'host_note = \'?s\', ' .
-	    			'host_policy = \'?i\', ' .
+	    			'host_policy = ?b, ' .
 	    			'host_os = \'?s\', ' .
 	    			'host_sponsor = \'?s\', ' .
 	    			'host_technical = \'?s\', ' .

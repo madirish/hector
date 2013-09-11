@@ -242,8 +242,12 @@ Source Location: /app/lib/class.Form.php<br /><br />
 <h3><a href="#class_methods">Methods</a></h3>
 <ul>
     <li><a href="../HECTOR/Form.html#method__construct">__construct</a></li>
+    <li><a href="../HECTOR/Form.html#methoddelete">delete</a></li>
+    <li><a href="../HECTOR/Form.html#methodget_id">get_id</a></li>
+    <li><a href="../HECTOR/Form.html#methodget_name">get_name</a></li>
     <li><a href="../HECTOR/Form.html#methodget_token">get_token</a></li>
     <li><a href="../HECTOR/Form.html#methodsave">save</a></li>
+    <li><a href="../HECTOR/Form.html#methodset_id">set_id</a></li>
     <li><a href="../HECTOR/Form.html#methodset_name">set_name</a></li>
     <li><a href="../HECTOR/Form.html#methodvalidate">validate</a></li>
   </ul>
@@ -286,19 +290,112 @@ Form class is used to create and track anti-XSRF tokens  in forms for the applic
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 61]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line 83]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>Form __construct(
+		<code>void __construct(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Create a new instance of the Form object<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methoddelete"></a>
+	<h3>method delete <span class="smalllinenumber">[line 98]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void delete(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Delete the record from the database<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodget_id"></a>
+	<h3>method get_id <span class="smalllinenumber">[line 128]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>Int get_id(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Return the unique id from the data layer<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The unique id from the data layer.</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodget_name"></a>
+	<h3>method get_name <span class="smalllinenumber">[line 139]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>String get_name(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Return the form name<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The name of the form</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -311,7 +408,7 @@ Form class is used to create and track anti-XSRF tokens  in forms for the applic
   </div>
   <hr />
 	<a name="methodget_token"></a>
-	<h3>method get_token <span class="smalllinenumber">[line 89]</span></h3>
+	<h3>method get_token <span class="smalllinenumber">[line 150]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -320,10 +417,13 @@ Form class is used to create and track anti-XSRF tokens  in forms for the applic
     </td></tr></table>
     </td></tr></table><br />
 	
-		Short description of method get_token<br /><br /><br /><br />
+		Return the XSRF token<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>MD5sum based anti XSRF token</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -339,19 +439,22 @@ Form class is used to create and track anti-XSRF tokens  in forms for the applic
   </div>
   <hr />
 	<a name="methodsave"></a>
-	<h3>method save <span class="smalllinenumber">[line 104]</span></h3>
+	<h3>method save <span class="smalllinenumber">[line 164]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void save(
+		<code>Boolean save(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Short description of method save<br /><br /><br /><br />
+		Persist the form to the data layer<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if something went wrong</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -366,8 +469,47 @@ Form class is used to create and track anti-XSRF tokens  in forms for the applic
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodset_id"></a>
+	<h3>method set_id <span class="smalllinenumber">[line 199]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void set_id(
+int
+$id)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Set the object's unique id<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>protected</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">int&nbsp;&nbsp;</td>
+        <td><b>$id</b>&nbsp;&nbsp;</td>
+        <td>The unique id for hte object</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methodset_name"></a>
-	<h3>method set_name <span class="smalllinenumber">[line 132]</span></h3>
+	<h3>method set_name <span class="smalllinenumber">[line 211]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -377,7 +519,7 @@ $name)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Short description of method set_name<br /><br /><br /><br />
+		Set the form name<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -398,7 +540,7 @@ $name)</code>
           <tr>
         <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$name</b>&nbsp;&nbsp;</td>
-        <td>name</td>
+        <td>Form name (used for lookups)</td>
       </tr>
         </table>
     </div><br />
@@ -406,22 +548,25 @@ $name)</code>
   </div>
   <hr />
 	<a name="methodvalidate"></a>
-	<h3>method validate <span class="smalllinenumber">[line 147]</span></h3>
+	<h3>method validate <span class="smalllinenumber">[line 225]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>boolean validate(
-form_name
-$form_name, token
-$token, ip
+		<code>Boolean validate(
+String
+$form_name, String
+$token, String
 $ip)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Short description of method validate<br /><br /><br /><br />
+		Validate the form<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>True if the form validates, False otherwise</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -437,19 +582,19 @@ $ip)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">form_name&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$form_name</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The form name</td>
       </tr>
           <tr>
-        <td class="type">token&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$token</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The anti-XSRF token</td>
       </tr>
           <tr>
-        <td class="type">ip&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$ip</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The IP address of the form submission</td>
       </tr>
         </table>
     </div><br />
@@ -460,7 +605,7 @@ $ip)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Wed, 28 Aug 2013 09:39:18 -0400 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Wed, 11 Sep 2013 09:34:45 -0400 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

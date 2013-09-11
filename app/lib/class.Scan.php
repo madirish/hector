@@ -510,7 +510,7 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
 	    		'UPDATE scan ' .
 	    		'SET scan_name = \'?s\', ' .
 	    			'scan_type_id = ?i, ' .
-	    			'scan_daily = ?i, ' .
+	    			'scan_daily = ?b, ' .
 	    			'scan_dayofweek = ?i, ' .
 	    			'scan_dayofmonth = ?i, ' .
 	    			'scan_dayofyear = ?i ' . 
@@ -531,7 +531,7 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
 	    		'INSERT INTO scan ' .
 	    		'SET scan_name = \'?s\', ' .
 	    			'scan_type_id = ?i, ' .
-	    			'scan_daily = ?i, ' .
+	    			'scan_daily = ?b, ' .
 	    			'scan_dayofweek = ?i, ' .
 	    			'scan_dayofmonth = ?i, ' .
 	    			'scan_dayofyear = ?i',

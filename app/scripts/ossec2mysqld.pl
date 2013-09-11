@@ -427,7 +427,7 @@ sub insert_ossec {
     $proto = substr($message, index($message,"PROTO=")+6, index($message, " SPT=")-index($message,"PROTO=")-6);
     my $dnet_sql = "INSERT INTO darknet SET src_ip = inet_aton(?), dst_ip = inet_aton(?), src_port = ?, 
         dst_port = ?, proto = ?, received_at = ?";
-    my $dnet_sth = $dbi->{dbh}->prepare($dnet_sql);
+    my $dnet_sth = $dbi->{dbh}->prepare($dnet_sql) || die("Couldn't prepare darknet insert statement.");
     $dnet_sth->execute($src, $dst, $spt, $dpt, $proto, $date);
     $dnet_sth->finish();
   }
@@ -443,7 +443,7 @@ sub insert_ossec {
     my $koj_exec_sql = "INSERT INTO koj_executed_command set time = ?, ip = ?,
         command = ?, ip_numeric = inet_aton(?), session_id = ?, 
         sensor_id = ?";
-    my $koj_exec_sth = $dbi->{dbh}->prepare($koj_exec_sql);
+    my $koj_exec_sth = $dbi->{dbh}->prepare($koj_exec_sql) || die("Couldn't prepare kojoney insert statement.");
     $koj_exec_sth->execute($datestamp, $remote_ip, $command, $remote_ip, $session_id, $host_id);
     $koj_exec_sth->finish();
   }
@@ -462,7 +462,7 @@ sub insert_ossec {
     my $password = substr($message, $pwordstart, rindex($message, ']') - $pwordstart);
     my $koj_login_sql = "INSERT INTO koj_login_attempt SET time = ?, username = ?, password = ?, 
         ip_numeric = inet_aton(?), ip = ?, sensor_id = ?";
-    my $koj_login_sth = $dbi->{dbh}->prepare($koj_login_sql);
+    my $koj_login_sth = $dbi->{dbh}->prepare($koj_login_sql) || die("Couldn't prepare kojoney login statement.");
     $koj_login_sth->execute($datestamp, $username, $password, $remote_ip, $remote_ip, $host_id);
     $koj_login_sth->finish();
   }
@@ -473,7 +473,7 @@ sub db_select {
   my @sql_args = @_;
   my $id = 0;
 
-  my $sth = $dbi->{dbh}->prepare($select_sql) || die("Couldn't prepare statement.");
+  my $sth = $dbi->{dbh}->prepare($select_sql) || die("Couldn't prepare db_select statement.");
   if (! @sql_args) {
     die("SQL args are undefined!\n");
   }

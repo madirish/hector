@@ -1,13 +1,37 @@
-<?php
-// Necessary includes
-require_once($approot . 'actions/global.php');
-require_once($approot . 'lib/class.Form.php');
-$ip_search = new Form();
-$ip_search_name = 'search_ip_form';
-$ip_search->set_name($ip_search_name);
-$ip_search_token = $ip_search->get_token();
-$ip_search->save();
-?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<!-- This is the header template for logged in users -->
+	<meta charset="utf-8">
+	<title>HECTOR</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" href="images/favicon.ico" />
+	<link href="css/bootstrap.css" rel="stylesheet">
+	<link href="css/bootstrap-responsive.css" rel="stylesheet">
+	<link href="css/penn.css" rel="stylesheet">
+	<script type="text/javascript" src="js/ajaxFunctions.js"></script> 
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/bootstrap.js"></script>
+	<?php if (isset($javascripts)) echo $javascripts;?>
+</head>
+<body>
+<!-- 
+
+	HECTOR
+	
+	an open source security intelligence platform from the 
+	University of Pennsylvania's School of Arts & Sciences.
+
+-->
+<div id="headerbar" class="headergrey">
+<div id="sas_header" class="sasgrey"> 
+	<a href="http://www.sas.upenn.edu"><img src="http://www.sas.upenn.edu/home/assets/img/global/sas_header_logo_grey.jpg"></a> 
+	<a class="links" href="http://www.sas.upenn.edu">School of Arts and Sciences</a> 
+	<a class="links" href="http://www.upenn.edu">University of Pennsylvania</a>
+</div>
+</div>
+
+<div class="container">
 <h1>HECTOR</h1>
 <div class="navbar"><div class="navbar-inner">
   <ul class="nav">

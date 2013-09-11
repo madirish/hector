@@ -11,6 +11,7 @@
 	<script src="js/ajaxFunctions.js" type="text/javascript"></script> 
 	<script src="js/jquery.js" type="text/javascript"></script>
 	<script src="js/bootstrap.js" type="text/javascript"></script>
+	<?php if (isset($javascripts)) echo $javascripts;?>
 </head>
 <body>
 <!-- 

@@ -39,13 +39,55 @@ require_once('class.Maleable_Object.php');
  * @version .1
  */
 class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
+
+
+    // --- ATTRIBUTES ---
+    /**
+     * Instance of the Db
+     * 
+     * @access private
+     * @var Db An instance of the Db
+     */
+    private $db = null;
+
+    /**
+     * Unique ID from the data layer
+     *
+     * @access protected
+     * @var int Unique id
+     */
+    protected $id = null;
     
+    /**
+     * The name of the scan type
+     * 
+     * @access private
+     * @param String The name of the scan type
+     */
     private $name;
     
+    /**
+     * The script to run
+     * 
+     * @access private
+     * @param String The name of the script this Scan_type runs
+     */
     private $script;
     
+    /**
+     * Any command line arguments to pass to the script
+     * 
+     * @access private
+     * @param String Command line arguments to pass to the executable
+     */    
     private $flags;
     
+    /**
+     * Argument for the CRUD template
+     * 
+     * @access private
+     * @param String Argument for the CRUD template
+     */
     private $onselects = null;
     
     // --- OPERATIONS ---
@@ -58,8 +100,7 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
      * @param  int id
      * @return void
      */
-    public function __construct($id = '')
-    {
+	public function __construct($id = ''){
 		$this->db = Db::get_instance();
 		$this->log = Log::get_instance();
 		if ($id != '') {
@@ -68,35 +109,47 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
 				$id
 			);
 			$result = $this->db->fetch_object_array($sql);
-			$this->id = $result[0]->scan_type_id;
-			$this->name = $result[0]->scan_type_name;
-			$this->flags = $result[0]->scan_type_flags;
-			$this->script = $result[0]->scan_type_script;
+			$this->set_id($result[0]->scan_type_id);
+			$this->set_name($result[0]->scan_type_name);
+			$this->set_flags($result[0]->scan_type_flags);
+			$this->set_script($result[0]->scan_type_script);
 		}
-    }
+	}
 
     /**
      * Delete the record from the database
      *
      * @access public
      * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return Boolean False if something goes awry
      */
     public function delete() {
+    	$retval = FALSE;
     	if ($this->id > 0 ) {
     		// Delete an existing record
 	    	$sql = array(
 	    		'DELETE FROM scan_type WHERE scan_type_id = \'?i\'',
 	    		$this->get_id()
 	    	);
+	    	$retval = $this->db->iud_sql($sql);
+	    	// Cascade the delete
+	    	$sql = array(
+	    		'DELETE s, x ' .
+	    		'FROM scan s ' .
+	    		'JOIN scan_x_host_group x ON s.scan_id = x.scan_id ' .
+	    		'WHERE s.scan_type_id = ?i',
+	    		$this->get_id()
+	    	);
 	    	$this->db->iud_sql($sql);
     	}
+    	return $retval;
     }
     /**
      * Get the add/edit form for display in the template
      *
      * @access public
      * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
-     * @return Array
+     * @return Array The Array for the default CRUD template
      */	
 	public function get_add_alter_form() {
 		// get the host groups array
@@ -138,7 +191,7 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
 	 * 
 	 * @access public
      * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
-     * @return String
+     * @return String HTML to put into the template footer to enable dynamic CRUD templates
 	 */
 	public function get_footer_scripts() {
 		$onselects = (is_null($this->onselects)) ? $this->get_script_exes() : $this->onselects;
@@ -159,7 +212,7 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
 	 * 
 	 * @access public
      * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
-     * @return Array
+     * @return Array Array for the default CRUD template to enable dynamic forms based on scan types
 	 */
 	private function get_script_exes() {
 		global $approot;
@@ -182,13 +235,14 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
 		$this->onselects = $onselects;
 		$this->exes = $retval;
 	}
+	
 	/**
      * Get a list of the onselect functions for the script
      * out of the script files.
      *
      * @access public
      * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
-     * @return String
+     * @return String A list of scripts for dynamic forms in the CRUD template
      */
 	private function get_script_onselects() { 
 		return $this->onselects;
@@ -200,7 +254,7 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
 	 * 
 	 * @access public
      * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
-	 * @return SQL select string
+	 * @return String SQL select string
 	 */
 	public function get_collection_definition($filter = '', $orderby = '') {
 		$query_args = array();
@@ -223,29 +277,39 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
      *
      * @access public
      * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return Array Array for the default display template
      */
 	public function get_displays() {
 		return array('Name'=>'get_name', 'Script'=>'get_script', 'Flags'=>'get_flags');
 	}
+	
 	/**
      * Get flags set on the script.
      *
      * @access public
      * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
-     * @return String The flags set up for the script.
+     * @return String The HTML display safe flags set up for the script.
      */
 	public function get_flags() {
 		return htmlspecialchars($this->flags);
 	}
 	
-	public function get_id() {
-		return (int) $this->id;
-	}
-	
+	/**
+	 * Get the scan type name
+	 * 
+	 * @access public
+	 * @return String The HTML dislay safe name of the scan
+	 */
 	public function get_name() {
 		return htmlspecialchars($this->name);
 	}
 	
+	/**
+	 * The script name
+	 * 
+	 * @access public
+	 * @return String The HTML display safe name of the executable script.
+	 */
 	public function get_script() {
 		return htmlspecialchars($this->script);
 	}
@@ -255,53 +319,76 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
      *
      * @access public
      * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return Boolean Fasle if something goes awry
      */
 	public function save() {
+		$retval = FALSE;
     	if ($this->id > 0 ) {
     		// Update an existing record
 	    	$sql = array(
-	    		'UPDATE scan_type SET scan_type_name = \'?s\', scan_type_flags = \'?s\', scan_type_script = \'?s\' WHERE scan_type_id = \'?i\'',
+	    		'UPDATE scan_type ' .
+	    		'SET scan_type_name = \'?s\', ' .
+	    			'scan_type_flags = \'?s\', ' .
+	    			'scan_type_script = \'?s\' ' .
+    			'WHERE scan_type_id = ?i',
 	    		$this->get_name(),
 	    		$this->get_flags(),
 	    		$this->get_script(),
-	    		$this->id
+	    		$this->get_id()
 	    	);
-	    	$this->db->iud_sql($sql);
+	    	$retval = $this->db->iud_sql($sql);
     	}
     	else {
     		// Insert a new value
 	    	$sql = array(
-	    		'INSERT INTO scan_type SET scan_type_name = \'?s\', scan_type_flags = \'?s\', scan_type_script = \'?s\'',
+	    		'INSERT INTO scan_type ' .
+	    		'SET scan_type_name = \'?s\', ' .
+	    			'scan_type_flags = \'?s\', ' .
+	    			'scan_type_script = \'?s\'',
 	    		$this->get_name(),
 	    		$this->get_flags(),
 	    		$this->get_script()
 	    	);
-	    	$this->db->iud_sql($sql);
+	    	$retval = $this->db->iud_sql($sql);
 	    	// Now set the id
-	    	$sql = array(
-	    		'SELECT scan_type_id FROM scan_type WHERE scan_type_name = \'?s\' AND scan_type_flags = \'?s\' AND scan_type_script = \'?s\'',
-	    		$this->get_name(),
-	    		$this->get_flags(),
-	    		$this->get_script()
-	    	);
+	    	$sql = 'SELECT LAST_INSERT_ID() AS last_id';
 	    	$result = $this->db->fetch_object_array($sql);
-	    	if (isset($result[0]) && $result[0]->scan_type_id > 0) {
-	    		$this->set_id($result[0]->scan_type_id);
+	    	if (isset($result[0]) && $result[0]->last_id > 0) {
+	    		$this->set_id($result[0]->last_id);
 	    	}
     	}
+    	return $retval;
 	}
 	
+	/**
+	 * Set up any flags for the executable
+	 * 
+	 * @access public
+	 * @param String Any command line arguments that need to be passed to the scan executable.
+	 */
 	public function set_flags($flags) {
 		$this->flags = $flags;
 	}
 	
+	/**
+	 * The name
+	 * 
+	 * @access public
+	 * @param String The name to distinguish this scan type.
+	 */
 	public function set_name($name) {
 		$this->name = $name;
 	}
 	
+	/**
+	 * The executable script.
+	 * 
+	 * @access public
+	 * @param String The filename of the executable that this script will run, in the app/scripts directory.  The filenae is filtered with PHP escapeshellcmd function.
+	 */
 	public function set_script($script) {
 		$this->script = escapeshellcmd($script);
 	}
     
-}
+} /* end of class Scan_type */
 ?>

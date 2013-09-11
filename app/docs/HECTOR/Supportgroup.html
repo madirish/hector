@@ -263,7 +263,6 @@ Source Location: /app/lib/class.Supportgroup.php<br /><br />
     <li><a href="../HECTOR/Supportgroup.html#methodget_displays">get_displays</a></li>
     <li><a href="../HECTOR/Supportgroup.html#methodget_email">get_email</a></li>
     <li><a href="../HECTOR/Supportgroup.html#methodget_host_ids">get_host_ids</a></li>
-    <li><a href="../HECTOR/Supportgroup.html#methodget_id">get_id</a></li>
     <li><a href="../HECTOR/Supportgroup.html#methodget_name">get_name</a></li>
     <li><a href="../HECTOR/Supportgroup.html#methodsave">save</a></li>
     <li><a href="../HECTOR/Supportgroup.html#methodset_email">set_email</a></li>
@@ -333,11 +332,14 @@ Support group is an object that refers to the organizational  unit responsible f
 	<a name="var$host_ids"></a>
 	<p></p>
 	<h4>$host_ids = <span class="value">array()</span></h4>
-	<p>[line 76]</p>
+	<p>[line 89]</p>
   Hosts associated with this Support group.  This  is just a convenience (for reporting).<br /><br /><p>There is no interface for altering this  attribute.  This attribute isn't populated  until get_host_ids method is called  explicitly.</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>var:</b>&nbsp;&nbsp;</td><td>Array of host_id's for the Supportgroup</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -357,11 +359,14 @@ Support group is an object that refers to the organizational  unit responsible f
 	<a name="var$id"></a>
 	<p></p>
 	<h4>$id = <span class="value">&nbsp;null</span></h4>
-	<p>[line 48]</p>
+	<p>[line 60]</p>
   Unique id<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>var:</b>&nbsp;&nbsp;</td><td>The unique ID from the data layer</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>protected</td>
   </tr>
@@ -373,7 +378,7 @@ Support group is an object that refers to the organizational  unit responsible f
   <table border="0" cellspacing="0" cellpadding="0">
     <tr>
       <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>int</td>
+      <td>Int</td>
     </tr>
         <tr>
       <td><b>Overrides:</b>&nbsp;&nbsp;</td>
@@ -391,7 +396,7 @@ Support group is an object that refers to the organizational  unit responsible f
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 88]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line 101]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -430,11 +435,11 @@ $id = ''])</code>
   </div>
   <hr />
 	<a name="methoddelete"></a>
-	<h3>method delete <span class="smalllinenumber">[line 113]</span></h3>
+	<h3>method delete <span class="smalllinenumber">[line 126]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void delete(
+		<code>Boolean delete(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -443,6 +448,9 @@ $id = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if something goes awry</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -463,11 +471,11 @@ $id = ''])</code>
   </div>
   <hr />
 	<a name="methodget_add_alter_form"></a>
-	<h3>method get_add_alter_form <span class="smalllinenumber">[line 128]</span></h3>
+	<h3>method get_add_alter_form <span class="smalllinenumber">[line 154]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_add_alter_form(
+		<code>Array get_add_alter_form(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -476,6 +484,12 @@ $id = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>An array to suppor the standard CRUD template</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -493,11 +507,11 @@ $id = ''])</code>
   </div>
   <hr />
 	<a name="methodget_collection_definition"></a>
-	<h3>method get_collection_definition <span class="smalllinenumber">[line 149]</span></h3>
+	<h3>method get_collection_definition <span class="smalllinenumber">[line 176]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>SQL get_collection_definition(
+		<code>String get_collection_definition(
 [
 $filter = ''], [
 $orderby = ''])</code>
@@ -509,7 +523,10 @@ $orderby = ''])</code>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>select string</td>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>SQL select string</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
@@ -543,11 +560,11 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_details"></a>
-	<h3>method get_details <span class="smalllinenumber">[line 171]</span></h3>
+	<h3>method get_details <span class="smalllinenumber">[line 202]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_details(
+		<code>String get_details(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -556,6 +573,15 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>HTML for the display template</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>todo:</b>&nbsp;&nbsp;</td><td>Move this HTML into a template and out of the class.</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -568,19 +594,25 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_displays"></a>
-	<h3>method get_displays <span class="smalllinenumber">[line 179]</span></h3>
+	<h3>method get_displays <span class="smalllinenumber">[line 217]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_displays(
+		<code>String get_displays(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Return the display array for the default display template.<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>HTML for the display template</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -598,19 +630,25 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_email"></a>
-	<h3>method get_email <span class="smalllinenumber">[line 183]</span></h3>
+	<h3>method get_email <span class="smalllinenumber">[line 228]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_email(
+		<code>String get_email(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Return the support group e-mail<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The e-mail contact for the Supportgroup</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -623,11 +661,11 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_host_ids"></a>
-	<h3>method get_host_ids <span class="smalllinenumber">[line 196]</span></h3>
+	<h3>method get_host_ids <span class="smalllinenumber">[line 241]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>array get_host_ids(
+		<code>Array get_host_ids(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -637,7 +675,7 @@ $orderby = ''])</code>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>of host id's</td>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>An array of host id's</td>
   </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
@@ -650,56 +688,29 @@ $orderby = ''])</code>
 <br /><br />
 
 	
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodget_id"></a>
-	<h3>method get_id <span class="smalllinenumber">[line 217]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>int get_id(
-)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Short description of method get_id<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
-  </tr>
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-			<hr class="separator" />
-		<div class="notes">Implementation of:</div>
-			<dl>
-			<dt><a href="../HECTOR/Maleable_Object_Interface.html#methodget_id">Maleable_Object_Interface::get_id()</a></dt>
-					</dl>
-		Overrides <a href="../HECTOR/Maleable_Object.html#methodget_id">Maleable_Object::get_id()</a> (Return the unique id from the data layer)<br /><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodget_name"></a>
-	<h3>method get_name <span class="smalllinenumber">[line 221]</span></h3>
+	<h3>method get_name <span class="smalllinenumber">[line 262]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_name(
+		<code>String get_name(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Return the support group name<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The HTML display safe name of the Supportgroup</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -712,19 +723,25 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodsave"></a>
-	<h3>method save <span class="smalllinenumber">[line 225]</span></h3>
+	<h3>method save <span class="smalllinenumber">[line 273]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void save(
+		<code>Boolean save(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Persist the Supportgroup to the data layer<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if something goes awry</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -742,20 +759,26 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodset_email"></a>
-	<h3>method set_email <span class="smalllinenumber">[line 245]</span></h3>
+	<h3>method set_email <span class="smalllinenumber">[line 315]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void set_email(
-
+		<code>Boolean set_email(
+String
 $email)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Validate and set the Supportgroup e-mail<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if the address doesn't validate</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -768,9 +791,9 @@ $email)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$email</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The e-mail address of the Supportgroup</td>
       </tr>
         </table>
     </div><br />
@@ -778,20 +801,23 @@ $email)</code>
   </div>
   <hr />
 	<a name="methodset_name"></a>
-	<h3>method set_name <span class="smalllinenumber">[line 256]</span></h3>
+	<h3>method set_name <span class="smalllinenumber">[line 336]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void set_name(
-
+The
 $name)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Set the name of the Supportgroup<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -804,9 +830,9 @@ $name)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">The&nbsp;&nbsp;</td>
         <td><b>$name</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>name of the Supportgroup</td>
       </tr>
         </table>
     </div><br />
@@ -817,7 +843,7 @@ $name)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Wed, 28 Aug 2013 09:39:18 -0400 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Wed, 11 Sep 2013 09:34:45 -0400 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

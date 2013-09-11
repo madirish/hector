@@ -221,7 +221,7 @@ Source Location: /app/scripts/ncrack_scan.php<br /><br />
 
 
 <h2>Page Details:</h2>
-NCrack scan.<br /><br /><br /><br />
+Ncrack scan.<br /><br /><p>For full help on usage see show_ncrack_help() below.  Example usage:</p><p>$ php ncrack_scan.php -p=telnet,ssh:24 -g=1,4</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -229,24 +229,33 @@ NCrack scan.<br /><br /><br /><br />
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upen.edu">jukeane@sas.upen.edu</a>&gt;</td>
   </tr>
   <tr>
-    <td><b>todo:</b>&nbsp;&nbsp;</td><td>Fix the display description</td>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Josh Bauer &lt;<a href="mailto:joshbauer3@gmail.com">joshbauer3@gmail.com</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>todo:</b>&nbsp;&nbsp;</td><td>Remove testing output</td>
+  </tr>
+  <tr>
+    <td><b>todo:</b>&nbsp;&nbsp;</td><td>Determine correct vuln_id (currently hardcoded to 1)</td>
+  </tr>
+  <tr>
+    <td><b>todo:</b>&nbsp;&nbsp;</td><td>Filter hosts by open ports</td>
   </tr>
 </table>
 </div>
 <br /><br />
 <h4>Includes:</h4>
 <div class="tags">
-require_once($approot.'lib/class.Config.php') [line 22]<br />
-Neccesary includes<br /><br />require_once($approot.'lib/class.Dblog.php') [line 23]<br />
-require_once($approot.'lib/class.Host.php') [line 24]<br />
-require_once($approot.'lib/class.Scan_type.php') [line 25]<br />
-</div>
+require_once($approot.'lib/class.Dblog.php') [line 31]<br />
+require_once($approot.'lib/class.Host.php') [line 32]<br />
+require_once($approot.'lib/class.Scan_type.php') [line 33]<br />
+require_once($approot.'lib/class.Config.php') [line 30]<br />
+Neccesary includes<br /><br /></div>
 <br /><br />
 <br /><br />
 <br />
   <hr />
 	<a name="functionncrack_loggit"></a>
-	<h3>ncrack_loggit <span class="smalllinenumber">[line 99]</span></h3>
+	<h3>ncrack_loggit <span class="smalllinenumber">[line 189]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -255,7 +264,7 @@ require_once($approot.'lib/class.Scan_type.php') [line 25]<br />
     </td></tr></table>
     </td></tr></table><br />
 
-		Singletons<br /><br />    <br /><br />
+		This is an array of the 10 most common passwords from kojoney2.<br /><br /><p>These passwords will be used as the password list for the scan.</p><br />    <br /><br />
 	
     		<h4>Parameters</h4>
     <table border="0" cellspacing="0" cellpadding="0">
@@ -272,10 +281,33 @@ require_once($approot.'lib/class.Scan_type.php') [line 25]<br />
 				</table>
     	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
 	</div>
+  <hr />
+	<a name="functionshow_ncrack_help"></a>
+	<h3>show_ncrack_help <span class="smalllinenumber">[line 196]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void show_ncrack_help(
+ $error)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$error</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Wed, 28 Aug 2013 09:39:19 -0400 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Wed, 11 Sep 2013 09:34:46 -0400 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

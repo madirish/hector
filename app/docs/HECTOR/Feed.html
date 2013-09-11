@@ -260,7 +260,6 @@ Source Location: /app/lib/class.Feed.php<br /><br />
     <li><a href="../HECTOR/Feed.html#methodget_collection_definition">get_collection_definition</a></li>
     <li><a href="../HECTOR/Feed.html#methodget_details">get_details</a></li>
     <li><a href="../HECTOR/Feed.html#methodget_displays">get_displays</a></li>
-    <li><a href="../HECTOR/Feed.html#methodget_id">get_id</a></li>
     <li><a href="../HECTOR/Feed.html#methodget_name">get_name</a></li>
     <li><a href="../HECTOR/Feed.html#methodget_url">get_url</a></li>
     <li><a href="../HECTOR/Feed.html#methodsave">save</a></li>
@@ -334,7 +333,7 @@ Feed is just an object for tracking RSS feed urls<br /><br /><br /><br />
 	<a name="var$id"></a>
 	<p></p>
 	<h4>$id = <span class="value">&nbsp;null</span></h4>
-	<p>[line 48]</p>
+	<p>[line 60]</p>
   Unique id<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -368,12 +367,12 @@ Feed is just an object for tracking RSS feed urls<br /><br /><br /><br />
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 74]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line 88]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void __construct(
-[int
+[Int
 $id = ''])</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -397,9 +396,9 @@ $id = ''])</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">int&nbsp;&nbsp;</td>
+        <td class="type">Int&nbsp;&nbsp;</td>
         <td><b>$id</b>&nbsp;&nbsp;</td>
-        <td>id</td>
+        <td>The unique ID</td>
       </tr>
         </table>
     </div><br />
@@ -407,7 +406,7 @@ $id = ''])</code>
   </div>
   <hr />
 	<a name="methoddelete"></a>
-	<h3>method delete <span class="smalllinenumber">[line 97]</span></h3>
+	<h3>method delete <span class="smalllinenumber">[line 110]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -440,11 +439,11 @@ $id = ''])</code>
   </div>
   <hr />
 	<a name="methodget_add_alter_form"></a>
-	<h3>method get_add_alter_form <span class="smalllinenumber">[line 112]</span></h3>
+	<h3>method get_add_alter_form <span class="smalllinenumber">[line 128]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_add_alter_form(
+		<code>Array get_add_alter_form(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -453,6 +452,9 @@ $id = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>An array for the CRUD template.</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -470,11 +472,11 @@ $id = ''])</code>
   </div>
   <hr />
 	<a name="methodget_collection_definition"></a>
-	<h3>method get_collection_definition <span class="smalllinenumber">[line 133]</span></h3>
+	<h3>method get_collection_definition <span class="smalllinenumber">[line 150]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>SQL get_collection_definition(
+		<code>String get_collection_definition(
 [
 $filter = ''], [
 $orderby = ''])</code>
@@ -486,7 +488,7 @@ $orderby = ''])</code>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>select string</td>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>SQL select string</td>
   </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
@@ -520,11 +522,11 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_details"></a>
-	<h3>method get_details <span class="smalllinenumber">[line 155]</span></h3>
+	<h3>method get_details <span class="smalllinenumber">[line 175]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_details(
+		<code>String get_details(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -533,6 +535,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>HTML string for display in the details template.</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -545,19 +550,22 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_displays"></a>
-	<h3>method get_displays <span class="smalllinenumber">[line 163]</span></h3>
+	<h3>method get_displays <span class="smalllinenumber">[line 189]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_displays(
+		<code>Array get_displays(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Array for the displays template<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>Display array for template.</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -574,41 +582,8 @@ $orderby = ''])</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
-	<a name="methodget_id"></a>
-	<h3>method get_id <span class="smalllinenumber">[line 174]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>int get_id(
-)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Return the unique id<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
-  </tr>
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-			<hr class="separator" />
-		<div class="notes">Implementation of:</div>
-			<dl>
-			<dt><a href="../HECTOR/Maleable_Object_Interface.html#methodget_id">Maleable_Object_Interface::get_id()</a></dt>
-					</dl>
-		Overrides <a href="../HECTOR/Maleable_Object.html#methodget_id">Maleable_Object::get_id()</a> (Return the unique id from the data layer)<br /><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
 	<a name="methodget_name"></a>
-	<h3>method get_name <span class="smalllinenumber">[line 184]</span></h3>
+	<h3>method get_name <span class="smalllinenumber">[line 199]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -622,6 +597,9 @@ $orderby = ''])</code>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The name of the feed (for admin display)</td>
+  </tr>
+  <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
 </table>
@@ -633,7 +611,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_url"></a>
-	<h3>method get_url <span class="smalllinenumber">[line 194]</span></h3>
+	<h3>method get_url <span class="smalllinenumber">[line 209]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -647,6 +625,9 @@ $orderby = ''])</code>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The URL to the feed</td>
+  </tr>
+  <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
 </table>
@@ -658,11 +639,11 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodsave"></a>
-	<h3>method save <span class="smalllinenumber">[line 204]</span></h3>
+	<h3>method save <span class="smalllinenumber">[line 219]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void save(
+		<code>Boolen save(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -671,6 +652,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>TRUE if everything worked, FALSE on error</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -688,17 +672,17 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodset_name"></a>
-	<h3>method set_name <span class="smalllinenumber">[line 225]</span></h3>
+	<h3>method set_name <span class="smalllinenumber">[line 254]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void set_name(
-
+String
 $name)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Set the name of the feed<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -714,9 +698,9 @@ $name)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$name</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The feed name (for admin display)</td>
       </tr>
         </table>
     </div><br />
@@ -724,17 +708,17 @@ $name)</code>
   </div>
   <hr />
 	<a name="methodset_url"></a>
-	<h3>method set_url <span class="smalllinenumber">[line 229]</span></h3>
+	<h3>method set_url <span class="smalllinenumber">[line 264]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void set_url(
-
+String
 $url)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Set the feed URL<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -750,9 +734,9 @@ $url)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$url</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The URL for the RSS feed.</td>
       </tr>
         </table>
     </div><br />
@@ -763,7 +747,7 @@ $url)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Wed, 28 Aug 2013 09:39:18 -0400 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Wed, 11 Sep 2013 09:34:45 -0400 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

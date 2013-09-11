@@ -265,13 +265,12 @@ Source Location: /app/lib/class.User.php<br /><br />
     <li><a href="../HECTOR/User.html#methodget_by_name">get_by_name</a></li>
     <li><a href="../HECTOR/User.html#methodget_collection_definition">get_collection_definition</a></li>
     <li><a href="../HECTOR/User.html#methodget_displays">get_displays</a></li>
-    <li><a href="../HECTOR/User.html#methodget_id">get_id</a></li>
     <li><a href="../HECTOR/User.html#methodget_is_admin">get_is_admin</a></li>
     <li><a href="../HECTOR/User.html#methodget_is_admin_readable">get_is_admin_readable</a></li>
     <li><a href="../HECTOR/User.html#methodget_name">get_name</a></li>
-    <li><a href="../HECTOR/User.html#methodget_person_id">get_person_id</a></li>
     <li><a href="../HECTOR/User.html#methodget_supportgroup_ids">get_supportgroup_ids</a></li>
     <li><a href="../HECTOR/User.html#methodsave">save</a></li>
+    <li><a href="../HECTOR/User.html#methodset_add_supportgroup_id">set_add_supportgroup_id</a></li>
     <li><a href="../HECTOR/User.html#methodset_is_admin">set_is_admin</a></li>
     <li><a href="../HECTOR/User.html#methodset_name">set_name</a></li>
     <li><a href="../HECTOR/User.html#methodset_password">set_password</a></li>
@@ -344,12 +343,15 @@ User is the base object for user accounts and access.<br /><br /><br /><br />
 <div class="tags">
 	<a name="var$id"></a>
 	<p></p>
-	<h4>$id = <span class="value"></span></h4>
-	<p>[line 67]</p>
+	<h4>$id = <span class="value">&nbsp;null</span></h4>
+	<p>[line 71]</p>
   Unique id for the persistence layer.<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>var:</b>&nbsp;&nbsp;</td><td>Unique ID from the data layer</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>protected</td>
   </tr>
@@ -361,7 +363,7 @@ User is the base object for user accounts and access.<br /><br /><br /><br />
   <table border="0" cellspacing="0" cellpadding="0">
     <tr>
       <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>int</td>
+      <td>Int</td>
     </tr>
         <tr>
       <td><b>Overrides:</b>&nbsp;&nbsp;</td>
@@ -379,7 +381,7 @@ User is the base object for user accounts and access.<br /><br /><br /><br />
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 84]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line 99]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -389,7 +391,7 @@ $id = ''])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Short description of method __construct<br /><br /><br /><br />
+		Instantiate a new User object<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -418,11 +420,11 @@ $id = ''])</code>
   </div>
   <hr />
 	<a name="methoddelete"></a>
-	<h3>method delete <span class="smalllinenumber">[line 116]</span></h3>
+	<h3>method delete <span class="smalllinenumber">[line 133]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void delete(
+		<code>Boolean delete(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -431,6 +433,9 @@ $id = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if something goes awry</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -451,19 +456,25 @@ $id = ''])</code>
   </div>
   <hr />
 	<a name="methodget_add_alter_form"></a>
-	<h3>method get_add_alter_form <span class="smalllinenumber">[line 127]</span></h3>
+	<h3>method get_add_alter_form <span class="smalllinenumber">[line 156]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_add_alter_form(
+		<code>Arry get_add_alter_form(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Return the Array for CRUD template<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The array for the CRUD template.</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -481,12 +492,12 @@ $id = ''])</code>
   </div>
   <hr />
 	<a name="methodget_by_name"></a>
-	<h3>method get_by_name <span class="smalllinenumber">[line 169]</span></h3>
+	<h3>method get_by_name <span class="smalllinenumber">[line 198]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_by_name(
-string
+		<code>Boolean get_by_name(
+String
 $name)</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -495,6 +506,9 @@ $name)</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if something goes awry or the lookup fails</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -507,9 +521,9 @@ $name)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$name</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The name of the user</td>
       </tr>
         </table>
     </div><br />
@@ -517,21 +531,24 @@ $name)</code>
   </div>
   <hr />
 	<a name="methodget_collection_definition"></a>
-	<h3>method get_collection_definition <span class="smalllinenumber">[line 185]</span></h3>
+	<h3>method get_collection_definition <span class="smalllinenumber">[line 221]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_collection_definition(
-[
-$filter = ''], [
+		<code>String get_collection_definition(
+[String
+$filter = ''], [String
 $orderby = ''])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		This function directly supports the Collection class.<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>SQL select string</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -549,14 +566,14 @@ $orderby = ''])</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$filter</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The optional additional SQL WHERE clause arguments</td>
       </tr>
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$orderby</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The optional SQL ORDER BY clause arguments</td>
       </tr>
         </table>
     </div><br />
@@ -564,19 +581,22 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_displays"></a>
-	<h3>method get_displays <span class="smalllinenumber">[line 201]</span></h3>
+	<h3>method get_displays <span class="smalllinenumber">[line 243]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_displays(
+		<code>Array get_displays(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Return an array for the default display template<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The Array for the default display template</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -593,50 +613,23 @@ $orderby = ''])</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
-	<a name="methodget_id"></a>
-	<h3>method get_id <span class="smalllinenumber">[line 205]</span></h3>
+	<a name="methodget_is_admin"></a>
+	<h3>method get_is_admin <span class="smalllinenumber">[line 253]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_id(
+		<code>Boolean get_is_admin(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Return whether or not this user is an admin<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>True if admin, False otherwise</td>
   </tr>
-</table>
-</div>
-<br /><br />
-
-			<hr class="separator" />
-		<div class="notes">Implementation of:</div>
-			<dl>
-			<dt><a href="../HECTOR/Maleable_Object_Interface.html#methodget_id">Maleable_Object_Interface::get_id()</a></dt>
-					</dl>
-		Overrides <a href="../HECTOR/Maleable_Object.html#methodget_id">Maleable_Object::get_id()</a> (Return the unique id from the data layer)<br /><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodget_is_admin"></a>
-	<h3>method get_is_admin <span class="smalllinenumber">[line 209]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_is_admin(
-)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		<br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -649,19 +642,22 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_is_admin_readable"></a>
-	<h3>method get_is_admin_readable <span class="smalllinenumber">[line 213]</span></h3>
+	<h3>method get_is_admin_readable <span class="smalllinenumber">[line 263]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_is_admin_readable(
+		<code>String get_is_admin_readable(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Return a String for whether or not this User is an admin<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>'Yes' if admin, 'No' otherwise</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -674,7 +670,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_name"></a>
-	<h3>method get_name <span class="smalllinenumber">[line 226]</span></h3>
+	<h3>method get_name <span class="smalllinenumber">[line 276]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -683,38 +679,13 @@ $orderby = ''])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Short description of method get_name<br /><br /><br /><br />
+		Get the HTML display safe user name<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The HTML display safe user name</td>
   </tr>
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-	
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodget_person_id"></a>
-	<h3>method get_person_id <span class="smalllinenumber">[line 237]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>int get_person_id(
-)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Short description of method get_person_id<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -730,19 +701,22 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_supportgroup_ids"></a>
-	<h3>method get_supportgroup_ids <span class="smalllinenumber">[line 246]</span></h3>
+	<h3>method get_supportgroup_ids <span class="smalllinenumber">[line 286]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_supportgroup_ids(
+		<code>Array get_supportgroup_ids(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Get an array of the Supportgroup IDs<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>An Array of Supportgroup ids</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -755,19 +729,22 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodsave"></a>
-	<h3>method save <span class="smalllinenumber">[line 294]</span></h3>
+	<h3>method save <span class="smalllinenumber">[line 367]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void save(
+		<code>Boolean save(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Persist the object to the data layer<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if something goes awry</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -784,18 +761,18 @@ $orderby = ''])</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
-	<a name="methodset_is_admin"></a>
-	<h3>method set_is_admin <span class="smalllinenumber">[line 250]</span></h3>
+	<a name="methodset_add_supportgroup_id"></a>
+	<h3>method set_add_supportgroup_id <span class="smalllinenumber">[line 318]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void set_is_admin(
-
-$val)</code>
+		<code>void set_add_supportgroup_id(
+Int
+$id)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		<br /><br />
+		Add a new Supportgroup ID to the array<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -811,9 +788,45 @@ $val)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">Int&nbsp;&nbsp;</td>
+        <td><b>$id</b>&nbsp;&nbsp;</td>
+        <td>The unique id of the Supportgroup</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodset_is_admin"></a>
+	<h3>method set_is_admin <span class="smalllinenumber">[line 296]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void set_is_admin(
+Boolean
+$val)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Set whether or not the person is an admin<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">Boolean&nbsp;&nbsp;</td>
         <td><b>$val</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>Whether or not the person is an admin</td>
       </tr>
         </table>
     </div><br />
@@ -821,7 +834,7 @@ $val)</code>
   </div>
   <hr />
 	<a name="methodset_name"></a>
-	<h3>method set_name <span class="smalllinenumber">[line 262]</span></h3>
+	<h3>method set_name <span class="smalllinenumber">[line 308]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -831,7 +844,7 @@ $name)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Short description of method set_name<br /><br /><br /><br />
+		Set the name of the user<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -860,17 +873,17 @@ $name)</code>
   </div>
   <hr />
 	<a name="methodset_password"></a>
-	<h3>method set_password <span class="smalllinenumber">[line 290]</span></h3>
+	<h3>method set_password <span class="smalllinenumber">[line 356]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void set_password(
-password
+String
 $password)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Short description of method set_password<br /><br /><br /><br />
+		Set the user password<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -889,9 +902,9 @@ $password)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">password&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$password</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The new password</td>
       </tr>
         </table>
     </div><br />
@@ -899,7 +912,7 @@ $password)</code>
   </div>
   <hr />
 	<a name="methodset_supportgroup_ids"></a>
-	<h3>method set_supportgroup_ids <span class="smalllinenumber">[line 274]</span></h3>
+	<h3>method set_supportgroup_ids <span class="smalllinenumber">[line 340]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -909,7 +922,7 @@ $array)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Set the support group id array<br /><br /><br /><br />
+		Reset the support group id array<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -930,7 +943,7 @@ $array)</code>
           <tr>
         <td class="type">Array&nbsp;&nbsp;</td>
         <td><b>$array</b>&nbsp;&nbsp;</td>
-        <td>of Host_group ids</td>
+        <td>The array of Supportgroup ids</td>
       </tr>
         </table>
     </div><br />
@@ -938,21 +951,24 @@ $array)</code>
   </div>
   <hr />
 	<a name="methodvalidate"></a>
-	<h3>method validate <span class="smalllinenumber">[line 347]</span></h3>
+	<h3>method validate <span class="smalllinenumber">[line 431]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>boolean validate(
+		<code>Boolean validate(
 username
 $username, password
 $password)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Short description of method validate<br /><br /><br /><br />
+		Validate a set of user credentials<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if the username/password combo doens't validate</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -986,7 +1002,7 @@ $password)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Wed, 28 Aug 2013 09:39:19 -0400 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Wed, 11 Sep 2013 09:34:46 -0400 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

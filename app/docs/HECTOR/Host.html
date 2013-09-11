@@ -253,6 +253,7 @@ Source Location: /app/lib/class.Host.php<br /><br />
     <li><a href="../HECTOR/Host.html#methodcheck_save">check_save</a></li>
     <li><a href="../HECTOR/Host.html#methoddelete">delete</a></li>
     <li><a href="../HECTOR/Host.html#methodget_add_alter_form">get_add_alter_form</a></li>
+    <li><a href="../HECTOR/Host.html#methodget_alt_hostnames">get_alt_hostnames</a></li>
     <li><a href="../HECTOR/Host.html#methodget_collection_by_port">get_collection_by_port</a></li>
     <li><a href="../HECTOR/Host.html#methodget_collection_by_version">get_collection_by_version</a></li>
     <li><a href="../HECTOR/Host.html#methodget_collection_definition">get_collection_definition</a></li>
@@ -265,7 +266,6 @@ Source Location: /app/lib/class.Host.php<br /><br />
     <li><a href="../HECTOR/Host.html#methodget_excludedreason">get_excludedreason</a></li>
     <li><a href="../HECTOR/Host.html#methodget_host_groups_readable">get_host_groups_readable</a></li>
     <li><a href="../HECTOR/Host.html#methodget_host_group_ids">get_host_group_ids</a></li>
-    <li><a href="../HECTOR/Host.html#methodget_id">get_id</a></li>
     <li><a href="../HECTOR/Host.html#methodget_ignore_portscan">get_ignore_portscan</a></li>
     <li><a href="../HECTOR/Host.html#methodget_ip">get_ip</a></li>
     <li><a href="../HECTOR/Host.html#methodget_link">get_link</a></li>
@@ -290,9 +290,19 @@ Source Location: /app/lib/class.Host.php<br /><br />
     <li><a href="../HECTOR/Host.html#methodprocess_form">process_form</a></li>
     <li><a href="../HECTOR/Host.html#methodremove_host_group_id">remove_host_group_id</a></li>
     <li><a href="../HECTOR/Host.html#methodsave">save</a></li>
+    <li><a href="../HECTOR/Host.html#methodset_add_host_group_id">set_add_host_group_id</a></li>
+    <li><a href="../HECTOR/Host.html#methodset_add_url">set_add_url</a></li>
     <li><a href="../HECTOR/Host.html#methodset_alt_hostname">set_alt_hostname</a></li>
     <li><a href="../HECTOR/Host.html#methodset_alt_ip">set_alt_ip</a></li>
+    <li><a href="../HECTOR/Host.html#methodset_excludedby">set_excludedby</a></li>
+    <li><a href="../HECTOR/Host.html#methodset_excludedfor">set_excludedfor</a></li>
+    <li><a href="../HECTOR/Host.html#methodset_excludedreason">set_excludedreason</a></li>
     <li><a href="../HECTOR/Host.html#methodset_host_group_ids">set_host_group_ids</a></li>
+    <li><a href="../HECTOR/Host.html#methodset_ignoredfor_days">set_ignoredfor_days</a></li>
+    <li><a href="../HECTOR/Host.html#methodset_ignored_note">set_ignored_note</a></li>
+    <li><a href="../HECTOR/Host.html#methodset_ignored_timestamp">set_ignored_timestamp</a></li>
+    <li><a href="../HECTOR/Host.html#methodset_ignore_portscan">set_ignore_portscan</a></li>
+    <li><a href="../HECTOR/Host.html#methodset_ignore_portscan_byuserid">set_ignore_portscan_byuserid</a></li>
     <li><a href="../HECTOR/Host.html#methodset_ip">set_ip</a></li>
     <li><a href="../HECTOR/Host.html#methodset_link">set_link</a></li>
     <li><a href="../HECTOR/Host.html#methodset_location_id">set_location_id</a></li>
@@ -300,10 +310,12 @@ Source Location: /app/lib/class.Host.php<br /><br />
     <li><a href="../HECTOR/Host.html#methodset_note">set_note</a></li>
     <li><a href="../HECTOR/Host.html#methodset_os">set_os</a></li>
     <li><a href="../HECTOR/Host.html#methodset_policy">set_policy</a></li>
+    <li><a href="../HECTOR/Host.html#methodset_portscan_exclusion">set_portscan_exclusion</a></li>
     <li><a href="../HECTOR/Host.html#methodset_sponsor">set_sponsor</a></li>
     <li><a href="../HECTOR/Host.html#methodset_supportgroup_id">set_supportgroup_id</a></li>
     <li><a href="../HECTOR/Host.html#methodset_tag_ids">set_tag_ids</a></li>
     <li><a href="../HECTOR/Host.html#methodset_technical">set_technical</a></li>
+    <li><a href="../HECTOR/Host.html#methodset_urls">set_urls</a></li>
   </ul>
 </td>
 
@@ -390,13 +402,13 @@ Hosts are the crux of the system<br /><br /><br /><br />
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 232]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line 245]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void __construct(
-[int
-$id = ''], [
+[Int
+$id = ''], [String
 $minimal = 'no'])</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -420,14 +432,14 @@ $minimal = 'no'])</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">int&nbsp;&nbsp;</td>
+        <td class="type">Int&nbsp;&nbsp;</td>
         <td><b>$id</b>&nbsp;&nbsp;</td>
-        <td>id</td>
+        <td>The optional id of the Host from the data layer</td>
       </tr>
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$minimal</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>'Yes' if we want only a skeletal version of the object</td>
       </tr>
         </table>
     </div><br />
@@ -435,12 +447,12 @@ $minimal = 'no'])</code>
   </div>
   <hr />
 	<a name="methodadd_host_group_id"></a>
-	<h3>method add_host_group_id <span class="smalllinenumber">[line 347]</span></h3>
+	<h3>method add_host_group_id <span class="smalllinenumber">[line 378]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void add_host_group_id(
-int
+Int
 $id)</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -464,9 +476,9 @@ $id)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">int&nbsp;&nbsp;</td>
+        <td class="type">Int&nbsp;&nbsp;</td>
         <td><b>$id</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The unique id fo the Host_group</td>
       </tr>
         </table>
     </div><br />
@@ -474,11 +486,11 @@ $id)</code>
   </div>
   <hr />
 	<a name="methodcheck_save"></a>
-	<h3>method check_save <span class="smalllinenumber">[line 406]</span></h3>
+	<h3>method check_save <span class="smalllinenumber">[line 428]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>boolean check_save(
+		<code>Boolean check_save(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -487,6 +499,9 @@ $id)</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if this host has a duplicate IP or hostname</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -502,11 +517,11 @@ $id)</code>
   </div>
   <hr />
 	<a name="methoddelete"></a>
-	<h3>method delete <span class="smalllinenumber">[line 465]</span></h3>
+	<h3>method delete <span class="smalllinenumber">[line 487]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void delete(
+		<code>Boolean delete(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -515,6 +530,9 @@ $id)</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if something goes awry</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane, &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -535,11 +553,11 @@ $id)</code>
   </div>
   <hr />
 	<a name="methodget_add_alter_form"></a>
-	<h3>method get_add_alter_form <span class="smalllinenumber">[line 482]</span></h3>
+	<h3>method get_add_alter_form <span class="smalllinenumber">[line 548]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void get_add_alter_form(
+		<code>Array get_add_alter_form(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -548,6 +566,9 @@ $id)</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The Array for the default CRUD template.</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -567,14 +588,45 @@ $id)</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
-	<a name="methodget_collection_by_port"></a>
-	<h3>method get_collection_by_port <span class="smalllinenumber">[line 673]</span></h3>
+	<a name="methodget_alt_hostnames"></a>
+	<h3>method get_alt_hostnames <span class="smalllinenumber">[line 680]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>SQL get_collection_by_port(
+		<code>Array get_alt_hostnames(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Get alternative hostnames for this host.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>An array of HTML display safe String alternate hostnames</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
 
-$port, [
+	
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodget_collection_by_port"></a>
+	<h3>method get_collection_by_port <span class="smalllinenumber">[line 748]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>String get_collection_by_port(
+Int
+$port, [String
 $orderby = ''])</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -584,7 +636,7 @@ $orderby = ''])</code>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>select string</td>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>SQL select string</td>
   </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
@@ -601,14 +653,14 @@ $orderby = ''])</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">Int&nbsp;&nbsp;</td>
         <td><b>$port</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>Port to filter resulting hosts on (say get all hosts with port 80) TCP &amp; UDP</td>
       </tr>
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$orderby</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The optional SQL ORDER BY clause arguments</td>
       </tr>
         </table>
     </div><br />
@@ -616,13 +668,13 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_collection_by_version"></a>
-	<h3>method get_collection_by_version <span class="smalllinenumber">[line 697]</span></h3>
+	<h3>method get_collection_by_version <span class="smalllinenumber">[line 774]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>SQL get_collection_by_version(
-
-$version, [
+		<code>String get_collection_by_version(
+String
+$version, [String
 $orderby = ''])</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -632,7 +684,7 @@ $orderby = ''])</code>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>select string</td>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>SQL select string</td>
   </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
@@ -649,14 +701,14 @@ $orderby = ''])</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$version</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>Service version String to search on (ex. &quot;OpenSSH v5.1&quot;)</td>
       </tr>
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$orderby</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The optional SQL ORDER BY clause arguments</td>
       </tr>
         </table>
     </div><br />
@@ -664,13 +716,13 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_collection_definition"></a>
-	<h3>method get_collection_definition <span class="smalllinenumber">[line 636]</span></h3>
+	<h3>method get_collection_definition <span class="smalllinenumber">[line 709]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>SQL get_collection_definition(
-[
-$filter = ''], [
+		<code>String get_collection_definition(
+[String
+$filter = ''], [String
 $orderby = ''])</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -680,7 +732,7 @@ $orderby = ''])</code>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>select string</td>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>SQL select string</td>
   </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
@@ -702,14 +754,14 @@ $orderby = ''])</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$filter</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The optional additional SQL WHERE clause arguments</td>
       </tr>
           <tr>
-        <td class="type">&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$orderby</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The optional SQL ORDER BY clause arguments</td>
       </tr>
         </table>
     </div><br />
@@ -717,7 +769,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_details"></a>
-	<h3>method get_details <span class="smalllinenumber">[line 721]</span></h3>
+	<h3>method get_details <span class="smalllinenumber">[line 798]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -751,11 +803,11 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_displays"></a>
-	<h3>method get_displays <span class="smalllinenumber">[line 733]</span></h3>
+	<h3>method get_displays <span class="smalllinenumber">[line 810]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>HTML get_displays(
+		<code>Array get_displays(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -765,7 +817,7 @@ $orderby = ''])</code>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>chunk</td>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>An array for the default display template</td>
   </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
@@ -787,11 +839,11 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_excludedby"></a>
-	<h3>method get_excludedby <span class="smalllinenumber">[line 745]</span></h3>
+	<h3>method get_excludedby <span class="smalllinenumber">[line 825]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code><a href="../HECTOR/User.html">User</a> get_excludedby(
+		<code>Int get_excludedby(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -800,6 +852,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The id of the User who excluded the host</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -815,7 +870,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_excludedby_name"></a>
-	<h3>method get_excludedby_name <span class="smalllinenumber">[line 760]</span></h3>
+	<h3>method get_excludedby_name <span class="smalllinenumber">[line 838]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -828,6 +883,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The name of the User who excluded the host</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -843,7 +901,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_excludedfor"></a>
-	<h3>method get_excludedfor <span class="smalllinenumber">[line 785]</span></h3>
+	<h3>method get_excludedfor <span class="smalllinenumber">[line 863]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -856,6 +914,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The number of days to exclude the host from scans</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -871,11 +932,11 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_excludedon"></a>
-	<h3>method get_excludedon <span class="smalllinenumber">[line 774]</span></h3>
+	<h3>method get_excludedon <span class="smalllinenumber">[line 852]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>timestamp get_excludedon(
+		<code>Timestamp get_excludedon(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -884,6 +945,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The timestamp of the host's exclusion</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -899,7 +963,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_excludedreason"></a>
-	<h3>method get_excludedreason <span class="smalllinenumber">[line 796]</span></h3>
+	<h3>method get_excludedreason <span class="smalllinenumber">[line 874]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -912,6 +976,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The HTML display safe reason for the exclusion</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -927,7 +994,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_host_groups_readable"></a>
-	<h3>method get_host_groups_readable <span class="smalllinenumber">[line 822]</span></h3>
+	<h3>method get_host_groups_readable <span class="smalllinenumber">[line 900]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -940,6 +1007,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>A list of Host_group names for this host</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -955,11 +1025,11 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_host_group_ids"></a>
-	<h3>method get_host_group_ids <span class="smalllinenumber">[line 809]</span></h3>
+	<h3>method get_host_group_ids <span class="smalllinenumber">[line 887]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>array get_host_group_ids(
+		<code>Array get_host_group_ids(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -969,6 +1039,9 @@ $orderby = ''])</code>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>An array of integers for Host_groups for this host</td>
+  </tr>
+  <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
   <tr>
@@ -979,48 +1052,15 @@ $orderby = ''])</code>
 <br /><br />
 
 	
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodget_id"></a>
-	<h3>method get_id <span class="smalllinenumber">[line 841]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>int get_id(
-)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Return the unique ID for this host<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
-  </tr>
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-			<hr class="separator" />
-		<div class="notes">Implementation of:</div>
-			<dl>
-			<dt><a href="../HECTOR/Maleable_Object_Interface.html#methodget_id">Maleable_Object_Interface::get_id()</a></dt>
-					</dl>
-		Overrides <a href="../HECTOR/Maleable_Object.html#methodget_id">Maleable_Object::get_id()</a> (Return the unique id from the data layer)<br /><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodget_ignore_portscan"></a>
-	<h3>method get_ignore_portscan <span class="smalllinenumber">[line 852]</span></h3>
+	<h3>method get_ignore_portscan <span class="smalllinenumber">[line 919]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>boolean get_ignore_portscan(
+		<code>Boolean get_ignore_portscan(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -1029,6 +1069,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>True if this host should be exempt, False otherwise</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -1044,11 +1087,11 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_ip"></a>
-	<h3>method get_ip <span class="smalllinenumber">[line 862]</span></h3>
+	<h3>method get_ip <span class="smalllinenumber">[line 929]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>ip get_ip(
+		<code>String get_ip(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -1057,6 +1100,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The string representation of this host's IP address</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -1072,11 +1118,11 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_link"></a>
-	<h3>method get_link <span class="smalllinenumber">[line 872]</span></h3>
+	<h3>method get_link <span class="smalllinenumber">[line 939]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>ip get_link(
+		<code>String get_link(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -1085,6 +1131,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>A URL to external resources about this Host</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -1100,7 +1149,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_location_id"></a>
-	<h3>method get_location_id <span class="smalllinenumber">[line 882]</span></h3>
+	<h3>method get_location_id <span class="smalllinenumber">[line 949]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1113,6 +1162,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The unique id for the Location of this Host or null</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -1128,11 +1180,11 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_location_name"></a>
-	<h3>method get_location_name <span class="smalllinenumber">[line 893]</span></h3>
+	<h3>method get_location_name <span class="smalllinenumber">[line 960]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>Int get_location_name(
+		<code>String get_location_name(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -1141,6 +1193,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The name of the Location for this Host, or null</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -1156,7 +1211,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_name"></a>
-	<h3>method get_name <span class="smalllinenumber">[line 904]</span></h3>
+	<h3>method get_name <span class="smalllinenumber">[line 971]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1169,6 +1224,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The owercase HTML safe display name for the host</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -1184,11 +1242,11 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_name_linked"></a>
-	<h3>method get_name_linked <span class="smalllinenumber">[line 923]</span></h3>
+	<h3>method get_name_linked <span class="smalllinenumber">[line 990]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>HTML get_name_linked(
+		<code>String get_name_linked(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -1198,7 +1256,7 @@ $orderby = ''])</code>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>string</td>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>An HTML chunk linking the host to details in HECTOR</td>
   </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
@@ -1215,7 +1273,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_note"></a>
-	<h3>method get_note <span class="smalllinenumber">[line 943]</span></h3>
+	<h3>method get_note <span class="smalllinenumber">[line 1010]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1228,6 +1286,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>HTML safe disply for any notes associated with the Host</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -1243,11 +1304,11 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_open_ports"></a>
-	<h3>method get_open_ports <span class="smalllinenumber">[line 965]</span></h3>
+	<h3>method get_open_ports <span class="smalllinenumber">[line 1033]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>int get_open_ports(
+		<code>Int get_open_ports(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -1257,7 +1318,13 @@ $orderby = ''])</code>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The number of open (TCP &amp; UDP) ports on the host</td>
+  </tr>
+  <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>todo:</b>&nbsp;&nbsp;</td><td>Update this method for multiple records over dates</td>
   </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
@@ -1271,7 +1338,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_os"></a>
-	<h3>method get_os <span class="smalllinenumber">[line 987]</span></h3>
+	<h3>method get_os <span class="smalllinenumber">[line 1055]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1284,6 +1351,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The HTML display safe operating system</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -1299,11 +1369,11 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_policy"></a>
-	<h3>method get_policy <span class="smalllinenumber">[line 998]</span></h3>
+	<h3>method get_policy <span class="smalllinenumber">[line 1066]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>boolean get_policy(
+		<code>Boolean get_policy(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -1312,6 +1382,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>True if this Host is covered by policy</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -1327,11 +1400,11 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_ports"></a>
-	<h3>method get_ports <span class="smalllinenumber">[line 1009]</span></h3>
+	<h3>method get_ports <span class="smalllinenumber">[line 1077]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>array get_ports(
+		<code>Array get_ports(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -1340,6 +1413,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>An array of open ports on this host</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -1355,11 +1431,11 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_portscan_exclusion"></a>
-	<h3>method get_portscan_exclusion <span class="smalllinenumber">[line 954]</span></h3>
+	<h3>method get_portscan_exclusion <span class="smalllinenumber">[line 1021]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>boolean get_portscan_exclusion(
+		<code>Boolean get_portscan_exclusion(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -1368,6 +1444,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>True if it should be excluded.</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -1383,7 +1462,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_sponsor"></a>
-	<h3>method get_sponsor <span class="smalllinenumber">[line 1028]</span></h3>
+	<h3>method get_sponsor <span class="smalllinenumber">[line 1098]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1396,6 +1475,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The HTML safe display of the sponsor for this Host</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -1411,19 +1493,22 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_supportgroup_id"></a>
-	<h3>method get_supportgroup_id <span class="smalllinenumber">[line 1040]</span></h3>
+	<h3>method get_supportgroup_id <span class="smalllinenumber">[line 1110]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>int get_supportgroup_id(
+		<code>Int get_supportgroup_id(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		ID for the Support_groups to which this  host is assigned.<br /><br /><br /><br />
+		ID for the Supportgroup to which this  host is assigned.<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The id of the Supportgroup associated with this record or null</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -1439,19 +1524,22 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_supportgroup_name"></a>
-	<h3>method get_supportgroup_name <span class="smalllinenumber">[line 1052]</span></h3>
+	<h3>method get_supportgroup_name <span class="smalllinenumber">[line 1122]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>int get_supportgroup_name(
+		<code>Strin get_supportgroup_name(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Name for the Support_groups to which this  host is assigned.<br /><br /><br /><br />
+		Name for the Supportgroup to which this  host is assigned.<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The name of the Supportgroup or null</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -1467,7 +1555,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_tag_ids"></a>
-	<h3>method get_tag_ids <span class="smalllinenumber">[line 1086]</span></h3>
+	<h3>method get_tag_ids <span class="smalllinenumber">[line 1159]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1498,7 +1586,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_tag_names"></a>
-	<h3>method get_tag_names <span class="smalllinenumber">[line 1097]</span></h3>
+	<h3>method get_tag_names <span class="smalllinenumber">[line 1170]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1512,7 +1600,7 @@ $orderby = ''])</code>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>of strings</td>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>An Array of HTML display safe String Tag names for this Host</td>
   </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
@@ -1529,7 +1617,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_technical"></a>
-	<h3>method get_technical <span class="smalllinenumber">[line 1063]</span></h3>
+	<h3>method get_technical <span class="smalllinenumber">[line 1133]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1542,6 +1630,9 @@ $orderby = ''])</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The HTML display safe name of the technical contact for the Host</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -1557,7 +1648,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodget_urls"></a>
-	<h3>method get_urls <span class="smalllinenumber">[line 1113]</span></h3>
+	<h3>method get_urls <span class="smalllinenumber">[line 1186]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1571,7 +1662,7 @@ $orderby = ''])</code>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>of strings</td>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>An array of String =&gt; String (URL =&gt; Filename of screenshots for this host)</td>
   </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
@@ -1588,7 +1679,7 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodlookup_by_ip"></a>
-	<h3>method lookup_by_ip <span class="smalllinenumber">[line 1124]</span></h3>
+	<h3>method lookup_by_ip <span class="smalllinenumber">[line 1197]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1616,11 +1707,11 @@ $orderby = ''])</code>
   </div>
   <hr />
 	<a name="methodprocess_form"></a>
-	<h3>method process_form <span class="smalllinenumber">[line 1074]</span></h3>
+	<h3>method process_form <span class="smalllinenumber">[line 1145]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void process_form(
+		<code>Boolean process_form(
 
 $attribute, 
 $value)</code>
@@ -1631,6 +1722,9 @@ $value)</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if anything goes awry</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -1666,12 +1760,12 @@ $value)</code>
   </div>
   <hr />
 	<a name="methodremove_host_group_id"></a>
-	<h3>method remove_host_group_id <span class="smalllinenumber">[line 1202]</span></h3>
+	<h3>method remove_host_group_id <span class="smalllinenumber">[line 1217]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void remove_host_group_id(
-host_group_id
+Int
 $id)</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -1695,9 +1789,9 @@ $id)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">host_group_id&nbsp;&nbsp;</td>
+        <td class="type">Int&nbsp;&nbsp;</td>
         <td><b>$id</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>The Host_group id to remove from association with the Host</td>
       </tr>
         </table>
     </div><br />
@@ -1705,11 +1799,11 @@ $id)</code>
   </div>
   <hr />
 	<a name="methodsave"></a>
-	<h3>method save <span class="smalllinenumber">[line 1221]</span></h3>
+	<h3>method save <span class="smalllinenumber">[line 1236]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void save(
+		<code>Boolean save(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -1718,6 +1812,9 @@ $id)</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if anything goes awry</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -1737,8 +1834,92 @@ $id)</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodset_add_host_group_id"></a>
+	<h3>method set_add_host_group_id <span class="smalllinenumber">[line 1361]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>Boolean set_add_host_group_id(
+Int
+$id)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Add a new Host_group id to the attribue Array<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if the id isn't above zero or an int</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">Int&nbsp;&nbsp;</td>
+        <td><b>$id</b>&nbsp;&nbsp;</td>
+        <td>The unique id of the Host_group</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodset_add_url"></a>
+	<h3>method set_add_url <span class="smalllinenumber">[line 1381]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>Boolean set_add_url(
+String
+$url, String
+$filepath)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Add a new URL/filename for this host<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if the URL doesn't validate or the screenshot doesn't exist.</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">String&nbsp;&nbsp;</td>
+        <td><b>$url</b>&nbsp;&nbsp;</td>
+        <td>A valid URL for the screenshot's subject</td>
+      </tr>
+          <tr>
+        <td class="type">String&nbsp;&nbsp;</td>
+        <td><b>$filepath</b>&nbsp;&nbsp;</td>
+        <td>A valid filename of the screenshot image</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methodset_alt_hostname"></a>
-	<h3>method set_alt_hostname <span class="smalllinenumber">[line 1350]</span></h3>
+	<h3>method set_alt_hostname <span class="smalllinenumber">[line 1406]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1777,17 +1958,59 @@ $name)</code>
   </div>
   <hr />
 	<a name="methodset_alt_ip"></a>
-	<h3>method set_alt_ip <span class="smalllinenumber">[line 1362]</span></h3>
+	<h3>method set_alt_ip <span class="smalllinenumber">[line 1418]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void set_alt_ip(
-IP
+		<code>Boolean set_alt_ip(
+String
 $ip)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
 		Set the alternate host ip<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if IP doesn't validate</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">String&nbsp;&nbsp;</td>
+        <td><b>$ip</b>&nbsp;&nbsp;</td>
+        <td>Valid IP address</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodset_excludedby"></a>
+	<h3>method set_excludedby <span class="smalllinenumber">[line 1463]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void set_excludedby(
+Int
+$id)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Setter for the user id who excluded this host<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -1806,9 +2029,90 @@ $ip)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">IP&nbsp;&nbsp;</td>
-        <td><b>$ip</b>&nbsp;&nbsp;</td>
-        <td>string</td>
+        <td class="type">Int&nbsp;&nbsp;</td>
+        <td><b>$id</b>&nbsp;&nbsp;</td>
+        <td>The ID of the user who excluded the Host from vuln scans</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodset_excludedfor"></a>
+	<h3>method set_excludedfor <span class="smalllinenumber">[line 1434]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>Boolean set_excludedfor(
+Int
+$days)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Setter for the exclusion period<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if param isn't a positive int</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">Int&nbsp;&nbsp;</td>
+        <td><b>$days</b>&nbsp;&nbsp;</td>
+        <td>Number of days to exclude the host from vuln scans</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodset_excludedreason"></a>
+	<h3>method set_excludedreason <span class="smalllinenumber">[line 1451]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void set_excludedreason(
+String
+$note)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Setter for the exclusion notes<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">String&nbsp;&nbsp;</td>
+        <td><b>$note</b>&nbsp;&nbsp;</td>
+        <td>The exclusion notes for the Host</td>
       </tr>
         </table>
     </div><br />
@@ -1816,11 +2120,11 @@ $ip)</code>
   </div>
   <hr />
 	<a name="methodset_host_group_ids"></a>
-	<h3>method set_host_group_ids <span class="smalllinenumber">[line 1411]</span></h3>
+	<h3>method set_host_group_ids <span class="smalllinenumber">[line 1475]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void set_host_group_ids(
+		<code>Boolean set_host_group_ids(
 Array
 $array)</code>
     </td></tr></table>
@@ -1830,6 +2134,9 @@ $array)</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if the input isn't an array</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -1847,7 +2154,187 @@ $array)</code>
           <tr>
         <td class="type">Array&nbsp;&nbsp;</td>
         <td><b>$array</b>&nbsp;&nbsp;</td>
-        <td>of Host_group ids</td>
+        <td>An Array of Host_group ids</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodset_ignoredfor_days"></a>
+	<h3>method set_ignoredfor_days <span class="smalllinenumber">[line 1536]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void; set_ignoredfor_days(
+Int
+$days)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		How long do we ignore the host<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">Int&nbsp;&nbsp;</td>
+        <td><b>$days</b>&nbsp;&nbsp;</td>
+        <td>Number of days to ignore the Host</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodset_ignored_note"></a>
+	<h3>method set_ignored_note <span class="smalllinenumber">[line 1514]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void; set_ignored_note(
+String
+$note)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Notes about the exclusion<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">String&nbsp;&nbsp;</td>
+        <td><b>$note</b>&nbsp;&nbsp;</td>
+        <td>Notes about the exclusion</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodset_ignored_timestamp"></a>
+	<h3>method set_ignored_timestamp <span class="smalllinenumber">[line 1525]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void; set_ignored_timestamp(
+Int
+$tstamp)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		When did we ignore the host<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">Int&nbsp;&nbsp;</td>
+        <td><b>$tstamp</b>&nbsp;&nbsp;</td>
+        <td>Timestamp that we started ignoring the host</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodset_ignore_portscan"></a>
+	<h3>method set_ignore_portscan <span class="smalllinenumber">[line 1492]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void; set_ignore_portscan(
+Boolean
+$bool)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Alias for set_portscan_exclusion<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">Boolean&nbsp;&nbsp;</td>
+        <td><b>$bool</b>&nbsp;&nbsp;</td>
+        <td>Whether the Host should be excluded from vuln scans</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodset_ignore_portscan_byuserid"></a>
+	<h3>method set_ignore_portscan_byuserid <span class="smalllinenumber">[line 1503]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void; set_ignore_portscan_byuserid(
+Int
+$id)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Who is issuing the exclusion<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">Int&nbsp;&nbsp;</td>
+        <td><b>$id</b>&nbsp;&nbsp;</td>
+        <td>The User id of the user who is excluding the host from vuln scans</td>
       </tr>
         </table>
     </div><br />
@@ -1855,11 +2342,11 @@ $array)</code>
   </div>
   <hr />
 	<a name="methodset_ip"></a>
-	<h3>method set_ip <span class="smalllinenumber">[line 1426]</span></h3>
+	<h3>method set_ip <span class="smalllinenumber">[line 1548]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void set_ip(
+		<code>Boolean set_ip(
 ip
 $ip)</code>
     </td></tr></table>
@@ -1870,10 +2357,10 @@ $ip)</code>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if the IP doesn't validate</td>
   </tr>
   <tr>
-    <td><b>todo:</b>&nbsp;&nbsp;</td><td>Validate the IP</td>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
@@ -1897,11 +2384,11 @@ $ip)</code>
   </div>
   <hr />
 	<a name="methodset_link"></a>
-	<h3>method set_link <span class="smalllinenumber">[line 1440]</span></h3>
+	<h3>method set_link <span class="smalllinenumber">[line 1565]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void set_link(
+		<code>Boolean set_link(
 String
 $link)</code>
     </td></tr></table>
@@ -1911,6 +2398,9 @@ $link)</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if the link doesn't validate</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -1936,12 +2426,12 @@ $link)</code>
   </div>
   <hr />
 	<a name="methodset_location_id"></a>
-	<h3>method set_location_id <span class="smalllinenumber">[line 1452]</span></h3>
+	<h3>method set_location_id <span class="smalllinenumber">[line 1582]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void set_location_id(
-<a href="../HECTOR/Location.html">Location</a>
+		<code>Boolean set_location_id(
+Int
 $id)</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -1950,6 +2440,9 @@ $id)</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if the input isn't a positive integer of Location doens't exist</td>
+  </tr>
   <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
@@ -1965,9 +2458,9 @@ $id)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type"><a href="../HECTOR/Location.html">Location</a>&nbsp;&nbsp;</td>
+        <td class="type">Int&nbsp;&nbsp;</td>
         <td><b>$id</b>&nbsp;&nbsp;</td>
-        <td>id</td>
+        <td>The unique id of the Location</td>
       </tr>
         </table>
     </div><br />
@@ -1975,12 +2468,12 @@ $id)</code>
   </div>
   <hr />
 	<a name="methodset_name"></a>
-	<h3>method set_name <span class="smalllinenumber">[line 1479]</span></h3>
+	<h3>method set_name <span class="smalllinenumber">[line 1622]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void set_name(
-Name
+String
 $name)</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -2004,9 +2497,9 @@ $name)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">Name&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$name</b>&nbsp;&nbsp;</td>
-        <td>string</td>
+        <td>The name of the host</td>
       </tr>
         </table>
     </div><br />
@@ -2014,13 +2507,13 @@ $name)</code>
   </div>
   <hr />
 	<a name="methodset_note"></a>
-	<h3>method set_note <span class="smalllinenumber">[line 1493]</span></h3>
+	<h3>method set_note <span class="smalllinenumber">[line 1634]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void set_note(
-Note
-$name)</code>
+String
+$note)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
@@ -2043,9 +2536,9 @@ $name)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">Note&nbsp;&nbsp;</td>
-        <td><b>$name</b>&nbsp;&nbsp;</td>
-        <td>string</td>
+        <td class="type">String&nbsp;&nbsp;</td>
+        <td><b>$note</b>&nbsp;&nbsp;</td>
+        <td>Any notes associated with this host</td>
       </tr>
         </table>
     </div><br />
@@ -2053,12 +2546,12 @@ $name)</code>
   </div>
   <hr />
 	<a name="methodset_os"></a>
-	<h3>method set_os <span class="smalllinenumber">[line 1526]</span></h3>
+	<h3>method set_os <span class="smalllinenumber">[line 1665]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void set_os(
-OS
+String
 $os)</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -2079,9 +2572,9 @@ $os)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">OS&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$os</b>&nbsp;&nbsp;</td>
-        <td>string</td>
+        <td>The operating system for the host.</td>
       </tr>
         </table>
     </div><br />
@@ -2089,12 +2582,12 @@ $os)</code>
   </div>
   <hr />
 	<a name="methodset_policy"></a>
-	<h3>method set_policy <span class="smalllinenumber">[line 1538]</span></h3>
+	<h3>method set_policy <span class="smalllinenumber">[line 1677]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void set_policy(
-boolean
+Boolean
 $covered_by_policy)</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -2115,27 +2608,27 @@ $covered_by_policy)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">boolean&nbsp;&nbsp;</td>
+        <td class="type">Boolean&nbsp;&nbsp;</td>
         <td><b>$covered_by_policy</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>Whether or not the Host is covered by policy</td>
       </tr>
         </table>
     </div><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
-	<a name="methodset_sponsor"></a>
-	<h3>method set_sponsor <span class="smalllinenumber">[line 1550]</span></h3>
+	<a name="methodset_portscan_exclusion"></a>
+	<h3>method set_portscan_exclusion <span class="smalllinenumber">[line 1646]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void set_sponsor(
-Name
-$name)</code>
+		<code>void set_portscan_exclusion(
+Boolean
+$val)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Set the academic sponsor for this host<br /><br /><br /><br />
+		Setter to exclude this host from portscans.<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -2154,9 +2647,48 @@ $name)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">Name&nbsp;&nbsp;</td>
+        <td class="type">Boolean&nbsp;&nbsp;</td>
+        <td><b>$val</b>&nbsp;&nbsp;</td>
+        <td>Whether the Host should be excluded from vuln scans</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodset_sponsor"></a>
+	<h3>method set_sponsor <span class="smalllinenumber">[line 1689]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void set_sponsor(
+String
+$name)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Set the sponsor for this host<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$name</b>&nbsp;&nbsp;</td>
-        <td>string</td>
+        <td>The name of the sponsor for the Host</td>
       </tr>
         </table>
     </div><br />
@@ -2164,12 +2696,12 @@ $name)</code>
   </div>
   <hr />
 	<a name="methodset_supportgroup_id"></a>
-	<h3>method set_supportgroup_id <span class="smalllinenumber">[line 1466]</span></h3>
+	<h3>method set_supportgroup_id <span class="smalllinenumber">[line 1602]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void set_supportgroup_id(
-Supoprtgroup
+		<code>Boolean set_supportgroup_id(
+Int
 $id)</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -2179,6 +2711,9 @@ $id)</code>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>if the Supportgroup id isn't valid</td>
+  </tr>
+  <tr>
     <td><b>author:</b>&nbsp;&nbsp;</td><td>Justin C. Klein Keane &lt;<a href="mailto:jukeane@sas.upenn.edu">jukeane@sas.upenn.edu</a>&gt;</td>
   </tr>
   <tr>
@@ -2193,9 +2728,9 @@ $id)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">Supoprtgroup&nbsp;&nbsp;</td>
+        <td class="type">Int&nbsp;&nbsp;</td>
         <td><b>$id</b>&nbsp;&nbsp;</td>
-        <td>id</td>
+        <td>The Supoprtgroup id</td>
       </tr>
         </table>
     </div><br />
@@ -2203,7 +2738,7 @@ $id)</code>
   </div>
   <hr />
 	<a name="methodset_tag_ids"></a>
-	<h3>method set_tag_ids <span class="smalllinenumber">[line 1565]</span></h3>
+	<h3>method set_tag_ids <span class="smalllinenumber">[line 1701]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2234,7 +2769,7 @@ $array)</code>
           <tr>
         <td class="type">Array&nbsp;&nbsp;</td>
         <td><b>$array</b>&nbsp;&nbsp;</td>
-        <td>of Tag ids</td>
+        <td>An Array of Tag ids (integers)</td>
       </tr>
         </table>
     </div><br />
@@ -2242,12 +2777,12 @@ $array)</code>
   </div>
   <hr />
 	<a name="methodset_technical"></a>
-	<h3>method set_technical <span class="smalllinenumber">[line 1581]</span></h3>
+	<h3>method set_technical <span class="smalllinenumber">[line 1717]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>void set_technical(
-Name
+String
 $name)</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -2271,9 +2806,48 @@ $name)</code>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-        <td class="type">Name&nbsp;&nbsp;</td>
+        <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$name</b>&nbsp;&nbsp;</td>
-        <td>string</td>
+        <td>The name of the technical support person</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodset_urls"></a>
+	<h3>method set_urls <span class="smalllinenumber">[line 1728]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>Boolean set_urls(
+Array
+$urls)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Add a new URL/filename for this host<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>False if any URL doesn't validate or screenshot doesn't exist.</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">Array&nbsp;&nbsp;</td>
+        <td><b>$urls</b>&nbsp;&nbsp;</td>
+        <td>An array of [url, filename] for each screenshot</td>
       </tr>
         </table>
     </div><br />
@@ -2284,7 +2858,7 @@ $name)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Wed, 28 Aug 2013 09:39:18 -0400 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Wed, 11 Sep 2013 09:34:45 -0400 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

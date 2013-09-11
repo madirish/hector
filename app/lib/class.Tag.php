@@ -117,17 +117,40 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
      *
      * @access public
      * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
-     * @return void
+     * @return Boolean False if something goes awry
      */
     public function delete() {
+    	$retval = FALSE;
     	if ($this->id > 0 ) {
     		// Delete an existing record
 	    	$sql = array(
 	    		'DELETE FROM tag WHERE tag_id = \'?i\'',
 	    		$this->get_id()
 	    	);
+	    	$retval = $this->db->iud_sql($sql);
+	    	// Delete mappings
+	    	$sql = array(
+	    		'DELETE FROM host_x_tag WHERE tag_id = \'?i\'',
+	    		$this->get_id()
+	    	);
+	    	$this->db->iud_sql($sql);
+	    	$sql = array(
+	    		'DELETE FROM vuln_x_tag WHERE tag_id = \'?i\'',
+	    		$this->get_id()
+	    	);
+	    	$this->db->iud_sql($sql);
+	    	$sql = array(
+	    		'DELETE FROM malware_x_tag WHERE tag_id = \'?i\'',
+	    		$this->get_id()
+	    	);
+	    	$this->db->iud_sql($sql);
+	    	$sql = array(
+	    		'DELETE FROM article_x_tag WHERE tag_id = \'?i\'',
+	    		$this->get_id()
+	    	);
 	    	$this->db->iud_sql($sql);
     	}
+    	return $retval;
     }
 
 	/**

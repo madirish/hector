@@ -227,22 +227,22 @@ Class DB {
 	private function token_replace($query, $token, $replace) {
 		$retval = '';
 		switch ($token) {
-			case '?b':
+			case '?b': // Boolean
 					$retval = substr($query, 0, stripos($query, '?b'));
-					$retval .= sprintf('%u', $replace);
+					$retval .= ($replace) ? 1 : 0;
 					$retval .= substr($query, stripos($query, '?b')+2);
 					break;
-			case '?i':
+			case '?i': // Integer number
 					$retval = substr($query, 0, stripos($query, '?i'));
 					$retval .= intval($replace);
 					$retval .= substr($query, stripos($query, '?i')+2);
 					break;
-			case '?s':
+			case '?s':  // String
 					$retval = substr($query, 0, stripos($query, '?s'));
 					$retval .= mysql_real_escape_string($replace);
 					$retval .= substr($query, stripos($query, '?s')+2);
 					break;
-			case '?d':
+			case '?d':  // Datetime
 					$retval = substr($query, 0, stripos($query, '?d'));
 					$retval .= ($replace == '') ? date("Y-m-d H:i:s") : date("Y-m-d H:i:s", strtotime($replace));
 					$retval .= substr($query, stripos($query, '?d')+2);

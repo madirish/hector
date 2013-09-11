@@ -413,17 +413,22 @@ class Nmap_result {
 			$this->state_id != NULL && 
 			$this->scan_id != NULL) {
 			// Clean out any old records for this port
-			$sql = array('DELETE from nmap_result where host_id = ?i and nmap_result_port_number = ?i',
+			$sql = array('DELETE from nmap_result WHERE host_id = ?i AND nmap_result_port_number = ?i',
 					$this->host_id,
 					$this->port_number);
 			$this->db->iud_sql($sql);
 		
 			if ($this->id != NULL ) {
-				$sql = array('UPDATE nmap_result set state_id=?i, ' .
-						' nmap_result_port_number=?i, nmap_result_protocol=\'?s\', host_id=?i, nmap_result_service_name=\'?s\', ' .
-						' nmap_result_service_version=\'?s\', nmap_result_timestamp=NOW(), ' .
-						' nmap_result_is_new=0, scan_id=?i ' .
-						' where nmap_result_id = ?i', 
+				$sql = array('UPDATE nmap_result SET state_id=?i, ' .
+						'nmap_result_port_number=?i, ' .
+						'nmap_result_protocol=\'?s\', ' .
+						'host_id=?i, ' .
+						'nmap_result_service_name=\'?s\', ' .
+						'nmap_result_service_version=\'?s\', ' .
+						'nmap_result_timestamp=NOW(), ' .
+						'nmap_result_is_new=0, ' .
+						'scan_id=?i ' .
+						'WHERE nmap_result_id = ?i', 
 						$this->state_id,
 						$this->port_number,
 						$this->protocol,
@@ -437,8 +442,14 @@ class Nmap_result {
 			}
 			else {
 				$sql = array('INSERT INTO nmap_result ' . 
-							'(state_id, nmap_result_port_number, nmap_result_protocol, host_id, nmap_result_service_name, ' .
-							'scan_id, nmap_result_service_version, nmap_result_timestamp) ' . 
+							'(state_id, ' .
+							'nmap_result_port_number, ' .
+							'nmap_result_protocol, ' .
+							'host_id, ' .
+							'nmap_result_service_name, ' .
+							'scan_id, ' .
+							'nmap_result_service_version, ' .
+							'nmap_result_timestamp) ' . 
 							' VALUES (?i, ?i, \'?s\', ?i, \'?s\', ?i, \'?s\', NOW())',
 							$this->state_id,
 							$this->port_number,

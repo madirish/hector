@@ -217,6 +217,7 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
 	private function get_script_exes() {
 		global $approot;
 		$onselects = array();
+		$retval = array();
 		$is_executable = array();
 		if ($handle = opendir($approot . '/scripts')) {
 			while (false !== ($entry = readdir($handle))) {

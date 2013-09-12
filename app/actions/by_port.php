@@ -76,9 +76,9 @@ if ($anyUDPports != 0) {
 	$query = 'INSERT INTO tmp_search (' .
 				'SELECT DISTINCT(host_id) ' .
 				'FROM nmap_result ' .
-				'WHERE nmap_result_port_number IN (' . $anyports . ') ' .
+				'WHERE nmap_result_port_number IN (' . $anyUDPports . ') ' .
 				'AND lower(nmap_result_protocol) = "udp" AND state_id = 1) ';
-	$db->iud_sql($query);
+	$db->iud_sql($query); 
 	$tempTablePopulated = 1;
 }
 // Only TCP based all-ports requirement

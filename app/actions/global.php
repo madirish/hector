@@ -19,7 +19,7 @@ $db = Db::get_instance();
 $vuln_badge = '';
 
 if (! isset($appuser)) {
-	if (! isset($_SESSION['user_id'])) die("<h2>Fatal error!<?h2>User not initialized.");
+	if (! isset($_SESSION['user_id'])) die("<h2>Fatal error!<?h2>User not initialized in global.");
 	else $appuser = new User($_SESSION['user_id']);
 }
 $sql = 'SELECT COUNT(d.vuln_detail_id) AS vulncount ' .

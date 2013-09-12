@@ -1,6 +1,6 @@
 <div class="row">
 <div class="span5">
-<table id="host_details" class="table">
+<table id="host_details" class="table table-bordered">
 	<tr id="name">
 		<td>Hostname</td>
 		<td><?php echo $host->get_name();?></td>
@@ -77,8 +77,7 @@ if ($host->get_portscan_exclusion()) {?>
 
 </div>
 <div class="span6">
-<p class="well well-small">Open Ports:[<a href="?action=details&object=nmap_result&host_id=<?php echo $host->get_id();?>">Full Scan Details</a>]</p>
-<table class="table table-striped">
+<table class="table table-striped table-bordered">
 <thead>
 	<tr>
 		<th>Port</th>
@@ -95,12 +94,13 @@ if ($host->get_portscan_exclusion()) {?>
 		}
 ?>
 </tbody></table>
+
 </div>
 </div>
 
 <div class="row">
 <div class="span5">
-<table id="screenshotstable" class="table table-striped">
+<table id="screenshotstable" class="table table-striped table-bordered">
 <thead>
 	<tr>
 		<th>URL</th>
@@ -131,11 +131,10 @@ foreach($host->get_urls() as $url) {
 </tbody></table>
 </div>
 <div class="span6">
-<p class="well well-small">Vulnerabilities:</p>
-<table id="vulntable" class="table table-striped">
+<table id="vulntable" class="table table-striped table-bordered">
 <thead>
 	<tr>
-		<th>Type</th>
+		<th>Vulnerability Type</th>
 		<th>Text</th>
 		<th>Dicovered</th>
 		<th>Fixed</th>

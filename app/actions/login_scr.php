@@ -27,8 +27,8 @@ else {
 	$form->save();
 	$action = 'login';
 	$sorry = true;
+	include_once($templates . 'header.tpl.php');
 	include_once($approot . 'templates/login.tpl.php');
-	//header('index.php?action=login&sorry');
 }
 
 ?>

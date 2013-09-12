@@ -96,9 +96,14 @@ if ($_GET['action'] == 'csp-report') {
 	include_once($approot . 'actions/csp-report.php');
 }
 else {
-	if (! isset($_SESSION['user_id']) || $_SESSION['user_id'] == null || $action == 'logout') {
+	if ( (! isset($_SESSION['user_id']) || 
+			$_SESSION['user_id'] == null || 
+			$action == 'logout') ) {
 		// User isn't logged in, use static header template
-		include_once($templates . 'header.tpl.php');
+		if ($_GET['action'] !== 'login_scr') {
+			include_once($templates . 'header.tpl.php');
+		}
+		
 	}
 	else {
 		// Necessary includes for search form

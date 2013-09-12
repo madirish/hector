@@ -472,7 +472,10 @@ sub db_select {
   my $id_col = shift(@_);
   my @sql_args = @_;
   my $id = 0;
-
+  
+  if (! defined($dbi->{dbh})) {
+  	$dbi = ossecmysql->new(%conf)  || die ("Could not connect to $conf{dbhost}:$conf{dbport}:$conf{database} as $conf{dbpasswd}\n");
+  }
   my $sth = $dbi->{dbh}->prepare($select_sql) || die("Couldn't prepare db_select statement.");
   if (! @sql_args) {
     die("SQL args are undefined!\n");

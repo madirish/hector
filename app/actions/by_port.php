@@ -29,39 +29,68 @@ require_once($approot . 'lib/class.Host.php');
 require_once($approot . 'lib/class.Supportgroup.php');
 
 // Bridge from older code
-if (isset($_GET['ports'])) $_POST['allports'] = $_GET['ports'];
+if (isset($_GET['ports'])) {
+	// Link from home like ?action=reports&report=by_port&ports=22/tcp
+	if ($pos = stripos($_GET['ports'], '/tcp')){
+		$_POST['allports'] = substr($_GET['ports'],0,$pos);
+	}
+	// Link from home like ?action=reports&report=by_port&ports=53/udp
+	if ($pos = stripos($_GET['ports'], '/udp')){
+		$_POST['allUDPports'] = substr($_GET['ports'],0,$pos);
+	}
+}
 
 // Allow simple get requests as well
 if (isset($_GET['anyports'])) $_POST['anyports'] = $_GET['anyports'];
 if (isset($_GET['allports'])) $_POST['allports'] = $_GET['allports'];
 if (isset($_GET['portsex'])) $_POST['portsex'] = $_GET['portsex'];
+if (isset($_GET['anyUDPports'])) $_POST['anyUDPports'] = $_GET['anyUDPports'];
+if (isset($_GET['allUDPports'])) $_POST['allUDPports'] = $_GET['allUDPports'];
+if (isset($_GET['UDPportsex'])) $_POST['UDPportsex'] = $_GET['UDPportsex'];
 
 
 $allports = isset($_POST['allports']) ? preg_replace('/^(d|,)*/','',$_POST['allports']) : 0;
 $anyports = isset($_POST['anyports']) ? preg_replace('/^(d|,)*/','',$_POST['anyports']) : 0;
 $portsex = isset($_POST['portsex']) ? preg_replace('/^(d|,)*/','',$_POST['portsex']) : 0;
+$allUDPports = isset($_POST['allUDPports']) ? preg_replace('/^(d|,)*/','',$_POST['allUDPports']) : 0;
+$anyUDPports = isset($_POST['anyUDPports']) ? preg_replace('/^(d|,)*/','',$_POST['anyUDPports']) : 0;
+$UDPportsex = isset($_POST['UDPportsex']) ? preg_replace('/^(d|,)*/','',$_POST['UDPportsex']) : 0;
 $db = Db::get_instance();
 
 // Select all hosts into a temp table, then winnow it down for results, then strip based on perms
-$query = 'create temporary table tmp_search (host_id INT NOT NULL PRIMARY KEY)';
+$query = 'CREATE TEMPORARY TABLE ' .
+		'tmp_search (host_id INT NOT NULL PRIMARY KEY)';
 $db->iud_sql($query);
 $tempTablePopulated = 0;
 
 if ($anyports != 0) {
-	$query = 'insert into tmp_search (' .
-				'select distinct(host_id) ' .
-				'from nmap_result ' .
-				'where nmap_result_port_number in (' . $anyports . ') ' .
-				'AND state_id = 1) ';
+	$query = 'INSERT INTO tmp_search (' .
+				'SELECT distinct(host_id) ' .
+				'FROM nmap_result ' .
+				'WHERE nmap_result_port_number in (' . $anyports . ') ' .
+				'AND lower(nmap_result_protocol) = "tcp" AND state_id = 1) ';
 	$db->iud_sql($query);
 	$tempTablePopulated = 1;
 }
-if ($allports != 0) { 
+if ($anyUDPports != 0) {
+	$query = 'INSERT INTO tmp_search (' .
+				'SELECT DISTINCT(host_id) ' .
+				'FROM nmap_result ' .
+				'WHERE nmap_result_port_number IN (' . $anyports . ') ' .
+				'AND lower(nmap_result_protocol) = "udp" AND state_id = 1) ';
+	$db->iud_sql($query);
+	$tempTablePopulated = 1;
+}
+// Only TCP based all-ports requirement
+if ($allports != 0 && $allUDPports == 0) { 
 	$hosts = array(); 
 	$ports_num = explode(',', $allports);
 	foreach ($ports_num as $port) {
-		$query = 'select host_id from nmap_result ' .
-				'where nmap_result_port_number = ' . intval($port) . ' and state_id = 1';
+		$query = 'SELECT host_id ' .
+				'FROM nmap_result ' .
+				'WHERE nmap_result_port_number = ' . intval($port) . ' ' .
+				'AND LOWER(nmap_result_protocol) = "tcp" ' .
+				'AND state_id = 1';
 		$results = $db->fetch_object_array($query);
 		$query_results = array();
 		foreach ($results as $id) $query_results[] = $id->host_id;
@@ -78,24 +107,110 @@ if ($allports != 0) {
 	}
 	// Drop results from the search table if they aren't in our list
 	if ($tempTablePopulated == 1) {
-		$query = 'delete from tmp_search where host_id not in (' . join(',', $hosts) . ')';
+		$query = 'DELETE FROM tmp_search ' .
+				'WHERE host_id NOT IN (' . join(',', $hosts) . ')';
 		$db->iud_sql($query);
 	}
 	foreach ($hosts as $host) {
-		$query = 'insert into tmp_search set host_id = ' . $host . ' ON DUPLICATE KEY UPDATE host_id = ' . $host;
+		$query = 'INSERT INTO tmp_search ' .
+				'SET host_id = ' . $host . ' ' .
+				'ON DUPLICATE KEY UPDATE host_id = ' . $host;
 		$db->iud_sql($query);
 	}
 	$tempTablePopulated = 1;
 }
+// Only UDP based all-ports requirement
+elseif ($allports == 0 && $allUDPports != 0) { 
+	$hosts = array(); 
+	$ports_num = explode(',', $allUDPports);
+	foreach ($ports_num as $port) {
+		$query = 'SELECT host_id ' .
+				'FROM nmap_result ' .
+				'WHERE nmap_result_port_number = ' . intval($port) . ' ' .
+				'AND LOWER(nmap_result_protocol) = "udp" ' .
+				'AND state_id = 1';
+		$results = $db->fetch_object_array($query);
+		$query_results = array();
+		foreach ($results as $id) $query_results[] = $id->host_id;
+		// First results, push them into the array
+		if (count($hosts) < 1) {
+			foreach ($query_results as $id) $hosts[] = $id;
+		}
+		// more results - if the host from the array aren't in the results, remove it
+		else {
+			foreach ($hosts as $host) {
+				if (! in_array($host, $query_results))  unset($hosts[array_search($host, $hosts)]);
+			}
+		}
+		
+	}
+	// Drop results from the search table if they aren't in our list
+	if ($tempTablePopulated == 1) {
+		$query = 'DELETE FROM tmp_search ' .
+				'WHERE host_id NOT IN (' . join(',', $hosts) . ')';
+		$db->iud_sql($query);
+	}
+	foreach ($hosts as $host) {
+		$query = 'INSERT INTO tmp_search ' .
+				'SET host_id = ' . $host . ' ' .
+				'ON DUPLICATE KEY UPDATE host_id = ' . $host;
+		$db->iud_sql($query);
+	}
+	$tempTablePopulated = 1; 
+}
+// Both TCP and UDP all-ports requirement
+elseif ($allports != 0 && $allUDPports != 0) { 
+	$hosts = array(); 
+	$tcp_ports_num = $allports;
+	$udp_ports_num = $allUDPports;
+
+	$query = 'SELECT host_id ' .
+			'FROM nmap_result ' .
+			'WHERE (nmap_result_port_number IN (' . $tcp_ports_num . ') ' .
+			'AND LOWER(nmap_result_protocol) = "tcp") ' .
+			'AND (nmap_result_port_number IN (' . $udp_ports_num . ') ' .
+			'AND LOWER(nmap_result_protocol) = "udp")' .
+			'AND state_id = 1';
+	$results = $db->fetch_object_array($query);
+	$query_results = array();
+	foreach ($results as $id) $query_results[] = $id->host_id;
+	// First results, push them into the array
+	if (count($hosts) < 1) {
+		foreach ($query_results as $id) $hosts[] = $id;
+	}
+	// more results - if the host from the array aren't in the results, remove it
+	else {
+		foreach ($hosts as $host) {
+			if (! in_array($host, $query_results))  unset($hosts[array_search($host, $hosts)]);
+		}
+	}
+	
+	// Drop results from the search table if they aren't in our list
+	if ($tempTablePopulated == 1) {
+		$query = 'DELETE FROM tmp_search ' .
+				'WHERE host_id NOT IN (' . join(',', $hosts) . ')';
+		$db->iud_sql($query);
+	}
+	foreach ($hosts as $host) {
+		$query = 'INSERT INTO tmp_search ' .
+				'SET host_id = ' . $host . ' ' .
+				'ON DUPLICATE KEY UPDATE host_id = ' . $host;
+		$db->iud_sql($query);
+	}
+	$tempTablePopulated = 1;
+}
+// TCP port exclusion
 if ($portsex != 0) {
 	if ($tempTablePopulated == 1) {
-		$query = 'select host_id from tmp_search';
+		$query = 'SELECT host_id FROM tmp_search';
 		$results = $db->fetch_object_array($query);
 		foreach (explode(',',$portsex) as $portnum) {
 			foreach ($results->host_id as $id) {
-				$query = 'select count(host_id) as theCount ' .
-						'from nmap_result ' .
-						'where nmap_result_port_number = ' . $portnum . ' and state_id = 1';
+				$query = 'SELECT COUNT(host_id) AS theCount ' .
+						'FROM nmap_result ' .
+						'WHERE nmap_result_port_number = ' . $portnum . ' ' .
+						'AND LOWER(nmap_result_protocol) = "tcp" ' .
+						'AND state_id = 1';
 				$countquery = $db->fetch_object_array($query);
 				if ($countquery->theCount > 0) {
 					$db->iud_sql('delete from tmp_search where host_id = ' . $id);
@@ -105,14 +220,57 @@ if ($portsex != 0) {
 	}
 	else {
 		// This is gonna be a massive result!
-		$query = 'insert into tmp_search (select distinct(host_id) from host)';
+		$query = 'INSERT INTO tmp_search ' .
+				'(SELECT DISTINCT(host_id) FROM host)';
 		$db->iud_sql($query);
 		foreach (explode(',',$portsex) as $port) {
-			$query = 'select host_id ' .
-					'from nmap_result ' .
-					'where nmap_result_port_number = ' . $port . ' and state_id = 1';
+			$query = 'SELECT host_id ' .
+					'FROM nmap_result ' .
+					'WHERE nmap_result_port_number = ' . $port . ' ' .
+					'AND nmap_result_protocol = "tcp" ' .
+					'AND state_id = 1';
 			$countquery = $db->fetch_object_array($query);
-			foreach ($countquery as $host) $db->iud_sql('delete from tmp_search where host_id = ' . $host->host_id);
+			foreach ($countquery as $host) {
+				$db->iud_sql('DELETE FROM tmp_search WHERE host_id = ' . $host->host_id);
+			}
+		}
+	}
+	$tempTablePopulated = 1;
+}
+// UDP port exclusion
+if ($UDPportsex != 0) {
+	if ($tempTablePopulated == 1) {
+		$query = 'select host_id from tmp_search';
+		$results = $db->fetch_object_array($query);
+		foreach (explode(',',$UDPportsex) as $portnum) {
+			foreach ($results->host_id as $id) {
+				$query = 'SELECT COUNT(host_id) AS theCount ' .
+						'FROM nmap_result ' .
+						'WHERE nmap_result_port_number = ' . $portnum . ' ' .
+						'AND LOWER(nmap_result_protocol) = "udp" ' .
+						'AND state_id = 1';
+				$countquery = $db->fetch_object_array($query);
+				if ($countquery->theCount > 0) {
+					$db->iud_sql('DELETE FROM tmp_search WHERE host_id = ' . $id);
+				}
+			}
+		}
+	}
+	else {
+		// This is gonna be a massive result!
+		$query = 'INSERT INTO tmp_search ' .
+				'(SELECT DISTINCT(host_id) FROM host)';
+		$db->iud_sql($query);
+		foreach (explode(',',$UDPportsex) as $port) {
+			$query = 'SELECT host_id ' .
+					'FROM nmap_result ' .
+					'WHERE nmap_result_port_number = ' . $port . ' ' .
+					'AND LOWER(nmap_result_protocol = "udp") ' .
+					'AND state_id = 1';
+			$countquery = $db->fetch_object_array($query);
+			foreach ($countquery as $host) {
+				$db->iud_sql('DELETE FROM tmp_search WHERE host_id = ' . $host->host_id);
+			}
 		}
 	}
 	$tempTablePopulated = 1;

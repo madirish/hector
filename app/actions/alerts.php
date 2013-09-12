@@ -18,9 +18,9 @@ $leveloptions = '';
 $href = '?action=assets&object=alerts';
 $startdateplaceholder = '0000-00-00';
 
-if (isset($_POST['startdate'])) $_GET['startdate'] = $_POST['startdate'];
-if (isset($_POST['enddate'])) $_GET['enddate'] = $_POST['enddate'];
-if (isset($_POST['ip'])) $_GET['ip'] = $_POST['ip'];
+if (isset($_POST['startdate']) && $_POST['startdate'] !== '') $_GET['startdate'] = $_POST['startdate'];
+if (isset($_POST['enddate']) && $_POST['enddate'] !== '') $_GET['enddate'] = $_POST['enddate'];
+if (isset($_POST['ip']) && $_POST['ip'] !== '') $_GET['ip'] = $_POST['ip'];
 
 $startdate = (isset($_GET['startdate'])) ? date('Y-m-d', strtotime($_GET['startdate'])) : '';
 if ($startdate !== '') {

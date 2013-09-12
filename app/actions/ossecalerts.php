@@ -20,9 +20,9 @@ $href = '?action=ossecalerts';
 $startdateplaceholder = '0000-00-00';
 
 if (isset($_POST['minlevel'])) $_GET['minlevel'] = $_POST['minlevel'];
-if (isset($_POST['startdate'])) $_GET['startdate'] = $_POST['startdate'];
-if (isset($_POST['enddate'])) $_GET['enddate'] = $_POST['enddate'];
-if (isset($_POST['ip'])) $_GET['ip'] = $_POST['ip'];
+if (isset($_POST['startdate']) && $_POST['startdate'] !== '') $_GET['startdate'] = $_POST['startdate'];
+if (isset($_POST['enddate']) && $_POST['enddate'] !== '') $_GET['enddate'] = $_POST['enddate'];
+if (isset($_POST['ip']) && $_POST['ip'] !== '') $_GET['ip'] = $_POST['ip'];
 
 $minlevel = (isset($_GET['minlevel'])) ? intval($_GET['minlevel']) : '';
 if ($minlevel !== '') {

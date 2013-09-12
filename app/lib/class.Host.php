@@ -783,7 +783,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 			$sql .= 'h.supportgroup_id = x.supportgroup_id AND' .
 					'x.user_id = ' . $appuser->get_id() . ' AND ';
 		}
-		$sql .= 'LOWER(n.service_version) LIKE \'%' . $version . '%\'';
+		$sql .= 'LOWER(n.nmap_result_service_version) LIKE \'%' . $version . '%\'';
 		return $sql; 
 	}
 

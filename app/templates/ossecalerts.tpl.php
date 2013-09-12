@@ -1,4 +1,34 @@
 <h2>OSSEC Alerts</h2>
+<strong><?php echo $thecount;?> records.</strong> 
+
+<!-- Sorter --> 
+<form method="post" name="ossec_filter_form" id="ossec_filter_form" action="<?php echo $href;?>&start=<?php echo $startrecord;?>">
+	<div class="input-prepend input-append">
+	<span class="add-on">Minimum alert level:</span>
+	<select name="minlevel" class="input-mini">
+		<?php echo $leveloptions;?>
+	</select>
+	<span class="add-on">Start date:</span>
+	<input type="text" placeholder="<?php echo $startdateplaceholder;?>" name="startdate" class="input-small">
+	<span class="add-on">End date:</span>
+	<input type="text" placeholder="<?php echo $enddate;?>" name="enddate" class="input-small">
+	<span class="add-on">IP:</span>
+	<input type="text" placeholder="<?php echo $ip;?>" name="ip" class="input-small">
+	<button type="submit" class="btn">Apply filter</button>
+	</div>
+	<input type="hidden" name="token" value="<?php echo $filter_form_token;?>"/>
+	<input type="hidden" name="form_name" value="ossec_filter_form"/>
+	<a href="<?php echo $clearfilterurl;?>"><button type="button" class="btn">Clear filters</button></a>
+</form>
+
+<!-- Pager -->
+<div class="pagination">
+    <ul>
+    <?php echo $pager;?>
+    </ul>
+</div>
+
+<!-- Output -->
 <table class="table table-striped table-bordered">
 <thead>
 	<tr>
@@ -28,3 +58,10 @@
 ?>
 </tbody>
 </table>
+
+<!-- Pager -->
+<div class="pagination">
+    <ul>
+    <?php echo $pager;?>
+    </ul>
+</div>

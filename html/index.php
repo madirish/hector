@@ -78,7 +78,7 @@ if (isset($_SESSION['user_id']) && $_SESSION['user_id'] != null) {
 }
 
 // Set the HTML 5 Content Security Policy and Reporting
-$proto = (isset($_SERVER['HTTPS'])) ? 'https://' : 'http://';
+/*$proto = (isset($_SERVER['HTTPS'])) ? 'https://' : 'http://';
 $policy = ' default-src ' . $proto . $_SERVER['SERVER_NAME'] . ' \'self\';';
 $policy .= ' img-src \'self\' http://www.sas.upenn.edu http://www.upenn.edu;';
 $policy .= ' frame-src \'none\';';
@@ -86,7 +86,7 @@ $policy .= ' object-src \'none\';';
 $policy .= ' style-src \'self\';';
 $policy .= ' script-src \'self\' \'unsafe-eval\';';
 $policy .= ' report-uri /hector/?action=csp-report;';
-header("Content-Security-Policy: $policy");
+header("Content-Security-Policy: $policy");*/
 //header("X-Content-Security-Policy: $policy");
 
 /**

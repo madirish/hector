@@ -55,16 +55,31 @@ $sql = "SELECT CONCAT(dst_port, '/', proto) AS port, count(id) AS cnt " .
 		"FROM darknet WHERE received_at > DATE_SUB(NOW(), INTERVAL 4 DAY) " .
 		"GROUP BY port ORDER BY cnt DESC LIMIT 10";
 $probe_result = $db->fetch_object_array($sql);
-
 $count = $hostcount[0]->hostcount;
+
+$sql = 'SELECT COUNT(scan_type_id) AS thecount FROM scan_type';
+$retval = $db->fetch_object_array($sql);
+$scripts = $retval[0]->thecount;
+
+$sql = 'SELECT COUNT(scan_id) AS thecount FROM scan';
+$retval = $db->fetch_object_array($sql);
+$scan = $retval[0]->thecount;
+
 $nohosts = "No hosts tracked.  <a href='?action=config&object=add_hosts'>Add hosts</a>.";
-$javascripts .= "<script type='text/javascript' src='js/bootstrap-modal.js'></script>\n";
-$javascripts .= "<script type='text/javascript' src='js/jquery.js'></script>\n";
-$javascripts .= "<script type='text/javascript' src='js/Chart.js'></script>\n";
+
 $count = ($count == "0") ? $nohosts : number_format($count);
 if ($count == 0) {
-	$javascripts .= '<script type="text/javascript">$(document).ready( function(){$("#addHostsModal").modal("show");} )</script>' . "\n";
+	$javascripts .= '<script type="text/javascript">$(document).ready( function(){jQuery.noConflict();$("#addHostsModal").modal("show");} )</script>' . "\n";
 }
+elseif ($scripts == 0) {
+	$javascripts .= '<script type="text/javascript">$(document).ready( function(){jQuery.noConflict();$("#addScriptModal").modal("show");} )</script>' . "\n";
+}
+elseif ($scans == 0) {
+	$javascripts .= '<script type="text/javascript">$(document).ready( function(){jQuery.noConflict();$("#addScanModal").modal("show");} )</script>' . "\n";
+}
+// Put jQuery after modal declarations or there is a conflict
+$javascripts .= "<script type='text/javascript' src='js/jquery.js'></script>\n";
+$javascripts .= "<script type='text/javascript' src='js/Chart.js'></script>\n";
 $javascripts .= "<script type='text/javascript' src='js/portSummaryChart.js'></script>\n";
 $javascripts .= "<script type='text/javascript' src='js/darknetSummaryChart.js'></script>\n";
 

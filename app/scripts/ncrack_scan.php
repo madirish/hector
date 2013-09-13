@@ -47,7 +47,7 @@ if(php_sapi_name() != 'cli') {
 	}
 	$is_executable[] = array('ncrack_scan.php' => 'ncrack scan');
 	global $javascripts;
-	$javascripts[] = <<<EOT
+	$javascripts .= <<<EOT
 	<script type="text/javascript">
 		function ncrack_display() {
 			var ncrackHTML = "<p>NCRACKNcrack is a high-speed network authentication cracking tool.</p>";

@@ -17,7 +17,7 @@ global $add_edit;
 if(php_sapi_name() != 'cli') {
 	$is_executable[] = array('nikto_scan.php' => 'Nikto Scan');
 	global $javascripts;
-	$javascripts[] = <<<EOT
+	$javascripts .= <<<EOT
 	<script type="text/javascript">
 		function nikto_scan_display() {
 			var niktoHTML = "Nikto";

@@ -40,7 +40,7 @@ if(php_sapi_name() != 'cli') {
 	
 	$is_executable[] = array('xprobe2_scan.php' => 'xprobe2 scan');
 	global $javascripts;
-	$javascripts[] = <<<EOT
+	$javascripts .= <<<EOT
 	<script type="text/javascript">
 		function xprobe2_display() {
 			var xprobe2HTML = "<p>Xprobe2 uses port data from the database to determine operating systems and update host records.</p>";

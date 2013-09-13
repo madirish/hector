@@ -46,7 +46,7 @@ global $add_edit;
 if(php_sapi_name() != 'cli') {
 	$is_executable[] = array('screenshot_scan.php' => 'Screenshot scan');
 		global $javascripts;
-	$javascripts[] = <<<EOT
+	$javascripts .= <<<EOT
 	<script type="text/javascript">
 		function screenshot_scan_display() {
 			var screenshotHTML = "Screenshot";

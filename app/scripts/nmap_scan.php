@@ -104,7 +104,7 @@ if(php_sapi_name() != 'cli') {
 	
 	$is_executable[] = array('nmap_scan.php' => 'NMAP scan');
 	global $javascripts;
-	$javascripts[] = <<<EOT
+	$javascripts .= <<<EOT
 	<script type="text/javascript">
 		function nmap_scan_display() {
 			var nmapHTML = "Alert on Changes: <input id='add-remove-alert' type='checkbox' onClick='addRemoveAlert()' $alert/><br/>";

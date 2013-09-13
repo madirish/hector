@@ -118,7 +118,7 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
 			$result = $this->db->fetch_object_array($sql);
 			if (isset($result[0])) { // Ensure the id is valid
 				$this->set_id($result[0]->api_key_id);
-				$this->set_key_value($result[0]->api_key_value);
+				$this->key_value = $result[0]->api_key_value; // no setter, internal only
 				$this->set_key_resource($result[0]->api_key_resource);
 				$this->set_holder_name($result[0]->api_key_holder_name);
 				$this->set_holder_affiliation($result[0]->api_key_holder_affiliation);

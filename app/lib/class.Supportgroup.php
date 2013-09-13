@@ -199,13 +199,13 @@ class Supportgroup extends Maleable_Object implements Maleable_Object_Interface 
      * @return String HTML for the display template
      * @todo Move this HTML into a template and out of the class.
 	 */
-	public function get_details() {
-		$retval = '<table id="supportgroup_details">' . "\n";
+	/*public function get_details() {
+		$retval = '<table id="supportgroup_details" class="table table-bordered">' . "\n";
 		$retval .= '<tr id="name"><td style="font-weight:bold;">Support Group Name:</td><td>' . $this->get_name() . '</td></tr>' . "\n";
 		$retval .= '<tr id="name"><td style="font-weight:bold;">Contact e-mail:</td><td>' . $this->get_email() . '</td></tr>' . "\n";
 		$retval .= '</table>';
 		return $retval;
-	}
+	}*/
 	
 	/**
 	 * Return the display array for the default display template.

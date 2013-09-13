@@ -33,6 +33,6 @@ if (isset($template) && $template == 'default') {
 	include_once($templates . $template . '.tpl.php');
 }
 else {
-	include_once($approot . 'actions/details.php');
+	include_once($approot . 'actions/config.php');
 }
 ?>

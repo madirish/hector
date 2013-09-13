@@ -50,7 +50,7 @@ if (isset($_POST['version']) && $_POST['version'] != '') {
 if ($show_results) {
 	$tablename='search';
 	
-	$content .= '<table id="table' . $tablename . '" class="tablesorter">';
+	$content .= '<table id="table' . $tablename . '" class="tablesorter table-striped table-bordered" width="100%">';
 	$content .= '<thead><tr><th>Hostname</th><th>ip</th><th>Sponsor</th><th>Technical</th><th>Notes</th></tr></thead><tbody>';
 	if (is_array($hosts)) {
 		foreach ($hosts as $host) {

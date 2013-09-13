@@ -2,6 +2,7 @@
 /**
  * This is the generic subcontroller.  It is in fact a factory
  * That produces the detailed view of the specified object.
+ * 
  * @author Justin Klein Keane <jukeane@sas.upenn.edu>
  * @package HECTOR
  */
@@ -14,7 +15,7 @@ if (! isset($_GET['object'])) {
 	$template = 'default';
 }
 else {
-	$object = ucfirst(urldecode($_GET['object']));	
+	$object = htmlspecialchars(ucfirst(urldecode($_GET['object'])));
 	$title = $object . " Details";
 	$file = $approot . 'lib/class.' . $object . '.php';
 	if (isset($_GET['id']) && ($_GET['id'] != '')) {

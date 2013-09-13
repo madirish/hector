@@ -9,9 +9,11 @@
 	<link href="css/bootstrap.css" rel="stylesheet">
 	<link href="css/bootstrap-responsive.css" rel="stylesheet">
 	<link href="css/penn.css" rel="stylesheet">
+	
 	<script type="text/javascript" src="js/ajaxFunctions.js"></script> 
 	<script type="text/javascript" src="js/jquery.js"></script>
 	<script type="text/javascript" src="js/bootstrap.js"></script>
+	
 	<?php if (isset($javascripts)) echo $javascripts;?>
 </head>
 <body>
@@ -74,14 +76,13 @@
     <li class="dropdown">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench"></i> Configuration <b class="caret"></b></a>
       <ul class="dropdown-menu">
-        <li><a href="?action=config">Overview</a></li>
-        <li class="divider"></li>
+        <!-- <li><a href="?action=config">Overview</a></li> -->
         <li class="nav-header">Scans</li>
-        <li><a href="?action=config&object=scan">Schedule</a></li>
-        <li><a href="?action=config&object=scan_type">Configuration</a></li>
+        <li><a href="?action=config&object=scan">Scan Schedule</a></li>
+        <li><a href="?action=config&object=scan_type">Script Configuration</a></li>
         <li class="divider"></li>
         <li class="nav-header">Designations</li>
-        <li><a href="?action=config&object=hostgroups">Host groups</a></li>
+        <li><a href="?action=config&object=host_group">Host groups</a></li>
         <li><a href="?action=config&object=location">Locations</a></li>
         <li><a href="?action=config&object=supportgroup">Support groups</a></li>
         <li><a href="?action=config&object=tags">Free tags</a></li>

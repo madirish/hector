@@ -3,8 +3,9 @@
 <div class="accordion" id="search-accordion" style="padding: 2px;">
 	<div class="accordion-group">
 		<div calss="accordion-heading">
-		<a class="accordion-toggle" data-toggle="collapse" data-parent="#search-accordion" href="#collapseOne">
-		Search again...
+		<a class="btn btn-small accordion-toggle" data-toggle="collapse" data-parent="#search-accordion" href="#collapseOne">
+		<i class="icon-resize-vertical"></i> Search again... </a>
+		
 		</a>
 		</div>
 		<div id="collapseOne" class="accordion-body collapse">

@@ -39,7 +39,7 @@ if (! isset($_GET['ajax'])) include_once($templates. 'admin_headers.tpl.php');
 if (isset($template) && $template == 'default') {
 	include_once($templates . 'default.tpl.php');
 }
-else include_once($approot . 'actions/details.php');
+else include_once($approot . 'actions/config.php');
 
 
 ?>

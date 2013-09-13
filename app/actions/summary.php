@@ -63,7 +63,7 @@ $scripts = $retval[0]->thecount;
 
 $sql = 'SELECT COUNT(scan_id) AS thecount FROM scan';
 $retval = $db->fetch_object_array($sql);
-$scan = $retval[0]->thecount;
+$scans = $retval[0]->thecount;
 
 $nohosts = "No hosts tracked.  <a href='?action=config&object=add_hosts'>Add hosts</a>.";
 

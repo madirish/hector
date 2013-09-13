@@ -1,6 +1,6 @@
 <form name="<?php echo $form_name;?>" id="<?php echo $form_name;?>" method="POST" action="?action=add_edit_scr&object=<?php echo $object;?>&id=<?php echo $id;?>">
 <fieldset>
-<legend><?php echo (isset($_GET['id'])) ? 'Edit' : 'Add';?> <?php echo $object;?></legend>
+<legend><?php echo (isset($_GET['id'])) ? 'Edit' : 'Add';?> script configution</legend>
 <table id="add-edit-table">
 <?php
 	foreach ($form_data as $row) {

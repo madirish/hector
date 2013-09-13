@@ -1,6 +1,6 @@
 <form name="<?php echo $form_name;?>" id="<?php echo $form_name;?>" method="POST" action="?action=add_edit_scr&object=<?php echo $object;?>&id=<?php echo $id;?>">
 <fieldset>
-<h3><?php echo (isset($_GET['id'])) ? 'Edit' : 'Add';?> <?php echo str_ireplace("_"," ", $object);?></h3>
+<h3><?php echo (isset($_GET['id'])) ? 'Edit' : 'Add';?> <?php echo $object_readable;?></h3>
 <table id="add-edit-table" class="table table-bordered">
 <?php
 	foreach ($form_data as $row) { 

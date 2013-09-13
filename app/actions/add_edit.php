@@ -96,7 +96,21 @@ else {
 			default:
 				$template = 'add_edit';
 		}
-		
+		$object_readable = str_ireplace("_"," ", $object);
+		switch ($object) {
+			case 'Scan':
+				$object_readable = 'Scan Schedule';
+				break;
+			case 'Supportgroup':
+				$object_readable = 'Support Group';
+				break;
+			case 'Vuln':
+				$object_readable = 'Vulnerability Class';
+				break;
+			case 'Api_key':
+				$object_readable = 'API Key';
+				break;
+		}
 		$form = new Form();
 		$form->set_name($form_name);
 		$token = $form->get_token();

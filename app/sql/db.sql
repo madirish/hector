@@ -231,7 +231,7 @@ CREATE TABLE IF NOT EXISTS `ossec_rule` (
 	`rule_level` INT NOT NULL,
 	`rule_message` VARCHAR(255) NOT NULL,
 	PRIMARY KEY (`rule_id`),
-	KEY (`rule_number`,`rule_level`),
+	KEY (`rule_number`,`rule_level`)
 );
 
 -- Table for regularly generated reports
@@ -388,6 +388,6 @@ CREATE TABLE IF NOT EXISTS `vuln_detail` (
   `vuln_detail_ticket` VARCHAR(255),
   `host_id` INT UNSIGNED NOT NULL,  
   `vuln_id` INT UNSIGNED NOT NULL,
-  KEY (`vuln_id`, `host_id`)
+  KEY (`vuln_id`, `host_id`),
   PRIMARY KEY (`vuln_detail_id`)
 ) ENGINE = INNODB;

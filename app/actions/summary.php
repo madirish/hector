@@ -49,13 +49,13 @@ else {
 			" AND x.user_id = " . $appuser->get_id();
 }
 $hostcount = $db->fetch_object_array($sql);
+$count = $hostcount[0]->hostcount;
 
 // Darknet summary:
 $sql = "SELECT CONCAT(dst_port, '/', proto) AS port, count(id) AS cnt " .
 		"FROM darknet WHERE received_at > DATE_SUB(NOW(), INTERVAL 4 DAY) " .
 		"GROUP BY port ORDER BY cnt DESC LIMIT 10";
 $probe_result = $db->fetch_object_array($sql);
-$count = $hostcount[0]->hostcount;
 
 $sql = 'SELECT COUNT(scan_type_id) AS thecount FROM scan_type';
 $retval = $db->fetch_object_array($sql);
@@ -68,13 +68,13 @@ $scans = $retval[0]->thecount;
 $nohosts = "No hosts tracked.  <a href='?action=config&object=add_hosts'>Add hosts</a>.";
 
 $count = ($count == "0") ? $nohosts : number_format($count);
-if ($count == 0) {
+if ($count == 0 && $appuser->get_is_admin()) {
 	$javascripts .= '<script type="text/javascript">$(document).ready( function(){jQuery.noConflict();$("#addHostsModal").modal("show");} )</script>' . "\n";
 }
-elseif ($scripts == 0) {
+elseif ($scripts == 0 && $appuser->get_is_admin()) {
 	$javascripts .= '<script type="text/javascript">$(document).ready( function(){jQuery.noConflict();$("#addScriptModal").modal("show");} )</script>' . "\n";
 }
-elseif ($scans == 0) {
+elseif ($scans == 0 && $appuser->get_is_admin()) {
 	$javascripts .= '<script type="text/javascript">$(document).ready( function(){jQuery.noConflict();$("#addScanModal").modal("show");} )</script>' . "\n";
 }
 // Put jQuery after modal declarations or there is a conflict

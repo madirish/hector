@@ -127,12 +127,16 @@ CREATE TABLE IF NOT EXISTS `host_x_tag` (
   KEY (`host_id`,`tag_id`)
 ) ENGINE = INNODB;
 
--- Physical addresses for hosts
-CREATE TABLE IF NOT EXISTS `location` (
-	`location_id` INT NOT NULL AUTO_INCREMENT,
-	`location_name` VARCHAR(255) NOT NULL,
-	PRIMARY KEY (`location_id`)
-);
+CREATE TABLE IF NOT EXISTS `koj_executed_command` (
+  `id` INT(12) AUTO_INCREMENT NOT NULL,
+  `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `ip` VARCHAR(15) NOT NULL,
+  `command` VARCHAR(255),
+  `ip_numeric` INT NOT NULL,
+  `session_id` INT UNSIGNED,
+  `sensor_id` INT UNSIGNED,
+  PRIMARY KEY (`id`)
+) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `koj_login_attempt` (
   `id` INT(12) AUTO_INCREMENT NOT NULL,
@@ -145,16 +149,12 @@ CREATE TABLE IF NOT EXISTS `koj_login_attempt` (
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS `koj_executed_command` (
-  `id` INT(12) AUTO_INCREMENT NOT NULL,
-  `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `ip` VARCHAR(15) NOT NULL,
-  `command` VARCHAR(255),
-  `ip_numeric` INT NOT NULL,
-  `session_id` INT UNSIGNED,
-  `sensor_id` INT UNSIGNED,
-  PRIMARY KEY (`id`)
-) ENGINE = InnoDB;
+-- Physical addresses for hosts
+CREATE TABLE IF NOT EXISTS `location` (
+	`location_id` INT NOT NULL AUTO_INCREMENT,
+	`location_name` VARCHAR(255) NOT NULL,
+	PRIMARY KEY (`location_id`)
+);
 
 -- Log file table
 CREATE TABLE IF NOT EXISTS `log` (
@@ -163,7 +163,7 @@ CREATE TABLE IF NOT EXISTS `log` (
 	`log_type` VARCHAR(255) DEFAULT NULL,
 	`log_message` text NOT NULL,
 	PRIMARY KEY (`log_id`)
-);
+) ENGINE = INNODB;
 
 CREATE TABLE IF NOT EXISTS `malware` (
   `id` INT AUTO_INCREMENT NOT NULL,
@@ -185,7 +185,7 @@ CREATE TABLE IF NOT EXISTS `malware` (
 CREATE TABLE IF NOT EXISTS `malware_x_tag` (
   `malware_id` INT UNSIGNED NOT NULL,
   `tag_id` INT UNSIGNED NOT NULL,
-  KEY (`malware_id`, `tag_id`),
+  KEY (`malware_id`, `tag_id`)
 ) ENGINE = INNODB;
 
 -- Results of NMAP scans
@@ -202,7 +202,7 @@ CREATE TABLE IF NOT EXISTS `nmap_result` (
 	`nmap_result_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`nmap_result_id`),
   KEY (`host_id`,`nmap_result_port_number`,`scan_id`)
-);
+) ENGINE = INNODB;
 
 -- OSSEC alerts from clients
 CREATE TABLE IF NOT EXISTS `ossec_alert` (

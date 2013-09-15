@@ -412,6 +412,9 @@ sub get_host_id {
 sub insert_ossec {
   # Check to see if the record exists
   my ($ossec_alert_id, $date, $host_id, $alert_log, $rule_id, $src_ip, $user, $message, $ossec_rule_number) = @_;
+  if (! $src_ip || $src_ip = '') {
+  	$src_ip = '127.0.0.1';
+  }
   my $sql_stmt = "insert into ossec_alert (alert_date, host_id, alert_log, rule_id, " . 
     "rule_src_ip, rule_src_ip_numeric, rule_user, rule_log, alert_ossec_id) values (?,?,?,?,?,inet_aton(?),?,?,?)";
   my $sth = $dbi->{dbh}->prepare($sql_stmt) || die("Couldn't prep the ossec insert");

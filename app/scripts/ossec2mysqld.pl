@@ -413,9 +413,9 @@ sub insert_ossec {
   # Check to see if the record exists
   my ($ossec_alert_id, $date, $host_id, $alert_log, $rule_id, $src_ip, $user, $message, $ossec_rule_number) = @_;
   my $sql_stmt = "insert into ossec_alert (alert_date, host_id, alert_log, rule_id, " . 
-    "rule_src_ip, rule_src_ip_numeric, rule_user, rule_log, alert_ossec_id) values (?,?,?,?,?,inet_aton(rule_src_ip),?,?,?)";
+    "rule_src_ip, rule_src_ip_numeric, rule_user, rule_log, alert_ossec_id) values (?,?,?,?,?,inet_aton(?),?,?,?)";
   my $sth = $dbi->{dbh}->prepare($sql_stmt) || die("Couldn't prep the ossec insert");
-  $sth->execute($date, $host_id, $alert_log, $rule_id, $src_ip, $user, $message, $ossec_alert_id) || die("Couldn't exec ossec insert.");
+  $sth->execute($date, $host_id, $alert_log, $rule_id, $src_ip, $src_ip, $user, $message, $ossec_alert_id) || die("Couldn't exec ossec insert.");
   $sth->finish();
   if ($ossec_rule_number == 200001) {
     # Darknet detection

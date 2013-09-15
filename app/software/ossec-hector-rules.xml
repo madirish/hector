@@ -11,10 +11,12 @@
     <description>Kojoney2 log entry.</description>
   </rule>
   <rule id="200011" level="6">
+    <if_sid>200010</if_sid>
     <match>COMMAND IS</match>
     <description>Kojoney2 attacker issued a command.</description>
   </rule>
   <rule id="200012" level="6">
+    <if_sid>200010</if_sid>
     <match>login attempt</match>
     <description>Kojoney2 login attempt.</description>
   </rule>

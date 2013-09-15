@@ -412,7 +412,7 @@ sub get_host_id {
 sub insert_ossec {
   # Check to see if the record exists
   my ($ossec_alert_id, $date, $host_id, $alert_log, $rule_id, $src_ip, $user, $message, $ossec_rule_number) = @_;
-  if (! $src_ip || $src_ip = '') {
+  if (! $src_ip or $src_ip == '') {
   	$src_ip = '127.0.0.1';
   }
   my $sql_stmt = "insert into ossec_alert (alert_date, host_id, alert_log, rule_id, " . 

@@ -109,10 +109,15 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
 				$id
 			);
 			$result = $this->db->fetch_object_array($sql);
-			$this->set_id($result[0]->scan_type_id);
-			$this->set_name($result[0]->scan_type_name);
-			$this->set_flags($result[0]->scan_type_flags);
-			$this->set_script($result[0]->scan_type_script);
+			if (! isset($result[0])) {
+				$this->log->write_error("Tried to instantiate Scan_type with missing id " . intval($id));
+			}
+			else {
+				$this->set_id($result[0]->scan_type_id);
+				$this->set_name($result[0]->scan_type_name);
+				$this->set_flags($result[0]->scan_type_flags);
+				$this->set_script($result[0]->scan_type_script);	
+			}
 		}
 	}
 

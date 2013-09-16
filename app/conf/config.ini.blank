@@ -21,6 +21,7 @@ php_exec_path		=	/usr/bin/php
 nmap_exec_path	=	/usr/bin/nmap
 python_exec_path  = /usr/bin/python
 xprobe2_exec_path  = /usr/bin/xprobe2
+ncrack_exec_path  = /usr/bin/ncrack
 
 timezone		=	America/New_York
 

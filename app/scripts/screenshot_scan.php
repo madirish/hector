@@ -23,6 +23,8 @@
  * @package HECTOR
  * 
  * Last modified July 29, 2013
+ * 
+ * @todo filter by host group
  */
  
 if(php_sapi_name() == 'cli') {

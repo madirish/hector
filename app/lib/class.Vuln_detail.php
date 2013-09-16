@@ -525,7 +525,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 	    			'vuln_detail_fixed_notes =\'?s\',' .
 	    			'vuln_detail_ticket =\'?s\',' .
 	    			'host_id = ?i, ' .
-	    			'vuln_id = ?i, ' .
+	    			'vuln_id = ?i ' .
 	    		'WHERE vuln_detail_id = ?i',
 				$this->get_text(),
 				$this->get_datetime(),

@@ -167,7 +167,7 @@ class Alert {
 	 */
 	public function get_host_linked() {
 		$host = new Host($this->get_host_id());
-		$retval = '<a href="?action=details&object=host&id=' . 
+		$retval = '<a href="?action=host_details&object=host&id=' . 
 				$this->get_host_id() . '">' .
 				$host->get_name() . '</a>';
 		return $retval;

@@ -43,7 +43,7 @@ $prevstamp = "";
 			echo '<tr><td>' . $alert->get_timestamp() . 
 				'</td><td>' . $alert->get_string();
 			echo '</td><td>';
-			if ($alert->get_host_linked() != '<a href="?action=details&object=host&id=0"></a>')
+			if ($alert->get_host_linked() != '<a href="?action=host_details&object=host&id=0"></a>')
 				echo $alert->get_host_linked(); 
 			echo '</td></tr>'. "\n";
 		}

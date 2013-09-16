@@ -90,11 +90,16 @@ $darknetSummaryCounts = "";
 foreach ($port_result as $row) {
 	$portSummaryLabels .= $row->port_number . ',';
 	$portSummaryCounts .= $row->portcount . ',';
-} 
+}
+$portSummaryLabels = trim($portSummaryLabels, ',');
+$portSummaryCounts = trim($portSummaryCounts, ',');
+
 foreach ($probe_result as $row) {
 	$darknetSummaryLabels .= $row->port . ',';
 	$darknetSummaryCounts .= $row->cnt . ',';
 }
+$darknetSummaryLabels = trim($darknetSummaryLabels, ',');
+$darknetSummaryCounts = trim($darknetSummaryCounts, ',');
 
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates . 'summary.tpl.php');

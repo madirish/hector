@@ -87,14 +87,34 @@ $portSummaryLabels = "";
 $portSummaryCounts = "";
 $darknetSummaryLabels = "";
 $darknetSummaryCounts = "";
+
+/**
+ * Chart.js requires count strings to be the same length, so 
+ * 8,7,4,3 will work, but 10,8,4,3 will not, instead we need
+ * 10,08,04,03 for some reason.
+ */
+$maxlen = 0;
+if (count($port_result) > 0) {
+	$maxlen = strlen(strval($port_result[0]->portcount)); // Max string length for Chart.js bug
+}
 foreach ($port_result as $row) {
+	while (strlen(strval($row->portcount)) < $maxlen) {
+		$row->portcount = '0' . $row->portcount;
+	}
 	$portSummaryLabels .= $row->port_number . ',';
 	$portSummaryCounts .= $row->portcount . ',';
 }
 $portSummaryLabels = trim($portSummaryLabels, ',');
 $portSummaryCounts = trim($portSummaryCounts, ',');
 
+$maxlen = 0;
+if (count($probe_result) > 0) {
+	$maxlen = strlen(strval($probe_result[0]->cnt)); // Max string length for Chart.js bug
+}
 foreach ($probe_result as $row) {
+	while (strlen(strval($row->cnt)) < $maxlen) {
+		$row->cnt = '0' . $row->cnt;
+	}
 	$darknetSummaryLabels .= $row->port . ',';
 	$darknetSummaryCounts .= $row->cnt . ',';
 }

@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `alert` (
 	`alert_string` VARCHAR(255),
 	`host_id` INT NOT NULL,
 	PRIMARY KEY  (`alert_id`),
-	UNIQUE KEY (`host_id`)
+	KEY (`host_id`)
 ) ENGINE = INNODB;
 
 -- API keys 

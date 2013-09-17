@@ -12,7 +12,7 @@ Search malicious IP database: <input type="text" name="ip"/> <input type="submit
 <?php
 
 foreach ($port_result as $row) {
-	echo "<tr><td>" . $row->cid . "</td><td><a href='?action=reports&report=by_port&ports=" . $row->dst_port . "'>" . $row->dst_port . "</a></td><td>" . $row->proto . "</td></tr>";
+	echo "<tr><td>" . $row->cid . "</td><td><a href='?action=reports&report=by_port&ports=" . $row->dst_port . "/" . $row->proto . "'>" . $row->dst_port . "</a></td><td>" . $row->proto . "</td></tr>";
 }
 ?>
 </table>

@@ -60,7 +60,7 @@
 </form>
 <script>
 	var ddatetime = new Date(<?php echo strtotime($vuln_detail->get_datetime());?>*1000);
-	var defaulttime = '<?php echo date(' h:m:s');?>';
+	var defaulttime = '<?php echo date(' H:i:s');?>';
     $('#dp').datepicker().on('changeDate', function(ev){
     	if (ev.date.valueOf() > ddatetime) {
 				document.getElementById('fixed_date').value += defaulttime;
@@ -73,7 +73,7 @@
 
 	function cbChanged(checkboxElem) {
   		if (checkboxElem.checked) {
-			document.getElementById('fixed_date').value='<?php echo date('Y-m-d h:m:s');?>';
+			document.getElementById('fixed_date').value='<?php echo date('Y-m-d H:i:s');?>';
   		} else {
    			document.getElementById('fixed_date').value='0000-00-00 00:00:00';
   		}

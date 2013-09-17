@@ -165,9 +165,9 @@ else {
 	$command .= ' ' . implode(' ', array_keys($hosts));
 	print $command . "\r\n\r\n";
 	$output = shell_exec($command);
-	print_r($output);
+	//print_r($output);
 	if(preg_match_all("/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d+\/\w+) (\w+)\: \'(.+)\' \'(.+)\'/", $output, $matches, PREG_SET_ORDER)) {
-		print_r($matches);
+		//print_r($matches);
 		foreach($matches as $match) {
 			$text = 'Easily guessed credentials for service: ' . $match[3] . 
 					' on port: ' . $match[2] . 
@@ -184,6 +184,7 @@ else {
 			$db->iud_sql($sql);
 		}
 	}
+	ncrack_loggit("ncrack_scan.php status", "ncrack_scan.php complete.");
 }
 
 function ncrack_loggit($status, $message) {

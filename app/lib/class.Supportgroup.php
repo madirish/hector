@@ -313,6 +313,10 @@ class Supportgroup extends Maleable_Object implements Maleable_Object_Interface 
      * @return Boolean False if the address doesn't validate
 	 */
     public function set_email($email) {
+    	if ($email == NULL) {
+    		$this->email = NULL;
+    		return FALSE;
+    	}
     	$retval = FALSE;
 		if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			$this->email = $email;

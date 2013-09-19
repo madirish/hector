@@ -23,19 +23,21 @@ if (isset($_GET['id']) && ($_GET['id'] != '')) {
 		
 		if (isset($_POST['ignore']) && $_POST['ignore']== 'on') {
 			$vuln_detail->set_ignore(1);
-			$vuln_detail->set_ignore_user_id($appuser->get_id());		
+			if (!$vuln_detail->get_ignored_user_id()>0)$vuln_detail->set_ignore_user_id($appuser->get_id());		
 		}
 		else 
 		{
 			$vuln_detail->set_ignore(0);
+			$vuln_detail->set_ignore_user_id(0);
 		}
 		
 		if (isset($_POST['fixed']) && $_POST['fixed']== 'on') {
 			$vuln_detail->set_fixed(1);
-			$vuln_detail->set_fixed_user_id($appuser->get_id());
+			if (!$vuln_detail->get_fixed_user_id()>0) $vuln_detail->set_fixed_user_id($appuser->get_id());
 		}
 		else {
 			$vuln_detail->set_fixed(0);
+			$vuln_detail->set_fixed_user_id(0);
 		}
 		if (isset($_POST['fixed_date'])) $vuln_detail->set_fixed_datetime($_POST['fixed_date']);
 		

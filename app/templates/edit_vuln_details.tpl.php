@@ -26,7 +26,7 @@
 		<td><textarea name ="text"><?php echo $vuln_detail->get_text();?></textarea></td>
 	</tr><tr>
 		<td>Host</td>
-		<td><a href=?action=host_details&id=<?php echo $vuln_detail->get_host_id();?>><?php echo $vuln_detail->get_host_id();?></a></td>
+		<td><a href=?action=host_details&id=<?php echo $vuln_detail->get_host_id();?>><?php echo $vuln_detail->get_host_name();?></a></td>
 	</tr><tr>
 		<td>Discovered</td>
 		<td><?php echo $vuln_detail->get_datetime();?></td>

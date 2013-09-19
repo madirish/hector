@@ -23,7 +23,7 @@
 		<td><?php echo $vuln_details->get_text();?></td>
 	</tr><tr>
 		<td>Host</td>
-		<td><a href=?action=host_details&id=<?php echo $vuln_details->get_host_id();?>><?php echo $vuln_details->get_host_id();?></a></td>
+		<td><a href=?action=host_details&id=<?php echo $vuln_details->get_host_id();?>><?php echo $vuln_details->get_host_name();?></a></td>
 	</tr><tr>
 		<td>Discovered</td>
 		<td><?php echo $vuln_details->get_datetime();?></td>

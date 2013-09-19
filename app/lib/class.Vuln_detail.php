@@ -456,7 +456,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
      * @return String The name of the user who marked this ignored.
      */
     public function get_ignored_user_name() {
-    	$user = new User($this->ignored_user_id);
+    	$user = new User($this->ignore_user_id);
     	return $user->get_name();
     }
     

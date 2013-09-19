@@ -130,7 +130,7 @@ if(php_sapi_name() == 'cli') {
 				if ($scan->get_state_id() == 1 && $old_scan_result->get_state_id() > 1) {
 					require_once($approot . 'lib/class.Alert.php');
 					$alert = new Alert();
-					$string = "Port " . $scan->get_port_number() . $scan->get_protcol() . " changed from " .
+					$string = "Port " . $scan->get_port_number() . $scan->get_protocol() . " changed from " .
 										$old_scan_result->get_state() . " to open on " . $host->get_name();
 					$alert->set_host_id($host->get_id());
 					$alert->set_string($string);

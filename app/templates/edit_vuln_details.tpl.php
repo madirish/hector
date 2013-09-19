@@ -37,8 +37,14 @@
 		<td>Ignore</td>
 		<td><input type="checkbox" name="ignore" <?php echo ($vuln_detail->get_ignore() == 1) ? 'checked="true"' : '' ;?>/></td>
 	</tr><tr>
+		<td>Ignored by</td>
+		<td><?php echo $vuln_detail->get_ignored_user_name();?></td>
+	</tr><tr>
 		<td>Fixed</td>
 		<td><input type="checkbox" name="fixed" onclick="cbChanged(this);" <?php echo ($vuln_detail->get_fixed() == 1) ? 'checked="true"' : '' ;?>/></td>
+	</tr><tr>
+		<td>Fixed by</td>
+		<td><?php echo $vuln_detail->get_fixed_user_name();?></td>
 	</tr><tr>
 		<td>Fixed Time</td>
 		<td><div class="input-append date" id="dp" data-date="<?php echo date('Y-m-d');?>" data-date-format="yyyy-mm-dd">

@@ -21,19 +21,29 @@ if (isset($_GET['id']) && ($_GET['id'] != '')) {
 		//echo implode(' : ', $_POST);
 		if (isset($_POST['text'])) $vuln_detail->set_text($_POST['text']);
 		
-		if (isset($_POST['ignore']) && $_POST['ignore']== 'on') $vuln_detail->set_ignore(1);
-		else $vuln_detail->set_ignore(0);
+		if (isset($_POST['ignore']) && $_POST['ignore']== 'on') {
+			$vuln_detail->set_ignore(1);
+			$vuln_detail->set_ignore_user_id($appuser->get_id());		
+		}
+		else 
+		{
+			$vuln_detail->set_ignore(0);
+		}
 		
-		if (isset($_POST['fixed']) && $_POST['fixed']== 'on')  $vuln_detail->set_fixed(1);
-		else $vuln_detail->set_fixed(0);
-		
+		if (isset($_POST['fixed']) && $_POST['fixed']== 'on') {
+			$vuln_detail->set_fixed(1);
+			$vuln_detail->set_fixed_user_id($appuser->get_id());
+		}
+		else {
+			$vuln_detail->set_fixed(0);
+		}
 		if (isset($_POST['fixed_date'])) $vuln_detail->set_fixed_datetime($_POST['fixed_date']);
 		
 		if (isset($_POST['fixed_notes'])) $vuln_detail->set_fixed_notes($_POST['fixed_notes']);
-		
+
 		$vuln_detail->save();
 		// echo 'Record updated';
-		$vuln_details= new Vuln_detail(intval($_GET['id']));
+		$vuln_detail= new Vuln_detail(intval($_GET['id']));
 		$edit_vuln_template = $templates . 'vuln_details.tpl.php';
 	}
 	else

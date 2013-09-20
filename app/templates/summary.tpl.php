@@ -52,7 +52,7 @@ to perform automated scans of hosts.</p>
 	<canvas id="topPortsChart" width="400"></canvas>
 	
 	
-	<table class="table table-striped" id="top-ports-dectected">
+	<table class="table table-striped table-condensed" id="top-ports-dectected">
 	<thead>
 	<tr><th>#</th><th>Port Number</th><th>Hosts with port open</th></tr>
 	</thead>

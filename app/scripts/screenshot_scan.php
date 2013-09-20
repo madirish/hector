@@ -115,8 +115,8 @@ function normalize_database() {
 	$db = Db::get_instance();
 	$dblog = Dblog::get_instance();
 	$log = Log::get_instance();
-	$dblog->log("screenshot_scan.php process", "nomalize database started");
-	$log->write_message("screeshot scan: nomalize database started");
+	$dblog->log("screenshot_scan.php process", "normalize database started");
+	$log->write_message("screeshot scan: normalize database started");
 	$sql = "select url_url from url";
 	$results = $db->fetch_object_array($sql);
 	foreach($results as $result) {
@@ -128,8 +128,8 @@ function normalize_database() {
 			$log->write_message("screeshot scan: " . $url . "removed from database due to extension \'" . $extension . "\'");
 		}
 	}
-	$dblog->log("screenshot_scan.php process", "nomalize database complete");
-	$log->write_message("screeshot scan: nomalize database complete");
+	$dblog->log("screenshot_scan.php process", "normalize database complete");
+	$log->write_message("screeshot scan: normalize database complete");
 }
 
 /**

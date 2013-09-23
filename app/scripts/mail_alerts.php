@@ -69,9 +69,10 @@ function mail_alerts($testing='No') {
 		$host = '';
 		foreach ($alerts as $alert) {
 			$tmphost = $alert->get_host();
+			$portproto = explode("/", $alert->get_port());
 			if ($host == $tmphost) {
-				$output .= "\t\t" . $alert->get_port() . " (" . getservbyport($alert->get_port(), 'tcp') . ")\n";
-				$htmloutput .= "\t<li>" . $alert->get_port() . " (" . getservbyport($alert->get_port(), 'tcp') . ")</li>\n";
+				$output .= "\t\t" . $alert->get_port() . " (" . getservbyport($portproto[0], $portproto[1]) . ")\n";
+				$htmloutput .= "\t<li>" . $alert->get_port() . " (" . getservbyport($portproto[0], $portproto[1]) . ")</li>\n";
 			}
 			else {
 				if ($host !== '') $htmloutput .= "</ul>\n\n";
@@ -79,7 +80,7 @@ function mail_alerts($testing='No') {
 				$output .= $host . " at " . $alert->get_timestamp() . "\n";
 				$output .= "\tNew Ports:\n";
 				$output .= "\t----------\n";
-				$output .= "\t" . $alert->get_port() . " (" . getservbyport($alert->get_port(), 'tcp') . ")\n";
+				$output .= "\t" . $alert->get_port() . " (" . getservbyport($portproto[0], $portproto[1]) . ")\n";
 				
 				
 				$htmloutput .= "<strong>" . 
@@ -87,7 +88,7 @@ function mail_alerts($testing='No') {
 					" at " . $alert->get_timestamp() . "</strong><hr/>\n";
 				$htmloutput .= "<span style='text-decoration:underline;'>New Ports:</span>\n";
 				$htmloutput .= "<ul>\n";
-				$htmloutput .= "\t<li>" . $alert->get_port() . " (" . getservbyport($alert->get_port(), 'tcp') . ")</li>\n";
+				$htmloutput .= "\t<li>" . $alert->get_port() . " (" . ggetservbyport($portproto[0], $portproto[1]) . ")</li>\n";
 			}
 		}
 	}

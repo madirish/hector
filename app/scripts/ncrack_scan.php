@@ -5,12 +5,11 @@
  * For full help on usage see show_ncrack_help() below.  
  * Example usage:
  * 
- * $ php ncrack_scan.php -p=telnet,ssh:24 -g=1,4 
+ * $ php ncrack_scan.php -p=22,23 -g=1,4 -d=60 -c
  * 
  * @author Josh Bauer <joshbauer3@gmail.com>
  * @author Justin C. Klein Keane <jukeane@sas.upen.edu>
  * @package HECTOR
- * @todo Remove testing output
  * @todo Filter hosts by open ports
  * @todo Determine correct vuln_id (currently hardcoded to 1)
  */
@@ -36,13 +35,15 @@ require_once($approot . 'lib/class.Scan_type.php');
 global $add_edit;
 if(php_sapi_name() != 'cli') {
 	$servicelist='';
+	$connectiondelay='';
 	if (isset($_GET['id'])) {
 		$id = intval($_GET['id']);
 		$scan = new Scan_type($id);
 		$flags = $scan->get_flags();
 		$flags = explode('-', $flags);
 		foreach ($flags as $flag) {
-			if (substr($flag, 0,1)=='p') $servicelist = substr($flag, 2);
+			if (substr($flag, 0,1)=='p') $servicelist = trim(substr($flag, 2));
+			if (substr($flag, 0,1)=='d') $connectiondelay = substr($flag, 2);
 		}
 	}
 	$is_executable[] = array('ncrack_scan.php' => 'ncrack scan');
@@ -52,15 +53,18 @@ if(php_sapi_name() != 'cli') {
 		function ncrack_display() {
 			var ncrackHTML = "<p>NCRACKNcrack is a high-speed network authentication cracking tool.</p>";
 			ncrackHTML += "<p> Protocols supported include RDP, SSH, http(s), SMB, pop3(s), VNC, FTP, and telnet.</p>";
-			ncrackHTML += "Services to scan (comma delimited): <input type='text' id='servicelist' onBlur='updateServices()' value='$servicelist'/>";
-			ncrackHTML += "<small> Ex. 'telnet,SSH:24'</small>"
+			ncrackHTML += "Port to scan (comma delimited): <input type='text' id='servicelist' onBlur='updateNcrackFlags()' value='$servicelist'/><br>";
+			ncrackHTML += "Connection delay (seconds): <input type='text' id='connectiondelay' onBlur='updateNcrackFlags()' value='$connectiondelay'/>";
 			document.getElementById("specs").innerHTML = ncrackHTML;
 		}
 		
-		function updateServices() {
+		function updateNcrackFlags() {
 			var ports =  document.getElementById("servicelist").value
-			if (ports=='') document.getElementById("flags").value = '';
-			else document.getElementById("flags").value = "-p=" + ports;
+			var delay = document.getElementById("connectiondelay").value
+			var ncrackflags = ''
+			if (ports!='') ncrackflags = "-p=" + ports + " "
+			if (delay!='') ncrackflags += "-d=" + delay
+			document.getElementById("flags").value = ncrackflags
 		}
 		// Fire this up as it's the default
 		ncrack_display();
@@ -93,6 +97,8 @@ else {
 	//set the defaults
 	$groups = null;
 	$services = null;
+	$delay = null;
+	$check_port = false;
 	
 	/**
 	 * This will be an associative array of the form
@@ -118,6 +124,8 @@ else {
 		$flag = substr(strtolower($arg),0,2);
 		if ($flag == '-g') $groups = substr($arg,strpos($arg,'=')+1);
 		if ($flag == '-p') $services = substr($arg,strpos($arg,'=')+1);
+		if ($flag == '-d') $delay = substr($arg, strpos($arg, '=')+1);
+		if ($flag == '-c') $check_port = true;
 	}
 	
 	// Determine host groups
@@ -158,12 +166,14 @@ else {
 			'order by pcount desc limit 10';
 	$results= $db->fetch_object_array($sql);
 	foreach($results as $result) $passwords[] = $result->passwd;
+
 	$command = $ncrack;
 	$command .= ' -p ' . $services;
+	if ($delay != null) $command .= ' -g cd=' . $delay;
 	$command .= ' --user ' . implode(',', $usernames);
 	$command .= ' --pass ' . implode(',', $passwords);
 	$command .= ' ' . implode(' ', array_keys($hosts));
-	print $command . "\r\n\r\n";
+	ncrack_loggit("ncrack_scan.php status", $command);
 	$output = shell_exec($command);
 	//print_r($output);
 	if(preg_match_all("/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d+\/\w+) (\w+)\: \'(.+)\' \'(.+)\'/", $output, $matches, PREG_SET_ORDER)) {
@@ -199,12 +209,14 @@ function show_ncrack_help($error) {
   	echo $error;
 	echo "\n\n";
 	echo "Arguments:\n";
+	echo "-c\tCheck port scan results\n";
+	echo "-d\tConnection delay (seconds)\n";
 	echo "-g\tHost groups id's to scan\n";
 	echo "-p\tService(s) to scan\n";
 	echo "\n\nExample Usage:\n";
-	echo '$ php ncrack_scan.php -p=telnet,ssh:24 -g=1,4' . "\n";
+	echo '$ php ncrack_scan.php -p=22,23 -g=1,4 -d=60 -c' . "\n";
 	echo "Would scan for hosts in the 'web servers' and 'critical hosts' groups (id 1 & 4) \n";
-	echo "for weak credentials in telnet and ssh on port 24 and store the results in the database.\n\n";
+	echo "for weak credentials in telnet and ssh using a 60 second delay and store the results in the database.\n\n";
 	//exit;
 }
 ?>

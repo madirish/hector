@@ -386,6 +386,29 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 		return intval($this->host_id);
     }
     
+     /**
+     * Get the associated Host name
+     * 
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @access public
+     * @return String The Host name for the Host to which this report refers.
+     */
+    public function get_host_name() {
+    	$retval = '';
+    	if ($this->get_host_id()>0) {
+    		$sql = array(
+    			'SELECT host_name FROM host WHERE host_id=?i',
+    			$this->get_host_id()
+    		);
+    		$result = $this->db->fetch_object_array($sql);
+			if (isset($result[0])) {
+				$r = $result[0];
+				$retval = $r->host_name;
+			}
+    	}
+		return htmlspecialchars($retval);
+    }
+    
     /**
      * Should this report be ignored for reporting purposes?
      * 
@@ -433,7 +456,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
      * @return String The name of the user who marked this ignored.
      */
     public function get_ignored_user_name() {
-    	$user = new User($this->ignored_user_id);
+    	$user = new User($this->ignore_user_id);
     	return $user->get_name();
     }
     

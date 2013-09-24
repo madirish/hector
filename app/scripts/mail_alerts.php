@@ -70,9 +70,14 @@ function mail_alerts($testing='No') {
 		foreach ($alerts as $alert) {
 			$tmphost = $alert->get_host();
 			$portproto = explode("/", $alert->get_port());
+                if (! isset($portproto[1])) { // For some reason we don't have the protocol, assume TCP
+                	$portproto[0] = $alert->get_port();
+                    $portproto[1] = 'tcp';
+                }
+            $portprotodisplay = getservbyport($portproto[0], $portproto[1]);
 			if ($host == $tmphost) {
-				$output .= "\t\t" . $alert->get_port() . " (" . getservbyport($portproto[0], $portproto[1]) . ")\n";
-				$htmloutput .= "\t<li>" . $alert->get_port() . " (" . getservbyport($portproto[0], $portproto[1]) . ")</li>\n";
+				$output .= "\t\t" . $alert->get_port() . " (" . $portprotodisplay . ")\n";
+				$htmloutput .= "\t<li>" . $alert->get_port() . " (" . $portprotodisplay . ")</li>\n";
 			}
 			else {
 				if ($host !== '') $htmloutput .= "</ul>\n\n";
@@ -80,15 +85,14 @@ function mail_alerts($testing='No') {
 				$output .= $host . " at " . $alert->get_timestamp() . "\n";
 				$output .= "\tNew Ports:\n";
 				$output .= "\t----------\n";
-				$output .= "\t" . $alert->get_port() . " (" . getservbyport($portproto[0], $portproto[1]) . ")\n";
-				
+				$output .= "\t" . $alert->get_port() . " (" . $portprotodisplay . ")\n";		
 				
 				$htmloutput .= "<strong>" . 
 					str_replace('href="?', 'href="'. $_SESSION['site_url'] .'?', $alert->get_host_linked()) . 
 					" at " . $alert->get_timestamp() . "</strong><hr/>\n";
 				$htmloutput .= "<span style='text-decoration:underline;'>New Ports:</span>\n";
 				$htmloutput .= "<ul>\n";
-				$htmloutput .= "\t<li>" . $alert->get_port() . " (" . ggetservbyport($portproto[0], $portproto[1]) . ")</li>\n";
+				$htmloutput .= "\t<li>" . $alert->get_port() . " (" . $portprotodisplay . ")</li>\n";
 			}
 		}
 	}

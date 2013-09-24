@@ -127,6 +127,138 @@ CREATE TABLE IF NOT EXISTS `host_x_tag` (
   KEY (`host_id`,`tag_id`)
 ) ENGINE = INNODB;
 
+-- Master incident table
+CREATE TABLE IF NOT EXISTS `incident` (
+  `incident_id` INT NOT NULL AUTO_INCREMENT,
+  `incident_title` VARCHAR(255) NOT NULL,
+  `incident_month` TINYINT NOT NULL,
+  `incident_year` INT NOT NULL,
+  `agent_id` INT NOT NULL,
+  `action_id` INT NOT NULL,
+  `asset_id` INT NOT NULL,
+  `confidential_data` INT(1) DEFAULT 0,
+  `integrity_loss` TEXT,
+  `authenitcity_loss` TEXT,
+  `availability_loss_timeframe_id` INT NOT NULL,
+  `utility_loss` TEXT,
+  `action_to_discovery_timeframe_id` INT NOT NULL,
+  `discovery_to_containment_timeframe_id` INT NOT NULL,
+  `discovery_id` INT NOT NULL,
+  `discovery_evidence_sources` TEXT,
+  `discovery_metrics` TEXT,
+  `2020_hindsight` TEXT,
+  `correction_recommended` TEXT,
+  `asset_loss_magnitude_id` INT NOT NULL,
+  `disruption_magnitude_id` INT NOT NULL,
+  `response_cost_magnitude_id` INT NOT NULL,
+  `impact_magnitude_id` INT NOT NULL,
+  KEY (`agent_id`), 
+  KEY (`action_id`), 
+  KEY (`asset_id`), 
+  KEY (`impact_magnitude_id`),
+  KEY (`availability_loss_timeframe_id`),
+  KEY (`action_to_discovery_timeframe_id`),
+  KEY (`discovery_to_containment_timeframe_id`),
+  KEY (`discovery_id`),
+  KEY (`asset_loss_magnitude_id`),
+  KEY (`disruption_magnitude_id`),
+  KEY (`response_cost_magnitude_id`),
+  KEY (`impact_magnitude_id`),
+  PRIMARY KEY (`incident_id`)
+) ENGINE = INNODB;  
+
+-- Action that caused the incident
+CREATE TABLE IF NOT EXISTS `incident_action` (
+  `action_id` INT NOT NULL AUTO_INCREMENT,
+  `action_action` VARCHAR(255) NOT NULL,
+  PRIMARY KEY  (`action_id`)
+) ENGINE = INNODB;
+INSERT INTO `incident_action` SET `action_id` = 1, `action_action` = 'Malware';
+INSERT INTO `incident_action` SET `action_id` = 2, `action_action` = 'Hacking';
+INSERT INTO `incident_action` SET `action_id` = 3, `action_action` = 'Social';
+INSERT INTO `incident_action` SET `action_id` = 4, `action_action` = 'Spam';
+INSERT INTO `incident_action` SET `action_id` = 5, `action_action` = 'Misuse';
+INSERT INTO `incident_action` SET `action_id` = 6, `action_action` = 'Physical';
+INSERT INTO `incident_action` SET `action_id` = 7, `action_action` = 'Error';
+INSERT INTO `incident_action` SET `action_id` = 8, `action_action` = 'Environmental';
+
+-- Source of the agent who caused the incident
+CREATE TABLE IF NOT EXISTS `incident_agent` (
+  `agent_id` INT NOT NULL AUTO_INCREMENT,
+  `agent_agent` VARCHAR(255) NOT NULL,
+  PRIMARY KEY  (`agent_id`)
+) ENGINE = INNODB;
+INSERT INTO `incident_agent` SET `agent_id` = 1, `agent_agent` = 'External';
+INSERT INTO `incident_agent` SET `agent_id` = 2, `agent_agent` = 'Internal';
+INSERT INTO `incident_agent` SET `agent_id` = 3, `agent_agent` = 'Partner';
+INSERT INTO `incident_agent` SET `agent_id` = 4, `agent_agent` = 'Other/Unknown';
+  
+-- Asset affected by the incident
+CREATE TABLE IF NOT EXISTS `incident_asset` (
+  `asset_id` INT NOT NULL AUTO_INCREMENT,
+  `asset_asset` VARCHAR(255) NOT NULL,
+  PRIMARY KEY  (`asset_id`)
+) ENGINE = INNODB;
+INSERT INTO `incident_action` SET `asset_id` = 1, `asset_asset` = 'Database server';
+INSERT INTO `incident_action` SET `asset_id` = 2, `asset_asset` = 'Desktop / Workstation';
+INSERT INTO `incident_action` SET `asset_id` = 3, `asset_asset` = 'Laptop';
+INSERT INTO `incident_action` SET `asset_id` = 4, `asset_asset` = 'Mail server';
+INSERT INTO `incident_action` SET `asset_id` = 5, `asset_asset` = 'Mobile device';
+INSERT INTO `incident_action` SET `asset_id` = 6, `asset_asset` = 'Multifunction printer';
+INSERT INTO `incident_action` SET `asset_id` = 7, `asset_asset` = 'Removable media';
+INSERT INTO `incident_action` SET `asset_id` = 8, `asset_asset` = 'Web app or server';
+
+-- Method of incident discovery
+CREATE TABLE IF NOT EXISTS `incident_discovery` (
+  `discovery_id` INT NOT NULL AUTO_INCREMENT,
+  `discovery_method` VARCHAR(100) NOT NULL,
+  PRIMARY KEY  (`agent_id`)
+) ENGINE = INNODB;  
+INSERT INTO `incident_discovery` SET `discovery_id` = 1, `discovery_method` = '3rd party event monitoring';
+INSERT INTO `incident_discovery` SET `discovery_id` = 2, `discovery_method` = 'Network intrusion detection system (NIDS)';
+INSERT INTO `incident_discovery` SET `discovery_id` = 3, `discovery_method` = 'Host-based intrusion detection system (HIDS)';
+INSERT INTO `incident_discovery` SET `discovery_id` = 4, `discovery_method` = 'Anti-virus';
+INSERT INTO `incident_discovery` SET `discovery_id` = 5, `discovery_method` = 'Internal security audit';
+INSERT INTO `incident_discovery` SET `discovery_id` = 6, `discovery_method` = 'Unusual system behaviour';
+INSERT INTO `incident_discovery` SET `discovery_id` = 7, `discovery_method` = 'End user report';
+
+-- Incident magnitudes
+CREATE TABLE IF NOT EXISTS `incident_magnitude` (
+  `magnitude_id` INT NOT NULL AUTO_INCREMENT,
+  `magnitude_name` VARCHAR(20) NOT NULL,
+  `magnitude_level` INT NOT NULL,
+  PRIMARY KEY  (`agent_id`)
+) ENGINE = INNODB;  
+INSERT INTO `incident_magnitude` SET `magnitude_id` = 1, `magnitude_name` = 'None', `magnitude_level` = 0; 
+INSERT INTO `incident_magnitude` SET `magnitude_id` = 2, `magnitude_name` = 'Insignificant', `magnitude_level` = 1; 
+INSERT INTO `incident_magnitude` SET `magnitude_id` = 3, `magnitude_name` = 'Minor', `magnitude_level` = 2; 
+INSERT INTO `incident_magnitude` SET `magnitude_id` = 4, `magnitude_name` = 'Moderate', `magnitude_level` = 3; 
+INSERT INTO `incident_magnitude` SET `magnitude_id` = 5, `magnitude_name` = 'Major', `magnitude_level` = 4; 
+INSERT INTO `incident_magnitude` SET `magnitude_id` = 6, `magnitude_name` = 'Unknown', `magnitude_level` = '-1'; 
+
+-- Timeframes for incident discovery, containment, and outages
+CREATE TABLE IF NOT EXISTS `incident_timeframe` (
+  `timeframe_id` INT NOT NULL AUTO_INCREMENT,
+  `timeframe_duration` VARCHAR(50) NOT NULL,
+  PRIMARY KEY  (`agent_id`)
+) ENGINE = INNODB;  
+INSERT INTO `incident_timeframe` SET `timeframe_id` = 1, `timeframe_duration` = 'n/a';
+INSERT INTO `incident_timeframe` SET `timeframe_id` = 2, `timeframe_duration` = 'seconds';
+INSERT INTO `incident_timeframe` SET `timeframe_id` = 3, `timeframe_duration` = 'minutes';
+INSERT INTO `incident_timeframe` SET `timeframe_id` = 4, `timeframe_duration` = 'hours';
+INSERT INTO `incident_timeframe` SET `timeframe_id` = 5, `timeframe_duration` = 'days';
+INSERT INTO `incident_timeframe` SET `timeframe_id` = 6, `timeframe_duration` = 'weeks';
+INSERT INTO `incident_timeframe` SET `timeframe_id` = 7, `timeframe_duration` = 'months';
+INSERT INTO `incident_timeframe` SET `timeframe_id` = 8, `timeframe_duration` = 'years';
+INSERT INTO `incident_timeframe` SET `timeframe_id` = 8, `timeframe_duration` = 'forever';
+
+-- Free tagging of incidents
+CREATE TABLE IF NOT EXISTS `incident_x_tag` (
+  `incident_id` INT NOT NULL,
+  `tag_id` INT NOT NULL,
+  KEY (`incident_id`,`tag_id`)
+) ENGINE = INNODB;
+
 CREATE TABLE IF NOT EXISTS `koj_executed_command` (
   `id` INT(12) AUTO_INCREMENT NOT NULL,
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

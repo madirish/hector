@@ -233,7 +233,7 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
     public function save() {
     	$retval = FALSE;
     	if ($this->id > 0 ) {
-    		// Update an existing user
+    		// Update an existing tag
 	    	$sql = array(
 	    		'UPDATE tag SET tag_name = \'?s\' WHERE tag_id = \'?i\'',
 	    		$this->get_name(),

@@ -199,14 +199,14 @@ CREATE TABLE IF NOT EXISTS `incident_asset` (
   `asset_asset` VARCHAR(255) NOT NULL,
   PRIMARY KEY  (`asset_id`)
 ) ENGINE = INNODB;
-INSERT INTO `incident_action` SET `asset_id` = 1, `asset_asset` = 'Database server';
-INSERT INTO `incident_action` SET `asset_id` = 2, `asset_asset` = 'Desktop / Workstation';
-INSERT INTO `incident_action` SET `asset_id` = 3, `asset_asset` = 'Laptop';
-INSERT INTO `incident_action` SET `asset_id` = 4, `asset_asset` = 'Mail server';
-INSERT INTO `incident_action` SET `asset_id` = 5, `asset_asset` = 'Mobile device';
-INSERT INTO `incident_action` SET `asset_id` = 6, `asset_asset` = 'Multifunction printer';
-INSERT INTO `incident_action` SET `asset_id` = 7, `asset_asset` = 'Removable media';
-INSERT INTO `incident_action` SET `asset_id` = 8, `asset_asset` = 'Web app or server';
+INSERT INTO `incident_asset` SET `asset_id` = 1, `asset_asset` = 'Database server';
+INSERT INTO `incident_asset` SET `asset_id` = 2, `asset_asset` = 'Desktop / Workstation';
+INSERT INTO `incident_asset` SET `asset_id` = 3, `asset_asset` = 'Laptop';
+INSERT INTO `incident_asset` SET `asset_id` = 4, `asset_asset` = 'Mail server';
+INSERT INTO `incident_asset` SET `asset_id` = 5, `asset_asset` = 'Mobile device';
+INSERT INTO `incident_asset` SET `asset_id` = 6, `asset_asset` = 'Multifunction printer';
+INSERT INTO `incident_asset` SET `asset_id` = 7, `asset_asset` = 'Removable media';
+INSERT INTO `incident_asset` SET `asset_id` = 8, `asset_asset` = 'Web app or server';
 
 -- Method of incident discovery
 CREATE TABLE IF NOT EXISTS `incident_discovery` (

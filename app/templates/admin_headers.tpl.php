@@ -39,7 +39,7 @@
   <ul class="nav">
     <li><a href="?action=summary" title="Summary screen with overview statistics">Home</a></li>
     <li class="dropdown">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-globe"></i> Asset Management <b class="caret"></b></a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-globe"></i> Assets <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li><a href="?action=browse_ip">Browse</a></li>
         <li><a href="?action=ossec">OSSEC Clients</a></li>

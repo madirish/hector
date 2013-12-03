@@ -185,7 +185,7 @@ class IRDiscovery extends Maleable_Object implements Maleable_Object_Interface {
      * @return String The HTML display safe name of the IRDiscovery.
      */
     public function get_method() {
-        return htmlspecialchars($this->discovery);
+        return htmlspecialchars($this->method);
     }
 
     /**
@@ -235,7 +235,7 @@ class IRDiscovery extends Maleable_Object implements Maleable_Object_Interface {
      * Set the name of the discovery
      * 
      * @access public
-     * @param String The name of the tag
+     * @param String The name of the method of discovery
      */
     public function set_method($method) {
         $this->method = $method;

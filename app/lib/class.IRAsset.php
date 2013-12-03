@@ -63,7 +63,7 @@ class IRAsset extends Maleable_Object implements Maleable_Object_Interface {
      * @access private
      * @var String The name of the tag
      */
-    private $asset;
+    private $name;
 
     // --- OPERATIONS ---
 
@@ -86,7 +86,7 @@ class IRAsset extends Maleable_Object implements Maleable_Object_Interface {
             );
             $result = $this->db->fetch_object_array($sql);
             $this->set_id($result[0]->asset_id);
-            $this->set_asset($result[0]->asset_asset);
+            $this->set_name($result[0]->asset_asset);
         }
     }
 
@@ -164,7 +164,7 @@ class IRAsset extends Maleable_Object implements Maleable_Object_Interface {
      * @return Array Dispalays for default template
      */
     public function get_displays() {
-        return array('Asset'=>'get_asset');
+        return array('Asset'=>'get_name');
     }
 
     /**
@@ -184,8 +184,8 @@ class IRAsset extends Maleable_Object implements Maleable_Object_Interface {
      * @access public
      * @return String The HTML display safe name of the IRAsset.
      */
-    public function get_asset() {
-        return htmlspecialchars($this->asset);
+    public function get_name() {
+        return htmlspecialchars($this->name);
     }
 
     /**
@@ -200,7 +200,7 @@ class IRAsset extends Maleable_Object implements Maleable_Object_Interface {
             // Update an existing user
             $sql = array(
                 'UPDATE incident_asset SET asset_asset = \'?s\' WHERE asset_id = \'?i\'',
-                $this->get_asset(),
+                $this->get_name(),
                 $this->get_id()
             );
             $retval = $this->db->iud_sql($sql);
@@ -208,7 +208,7 @@ class IRAsset extends Maleable_Object implements Maleable_Object_Interface {
         else {
             $sql = array(
                 'INSERT INTO incident_asset SET asset_asset = \'?s\'',
-                $this->get_asset()
+                $this->get_name()
             );
             $retval = $this->db->iud_sql($sql);
             // Now set the id
@@ -237,8 +237,8 @@ class IRAsset extends Maleable_Object implements Maleable_Object_Interface {
      * @access public
      * @param String The name of the tag
      */
-    public function set_asset($asset) {
-        $this->asset = $asset;
+    public function set_name($asset) {
+        $this->name = $asset;
     }
 
 } /* end of class IRAsset */

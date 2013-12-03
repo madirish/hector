@@ -212,7 +212,7 @@ INSERT INTO `incident_asset` SET `asset_id` = 8, `asset_asset` = 'Web app or ser
 CREATE TABLE IF NOT EXISTS `incident_discovery` (
   `discovery_id` INT NOT NULL AUTO_INCREMENT,
   `discovery_method` VARCHAR(100) NOT NULL,
-  PRIMARY KEY  (`agent_id`)
+  PRIMARY KEY  (`discovery_id`)
 ) ENGINE = INNODB;  
 INSERT INTO `incident_discovery` SET `discovery_id` = 1, `discovery_method` = '3rd party event monitoring';
 INSERT INTO `incident_discovery` SET `discovery_id` = 2, `discovery_method` = 'Network intrusion detection system (NIDS)';
@@ -227,7 +227,7 @@ CREATE TABLE IF NOT EXISTS `incident_magnitude` (
   `magnitude_id` INT NOT NULL AUTO_INCREMENT,
   `magnitude_name` VARCHAR(20) NOT NULL,
   `magnitude_level` INT NOT NULL,
-  PRIMARY KEY  (`agent_id`)
+  PRIMARY KEY  (`magnitude_id`)
 ) ENGINE = INNODB;  
 INSERT INTO `incident_magnitude` SET `magnitude_id` = 1, `magnitude_name` = 'None', `magnitude_level` = 0; 
 INSERT INTO `incident_magnitude` SET `magnitude_id` = 2, `magnitude_name` = 'Insignificant', `magnitude_level` = 1; 
@@ -240,7 +240,7 @@ INSERT INTO `incident_magnitude` SET `magnitude_id` = 6, `magnitude_name` = 'Unk
 CREATE TABLE IF NOT EXISTS `incident_timeframe` (
   `timeframe_id` INT NOT NULL AUTO_INCREMENT,
   `timeframe_duration` VARCHAR(50) NOT NULL,
-  PRIMARY KEY  (`agent_id`)
+  PRIMARY KEY  (`timeframe_id`)
 ) ENGINE = INNODB;  
 INSERT INTO `incident_timeframe` SET `timeframe_id` = 1, `timeframe_duration` = 'n/a';
 INSERT INTO `incident_timeframe` SET `timeframe_id` = 2, `timeframe_duration` = 'seconds';
@@ -250,7 +250,7 @@ INSERT INTO `incident_timeframe` SET `timeframe_id` = 5, `timeframe_duration` = 
 INSERT INTO `incident_timeframe` SET `timeframe_id` = 6, `timeframe_duration` = 'weeks';
 INSERT INTO `incident_timeframe` SET `timeframe_id` = 7, `timeframe_duration` = 'months';
 INSERT INTO `incident_timeframe` SET `timeframe_id` = 8, `timeframe_duration` = 'years';
-INSERT INTO `incident_timeframe` SET `timeframe_id` = 8, `timeframe_duration` = 'forever';
+INSERT INTO `incident_timeframe` SET `timeframe_id` = 9, `timeframe_duration` = 'forever';
 
 -- Free tagging of incidents
 CREATE TABLE IF NOT EXISTS `incident_x_tag` (

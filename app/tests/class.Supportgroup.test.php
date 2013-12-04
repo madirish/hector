@@ -38,8 +38,8 @@ class TestOfSupportgroupClass extends UnitTestCase {
 		$this->assertIsA($this->supportgroup->get_host_ids(), 'Array');
 	}
 	
-	function testGetDetails() {
-		$this->assertIsA($this->supportgroup->get_details(), 'String');
+	function testGetDisplays() {
+		$this->assertIsA($this->supportgroup->get_displays(), 'Array');
 	}
 	
 	function testGetAddAlterForm() {

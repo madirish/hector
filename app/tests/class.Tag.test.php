@@ -44,7 +44,6 @@ class TestOfTagClass extends UnitTestCase {
 		$this->assertTrue($this->tag->save());
 		$id = $this->tag->get_id();
 		$this->assertTrue($id > 0 );
-		$this->assertTrue($this->tag->delete());
 		$newtag = new Tag($id);
 		$this->assertTrue($newTag->getName == 'Test');
 		$this->assertTrue($newtag->delete());

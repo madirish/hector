@@ -61,7 +61,7 @@ class IRAsset extends Maleable_Object implements Maleable_Object_Interface {
      * asset name
      * 
      * @access private
-     * @var String The name of the tag
+     * @var String The name of the asset
      */
     private $name;
 
@@ -129,8 +129,8 @@ class IRAsset extends Maleable_Object implements Maleable_Object_Interface {
             array('label'=>'Asset',
                     'type'=>'text',
                     'name'=>'asset',
-                    'value_function'=>'get_asset',
-                    'process_callback'=>'set_asset')
+                    'value_function'=>'get_name',
+                    'process_callback'=>'set_name')
         );
     }
 
@@ -141,7 +141,7 @@ class IRAsset extends Maleable_Object implements Maleable_Object_Interface {
      */
     public function get_collection_definition($filter = '', $orderby = '') {
         $query_args = array();
-        $sql = 'SELECT a.asset_id FROM incident_asset a WHERE a.asset_id > 0';
+        $sql = 'SELECT a.asset_id AS irasset_id FROM incident_asset a WHERE a.asset_id > 0';
         if ($filter != '' && is_array($filter))  {
             $sql .= ' ' . array_shift($filter);
             $sql = $this->db->parse_query(array($sql, $filter));
@@ -235,7 +235,7 @@ class IRAsset extends Maleable_Object implements Maleable_Object_Interface {
      * Set the name of the asset
      * 
      * @access public
-     * @param String The name of the tag
+     * @param String The name of the asset
      */
     public function set_name($asset) {
         $this->name = $asset;

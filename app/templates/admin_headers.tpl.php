@@ -62,6 +62,8 @@
         <li><a href="?action=reports&report=danger_host">Dangerous hosts</a></li>
         <li><a href="?action=reports&report=nonisuswebservers">Non ISUS Server Report</a></li>
         <li><a href="?action=vuln">Vulnerabilities <?php echo $vuln_badge ;?></a></li>
+        <li class="nav-header">Incidents</li>
+				<li><a href="?action=new_ir">New Incident Report</a></li>
       </ul>
     </li>
     <li class="dropdown">

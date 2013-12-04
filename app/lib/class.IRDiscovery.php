@@ -58,10 +58,10 @@ class IRDiscovery extends Maleable_Object implements Maleable_Object_Interface {
     protected $id = null;
 
     /**
-     * discovery name
+     * discovery method
      * 
      * @access private
-     * @var String The name of the tag
+     * @var String The name of the method of discovery
      */
     private $method;
 
@@ -141,7 +141,7 @@ class IRDiscovery extends Maleable_Object implements Maleable_Object_Interface {
      */
     public function get_collection_definition($filter = '', $orderby = '') {
         $query_args = array();
-        $sql = 'SELECT a.discovery_id FROM incident_discovery a WHERE a.discovery_id > 0';
+        $sql = 'SELECT a.discovery_id AS irdiscovery_id FROM incident_discovery a WHERE a.discovery_id > 0';
         if ($filter != '' && is_array($filter))  {
             $sql .= ' ' . array_shift($filter);
             $sql = $this->db->parse_query(array($sql, $filter));

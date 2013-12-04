@@ -141,7 +141,7 @@ class IRAction extends Maleable_Object implements Maleable_Object_Interface {
      */
     public function get_collection_definition($filter = '', $orderby = '') {
         $query_args = array();
-        $sql = 'SELECT a.action_id FROM incident_action a WHERE a.action_id > 0';
+        $sql = 'SELECT a.action_id AS iraction_id FROM incident_action a WHERE a.action_id > 0';
         if ($filter != '' && is_array($filter))  {
             $sql .= ' ' . array_shift($filter);
             $sql = $this->db->parse_query(array($sql, $filter));

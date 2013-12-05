@@ -35,7 +35,7 @@
 	<legend>Details</legend>
 	<label class="control-label" for="incidentAgent">Agent causing incident</label>
 		<div class="controls">
-			<select id="incidentAgent">
+			<select id="incidentAgent" name="incidentAgent">
 				<?php foreach ($agents as $key=>$val) {?>
 					<option value="<?php echo $key;?>"><?php echo $val; ?></option>
 				<?php } ?>
@@ -43,7 +43,7 @@
 		</div>
 	<label class="control-label" for="incidentAction">Threat action</label>
 		<div class="controls">
-			<select id="incidentAction">
+			<select id="incidentAction" name="incidentAction">
 				<?php foreach ($actions as $key=>$val) {?>
 					<option value="<?php echo $key;?>"><?php echo $val; ?></option>
 				<?php } ?>
@@ -51,7 +51,7 @@
 		</div>
 	<label class="control-label" for="incidentAsset">Assets affected</label>
 		<div class="controls">
-			<select id="incidentAsset">
+			<select id="incidentAsset" name="incidentAsset">
 				<?php foreach ($assets as $key=>$val) {?>
 					<option value="<?php echo $key;?>"><?php echo $val; ?></option>
 				<?php } ?>

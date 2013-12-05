@@ -73,8 +73,10 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
      private $agent_id = null;
      
      private $action = null;
+     private $action_id = null;
      
      private $asset = null;
+     private $asset_id = null;
      
      private $confidential_data = null;
      
@@ -119,10 +121,10 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
           $r = $result[0];
           $this->set_id($r->incident_id);
           $this->set_title($r->indident_title);
-          $this->set_action($r->action_id);
+          $this->set_action_id($r->action_id);
           $this->set_action_discovery_timeframe($r->action_to_discovery_timeframe_id);
-          $this->set_agent($r->agent_id);
-          $this->set_asset($r->asset_id);
+          $this->set_agent_id($r->agent_id);
+          $this->set_asset_id($r->asset_id);
           $this->set_asset_loss_magnitude($r->asset_loss_magnitude_id);
           $this->set_authenticity_loss($r->authenticity_loss);
           $this->set_availability_loss_timeframe($r->availability_loss_timeframe_id);
@@ -256,6 +258,13 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
         }
      }
      
+     public function get_action_id() {
+     	return intval($this->action_id);
+     }
+     public function get_action() {
+     	return (is_a($this->action, 'Action')) ? $this->action : false;
+     }
+     
      public function get_agent() {
      	if (isset($this->agent_id)) {
      		require_once('class.IRAgent.php');
@@ -278,6 +287,13 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
         else {
             return false;
         }
+     }
+     
+     public function get_asset_id() {
+     	return intval($this->asset_id);
+     }
+     public function get_asset() {
+     	return (is_a($this->asset, 'Asset')) ? $this->asset : false;
      }
      
      public function get_asset_loss_mangitude() {
@@ -421,13 +437,14 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
         $sql = array(
           'UPDATE incident SET ' .
             'action_id = ?i, ' .
-            'action_to_discovery_timeframe_id = ?i, ' .
             'agent_id = ?i, ' .
             'asset_id = ?i, ' .
+            'confidential_data = ?b, ' .
+            'integrity_loss = \'?s\', ' .
             'asset_loss_magnitude_id = ?i, ' .
             'authenticity_loss = \'?s\', ' .
+            'action_to_discovery_timeframe_id = ?i, ' .
             'availability_loss_timeframe_id = ?i, ' .
-            'confidential_data = ?b, ' .
             'correction_recommended = \'?s\', ' .
             'discovery_evidence_sources = \'?s\', ' .
             'discovery_id = ?i, ' .
@@ -436,7 +453,6 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
             'disruption_magnitude_id = ?i, ' .
             '2020_hindsight = \'?s\', ' .
             'impact_magnitude_id = ?i, ' .
-            'integrity_loss = \'?s\', ' .
             'month = ?i,' .
             'response_cost_magnitude_id = ?i, ' .
             'title = \'?s\', ' .
@@ -444,6 +460,10 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
             'year = ?i ' .
             'WHERE tag_id = \'?i\'',
           $this->get_action_id(),
+          $this->get_agent_id(),
+          $this->get_asset_id(),
+          $this->get_confidential_data(),
+          $this->get_integrity_loss(),
           $this->get_id()
         );
         $retval = $this->db->iud_sql($sql);
@@ -464,10 +484,42 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
       return $retval;
     }
     
+    public function set_action($action) {
+    	if (is_a($action, 'Action')) $this->action = $action;
+    	else return false;
+    	return true;
+    }
+    
+    public function set_action_id($id) {
+    	$this->action_id = intval($id);
+    }
+    
     public function set_agent($agent) {
-    	if (is_a($agent, 'Agent')) {
-    		$this->agent_id
-    	}
+    	if (is_a($agent, 'Agent')) $this->agent = $agent;
+    	else return false;
+    	return true;
+    }
+    
+    public function set_agent_id($id) {
+    	$this->agent_id = intval($id);
+    }
+    
+    public function set_asset($asset) {
+    	if (is_a($asset, 'Asset')) $this->asset = $asset;
+    	else return false;
+    	return true;
+    }
+    
+    public function set_asset_id($id) {
+    	$this->asset_id = intval($id);
+    }
+    
+    public function set_authenticity_loss($text) {
+    	$this->authenticity_loss = $text;
+    }
+    
+    public function set_confidential_data($cdata) {
+    	$this->confidential_data = intval((bool) $cdata);
     }
     /**
      * Set the id attribute.
@@ -477,6 +529,10 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
      */
     protected function set_id($id) {
       $this->id = intval($id);
+    }
+    
+    public function set_integrity_loss($text) {
+    	$this->integrity_loss = $text;
     }
     
 	public function set_month($month) {

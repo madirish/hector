@@ -31,31 +31,7 @@ require_once('class.Maleable_Object.php');
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  */
 class Incident extends Maleable_Object implements Maleable_Object_Interface {
-  /**
-   `incident_id` INT NOT NULL AUTO_INCREMENT,
-  `incident_title` VARCHAR(255) NOT NULL,
-  `incident_month` TINYINT NOT NULL,
-  `incident_year` INT NOT NULL,
-  `agent_id` INT NOT NULL,
-  `action_id` INT NOT NULL,
-  `asset_id` INT NOT NULL,
-  `confidential_data` INT(1) DEFAULT 0,
-  `integrity_loss` TEXT,
-  `authenitcity_loss` TEXT,
-  `availability_loss_timeframe_id` INT NOT NULL,
-  `utility_loss` TEXT,
-  `action_to_discovery_timeframe_id` INT NOT NULL,
-  `discovery_to_containment_timeframe_id` INT NOT NULL,
-  `discovery_id` INT NOT NULL,
-  `discovery_evidence_sources` TEXT,
-  `discovery_metrics` TEXT,
-  `2020_hindsight` TEXT,
-  `correction_recommended` TEXT,
-  `asset_loss_magnitude_id` INT NOT NULL,
-  `disruption_magnitude_id` INT NOT NULL,
-  `response_cost_magnitude_id` INT NOT NULL,
-  `impact_magnitude_id` INT NOT NULL
-  **/
+  
     // --- ATTRIBUTES ---
     /**
      * Instance of the Db
@@ -94,6 +70,7 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
      private $year = null;
      
      private $agent = null;
+     private $agent_id = null;
      
      private $action = null;
      
@@ -133,7 +110,7 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
         $this->log = Log::get_instance();
         if ($id != '') {
           $sql = array(
-            'SELECT * FROM incident WHERE tag_id = ?i',
+            'SELECT * FROM incident WHERE incident_id = ?i',
             $id
           );
           $result = $this->db->fetch_object_array($sql);
@@ -280,13 +257,17 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
      }
      
      public function get_agent() {
-     	if (isset($this->agent)) {
+     	if (isset($this->agent_id)) {
      		require_once('class.IRAgent.php');
-            return new Agent($this->agent);
+            return new Agent($this->agent_id);
      	}
         else {
         	return false;
         }
+     }
+     
+     public function get_agent_id() {
+     	return intval($this->agent_id);
      }
      
      public function get_asset() {
@@ -462,7 +443,7 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
             'utility_loss = \'?s\', ' .
             'year = ?i ' .
             'WHERE tag_id = \'?i\'',
-          $this->get_action()->get_id(),
+          $this->get_action_id(),
           $this->get_id()
         );
         $retval = $this->db->iud_sql($sql);
@@ -483,6 +464,11 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
       return $retval;
     }
     
+    public function set_agent($agent) {
+    	if (is_a($agent, 'Agent')) {
+    		$this->agent_id
+    	}
+    }
     /**
      * Set the id attribute.
      * 
@@ -492,16 +478,27 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
     protected function set_id($id) {
       $this->id = intval($id);
     }
+    
+	public function set_month($month) {
+		$month = intval($month);
+		if ($month < 1 || $month > 12) return false;
+		else $this->month = $month;
+	}
 
   /**
-   * Set the name of the Incident
+   * Set the title of the Incident
    * 
    * @access public
-   * @param String The name of the tag
+   * @param String The title of the incident
    */
-    public function set_name($name) {
-      $this->name = $name;
+    public function set_title($title) {
+      if ($title == '') $title = 'Untitled Incident';
+      $this->title = $title;
     }
+    
+	public function set_year($year) {
+		$this->year = intval($year);
+	}
 
 } /* end of class Incident */
 

@@ -52,5 +52,14 @@ if (is_array($irdiscoveries->members)) {
 	}
 }
 
+$irmagnitudes = new Collection("IRMagnitude");
+$magnitudes = array();
+if (is_array($irmagnitudes->members)) {
+	foreach ($irmagnitudes->members as $magnitude) {
+		$magnitudes[$magnitude->get_id()] = $magnitude->get_name();
+	}
+}
+
+
 include_once($approot . 'templates/new_ir.tpl.php');
 ?>

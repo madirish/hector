@@ -56,14 +56,18 @@
       </ul>
     </li>
     <li class="dropdown">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Security Incidents."><i class="icon-warning-sign"></i> Incidents <b class="caret"></b></a>
+      <ul class="dropdown-menu">
+        <li><a href="?action=new_ir">New Incident Report</a></li>
+      </ul>
+    </li>
+    <li class="dropdown">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> <?php echo $reports ?> <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li><a href="?action=reports&report=by_port">Ports detected</a></li>
         <li><a href="?action=reports&report=danger_host">Dangerous hosts</a></li>
         <li><a href="?action=reports&report=nonisuswebservers">Non ISUS Server Report</a></li>
         <li><a href="?action=vuln">Vulnerabilities <?php echo $vuln_badge ;?></a></li>
-        <li class="nav-header">Incidents</li>
-				<li><a href="?action=new_ir">New Incident Report</a></li>
       </ul>
     </li>
     <li class="dropdown">

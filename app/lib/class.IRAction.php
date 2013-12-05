@@ -61,7 +61,7 @@ class IRAction extends Maleable_Object implements Maleable_Object_Interface {
      * action name
      * 
      * @access private
-     * @var String The name of the tag
+     * @var String The name of the action
      */
     private $action;
 
@@ -119,7 +119,7 @@ class IRAction extends Maleable_Object implements Maleable_Object_Interface {
 
     /**
      * This is a functional method designed to return
-     * the form associated with altering a tag.
+     * the form associated with altering an action.
      * 
      * @access public
      * @return Array The array for the default CRUD template.
@@ -235,7 +235,7 @@ class IRAction extends Maleable_Object implements Maleable_Object_Interface {
      * Set the name of the action
      * 
      * @access public
-     * @param String The name of the tag
+     * @param String The name of the action
      */
     public function set_action($action) {
         $this->action = $action;

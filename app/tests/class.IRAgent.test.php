@@ -3,7 +3,7 @@ require_once(dirname(__FILE__) . '/../software/simpletest/autorun.php');
 require_once(dirname(__FILE__) . '/../lib/class.IRAgent.php');
 
 
-class TestOfLocationClass extends UnitTestCase {
+class TestOfIRAgentClass extends UnitTestCase {
 	
 	function setUp() {
 		$this->agent = new IRAgent();

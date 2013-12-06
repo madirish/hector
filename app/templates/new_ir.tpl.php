@@ -23,7 +23,7 @@
 				<option value="11">Nov</option>
 				<option value="12">Dec</option>
 			</select>
-			<select id="incidentYear" class="input-small">
+			<select id="incidentYear" name="incidentYear" class="input-small">
 			<?php
 				for ($i=$cur_year;$i>$cur_year-10;$i--) {?>
 				<option value="<?php echo $i;?>"><?php echo $i;?></option>
@@ -85,7 +85,7 @@
 	<legend>Timeframes</legend>
 	<label class="control-label" for="availabilityLoss">Availability loss</label>
 		<div class="controls">
-			<select id="availabilityLoss">
+			<select id="availabilityLoss" name="availabilityLoss">
 				<?php foreach ($timeframes as $key=>$val) {?>
 					<option value="<?php echo $key;?>"><?php echo $val; ?></option>
 				<?php } ?>
@@ -93,7 +93,7 @@
 		</div>
 	<label class="control-label" for="incidentAtoD">Action to discovery</label>
 		<div class="controls">
-			<select id="incidentAtoD">
+			<select id="incidentAtoD" name="incidentAtoD">
 				<?php foreach ($timeframes as $key=>$val) {?>
 					<option value="<?php echo $key;?>"><?php echo $val; ?></option>
 				<?php } ?>
@@ -101,7 +101,7 @@
 		</div>
 	<label class="control-label" for="incidentDtoC">Discovery to containment</label>
 		<div class="controls">
-			<select id="incidentDtoC">
+			<select id="incidentDtoC" name="incidentDtoC">
 				<?php foreach ($timeframes as $key=>$val) {?>
 					<option value="<?php echo $key;?>"><?php echo $val; ?></option>
 				<?php } ?>
@@ -111,7 +111,7 @@
 	<legend>Discovery</legend>
 	<label class="control-label" for="incidentDisco">Method</label>
 		<div class="controls">
-			<select id="incidentDisco">
+			<select id="incidentDisco" name="incidentDisco">
 				<?php foreach ($discoveries as $key=>$val) {?>
 					<option value="<?php echo $key;?>"><?php echo $val; ?></option>
 				<?php } ?>
@@ -129,7 +129,7 @@
 	<legend>Impact</legend>
 	<label class="control-label" for="assetLossMag">Asset loss</label>
 		<div class="controls">
-			<select id="assetLossMag">
+			<select id="assetLossMag" name="assetLossMag">
 				<?php foreach ($magnitudes as $key=>$val) {?>
 					<option value="<?php echo $key;?>"><?php echo $val; ?></option>
 				<?php } ?>
@@ -137,7 +137,7 @@
 		</div>
 	<label class="control-label" for="disruptionMag">Business disruption</label>
 		<div class="controls">
-			<select id="disruptionMag">
+			<select id="disruptionMag" name="disruptionMag">
 				<?php foreach ($magnitudes as $key=>$val) {?>
 					<option value="<?php echo $key;?>"><?php echo $val; ?></option>
 				<?php } ?>
@@ -145,7 +145,7 @@
 		</div>
 	<label class="control-label" for="responseCostMag">Response cost</label>
 		<div class="controls">
-			<select id="responseCostMag">
+			<select id="responseCostMag" name="responseCostMag">
 				<?php foreach ($magnitudes as $key=>$val) {?>
 					<option value="<?php echo $key;?>"><?php echo $val; ?></option>
 				<?php } ?>
@@ -153,7 +153,7 @@
 		</div>
 	<label class="control-label" for="impactMag">Overall impact</label>
 		<div class="controls">
-			<select id="impactMag">
+			<select id="impactMag" name="impactMag">
 				<?php foreach ($magnitudes as $key=>$val) {?>
 					<option value="<?php echo $key;?>"><?php echo $val; ?></option>
 				<?php } ?>

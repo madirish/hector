@@ -93,6 +93,9 @@ class IRTimeframe extends Maleable_Object implements Maleable_Object_Interface {
                 $this->set_id($result[0]->timeframe_id);
                 $this->set_duration($result[0]->timeframe_duration);
             }
+            else {
+            	$this->log->write_error('An invalid instance of IRTimeframe was instantiated with id ' . intval($id));
+            }
         }
     }
 

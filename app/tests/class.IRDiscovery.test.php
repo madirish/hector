@@ -3,7 +3,7 @@ require_once(dirname(__FILE__) . '/../software/simpletest/autorun.php');
 require_once(dirname(__FILE__) . '/../lib/class.IRDiscovery.php');
 
 
-class TestOfLocationClass extends UnitTestCase {
+class TestOfIRDiscoveryClass extends UnitTestCase {
 	
 	function setUp() {
 		$this->discovery = new IRDiscovery();

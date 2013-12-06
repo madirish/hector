@@ -81,7 +81,7 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
      private $confidential_data = null;
      
      private $integrity_loss = null; // TEXT,
-     private $authenitcity_loss = null; // TEXT,
+     private $authenticity_loss = null; // TEXT,
      private $availability_loss_timeframe_id = null; // INT NOT NULL,
      private $utility_loss = null; // TEXT,
      private $action_to_discovery_timeframe_id = null; // INT NOT NULL,
@@ -112,7 +112,7 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
         $this->log = Log::get_instance();
         if ($id != '') {
           $sql = array(
-            'SELECT * FROM incident WHERE incident_id = ?i',
+            'SELECT *,2020_hindsight AS hindsight FROM incident WHERE incident_id = ?i',
             $id
           );
           $result = $this->db->fetch_object_array($sql);
@@ -120,28 +120,28 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
           if (! isset($result[0]->incident_id)) return false;
           $r = $result[0];
           $this->set_id($r->incident_id);
-          $this->set_title($r->indident_title);
+          $this->set_title($r->incident_title);
           $this->set_action_id($r->action_id);
-          $this->set_action_discovery_timeframe($r->action_to_discovery_timeframe_id);
+          $this->set_action_to_discovery_timeframe_id($r->action_to_discovery_timeframe_id);
           $this->set_agent_id($r->agent_id);
           $this->set_asset_id($r->asset_id);
-          $this->set_asset_loss_magnitude($r->asset_loss_magnitude_id);
+          $this->set_asset_loss_magnitude_id($r->asset_loss_magnitude_id);
           $this->set_authenticity_loss($r->authenticity_loss);
-          $this->set_availability_loss_timeframe($r->availability_loss_timeframe_id);
+          $this->set_availability_loss_timeframe_id($r->availability_loss_timeframe_id);
           $this->set_confidential_data($r->confidential_data);
           $this->set_correction_recommended($r->correction_recommended);
           $this->set_discovery_evidence_sources($r->discovery_evidence_sources);
-          $this->set_discovery($r->discovery_id);
+          $this->set_discovery_id($r->discovery_id);
           $this->set_discovery_metrics($r->discovery_metrics);
-          $this->set_discovery_to_containment_timeframe($r->discovery_to_containment_timeframe_id);
-          $this->set_disruption_magnitude($r->disruption_magnitude_id);
+          $this->set_discovery_to_containment_timeframe_id($r->discovery_to_containment_timeframe_id);
+          $this->set_disruption_magnitude_id($r->disruption_magnitude_id);
           $this->set_hindsight($r->hindsight);
-          $this->set_impact_magnitude($r->impact_magnitude_id);
+          $this->set_impact_magnitude_id($r->impact_magnitude_id);
           $this->set_integrity_loss($r->integrity_loss);
-          $this->set_month($r->month);
-          $this->set_response_cost_magnitude($r->response_cost_magnitude_id);
+          $this->set_month($r->incident_month);
+          $this->set_response_cost_magnitude_id($r->response_cost_magnitude_id);
           $this->set_utility_loss($r->utility_loss);
-          $this->set_year($r->year);
+          $this->set_year($r->incident_year);
         }
     }
 
@@ -222,23 +222,6 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
     public function get_id() {
        return intval($this->id);
     }
-    
-    /**
-     * Return the Action object for this Incident
-     */
-     public function get_action() {
-     	if (isset($this->action)) {
-     		require_once('class.IRAction.php');
-            return new IRAction($this->action);
-     	}
-        else {
-        	return false;
-        }
-     }
-     
-     public function get_action_id() {
-     	return intval($this->action);
-     }
      
      public function get_action_to_discovery_timeframe_id() {
      	if (isset($this->action_to_discovery_timeframe_id)) {
@@ -279,16 +262,6 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
      	return intval($this->agent_id);
      }
      
-     public function get_asset() {
-        if (isset($this->asset)) {
-            require_once('class.IRAsset.php');
-            return new Agent($this->asset);
-        }
-        else {
-            return false;
-        }
-     }
-     
      public function get_asset_id() {
      	return intval($this->asset_id);
      }
@@ -296,7 +269,7 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
      	return (is_a($this->asset, 'Asset')) ? $this->asset : false;
      }
      
-     public function get_asset_loss_mangitude() {
+     public function get_asset_loss_magnitude_id() {
      	return $this->asset_loss_magnitude_id;
      }
      
@@ -313,12 +286,8 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
      	return htmlspecialchars($this->authenticity_loss);
      }
      
-     public function get_availability_loss_timeframe() {
+     public function get_availability_loss_timeframe_id() {
      	return $this->availability_loss_timeframe_id;
-     }
-     
-     public function get_availability_loss_timeframe_readable() {
-     	return $this->get_timeframe_readable($this->get_availability_loss_timeframe());
      }
      
      public function get_confidential_data() {
@@ -326,7 +295,7 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
      }
      
      public function get_correction_recommended() {
-     	return htmlspecialchars($this->correction_recommendated);
+     	return htmlspecialchars($this->correction_recommended);
      }
      
      public function get_discovery_evidence_sources() {
@@ -338,36 +307,32 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
      	return new IRDiscovery($this->discovery_id);
      }
      
+     public function get_discovery_id() {
+     	return $this->discovery_id;
+     }
+     
      public function get_discovery_metrics() {
         return htmlspecialchars($this->discovery_metrics);
      }
      
-     public function get_discovery_to_containment_timeframe() {
-        return $this->discovery_to_containments_timeframe_id;
+     public function get_discovery_to_containment_timeframe_id() {
+        return $this->discovery_to_containment_timeframe_id;
      }
      
      public function get_discovery_to_containments_timeframe_readable() {
         return $this->get_timeframe_readable($this->get_discovery_to_containment_timeframe());
      }
      
-     public function get_disruption_mangitude() {
+     public function get_disruption_magnitude_id() {
         return $this->disruption_magnitude_id;
-     }
-     
-     public function get_disruption_magnitude_readable() {
-        return $this->get_magnitude_readable($this->get_disruption_magnitude());
      }
      
      public function get_hindsight() {
         return htmlspecialchars($this->hindsight);
      }
      
-     public function get_impact_mangitude() {
+     public function get_impact_magnitude_id() {
         return $this->impact_magnitude_id;
-     }
-     
-     public function get_impact_magnitude_readable() {
-        return $this->get_magnitude_readable($this->get_impact_magnitude());
      }
      
      public function get_integrity_loss() {
@@ -378,12 +343,8 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
      	return intval($this->month);
      }
      
-     public function get_response_cost_mangitude() {
+     public function get_response_cost_magnitude_id() {
         return $this->response_cost_magnitude_id;
-     }
-     
-     public function get_response_cost_magnitude_readable() {
-        return $this->get_magnitude_readable($this->get_response_cost_magnitude());
      }
      
      public function get_utility_loss() {
@@ -441,37 +402,96 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
             'asset_id = ?i, ' .
             'confidential_data = ?b, ' .
             'integrity_loss = \'?s\', ' .
-            'asset_loss_magnitude_id = ?i, ' .
             'authenticity_loss = \'?s\', ' .
-            'action_to_discovery_timeframe_id = ?i, ' .
-            'availability_loss_timeframe_id = ?i, ' .
-            'correction_recommended = \'?s\', ' .
-            'discovery_evidence_sources = \'?s\', ' .
-            'discovery_id = ?i, ' .
-            'discovery_metrics = \'?s\', ' .
-            'discovery_to_containment_timeframe_id = ?i, ' .
-            'disruption_magnitude_id = ?i, ' .
-            '2020_hindsight = \'?s\', ' .
-            'impact_magnitude_id = ?i, ' .
-            'month = ?i,' .
-            'response_cost_magnitude_id = ?i, ' .
-            'title = \'?s\', ' .
             'utility_loss = \'?s\', ' .
-            'year = ?i ' .
-            'WHERE tag_id = \'?i\'',
+            'availability_loss_timeframe_id = ?i, ' .
+            'action_to_discovery_timeframe_id = ?i, ' .
+            'discovery_to_containment_timeframe_id = ?i, ' .
+            'discovery_id = ?i, ' .
+            'discovery_evidence_sources = \'?s\', ' .
+            'discovery_metrics = \'?s\', ' .
+            'asset_loss_magnitude_id = ?i, ' .
+            'disruption_magnitude_id = ?i, ' .
+            'response_cost_magnitude_id = ?i, ' .
+            'impact_magnitude_id = ?i, ' .
+            '2020_hindsight = \'?s\', ' .
+            'correction_recommended = \'?s\', ' .
+            'incident_title = \'?s\', ' .
+            'incident_month = ?i,' .
+            'incident_year = ?i ' .
+            'WHERE incident_id = \'?i\'',
           $this->get_action_id(),
           $this->get_agent_id(),
           $this->get_asset_id(),
           $this->get_confidential_data(),
           $this->get_integrity_loss(),
+          $this->get_authenticity_loss(),
+          $this->get_utility_loss(),
+          $this->get_availability_loss_timeframe_id(),
+          $this->get_action_to_discovery_timeframe_id(),
+          $this->get_discovery_to_containment_timeframe_id(),
+          $this->get_discovery_id(),
+          $this->get_discovery_evidence_sources(),
+          $this->get_discovery_metrics(),
+          $this->get_asset_loss_magnitude_id(),
+          $this->get_disruption_magnitude_id(),
+          $this->get_response_cost_magnitude_id(),
+          $this->get_impact_magnitude_id(),
+          $this->get_hindsight(),
+          $this->get_correction_recommended(),
+          $this->get_title(),
+          $this->get_month(),
+          $this->get_year(),
           $this->get_id()
         );
         $retval = $this->db->iud_sql($sql);
       }
       else {
         $sql = array(
-        'INSERT INTO tag SET tag_name = \'?s\'',
-          $this->get_name()
+        'INSERT INTO incident SET action_id = ?i, ' .
+            'agent_id = ?i, ' .
+            'asset_id = ?i, ' .
+            'confidential_data = ?b, ' .
+            'integrity_loss = \'?s\', ' .
+            'authenticity_loss = \'?s\', ' .
+            'utility_loss = \'?s\', ' .
+            'availability_loss_timeframe_id = ?i, ' .
+            'action_to_discovery_timeframe_id = ?i, ' .
+            'discovery_to_containment_timeframe_id = ?i, ' .
+            'discovery_id = ?i, ' .
+            'discovery_evidence_sources = \'?s\', ' .
+            'discovery_metrics = \'?s\', ' .
+            'asset_loss_magnitude_id = ?i, ' .
+            'disruption_magnitude_id = ?i, ' .
+            'response_cost_magnitude_id = ?i, ' .
+            'impact_magnitude_id = ?i, ' .
+            '2020_hindsight = \'?s\', ' .
+            'correction_recommended = \'?s\', ' .
+            'incident_title = \'?s\', ' .
+            'incident_month = ?i,' .
+            'incident_year = ?i ',
+          $this->get_action_id(),
+          $this->get_agent_id(),
+          $this->get_asset_id(),
+          $this->get_confidential_data(),
+          $this->get_integrity_loss(),
+          $this->get_authenticity_loss(),
+          $this->get_utility_loss(),
+          $this->get_availability_loss_timeframe_id(),
+          $this->get_action_to_discovery_timeframe_id(),
+          $this->get_discovery_to_containment_timeframe_id(),
+          $this->get_discovery_id(),
+          $this->get_discovery_evidence_sources(),
+          $this->get_discovery_metrics(),
+          $this->get_asset_loss_magnitude_id(),
+          $this->get_disruption_magnitude_id(),
+          $this->get_response_cost_magnitude_id(),
+          $this->get_impact_magnitude_id(),
+          $this->get_hindsight(),
+          $this->get_correction_recommended(),
+          $this->get_title(),
+          $this->get_month(),
+          $this->get_year()
         );
         $retval = $this->db->iud_sql($sql);
         // Now set the id
@@ -490,8 +510,25 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
     	return true;
     }
     
+    public function set_action_to_discovery_timeframe_id($id) {
+        // Validate the $id using the IRTimeframe constructor
+        require_once('class.IRTimeframe.php');
+        $tframe = new IRTimeframe($id);
+        if ($tframe->get_id() > 0) {
+            $this->action_to_discovery_timeframe_id = $tframe->get_id();
+            return true;
+        }
+        return false;
+    }
+    
     public function set_action_id($id) {
-    	$this->action_id = intval($id);
+        require_once('class.IRAction.php');
+        $action = new IRAction($id);
+        if ($action->get_id() > 0) {
+        	$this->action_id = $action->get_id();
+            return true;
+        }
+        return false;
     }
     
     public function set_agent($agent) {
@@ -501,7 +538,13 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
     }
     
     public function set_agent_id($id) {
-    	$this->agent_id = intval($id);
+        require_once('class.IRAgent.php');
+        $agent = new IRAgent($id);
+        if ($agent->get_id() > 0) {
+            $this->agent_id = $agent->get_id();
+            return true;
+        }
+        return false;
     }
     
     public function set_asset($asset) {
@@ -511,16 +554,96 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
     }
     
     public function set_asset_id($id) {
-    	$this->asset_id = intval($id);
+        require_once('class.IRAsset.php');
+        $asset = new IRAsset($id);
+        if ($asset->get_id() > 0) {
+        	$this->asset_id = $asset->get_id();
+            return true;
+        }
+        return false;
     }
     
     public function set_authenticity_loss($text) {
     	$this->authenticity_loss = $text;
     }
     
+    public function set_availability_loss_timeframe_id($id) {
+        // Validate the $id using the IRTimeframe constructor
+        require_once('class.IRTimeframe.php');
+        $tframe = new IRTimeframe($id);
+        if ($tframe->get_id() > 0) {
+        	$this->availability_loss_timeframe_id = $tframe->get_id();
+            return true;
+        }
+        return false;
+    }
+    
+    public function set_asset_loss_magnitude_id($id) {
+    	require_once('class.IRMagnitude.php');
+        $mag = new IRMagnitude($id);
+        if ($mag->get_id() > 0) {
+        	$this->asset_loss_magnitude_id = $mag->get_id();
+            return true;
+        }
+        return false;
+    }
+    
     public function set_confidential_data($cdata) {
     	$this->confidential_data = intval((bool) $cdata);
     }
+    
+    public function set_correction_recommended($text) {
+    	$this->correction_recommended = $text;
+    }
+    
+    public function set_discovery_id($id) {
+        // Validate the $id using the IRDiscovery constructor
+    	require_once('class.IRDiscovery.php');
+        $discovery = new IRDiscovery($id);
+        if ($discovery->get_id() > 0) {
+        	$this->discovery_id = $discovery->get_id();
+            return true;
+        }
+        return false;
+    }
+    
+    public function set_discovery_to_containment_timeframe_id($id) {
+        // Validate the $id using the IRTimeframe constructor
+        require_once('class.IRTimeframe.php');
+        $tframe = new IRTimeframe($id);
+        if ($tframe->get_id() > 0) {
+            $this->discovery_to_containment_timeframe_id = $tframe->get_id();
+            return true;
+        }
+        return false;
+    }
+    
+    public function set_discovery_evidence_sources($text) {
+    	$this->discovery_evidence_sources = $text;
+    }
+    
+    public function set_discovery_metrics($text) {
+    	$this->discovery_metrics = $text;
+    }
+    
+    public function set_disruption_magnitude_id($id) {
+        require_once('class.IRMagnitude.php');
+        $mag = new IRMagnitude($id);
+        if ($mag->get_id() > 0) {
+        	$this->disruption_magnitude_id = $mag->get_id();
+            return true;
+        }
+        return false;
+    }
+    
+    public function set_hindsight($text) {
+    	$this->hindsight = $text;
+    }
+    
+    public function set_utility_loss($text) {
+        $this->utility_loss = $text;
+    }
+    
     /**
      * Set the id attribute.
      * 
@@ -531,6 +654,16 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
       $this->id = intval($id);
     }
     
+    public function set_impact_magnitude_id($id) {
+        require_once('class.IRMagnitude.php');
+        $mag = new IRMagnitude($id);
+        if ($mag->get_id() > 0) {
+        	$this->impact_magnitude_id = $mag->get_id();
+            return true;
+        }
+        return false;
+    }
+    
     public function set_integrity_loss($text) {
     	$this->integrity_loss = $text;
     }
@@ -539,7 +672,18 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
 		$month = intval($month);
 		if ($month < 1 || $month > 12) return false;
 		else $this->month = $month;
+        return true;
 	}
+    
+    public function set_response_cost_magnitude_id($id) {
+        require_once('class.IRMagnitude.php');
+        $mag = new IRMagnitude($id);
+        if ($mag->get_id() > 0) {
+        	$this->response_cost_magnitude_id = $mag->get_id();
+            return true;
+        }
+        return false;
+    }
 
   /**
    * Set the title of the Incident

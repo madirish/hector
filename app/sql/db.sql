@@ -138,7 +138,7 @@ CREATE TABLE IF NOT EXISTS `incident` (
   `asset_id` INT NOT NULL,
   `confidential_data` INT(1) DEFAULT 0,
   `integrity_loss` TEXT,
-  `authenitcity_loss` TEXT,
+  `authenticity_loss` TEXT,
   `availability_loss_timeframe_id` INT NOT NULL,
   `utility_loss` TEXT,
   `action_to_discovery_timeframe_id` INT NOT NULL,

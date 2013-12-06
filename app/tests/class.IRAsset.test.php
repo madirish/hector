@@ -3,7 +3,7 @@ require_once(dirname(__FILE__) . '/../software/simpletest/autorun.php');
 require_once(dirname(__FILE__) . '/../lib/class.IRAsset.php');
 
 
-class TestOfLocationClass extends UnitTestCase {
+class TestOfIRAssetClass extends UnitTestCase {
 	
 	function setUp() {
 		$this->asset = new IRAsset();

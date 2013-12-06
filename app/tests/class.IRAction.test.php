@@ -3,7 +3,7 @@ require_once(dirname(__FILE__) . '/../software/simpletest/autorun.php');
 require_once(dirname(__FILE__) . '/../lib/class.IRAction.php');
 
 
-class TestOfLocationClass extends UnitTestCase {
+class TestOfIRActionClass extends UnitTestCase {
 	
 	function setUp() {
 		$this->action = new IRAction();

@@ -85,8 +85,14 @@ class IRAsset extends Maleable_Object implements Maleable_Object_Interface {
                 $id
             );
             $result = $this->db->fetch_object_array($sql);
-            $this->set_id($result[0]->asset_id);
-            $this->set_name($result[0]->asset_asset);
+            /**
+             * There may not be a result, creating a new object
+             * without a valid ID can be used to verify ID values
+             */
+            if (count($result) == 1 && isset($result[0]->asset_id)) {
+                $this->set_id($result[0]->asset_id);
+                $this->set_name($result[0]->asset_asset);
+            }
         }
     }
 

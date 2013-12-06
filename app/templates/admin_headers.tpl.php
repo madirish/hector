@@ -58,6 +58,7 @@
     <li class="dropdown">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Security Incidents."><i class="icon-warning-sign"></i> Incidents <b class="caret"></b></a>
       <ul class="dropdown-menu">
+        <li><a href="?action=incident_reports">Incident Reports</a></li>
         <li><a href="?action=new_ir">New Incident Report</a></li>
       </ul>
     </li>

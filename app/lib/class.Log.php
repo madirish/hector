@@ -140,6 +140,7 @@ Class Log {
 	 * @param String The message to write to the log.
 	 */
 	public function write_message($msg) {
+        if (! isset($_SERVER['REMOTE_ADDR'])) $_SERVER['REMOTE_ADDR'] = 'CLI';
 		$msg = date('Y-m-d h:i:s') . "  MESSAGE: " .
 				$_SERVER['REMOTE_ADDR'] . "  " .
 				$msg . "\t" .

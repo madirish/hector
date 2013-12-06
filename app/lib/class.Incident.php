@@ -196,7 +196,7 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
       $sql .= ' ' . $orderby;
     }
     else if ($orderby == '') {
-      $sql .= ' ORDER BY i.incident_year, i.incident_month';
+      $sql .= ' ORDER BY i.incident_year, i.incident_month DESC';
     }
     return $sql;
   }
@@ -232,26 +232,24 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
         }
      }
      
-     public function get_action_to_discovery_timeframe_readable() {
-     	if (isset($this->action_to_discovery_timeframe_id)) {
-            return $this->get_timeframe_readable($this->action_to_discovery_timeframe_id);
-        }
-        else {
-            return false;
-        }
+     public function get_action_to_discovery_timeframe_friendly() {
+        include_once('class.IRTimeframe.php');
+        $tframe = new IRTimeframe($this->get_action_to_discovery_timeframe_id());
+        return $tframe->get_duration();
      }
      
      public function get_action_id() {
      	return intval($this->action_id);
      }
      public function get_action() {
-     	return (is_a($this->action, 'Action')) ? $this->action : false;
+     	require_once('class.IRAction.php');
+        return new IRAction($this->get_action_id());
      }
      
      public function get_agent() {
      	if (isset($this->agent_id)) {
      		require_once('class.IRAgent.php');
-            return new Agent($this->agent_id);
+            return new IRAgent($this->agent_id);
      	}
         else {
         	return false;
@@ -262,11 +260,13 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
      	return intval($this->agent_id);
      }
      
+     public function get_asset() {
+     	require_once('class.IRAsset.php');
+        return new IRAsset($this->get_asset_id());
+     }
+     
      public function get_asset_id() {
      	return intval($this->asset_id);
-     }
-     public function get_asset() {
-     	return (is_a($this->asset, 'Asset')) ? $this->asset : false;
      }
      
      public function get_asset_loss_magnitude_id() {
@@ -290,6 +290,12 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
      	return $this->availability_loss_timeframe_id;
      }
      
+     public function get_availability_loss_timeframe_friendly() {
+     	include_once('class.IRTimeframe.php');
+        $tframe = new IRTimeframe($this->get_availability_loss_timeframe_id());
+        return $tframe->get_duration();
+     }
+     
      public function get_confidential_data() {
      	return (bool) $this->confidential_data;
      }
@@ -311,6 +317,12 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
      	return $this->discovery_id;
      }
      
+     public function get_discovery_method_friendly() {
+     	require_once('class.IRDiscovery.php');
+        $disco = new IRDiscovery($this->get_discovery_id());
+        return $disco->get_method();
+     }
+     
      public function get_discovery_metrics() {
         return htmlspecialchars($this->discovery_metrics);
      }
@@ -319,8 +331,10 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
         return $this->discovery_to_containment_timeframe_id;
      }
      
-     public function get_discovery_to_containments_timeframe_readable() {
-        return $this->get_timeframe_readable($this->get_discovery_to_containment_timeframe());
+     public function get_discovery_to_containment_timeframe_friendly() {
+        include_once('class.IRTimeframe.php');
+        $tframe = new IRTimeframe($this->get_discovery_to_containment_timeframe_id());
+        return $tframe->get_duration();
      }
      
      public function get_disruption_magnitude_id() {
@@ -341,6 +355,13 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
      
      public function get_month() {
      	return intval($this->month);
+     }
+     
+     public function get_month_friendly() {
+     	$months = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
+        $month = $this->get_month() - 1;
+        if ($month >= 0) return $months[$month];
+        else return false;
      }
      
      public function get_response_cost_magnitude_id() {

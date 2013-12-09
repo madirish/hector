@@ -273,8 +273,12 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
      	return $this->asset_loss_magnitude_id;
      }
      
-     public function get_asset_loss_magnitude_readable() {
-     	return $this->get_magnitude_readable($this->get_asset_loss_magnitude());
+     public function get_asset_loss_magnitude_friendly() {
+     	require_once('class.IRMagnitude.php');
+        if ($ret = new IRMagnitude($this->get_asset_loss_magnitude_id())) {
+        	return $ret->get_name();
+        }
+        return false;
      }
      
      /**
@@ -341,12 +345,28 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
         return $this->disruption_magnitude_id;
      }
      
+     public function get_disruption_magnitude_friendly() {
+        require_once('class.IRMagnitude.php');
+        if ($ret = new IRMagnitude($this->get_disruption_magnitude_id())) {
+            return $ret->get_name();
+        }
+        return false;
+     }
+     
      public function get_hindsight() {
         return htmlspecialchars($this->hindsight);
      }
      
      public function get_impact_magnitude_id() {
         return $this->impact_magnitude_id;
+     }
+     
+     public function get_impact_magnitude_friendly() {
+        require_once('class.IRMagnitude.php');
+        if ($ret = new IRMagnitude($this->get_impact_magnitude_id())) {
+            return $ret->get_name();
+        }
+        return false;
      }
      
      public function get_integrity_loss() {
@@ -366,6 +386,14 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
      
      public function get_response_cost_magnitude_id() {
         return $this->response_cost_magnitude_id;
+     }
+     
+     public function get_response_cost_magnitude_friendly() {
+        require_once('class.IRMagnitude.php');
+        if ($ret = new IRMagnitude($this->get_response_cost_magnitude_id())) {
+            return $ret->get_name();
+        }
+        return false;
      }
      
      public function get_utility_loss() {

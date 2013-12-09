@@ -30,5 +30,9 @@ $incident->set_correction_recommended($_POST['correctiveaction']);
 if (! $incident->save()) {
 	die("Error: Unable to save incident report.");
 }
-
+if ($incident->get_id() > 0) {
+	?>
+<script type="text/javascript">location.href='?action=incident_report_summary&id=<?php echo $incident->get_id();?>';</script>
+    <?php
+}
 ?>

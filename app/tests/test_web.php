@@ -14,7 +14,7 @@ class TestOfWebInterface extends WebTestCase {
         $this->setField('username', 'administrator');
         $this->setField('password', 'password');
         $this->click("Log in");
-        $this->assertText('Asset Management');
+        $this->assertText('Assets');
     }
 }
 ?>

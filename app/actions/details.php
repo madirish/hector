@@ -18,6 +18,38 @@ else {
 	$object = htmlspecialchars(ucfirst(urldecode($_GET['object'])));
 	$title = $object . " Details";
 	$file = $approot . 'lib/class.' . $object . '.php';
+	switch ($object) {
+		case 'Scan':
+			$object_readable = 'Scan Schedule';
+			break;
+		case 'Supportgroup':
+			$object_readable = 'Support Group';
+			break;
+		case 'Vuln':
+			$object_readable = 'Vulnerability Class';
+			break;
+		case 'Api_key':
+			$object_readable = 'API Key';
+			break;
+		case 'IRAction':
+			$object_readable = 'Incident Report Action';
+			break;
+		case 'IRAgent':
+			$object_readable = 'Incident Report Agent';
+			break;
+		case 'IRAsset':
+			$object_readable = 'Incident Report Asset';
+			break;
+		case 'IRDiscovery':
+			$object_readable = 'Incident Report Discovery Method';
+			break;
+		case 'IRMagnitude':
+			$object_readable = 'Incident Report Magnitude';
+			break;
+		case 'IRTimeframe':
+			$object_readable = 'Incident Report Timeframe';
+			break;
+	}
 	if (isset($_GET['id']) && ($_GET['id'] != '')) {
 		// generate a unique detail 
 		if (is_file($file)) {

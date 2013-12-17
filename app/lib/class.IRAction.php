@@ -132,7 +132,7 @@ class IRAction extends Maleable_Object implements Maleable_Object_Interface {
      */
     public function get_add_alter_form() {
         return array (
-            array('label'=>'Asset',
+            array('label'=>'Threat Actions describe what the threat agent did to <br/>cause or contribute to the breach (the methods used).',
                     'type'=>'text',
                     'name'=>'action',
                     'value_function'=>'get_action',
@@ -170,7 +170,7 @@ class IRAction extends Maleable_Object implements Maleable_Object_Interface {
      * @return Array Dispalays for default template
      */
     public function get_displays() {
-        return array('Asset'=>'get_action');
+        return array('Action'=>'get_action');
     }
 
     /**

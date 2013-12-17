@@ -110,6 +110,24 @@ else {
 			case 'Api_key':
 				$object_readable = 'API Key';
 				break;
+			case 'IRAction':
+				$object_readable = 'Incident Report Action';
+				break;
+			case 'IRAgent':
+				$object_readable = 'Incident Report Agent';
+				break;
+			case 'IRAsset':
+				$object_readable = 'Incident Report Asset';
+				break;
+			case 'IRDiscovery':
+				$object_readable = 'Incident Report Discovery Method';
+				break;
+			case 'IRMagnitude':
+				$object_readable = 'Incident Report Magnitude';
+				break;
+			case 'IRTimeframe':
+				$object_readable = 'Incident Report Timeframe';
+				break;
 		}
 		$form = new Form();
 		$form->set_name($form_name);

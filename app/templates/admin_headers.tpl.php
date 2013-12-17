@@ -60,6 +60,13 @@
       <ul class="dropdown-menu">
         <li><a href="?action=incident_reports">Incident Reports</a></li>
         <li><a href="?action=new_ir">New Incident Report</a></li>
+        <li class="nav-header">Configuration</li>
+        <li><a href="?action=details&object=IRAction">Threat actions</a></li>
+        <li><a href="?action=details&object=IRAgent">Incident agents</a></li>
+        <li><a href="?action=details&object=IRAsset">Assets</a></li>
+        <li><a href="?action=details&object=IRDiscovery">Discovery methods</a></li>
+        <li><a href="?action=details&object=IRMagnitude">Magnitudes</a></li>
+        <li><a href="?action=details&object=IRTimeframe">Timeframes</a></li>
       </ul>
     </li>
     <li class="dropdown">

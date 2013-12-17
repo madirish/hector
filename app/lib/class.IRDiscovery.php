@@ -132,9 +132,9 @@ class IRDiscovery extends Maleable_Object implements Maleable_Object_Interface {
      */
     public function get_add_alter_form() {
         return array (
-            array('label'=>'Asset',
+            array('label'=>'Discovery method',
                     'type'=>'text',
-                    'name'=>'Discovery method',
+                    'name'=>'discovery',
                     'value_function'=>'get_method',
                     'process_callback'=>'set_method')
         );

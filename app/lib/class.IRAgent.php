@@ -132,7 +132,7 @@ class IRAgent extends Maleable_Object implements Maleable_Object_Interface {
      */
     public function get_add_alter_form() {
         return array (
-            array('label'=>'Agent',
+            array('label'=>'Agent refers to entities that cause or contribute to the incident.',
                     'type'=>'text',
                     'name'=>'agent',
                     'value_function'=>'get_name',

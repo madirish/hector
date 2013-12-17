@@ -29,7 +29,7 @@
 			}
 			?>
 			<td class="editcell"><a class="btn" title="Edit this item" href="?action=add_edit&object=<?php echo $object;?>&id=<?php echo $item->get_id();?>">Edit</a></td>
-			<td class="deletecell"><a href="#deleteModal" role="button" class="btn" data-toggle="modal">Delete</a></td>
+			<td class="deletecell"><a href="#deleteModal<?php echo $item->get_id();?>" role="button" class="btn" data-toggle="modal">Delete</a></td>
 			</tr>
 			<?php
 			$x++;
@@ -37,8 +37,9 @@
 	?></tbody>
 </table>
 
+<?php foreach ($items as $item) { ?>
 <!-- Delete Modal -->
-<div id="deleteModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+<div id="deleteModal<?php echo $item->get_id();?>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
 <div class="modal-header">
 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 <h3 id="deleteModalLabel">Confirm delete!</h3>
@@ -51,3 +52,4 @@
 <a class="btn btn-danger" href="?action=delete&object=<?php echo $object;?>&id=<?php echo $item->get_id();?>">Confirm delete</a>
 </div>
 </div>
+<?php } ?>

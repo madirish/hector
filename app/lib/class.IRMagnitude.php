@@ -135,12 +135,12 @@ class IRMagnitude extends Maleable_Object implements Maleable_Object_Interface {
         return array (
             array('label'=>'Magnitude label',
                     'type'=>'text',
-                    'name'=>'action',
+                    'name'=>'label',
                     'value_function'=>'get_name',
                     'process_callback'=>'set_name'),
             array('label'=>'Magnitude level',
                     'type'=>'text',
-                    'name'=>'action',
+                    'name'=>'level',
                     'value_function'=>'get_level',
                     'process_callback'=>'set_level')
         );

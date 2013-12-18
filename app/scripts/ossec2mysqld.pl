@@ -392,13 +392,12 @@ sub get_host_id {
   my $select_sql = "select host_id from host where host_ip = ?";
   my $host_id = db_select($select_sql, "host_id", $client_ip);
   if (! $client_ip) {
-  	$client_ip = "";
+  	$client_ip = "127.0.0.1";
+    # See if we can find localhost in the database
+    $host_id = db_select($select_sql, "host_id", $client_ip);
   }
   # Insert the record if it can't be found
   if ($host_id < 1) {
-    if ($client_ip eq "") {
-        $client_ip = "127.0.0.1";
-    }
     my $sth = $dbi->{dbh}->prepare("insert into host(host_ip, host_ip_numeric, host_name, host_note) values (?, inet_aton(?),?,?) ON DUPLICATE KEY UPDATE host_ip = ?") || die("Couldn't prep host insert.");
     $sth->execute($client_ip, $client_ip, $host, "OSSEC", $client_ip) || die("Couldn't exec host insert with IP:[$client_ip], Host:[$host].\n");
     $sth->finish();

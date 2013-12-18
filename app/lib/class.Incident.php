@@ -441,6 +441,22 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
    * @return Boolean True if everything worked, FALSE on error.
    */
     public function save() {
+      // All non-string fields are required
+      if ($this->action_id == null ||
+          $this->agent_id == null ||
+          $this->asset_id == null ||
+          $this->asset_loss_magnitude_id == null ||
+          $this->availability_loss_timeframe_id == null ||
+          $this->discovery_id == null ||
+          $this->discovery_to_containment_timeframe_id == null ||
+          $this->disruption_magnitude_id == null ||
+          $this->impact_magnitude_id == null ||
+          $this->response_cost_magnitude_id == null ||
+          $this->title == null ||
+          $this->month == null ||
+          $this->year == null) {
+        return false;
+      }
       $retval = FALSE;
       if ($this->id > 0 ) {
         // Update an existing incident

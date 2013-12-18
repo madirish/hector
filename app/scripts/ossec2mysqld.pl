@@ -389,13 +389,11 @@ sub format_logdate {
 }
 sub get_host_id {
   my ($client_ip, $host) = @_;
+  if (! $client_ip) {
+    $client_ip = "127.0.0.1";
+  }
   my $select_sql = "select host_id from host where host_ip = ?";
   my $host_id = db_select($select_sql, "host_id", $client_ip);
-  if (! $client_ip) {
-  	$client_ip = "127.0.0.1";
-    # See if we can find localhost in the database
-    $host_id = db_select($select_sql, "host_id", $client_ip);
-  }
   # Insert the record if it can't be found
   if ($host_id < 1) {
     my $sth = $dbi->{dbh}->prepare("insert into host(host_ip, host_ip_numeric, host_name, host_note) values (?, inet_aton(?),?,?) ON DUPLICATE KEY UPDATE host_ip = ?") || die("Couldn't prep host insert.");

@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `article` (
   `article_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `article_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `article_title` varchar(255),
+  `article_teaser` text,
   `article_url` varchar (255),
   `article_body` text,
   PRIMARY KEY (`article_id`),

@@ -39,7 +39,7 @@
   <ul class="nav">
     <li><a href="?action=summary" title="Summary screen with overview statistics">Home</a></li>
     <li class="dropdown">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-globe"></i> Assets <b class="caret"></b></a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-hdd"></i> Assets <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li><a href="?action=browse_ip">Browse</a></li>
         <li><a href="?action=ossec">OSSEC Clients</a></li>
@@ -88,7 +88,13 @@
       </ul>
     </li>
     <li class="dropdown">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench"></i> Configuration <b class="caret"></b></a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="View open source intelligence collections."><i class="icon-globe"></i> OSINT <b class="caret"></b></a>
+      <ul class="dropdown-menu">
+        <li><a href="?action=config&object=article">Articles</a></li>
+      </ul>
+    </li>
+    <li class="dropdown">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench"></i> Config <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <!-- <li><a href="?action=config">Overview</a></li> -->
         <li class="nav-header">Scans</li>

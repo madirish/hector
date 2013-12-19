@@ -77,6 +77,16 @@ else {
 							$row['form'] .= '/>' . $val . '<br/>' . "\n";
 						}
 						break;
+					case 'date':
+						$javascripts .= '<link href="css/datepicker.css" rel="stylesheet">';
+						$javascripts .= '<script type="text/javascript" src="js/bootstrap-datepicker.js"></script>';
+						$row['form'] = '';
+						$row['form'] .= '<input type="text" class="span2" name="' . 
+									$display['name'] . '" id="dp-' . $display['name'] . '" value="' . $value . '"/>';
+						$row['form'] .= "\n\t\t";
+						$footer_scripts .= '	<script type="text/javascript">$(function(){$(\'#dp-' . $display['name'] . '\').datepicker({format: \'yyyy-mm-dd\',todayBtn: \'linked\'});});</script>';
+						$row['form'] .= "\n";
+						break;
 					default:
 						$row['form'] = '';
 				}

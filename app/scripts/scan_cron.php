@@ -1,6 +1,6 @@
 <?php
 /**
- * Script for performing routing NMAP scans based on
+ * Script for performing route scans and imports based on
  * specifications in the database.
  * 
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
@@ -14,6 +14,7 @@
  * Make sure of the environment
  */ 
 if(php_sapi_name() == 'cli') {
+	system('/bin/python ' . $approot . 'scripts/rssimport.py');
 	/**
 	 * Defined vars
 	 */

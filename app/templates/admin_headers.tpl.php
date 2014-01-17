@@ -85,6 +85,7 @@
         <li><a href="?action=honeypot">Honeypot data</a></li>
         <li><a href="?action=attackerip">Malicious IP database</a></li>
         <li><a href="?action=ossecalerts">OSSEC Alerts</a></li>
+        <li><a href="?action=nessus_scans">Nessus Scans</a></li>
       </ul>
     </li>
     <li class="dropdown">

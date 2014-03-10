@@ -70,7 +70,7 @@
       </ul>
     </li>
     <li class="dropdown">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> <?php echo $reports ?> <b class="caret"></b></a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> Reports <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li><a href="?action=reports&report=by_port">Ports detected</a></li>
         <li><a href="?action=reports&report=danger_host">Dangerous hosts</a></li>

@@ -137,8 +137,8 @@ if(php_sapi_name() != 'cli') {
 		}
 		function updatePorts() {
 			// First format the input properly
-			document.getElementById("tcpportlist").value = document.getElementById("tcpportlist").value.replace(/[^\d^\,]*/g, '');
-			document.getElementById("udpportlist").value = document.getElementById("udpportlist").value.replace(/[^\d^\,]*/g, '');
+			document.getElementById("tcpportlist").value = document.getElementById("tcpportlist").value.replace(/[^\d^\,-]*/g, '');
+			document.getElementById("udpportlist").value = document.getElementById("udpportlist").value.replace(/[^\d^\,-]*/g, '');
 			// Clear any pre-existing values
 			if (document.getElementById("flags").value.match(/-p/g)) { 
 				document.getElementById("flags").value = document.getElementById("flags").value.replace(/-p=[\d\,\:UT]*/g, '');

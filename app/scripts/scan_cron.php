@@ -14,12 +14,13 @@
  * Make sure of the environment
  */ 
 if(php_sapi_name() == 'cli') {
-	system('/bin/python ' . $approot . 'scripts/rssimport.py');
 	/**
 	 * Defined vars
 	 */
 	$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 	$approot = realpath(substr($_SERVER['PATH_TRANSLATED'],0,strrpos($_SERVER['PATH_TRANSLATED'],'/')) . '/../') . '/';
+    
+	system('/bin/python ' . $approot . 'scripts/rssimport.py');
 	
 	/**
 	 * Neccesary includes

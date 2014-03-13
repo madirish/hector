@@ -24,7 +24,9 @@ USERNAME =  configr.get('hector', 'db_user')
 PASSWORD = configr.get('hector', 'db_pass')
 DB = configr.get('hector', 'db')
 PORT = 3306
-DEBUG = False
+DEBUG = True
+
+syslog.openlog('hector-ossec-mysql')
 
 class LogEntry: 
   """ This is just the object that we craft to 
@@ -100,7 +102,7 @@ class LogEntry:
   def get_src_ip(self):
     """Return the source id from the alert, or zero."""
     if self.src_ip is None:
-      return "0.0.0.0"
+      return "127.0.0.1"
     elif self.src_ip == "(none)":
       return "127.0.0.1"
     else:
@@ -177,7 +179,7 @@ class LogEntry:
     number = rulesplit[1]
     message = rulestr.split('->')[1][2:-1]
     level = rulesplit[3][0:-1]
-    if DEBUG : syslog.syslog("Attempting to set new rule number %s" % number)
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Attempting to set new rule number %s" % number)
     try:
       cursor = self.conn.cursor()
       sql = 'insert into ossec_rule set '
@@ -192,7 +194,7 @@ class LogEntry:
         return False
       return True
     except Exception as err:
-      syslog.syslog("There was an issue saving a new rule: ", err)
+      syslog.syslog(syslog.LOG_ERR, "There was an issue saving a new rule: ", err)
       # print "Transaction error saving new rule (set_new_rule()) in LogEntry object " , err
       return False
     
@@ -241,7 +243,7 @@ class LogEntry:
     
   def save(self):
     """Persist the complete record back to the database."""
-    if DEBUG : syslog.syslog("Beginning OSSEC alert save()")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Beginning OSSEC alert save()")
     try:
       # Make sure we have a valid entry to cut down on db interacts
       if self.get_ossec_alert_id() > 0 and self.get_src_ip() > 0:
@@ -258,10 +260,10 @@ class LogEntry:
         sql += ' alert_ossec_id = %s '
         cursor.execute(sql , (self.get_date(),
                               self.get_host_id(),
-                              self.get_message(),
+                              self.get_alert_log(),
                               self.get_rule_id(),
                               self.get_user(),
-                              self.get_alert_log(),
+                              self.get_message(),
                               self.get_src_ip(),
                               self.get_src_ip(),
                               self.get_ossec_alert_id()))
@@ -269,42 +271,42 @@ class LogEntry:
         cursor.close()
         if self.get_message().find("iptables IN=") > -1 :
           # darknet log
-          if DEBUG : syslog.syslog("Darknet packet detected!")
+          if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Darknet packet detected!")
           self.log_darknet()
         else :
-          if DEBUG : syslog.syslog("Not a darknet packet alert.")
+          if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Not a darknet packet alert.")
           
     except Exception as err:
       syslog.syslog("There was an issue saving an OSSEC alert: ", err)
       # print "Transaction error saving LogEntry object " , err
   
   def get_proto(self, msg):
-    if DEBUG : syslog.syslog("Beginning get_proto")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Beginning get_proto")
     if msg.find("PROTO=") > -1:
       return msg[msg.find("PROTO=") + 6:].split(' ')[0]
     else:
       return 0
   def get_src_port(self, msg):
-    if DEBUG : syslog.syslog("Beginning get_src_port")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Beginning get_src_port")
     if msg.find("SPT=") > -1:
       return msg[msg.find("SPT=") + 4:].split(' ')[0]
     else:
       return 0
   def get_dst_port(self, msg):
-    if DEBUG : syslog.syslog("Beginning get_dst_port")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Beginning get_dst_port")
     if msg.find("DPT=") > -1:
       return msg[msg.find("DPT=") + 4:].split(' ')[0]
     else:
       return 0
   def get_dst_ip(self, msg):
-    if DEBUG : syslog.syslog("Beginning get_dst_ip")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Beginning get_dst_ip")
     if msg.find("DST=") > -1:
       return msg[msg.find("DST=") + 4:].split(' ')[0]
     else:
       return 0
     
   def log_darknet(self):
-    if DEBUG : syslog.syslog("Beginning log_darknet()")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Beginning log_darknet()")
     try:
       cursor = self.conn.cursor()
       sql = 'insert into darknet set '
@@ -314,23 +316,23 @@ class LogEntry:
       sql += ' dst_port = %s, '
       sql += ' proto = %s, '
       sql += ' received_at = STR_TO_DATE(%s,\'%%Y %%b %%d %%H:%%i:%%s\') ' 
-      if DEBUG : syslog.syslog("SQL composed in log_darknet()")
+      if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "SQL composed in log_darknet()")
       src_port = self.get_src_port(self.get_message())
       dst_port = self.get_dst_port(self.get_message())
       dst_ip = self.get_dst_ip(self.get_message())
       proto = self.get_proto(self.get_message())
-      if DEBUG : syslog.syslog("Starting cursor execution in log_darknet().")
+      if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Starting cursor execution in log_darknet().")
       cursor.execute(sql , (self.get_src_ip(),
                             dst_ip,
                             src_port,
                             dst_port,
                             proto,
                             self.get_date()))
-      if DEBUG : syslog.syslog("SQL executed in log_darknet()")
+      if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "SQL executed in log_darknet()")
       self.conn.commit() 
       cursor.close()
     except Exception as err:
-      syslog.syslog("There was an issue saving a darknet sensor alert: ", err)
+      syslog.syslog(syslog.LOG_ERR, "There was an issue saving a darknet sensor alert: ", err)
 
 import unittest
 
@@ -348,7 +350,7 @@ class TestLogEntry(unittest.TestCase):
                                   port=PORT)
     except Exception as err:
       print "Error connecting to the database" , err
-      syslog.syslog("Error connecting to the database" , err)
+      syslog.syslog(syslog.LOG_ERR, "Error connecting to the database" , err)
       
     self.log = LogEntry(self.conn)
     self.log.process("** Alert 1297702559.16083181: - apache,")
@@ -416,7 +418,7 @@ class Daemon:
                     sys.exit(0)
                 except OSError, e:
                   sys.stderr.write("fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
-                  syslog.syslog("fork #1 in Daemon failed: %d (%s)" % (e.errno, e.strerror))
+                  syslog.syslog(syslog.LOG_ERR, "fork #1 in Daemon failed: %d (%s)" % (e.errno, e.strerror))
                   sys.exit(1)
        
                 # decouple from parent environment
@@ -432,7 +434,7 @@ class Daemon:
                     sys.exit(0)
                 except OSError, e:
                   sys.stderr.write("fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
-                  syslog.syslog("fork #2 in Daemon failed: %d (%s)" % (e.errno, e.strerror))
+                  syslog.syslog(syslog.LOG_ERR, "fork #2 in Daemon failed: %d (%s)" % (e.errno, e.strerror))
                   sys.exit(1)
        
                 # redirect standard file descriptors
@@ -468,7 +470,7 @@ class Daemon:
        
                 if pid:
                   message = "pidfile %s already exist. Daemon already running?\n"
-                  syslog.syslog("pidfile %s already exist. Daemon already running?" % self.pidfile)
+                  syslog.syslog(syslog.LOG_WARNING, "pidfile %s already exist. Daemon already running?" % self.pidfile)
                   sys.stderr.write(message % self.pidfile)
                   sys.exit(1)
                
@@ -486,12 +488,12 @@ class Daemon:
                   pid = int(pf.read().strip())
                   pf.close()
                 except IOError:
-                  syslog.syslog("There was an error closing put the pidfile in stop")
+                  syslog.syslog(syslog.LOG_ERR, "There was an error closing put the pidfile in stop")
                   pid = None
        
                 if not pid:
                   message = "pidfile %s does not exist. Daemon not running?\n"
-                  syslog.syslog("pidfile %s does not exist. Daemon not running?" % self.pidfile)
+                  syslog.syslog(syslog.LOG_WARNING, "pidfile %s does not exist. Daemon not running?" % self.pidfile)
                   sys.stderr.write(message % self.pidfile)
                   return # not an error in a restart
  
@@ -535,10 +537,10 @@ class OSSECLogParser(Daemon):
 
   def follow(self):
     """Tail (follow) the log file and parse it into the database."""
-    if DEBUG : syslog.syslog("Beginning follow")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Beginning follow")
     self.logfile.seek(0,2)      # Go to the end of the file
     sleep = 0.00001
-    if DEBUG: syslog.syslog("Entering follow loop")
+    if DEBUG: syslog.syslog(syslog.LOG_DEBUG, "Entering follow loop")
     try:
       while True:
         # Roll to the new logfile each day
@@ -553,7 +555,7 @@ class OSSECLogParser(Daemon):
         sleep = 0.00001
         yield line
     except Exception as err:
-      syslog.syslog("Error in follow method: ", err)
+      syslog.syslog(syslog.LOG_ERR, "Error in follow method: ", err)
       
   def run(self):
     """Start the process, extended from Daemon."""
@@ -566,11 +568,11 @@ class OSSECLogParser(Daemon):
     rotate daily as the OSSEC scheduler archives older
     logs.
     """ 
-    if DEBUG : syslog.syslog("Start get_logfile")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Start get_logfile")
     if self.logfile is not None:
       self.logfile.close()
       
-    if DEBUG : syslog.syslog("Closed logfile loop passed")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Closed logfile loop passed")
     # We have to open the days log in order to maintain our lock on 
     # the file as the time passes midnight
     
@@ -582,17 +584,17 @@ class OSSECLogParser(Daemon):
       self.daystr = '0' + self.daystr
     self.logdir = '/var/ossec/logs/alerts/' + self.yearstr + '/' + self.monthstr + '/ossec-alerts-' + self.daystr + '.log'
       
-    if DEBUG : syslog.syslog("Strings set up, opening log file %s." % self.logdir)
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Strings set up, opening log file %s." % self.logdir)
     # Wait until OSSEC rotates the logfile into existence
     while not os.path.exists(self.logdir) :
-        syslog.syslog("File doesn't exist yet, passing a cycle")
+        syslog.syslog(syslog.LOG_INFO, "File doesn't exist yet, passing a cycle")
         pass
     try: 
       self.logfile = open(self.logdir)
-      syslog.syslog("Opened logfile %s" % self.logdir)
+      syslog.syslog(syslog.LOG_INFO, "Opened logfile %s" % self.logdir)
     except Exception as err:
       syslog.syslog("Error opening logfile %s " % self.logdir, err)
-    if DEBUG : syslog.syslog("get_logfile is done")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "get_logfile is done")
     
   def do_log(self):
     """Connect to the database and watch the logfile."""
@@ -603,17 +605,17 @@ class OSSECLogParser(Daemon):
                                   db=DB,
                                   port=PORT)
     except Exception as err:
-      syslog.syslog("Error connecting to the database: " , err)
+      syslog.syslog(syslog.LOG_ERR, "Error connecting to the database: " , err)
       print "Error connecting to the database" , err
-    if DEBUG : syslog.syslog("Looking up logfile from do_log")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Looking up logfile from do_log")
     self.get_logfile()
-    if DEBUG : syslog.syslog("Logfile open")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Logfile open")
     loglines = self.follow()
-    if DEBUG : syslog.syslog("Opening db connection")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Opening db connection")
     log = LogEntry(conn)
     for line in loglines:
-      # start a new log if necessary
-      if line[0:8] == '** Alert':
+      # Blank lines separate log entries, save the old one.
+      if line.strip() == '':
         if log.get_ossec_alert_id() is not "":
           if DEBUG : print log.get_alert_log()
           if DEBUG : print log.get_date()
@@ -624,16 +626,20 @@ class OSSECLogParser(Daemon):
           if DEBUG : print log.get_src_ip()
           if DEBUG : print log.get_user()
           log.save()
+          
+      # start a new log on Alert
+      if line[0:8] == '** Alert':
         log.clear()
       log.process(line)
           
 if __name__ == '__main__':
-  daemon = OSSECLogParser('/tmp/hector-ossec-mysql.pid')
+  daemon = OSSECLogParser('/var/run/hector-ossec-mysql.pid')
   if len(sys.argv) == 2:
     if 'start' == sys.argv[1]:
       daemon.start()
     elif 'stop' == sys.argv[1]:
       daemon.stop()
+      sys.exit(0)
     elif 'restart' == sys.argv[1]:
       daemon.restart()
     elif 'test' == sys.argv[1]:

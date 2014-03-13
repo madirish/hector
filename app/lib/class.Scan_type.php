@@ -167,25 +167,23 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
 		}
 		$onselects = (is_null($this->onselects)) ? $this->get_script_exes() : $this->onselects;
 		return array (
-			array('label'=>'Scan type name', 
-					'type'=>'text', 
-					'name'=>'typename', 
-					'value_function'=>'get_name',
-					'process_callback'=>'set_name'),
 			array('label'=>'Script', 
 					'name'=>'script', 
 					'type'=>'select',
-					//'options'=>$this->get_script_exes(),
 					'options'=>$this->exes,
-					//'onselects'=>$this->get_script_onselects(),
 					'onselects'=>$onselects,
 					'value_function'=>'get_script',
 					'process_callback'=>'set_script'),
-			array('label'=>'', 
+			array('label'=>'Flags', 
 					'name'=>'flags', 
-					'type'=>'hidden', 
+					'type'=>'hidden',
 					'value_function'=>'get_flags',
-					'process_callback'=>'set_flags')
+					'process_callback'=>'set_flags'),
+			array('label'=>'Name', 
+					'name'=>'name', 
+					'type'=>'hidden',
+					'value_function'=>'get_name',
+					'process_callback'=>'set_name'),
 		);
 	}
 	
@@ -199,13 +197,14 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
      * @return String HTML to put into the template footer to enable dynamic CRUD templates
 	 */
 	public function get_footer_scripts() {
-		$onselects = (is_null($this->onselects)) ? $this->get_script_exes() : $this->onselects;
+		/*$onselects = (is_null($this->onselects)) ? $this->get_script_exes() : $this->onselects;
 		$output = $this->onselects[$this->get_script()];
 		if ($output == '') {
 			$output = 'document.getElementById("nmap_scan.php").defaultSelected = true;';
 			$output .= 'nmap_scan_display()';
 		}
-		return '<script type="text/javascript">' . $output . ';</script>';
+		return '<script type="text/javascript">' . $output . ';</script>';*/
+		return '';
 	}
 	
 	/**
@@ -222,22 +221,23 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
 	private function get_script_exes() {
 		global $approot;
 		$onselects = array();
-		$retval = array();
+		$retval = array(''=>'Choose one');
 		$is_executable = array();
 		if ($handle = opendir($approot . '/scripts')) {
 			while (false !== ($entry = readdir($handle))) {
-				$fname = $approot . 'scripts/' . $entry; 
-				if (is_file($fname) && substr($fname, -9) == "_scan.php") {
-					include_once($fname);
+				$scanname = $approot . 'scripts/' . $entry; 
+				// Look for /opt/hector/app/scripts/scan_name/scan_name.scan
+				if (is_dir($scanname) && file_exists($scanname . '/' . $entry . '.scan')) {
+					$scan_configs = parse_ini_file($scanname . '/' . $entry . '.scan');
+					$retval[$scan_configs['name']] = $scan_configs['display'];
+					$onselects[$scan_configs['name']] = $scan_configs['name'];
 				}
 			}
 		}
 		else {
 			$this->log->write_error('Error reading the scripts/ directory from class.Scan_type.php');
 		}
-		foreach($is_executable as $script) {
-			foreach ($script as $key=>$val) $retval[$key] = $val;
-		} 
+
 		$this->onselects = $onselects;
 		$this->exes = $retval;
 	}
@@ -299,6 +299,17 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
 	public function get_flags() {
 		return htmlspecialchars($this->flags);
 	}
+	
+	/**
+     * Return the printable string use for the object in interfaces
+     *
+     * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return String The printable string of the object name
+     */
+    public function get_label() {
+        return 'Scan Type';
+    } 
 	
 	/**
 	 * Get the scan type name

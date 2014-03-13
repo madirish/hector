@@ -31,6 +31,17 @@ class Maleable_Object {
      */
     public function get_id() {
         return (int) $this->id;
+    }   
+      
+    /**
+     * Return the printable string use for the object in interfaces
+     *
+     * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return String The printable object name.
+     */
+    public function get_label() {
+        return $this->label;
     } 
 	
 	/**

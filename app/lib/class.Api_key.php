@@ -302,7 +302,18 @@ class Api_key extends Maleable_Object implements Maleable_Object_Interface {
             $key.= $characters[rand(0, strlen($characters)-1)];
         }
         return sha1($key); 
-    }
+    } 
+      
+    /**
+     * Return the printable string use for the object in interfaces
+     *
+     * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return String The printable object name.
+     */
+    public function get_label() {
+        return 'API key';
+    } 
 
 	/**
 	 * Persist the Api_key to the database

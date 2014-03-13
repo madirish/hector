@@ -193,6 +193,17 @@ class IRAgent extends Maleable_Object implements Maleable_Object_Interface {
     public function get_name() {
         return htmlspecialchars($this->name);
     }
+    
+    /**
+     * Return the printable string use for the object in interfaces
+     *
+     * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return String The printable string of the object name
+     */
+    public function get_label() {
+        return 'Incident Report Agent';
+    } 
 
     /**
      * Persist the IRAgent to the data layer

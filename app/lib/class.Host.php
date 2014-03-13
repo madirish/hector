@@ -929,6 +929,18 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	public function get_ip() {
 		return $this->ip;
 	}
+	
+	/**
+     * Return the printable string use for the object in interfaces
+     *
+     * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return String The printable string of the object name
+     */
+    public function get_label() {
+        return 'Host';
+    } 
+    
 	/**
 	 * Get any link to external resources about this Host
 	 *

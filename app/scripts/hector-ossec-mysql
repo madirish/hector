@@ -19,31 +19,23 @@
 
 EXEC="/opt/hector/app/scripts/hector-ossec-mysql.py"
 PROG=$(basename $EXEC)
-
-# Check for missing binaries (stale symlinks should not happen)
-# Note: Special treatment of stop for LSB conformance
-test -x $EXEC || { echo "$EXEC not installed (or executable)"; 
-        if [ "$1" = "stop" ]; then exit 0;
-        else exit 5; fi; }
-
+RETVAL=0
 LOCKFILE=/var/lock/subsys/$PROG
+PIDFILE=/var/run/hector-ossec-mysql.pid
 
-start() {    echo -n $"Starting hector-ossec-mysql: "
+start() {    echo -n $"Starting $PROG: "
     daemon $EXEC start
     RETVAL=$?
     echo
     [ $RETVAL -eq 0 ] && touch $LOCKFILE
-    return $RETVAL
 }
 
 stop() {
-    echo -n $"Stopping hector-ossec-mysql: "
-    $EXEC stop
+    echo -n $"Stopping $PROG: "
     killproc $PROG
     RETVAL=$?
     echo
-    [ $RETVAL -eq 0 ] && rm -f $LOCKFILE
-    return $RETVAL
+    [ $RETVAL -eq 0 ] && rm -f $LOCKFILE $PIDFILE
 }
 
 restart() {
@@ -51,39 +43,23 @@ restart() {
     start
 }
 
-reload() {
-    echo -n $"Reloading hector-ossec-mysql: "
-    $EXEC restart
-    #killproc $PROG -HUP
-    RETVAL=$?
-    echo
-    return $RETVAL
-}
-
-force_reload() {
-    restart
-}
-
-fdr_status() {    status $PROG
+fdr_status() {    
+    status $PROG
 }
 
 case "$1" in
-    start|stop|restart|reload)
+    start|stop|restart)
         $1
-        ;;
-    force-reload)
-        force_reload
         ;;
     status)
         fdr_status
-        ;;
-    condrestart|try-restart)
-        [ ! -f $LOCKFILE ] || restart
         ;;
     *)
         echo $"Usage: $0 {start|stop|status|restart|try-restart|reload|force-reload}"
         exit 2
 esac
+
+exit $RETVAL
 
 
 

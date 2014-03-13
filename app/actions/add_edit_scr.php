@@ -8,6 +8,8 @@
 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 **/
 
+$object_readable = 'Unknown';
+
 if (! isset($_GET['object'])) {
 	// in case we don't have the right input
 	$template = 'default';
@@ -29,6 +31,7 @@ else {
 			$generic->process_form($val['process_callback'], $_POST[$val['name']]);
 		}
 		$generic->save();
+		$object_readable = method_exists($generic, 'get_label') ? $generic->get_label() : str_ireplace("_"," ", $object);
 	}
 	$message = 'Record ';
 	$message .=  ($id == '') ? 'created' : 'updated';

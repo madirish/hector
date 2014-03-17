@@ -23,11 +23,13 @@ RETVAL=0
 LOCKFILE=/var/lock/subsys/$PROG
 PIDFILE=/var/run/hector-ossec-mysql.pid
 
-start() {    echo -n $"Starting $PROG: "
-    daemon $EXEC start
+start() {
+    echo -n $"Starting $PROG:  "
+    daemon --pidfile ${PIDFILE} "nohup ${EXEC} >/dev/null 2>&1 &"
     RETVAL=$?
+    PID=$!
+    [ $RETVAL -eq 0 ] && touch ${LOCKFILE} && success
     echo
-    [ $RETVAL -eq 0 ] && touch $LOCKFILE
 }
 
 stop() {
@@ -55,7 +57,7 @@ case "$1" in
         fdr_status
         ;;
     *)
-        echo $"Usage: $0 {start|stop|status|restart|try-restart|reload|force-reload}"
+        echo $"Usage: $0 {start|stop|status|restart}"
         exit 2
 esac
 

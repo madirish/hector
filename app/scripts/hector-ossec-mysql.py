@@ -2,11 +2,13 @@
 """
 This script is part of HECTOR.
 by Justin C. Klein Keane <jukeane@sas.upenn.edu>
-Last modified: 07 May, 2013
+Last modified: 17 Mar 2014
 
 This script is a daemonized log observer that parses OSSEC logs and then
 imports them into the HECTOR database.  It is intended to be run from the
 /etc/init.d/hector-ossec-mysql script included with HECTOR
+
+@TODO: Determine the correct host_id from the source column
 """
 import MySQLdb
 import time
@@ -24,7 +26,7 @@ USERNAME =  configr.get('hector', 'db_user')
 PASSWORD = configr.get('hector', 'db_pass')
 DB = configr.get('hector', 'db')
 PORT = 3306
-DEBUG = True
+DEBUG = False
 
 syslog.openlog('hector-ossec-mysql')
 
@@ -80,10 +82,21 @@ class LogEntry:
     
   def get_host_id(self):
     """Return the host id from the database, or zero."""
+    retval = 0
     if self.host_id is None:
-      return 0
+      """ Try looking it up """
+      cursor = self.conn.cursor()
+      cursor.execute(""" SELECT host_id FROM host WHERE host_ip = %s""", self.get_src_ip())
+      host_id = cursor.fetchone()[0]
+      if host_id == None :
+      	retval = 0
+      else:
+      	self.host_id = host_id
+      	retval = host_id
     else:
-      return self.host_id
+      retval = self.host_id
+    if DEBUG: print("returning %s" % (retval,))
+    return int(retval)
     
   def get_alert_log(self):
     """Return the log this alert was generated from, or blank."""
@@ -179,7 +192,7 @@ class LogEntry:
     number = rulesplit[1]
     message = rulestr.split('->')[1][2:-1]
     level = rulesplit[3][0:-1]
-    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Attempting to set new rule number %s" % number)
+    if DEBUG : print("Attempting to set new rule number %s" % number)
     try:
       cursor = self.conn.cursor()
       sql = 'insert into ossec_rule set '
@@ -194,8 +207,7 @@ class LogEntry:
         return False
       return True
     except Exception as err:
-      syslog.syslog(syslog.LOG_ERR, "There was an issue saving a new rule: ", err)
-      # print "Transaction error saving new rule (set_new_rule()) in LogEntry object " , err
+      print "Transaction error saving new rule (set_new_rule()) in LogEntry object " , err
       return False
     
   # OSSEC alerts identifiers in the form 1297702559.16083181
@@ -219,7 +231,6 @@ class LogEntry:
       sql = 'select rule_id from ossec_rule where rule_number = %s'
       cursor.execute(sql , (rule_number)) 
       rule_id = int(cursor.fetchone()[0])
-      print "Rule id is %d" % rule_id
     except Exception as err:
       # this error output is useless, always prints out: 'NoneType' object is unsubscriptable
       #syslog.syslog("Transaction error in set_rule_id() in LogEntry object:" , err)
@@ -258,6 +269,7 @@ class LogEntry:
         sql += ' rule_src_ip = %s, '
         sql += ' rule_src_ip_numeric = INET_ATON(%s), '
         sql += ' alert_ossec_id = %s '
+        if DEBUG : print "Host id is %d" % self.get_host_id()
         cursor.execute(sql , (self.get_date(),
                               self.get_host_id(),
                               self.get_alert_log(),
@@ -277,8 +289,8 @@ class LogEntry:
           if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Not a darknet packet alert.")
           
     except Exception as err:
-      syslog.syslog("There was an issue saving an OSSEC alert: ", err)
-      # print "Transaction error saving LogEntry object " , err
+      # syslog.syslog("There was an issue saving an OSSEC alert: ", err)
+      print "Transaction error saving LogEntry object " , err
   
   def get_proto(self, msg):
     if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Beginning get_proto")
@@ -332,7 +344,7 @@ class LogEntry:
       self.conn.commit() 
       cursor.close()
     except Exception as err:
-      syslog.syslog(syslog.LOG_ERR, "There was an issue saving a darknet sensor alert: ", err)
+      print("There was an issue saving a darknet sensor alert: ", err)
 
 import unittest
 
@@ -389,143 +401,12 @@ class TestLogEntry(unittest.TestCase):
     self.assertEqual(self.log.get_user(), "(none)")
   def test_get_message(self):
     self.assertEqual(self.log.get_message(), "[Mon Feb 14 11:56:00 2011] [error] [client 128.91.34.6] PHP Warning:  Call-time pass-by-reference has been deprecated - argument passed by value;  If you would like to pass it by reference, modify the declaration of task_send_extra_email().  If you would like to enable call-time pass-by-reference, you can set allow_call_time_pass_reference to true in your INI file.  However, future versions may not support this any longer.  in /www/data/drupal-6.19/sites/oni.sas.upenn.edu.taskmgr/modules/task/task.module on line 254, referer: https://oni.sas.upenn.edu/taskmgr/")
-
-import sys, os, time, atexit
-from signal import SIGTERM
- 
-class Daemon:
-        """
-        A generic daemon class from http://www.jejik.com/articles/2007/02/a_simple_unix_linux_daemon_in_python/
-       
-        Usage: subclass the Daemon class and override the run() method
-        """
-        def __init__(self, pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
-                self.stdin = stdin
-                self.stdout = stdout
-                self.stderr = stderr
-                self.pidfile = pidfile
-       
-        def daemonize(self):
-                """
-                do the UNIX double-fork magic, see Stevens' "Advanced
-                Programming in the UNIX Environment" for details (ISBN 0201563177)
-                http://www.erlenstar.demon.co.uk/unix/faq_2.html#SEC16
-                """
-                try:
-                  pid = os.fork()
-                  if pid > 0:
-                    # exit first parent
-                    sys.exit(0)
-                except OSError, e:
-                  sys.stderr.write("fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
-                  syslog.syslog(syslog.LOG_ERR, "fork #1 in Daemon failed: %d (%s)" % (e.errno, e.strerror))
-                  sys.exit(1)
-       
-                # decouple from parent environment
-                os.chdir("/")
-                os.setsid()
-                os.umask(0)
-       
-                # do second fork
-                try:
-                  pid = os.fork()
-                  if pid > 0:
-                    # exit from second parent
-                    sys.exit(0)
-                except OSError, e:
-                  sys.stderr.write("fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
-                  syslog.syslog(syslog.LOG_ERR, "fork #2 in Daemon failed: %d (%s)" % (e.errno, e.strerror))
-                  sys.exit(1)
-       
-                # redirect standard file descriptors
-                sys.stdout.flush()
-                sys.stderr.flush()
-                si = file(self.stdin, 'r')
-                so = file(self.stdout, 'a+')
-                se = file(self.stderr, 'a+', 0)
-                os.dup2(si.fileno(), sys.stdin.fileno())
-                os.dup2(so.fileno(), sys.stdout.fileno())
-                os.dup2(se.fileno(), sys.stderr.fileno())
-       
-                # write pidfile
-                os.umask(077)
-                atexit.register(self.delpid)
-                pid = str(os.getpid())
-                file(self.pidfile,'w+').write("%s\n" % pid)
-       
-        def delpid(self):
-                os.remove(self.pidfile)
- 
-        def start(self):
-                """
-                Start the daemon
-                """
-                # Check for a pidfile to see if the daemon already runs
-                try:
-                  pf = file(self.pidfile,'r')
-                  pid = int(pf.read().strip())
-                  pf.close()
-                except IOError:
-                  pid = None
-       
-                if pid:
-                  message = "pidfile %s already exist. Daemon already running?\n"
-                  syslog.syslog(syslog.LOG_WARNING, "pidfile %s already exist. Daemon already running?" % self.pidfile)
-                  sys.stderr.write(message % self.pidfile)
-                  sys.exit(1)
-               
-                # Start the daemon
-                self.daemonize()
-                self.run()
- 
-        def stop(self):
-                """
-                Stop the daemon
-                """
-                # Get the pid from the pidfile
-                try:
-                  pf = file(self.pidfile,'r')
-                  pid = int(pf.read().strip())
-                  pf.close()
-                except IOError:
-                  syslog.syslog(syslog.LOG_ERR, "There was an error closing put the pidfile in stop")
-                  pid = None
-       
-                if not pid:
-                  message = "pidfile %s does not exist. Daemon not running?\n"
-                  syslog.syslog(syslog.LOG_WARNING, "pidfile %s does not exist. Daemon not running?" % self.pidfile)
-                  sys.stderr.write(message % self.pidfile)
-                  return # not an error in a restart
- 
-                # Try killing the daemon process       
-                try:
-                  while 1:
-                    os.kill(pid, SIGTERM)
-                    time.sleep(0.1)
-                except OSError, err:
-                  err = str(err)
-                  if err.find("No such process") > 0:
-                    if os.path.exists(self.pidfile):
-                      os.remove(self.pidfile)
-                  else:
-                    print str(err)
-                    sys.exit(1)
- 
-        def restart(self):
-                """
-                Restart the daemon
-                """
-                self.stop()
-                self.start()
- 
-        def run(self):
-                """
-                Nothing to see here, move along. Move along.
-                """
                 
 from datetime import date
+import sys, os, time, atexit
+from signal import SIGTERM
 
-class OSSECLogParser(Daemon):
+class OSSECLogParser():
   """This is the log watching object that tails the ossec alert file
   and writes entries into the database.
   """
@@ -534,6 +415,10 @@ class OSSECLogParser(Daemon):
   daystr = None
   yearstr = None
   monthstr = None
+  
+  def __init__(self):
+  	while True:
+  		self.do_log()
 
   def follow(self):
     """Tail (follow) the log file and parse it into the database."""
@@ -556,12 +441,6 @@ class OSSECLogParser(Daemon):
         yield line
     except Exception as err:
       syslog.syslog(syslog.LOG_ERR, "Error in follow method: ", err)
-      
-  def run(self):
-    """Start the process, extended from Daemon."""
-    while True:
-      self.do_log()
-      #time.sleep(1)
       
   def get_logfile(self):
     """ Create a singleton of the log file which will
@@ -633,16 +512,8 @@ class OSSECLogParser(Daemon):
       log.process(line)
           
 if __name__ == '__main__':
-  daemon = OSSECLogParser('/var/run/hector-ossec-mysql.pid')
   if len(sys.argv) == 2:
-    if 'start' == sys.argv[1]:
-      daemon.start()
-    elif 'stop' == sys.argv[1]:
-      daemon.stop()
-      sys.exit(0)
-    elif 'restart' == sys.argv[1]:
-      daemon.restart()
-    elif 'test' == sys.argv[1]:
+    if 'test' == sys.argv[1]:
       suite = unittest.TestLoader().loadTestsFromTestCase(TestLogEntry)
       unittest.TextTestRunner(verbosity=2).run(suite)
     else:
@@ -650,7 +521,7 @@ if __name__ == '__main__':
       sys.exit(2)
     sys.exit(0)
   else:
-    print "usage: %s start|stop|restart|test" % sys.argv[0]
-    sys.exit(2)
+  	parser = OSSECLogParser()
+sys.exit(0)
 
     

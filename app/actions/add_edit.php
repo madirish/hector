@@ -102,8 +102,10 @@ else {
 				$template = 'add_edit_user';
 				break;
 			case 'Scan_type':
-				if (isset($_GET['id']))
-					$template = 'edit_scan_type';
+				if (isset($_GET['id'])) {
+                    $scandir = substr($generic->get_script(), 0, -4);
+                    $template = 'edit_scan_type';
+                }
 				else 
 					$template = 'add_scan_type';
 				break;

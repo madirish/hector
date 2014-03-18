@@ -52,6 +52,45 @@ $(document).ready(function () {
 		$('#flags').val(flags);
 		$('#add_scan_type_form').submit();
 	});
+    <?php
+        // This is JavaScript for the edit form
+        if(is_object($generic)) {
+    ?>
+    $('#name').val('<?php echo $generic->get_name();?>');
+    var flags = '<?php echo $generic->get_flags();?>';
+    if (flags.search('-a') > -1) {
+    	$('#alertChanges').attr('checked', true);
+    }
+    if (flags.search('-v') > -1) {
+        $('#versionDetection').attr('checked', true);
+    }
+    if (flags.search('-p') > -1) {
+        var portString = flags.substring(flags.search('-p') + 3);
+        portString = portString.split(" ")[0];
+        // TCP and UDP port specifications
+        if (portString.split(":").length > 2) {
+        	var upos = portString.search("U:");
+            var tcpPorts = portString.split(":")[1];
+            $('#tcpPortList').val(tcpPorts.substring(0,tcpPorts.length - 2)); 
+            $('#udpPortList').val(portString.substring(upos + 2)); 
+        }
+        // Either TCP or UDP specifications
+        if (portString.search("U:") > -1) {
+        	$('#udpPortList').val(portString.split(":")[1]);
+        }
+        else {
+        	$('#tcpPortList').val(portString.split(":")[1]);
+        }
+    }
+    if (flags.search('-e') > -1) {
+        var portString = flags.substring(flags.search('-e') + 3);
+        $('#openTcpPortList').val(portString.split(" ")[0]);
+    }
+    if (flags.search('-u') > -1) {
+        var portString = flags.substring(flags.search('-u') + 3);
+        $('#openUdpPortList').val(portString.split(" ")[0]);
+    }
+    <?php } ?>
 })
 </script>
 
@@ -72,7 +111,7 @@ $form->save();
 	<p>Configure your NMAP (Network Mapper) scan to detect open ports on your hosts.</p>
 	
 		<table>
-		<tr><td><strong>Scan name:</strong></td><td><input type="text" name="name" class="input-block-level" placeholder="Descriptive scan name"/></td></tr>
+		<tr><td><strong>Scan name:</strong></td><td><input type="text" id="name" name="name" class="input-block-level" placeholder="Descriptive scan name"/></td></tr>
 		<tr><td style="vertical-align: text-top;"><strong>Specifications:<strong></td><td>
 			<div class="form-group">
 			<label>Alert on changes? <input type="checkbox" id="alertChanges" /></label>

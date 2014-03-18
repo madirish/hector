@@ -19,7 +19,7 @@
  */
 if(php_sapi_name() == 'cli') {
 	$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-	$approot = realpath(substr($_SERVER['PATH_TRANSLATED'],0,strrpos($_SERVER['PATH_TRANSLATED'],'/')) . '/../') . '/';	
+	$approot = realpath(substr($_SERVER['PATH_TRANSLATED'],0,strrpos($_SERVER['PATH_TRANSLATED'],'/')) . '/../../') . '/';	
 }
 
 
@@ -34,43 +34,7 @@ require_once($approot . 'lib/class.Scan_type.php');
 // Make sure of the environment
 global $add_edit;
 if(php_sapi_name() != 'cli') {
-	$servicelist='';
-	$connectiondelay='';
-	if (isset($_GET['id'])) {
-		$id = intval($_GET['id']);
-		$scan = new Scan_type($id);
-		$flags = $scan->get_flags();
-		$flags = explode('-', $flags);
-		foreach ($flags as $flag) {
-			if (substr($flag, 0,1)=='p') $servicelist = trim(substr($flag, 2));
-			if (substr($flag, 0,1)=='d') $connectiondelay = substr($flag, 2);
-		}
-	}
-	$is_executable[] = array('ncrack_scan.php' => 'ncrack scan');
-	global $javascripts;
-	$javascripts .= <<<EOT
-	<script type="text/javascript">
-		function ncrack_display() {
-			var ncrackHTML = "<p>NCRACKNcrack is a high-speed network authentication cracking tool.</p>";
-			ncrackHTML += "<p> Protocols supported include RDP, SSH, http(s), SMB, pop3(s), VNC, FTP, and telnet.</p>";
-			ncrackHTML += "Port to scan (comma delimited): <input type='text' id='servicelist' onBlur='updateNcrackFlags()' value='$servicelist'/><br>";
-			ncrackHTML += "Connection delay (seconds): <input type='text' id='connectiondelay' onBlur='updateNcrackFlags()' value='$connectiondelay'/>";
-			document.getElementById("specs").innerHTML = ncrackHTML;
-		}
-		
-		function updateNcrackFlags() {
-			var ports =  document.getElementById("servicelist").value
-			var delay = document.getElementById("connectiondelay").value
-			var ncrackflags = ''
-			if (ports!='') ncrackflags = "-p=" + ports + " "
-			if (delay!='') ncrackflags += "-d=" + delay
-			document.getElementById("flags").value = ncrackflags
-		}
-		// Fire this up as it's the default
-		ncrack_display();
-	</script>
-EOT;
-	$onselects['ncrack_scan.php'] = 'ncrack_display()';
+	 // Error, we shouldn't use this script from the web interface
 }
 else {
 	// Set high mem limit to prevent resource exhaustion

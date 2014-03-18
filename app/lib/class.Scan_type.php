@@ -232,6 +232,7 @@ class Scan_type extends Maleable_Object implements Maleable_Object_Interface {
 					$retval[$scan_configs['name']] = $scan_configs['display'];
 					$onselects[$scan_configs['name']] = $scan_configs['name'];
 				}
+				ksort($retval);
 			}
 		}
 		else {

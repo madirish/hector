@@ -15,17 +15,7 @@
  */
 global $add_edit;
 if(php_sapi_name() != 'cli') {
-	$is_executable[] = array('nikto_scan.php' => 'Nikto Scan');
-	global $javascripts;
-	$javascripts .= <<<EOT
-	<script type="text/javascript">
-		function nikto_scan_display() {
-			var niktoHTML = "Nikto";
-			document.getElementById("specs").innerHTML = niktoHTML;
-		}
-	</script>
-EOT;
-	$onselects['nikto_scan.php'] = 'nikto_scan_display()';	
+	// Error, we shouldn't use this script from the web interface
 }
 else{
 	/**
@@ -33,7 +23,7 @@ else{
 	 */
 	if(php_sapi_name() == 'cli') {
 		$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-		$approot = realpath(substr($_SERVER['PATH_TRANSLATED'],0,strrpos($_SERVER['PATH_TRANSLATED'],'/')) . '/../') . '/';	
+		$approot = realpath(substr($_SERVER['PATH_TRANSLATED'],0,strrpos($_SERVER['PATH_TRANSLATED'],'/')) . '/../../') . '/';	
 	}
 	
 	/**

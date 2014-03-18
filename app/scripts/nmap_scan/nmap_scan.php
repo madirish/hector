@@ -32,7 +32,7 @@
  */
 if(php_sapi_name() == 'cli') {
 	$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-	$approot = realpath(substr($_SERVER['PATH_TRANSLATED'],0,strrpos($_SERVER['PATH_TRANSLATED'],'/')) . '/../') . '/';	
+	$approot = realpath(substr($_SERVER['PATH_TRANSLATED'],0,strrpos($_SERVER['PATH_TRANSLATED'],'/')) . '/../../') . '/';	
 }
 
 
@@ -50,145 +50,7 @@ require_once($approot . 'lib/class.Scan_type.php');
 // Make sure of the environment
 global $add_edit;
 if(php_sapi_name() != 'cli') {
-	$hostgroups = new Collection('Host_group');
-	$grouplist = "";
-	foreach ($hostgroups->members as $group) {
-		//$grouplist += $group->get_name();
-	}
-	$alert = '';
-	$portlist = '';
-	$exclusionlist = '';
-	$version = '';
-	if (isset($_GET['id'])) {
-		$id = intval($_GET['id']);
-		$scan = new Scan_type($id);
-		$flags = $scan->get_flags();
-		$flags = explode('-', $flags);
-		foreach ($flags as $flag) {
-			switch (substr($flag, 0,1)) {
-				case 'a': 
-					$alert = 'checked=\'checked\'';
-					break;
-				case 'p':
-					$portlist = explode(':', substr($flag, 2));
-					if (count($portlist) == 1) $tcpportlist = $portlist[0];
-					else {
-						if ($portlist[0] == 'T') {
-							$tcpportlist = $portlist[1];
-							if (count($portlist) == 3) {
-								$tcpportlist = substr($tcpportlist, 0, -2);
-								$udpportlist = $portlist[2];
-							}
-						}
-						if ($portlist[0] == 'U') {
-							$udpportlist = $portlist[1];
-							if (count($portlist) == 3) {
-								$udpportlist = substr($udpportlist, 0, -2);
-								$tcpportlist = $portlist[2];
-							}
-						}
-					}
-					break;
-				case 'e':
-					$exclusionlist = substr($flag, 2);
-					break;
-				case 'u':
-					$uexclusionlist = substr($flag, 2);
-					break;
-				case 'v': 
-					$version = 'checked=\'checked\'';
-					break;
-			}
-		}
-	}
-	
-	$is_executable[] = array('nmap_scan.php' => 'NMAP scan');
-	global $javascripts;
-	$javascripts .= <<<EOT
-	<script type="text/javascript">
-		function nmap_scan_display() {
-			var nmapHTML = "Alert on Changes: <input id='add-remove-alert' type='checkbox' onClick='addRemoveAlert()' $alert/><br/>";
-			nmapHTML += "TCP ports to scan (comma delimited): <input type='text' id='tcpportlist' onBlur='updatePorts()' value='$tcpportlist'/><br/>";
-			nmapHTML += "UDP ports to scan (comma delimited): <input type='text' id='udpportlist' onBlur='updatePorts()' value='$udpportlist'/><br/>";
-			nmapHTML += "Only scan hosts with these TCP ports open (comma delimited): <input type='text' id='oportlist' onBlur='updateoPorts()' value='$exclusionlist'/><br/>";
-			nmapHTML += "Only scan hosts with these UDP ports open (comma delimited): <input type='text' id='ouportlist' onBlur='updateouPorts()' value='$uexclusionlist'/><br/>";
-			nmapHTML += "Attempt version detection: <input id='add-remove-version' type='checkbox' onClick='addRemoveVersion()' $version/><br/>";
-			document.getElementById("specs").innerHTML = nmapHTML;
-		}
-		function addRemoveAlert() {
-			if (document.getElementById("add-remove-alert").checked == true) {
-				if (! document.getElementById("flags").value.match(/-a/g)) {
-					document.getElementById("flags").value += " -a ";
-				}
-			}
-			else {
-				document.getElementById("flags").value = document.getElementById("flags").value.replace("-a", "");
-			}
-		}
-		function addRemoveVersion() {
-			if (document.getElementById("add-remove-version").checked == true) {
-				if (! document.getElementById("flags").value.match(/-v/g)) {
-					document.getElementById("flags").value += " -v ";
-				}
-			}
-			else {
-				document.getElementById("flags").value = document.getElementById("flags").value.replace("-v", "");
-			}
-		}
-		function updatePorts() {
-			// First format the input properly
-			document.getElementById("tcpportlist").value = document.getElementById("tcpportlist").value.replace(/[^\d^\,-]*/g, '');
-			document.getElementById("udpportlist").value = document.getElementById("udpportlist").value.replace(/[^\d^\,-]*/g, '');
-			// Clear any pre-existing values
-			if (document.getElementById("flags").value.match(/-p/g)) { 
-				document.getElementById("flags").value = document.getElementById("flags").value.replace(/-p=[\d\,\:UT]*/g, '');
-			}
-			// Update the flags if necessary
-			if (! document.getElementById("tcpportlist").value == "" || ! document.getElementById("udpportlist").value == "") {
-				var tcpports = document.getElementById("tcpportlist").value;
-				var udpports = document.getElementById("udpportlist").value;
-				var ports;
-				if (! tcpports == "") {
-					ports = "T:" + tcpports;
-				}
-				if (! udpports == "") {
-					if (ports == "") {
-						ports = "U:" + udpports;
-					}
-					else {
-						ports = ports + ",U:" + udpports;
-					}
-				}
-				document.getElementById("flags").value += "-p=" + ports;
-			}
-		}
-		function updateoPorts() {
-			// First format the input properly
-			document.getElementById("oportlist").value = document.getElementById("oportlist").value.replace(/[^\d^\,]*/g, '');
-			// Clear any pre-existing values
-			if (document.getElementById("flags").value.match(/-e/g)) { 
-				document.getElementById("flags").value = document.getElementById("flags").value.replace(/-e=[\d\,]*/g, '');
-			}
-			// Update the flags if necessary
-			if (! document.getElementById("oportlist").value == "") {
-				document.getElementById("flags").value += "-e=" + document.getElementById("oportlist").value;
-			}
-		}
-		function updateouPorts() {
-			// First format the input properly
-			document.getElementById("ouportlist").value = document.getElementById("ouportlist").value.replace(/[^\d^\,]*/g, '');
-			// Clear any pre-existing values
-			if (document.getElementById("flags").value.match(/-e/g)) { 
-				document.getElementById("flags").value = document.getElementById("flags").value.replace(/-u=[\d\,]*/g, '');
-			}
-			// Update the flags if necessary
-			if (! document.getElementById("ouportlist").value == "") {
-				document.getElementById("flags").value += "-u=" + document.getElementById("ouportlist").value;
-			}
-		}
-	</script>
-EOT;
-	$onselects['nmap_scan.php'] = 'nmap_scan_display()';
+	 // Error, we shouldn't use this script from the web interface
 }
 else {	
 	// Set high mem limit to prevent resource exhaustion

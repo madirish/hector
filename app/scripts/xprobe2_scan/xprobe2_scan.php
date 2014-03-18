@@ -21,7 +21,7 @@
  */
 if(php_sapi_name() == 'cli') {
 	$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-	$approot = realpath(substr($_SERVER['PATH_TRANSLATED'],0,strrpos($_SERVER['PATH_TRANSLATED'],'/')) . '/../') . '/';	
+	$approot = realpath(substr($_SERVER['PATH_TRANSLATED'],0,strrpos($_SERVER['PATH_TRANSLATED'],'/')) . '/../../') . '/';	
 }
 
 
@@ -37,23 +37,7 @@ require_once($approot . 'lib/class.Scan_type.php');
 // Make sure of the environment
 global $add_edit;
 if(php_sapi_name() != 'cli') {
-	
-	$is_executable[] = array('xprobe2_scan.php' => 'xprobe2 scan');
-	global $javascripts;
-	$javascripts .= <<<EOT
-	<script type="text/javascript">
-		function xprobe2_display() {
-			var xprobe2HTML = "<p>Xprobe2 uses port data from the database to determine operating systems and update host records.</p>";
-			xprobe2HTML += "<p>xprobe2  is  an  active  operating system fingerprinting tool with a different approach to operating system";
-			xprobe2HTML += "fingerprinting. xprobe2 relies on fuzzy signature matching, probabilistic guesses, multiple matches  simul-";
-			xprobe2HTML += "taneously, and a signature database.</p>";
-			xprobe2HTML += "<p>The  operation  of  xprobe2  is  described in a paper titled \"xprobe2 - A ´Fuzzy´ Approach to Remote Active";
-			xprobe2HTML += "Operating System Fingerprinting\".</p>";
-			document.getElementById("specs").innerHTML = xprobe2HTML;
-		}
-	</script>
-EOT;
-	$onselects['xprobe2_scan.php'] = 'xprobe2_display()';
+  // Error, we shouldn't use this script from the web interface
 }
 else {	
 	// Set high mem limit to prevent resource exhaustion

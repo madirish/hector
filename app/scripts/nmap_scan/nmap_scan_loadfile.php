@@ -19,7 +19,7 @@
  */
 if(php_sapi_name() == 'cli') {
 	$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-	$approot = realpath(substr($_SERVER['PATH_TRANSLATED'],0,strrpos($_SERVER['PATH_TRANSLATED'],'/')) . '/../') . '/';	
+	$approot = realpath(substr($_SERVER['PATH_TRANSLATED'],0,strrpos($_SERVER['PATH_TRANSLATED'],'/')) . '/../../') . '/';	
 
 	/**
 	 * Neccesary includes
@@ -34,7 +34,7 @@ if(php_sapi_name() == 'cli') {
 	// Set high mem limit to prevent resource exhaustion
 	ini_set('memory_limit', '512M');
 	
-	syslog(LOG_INFO, 'Nmap_scan_loadfile.php starting.');
+	syslog(LOG_INFO, 'nmap_scan_loadfile.php starting.');
 	
 	// Make sure we have some functions that may come from nmap_scan
 	if (! function_exists("show_help")) {

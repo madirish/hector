@@ -161,18 +161,21 @@ else {
 		}
 	}
 	$filter = '';
+	$host_ids = array_unique($host_ids);
 	
 	// Restrict machines based on port specifications
 	if ($hasport != null || $hasudpport != null) {
 		if ($hasport != null) {
 			$filter .= ' AND  ' .
-				'(nsr.state_id=1 AND nsr.nmap_result_protocol = "tcp" AND nsr.nmap_result_port_number in (' . mysql_real_escape_string($hasport) . ')';
-			$filter .= ' AND nsr.host_id IN (' . implode(',',$host_ids) . ')';
+				'(nsr.state_id=1 AND nsr.nmap_result_protocol = "tcp" AND ' .
+				' nsr.nmap_result_port_number in (' . mysql_real_escape_string($hasport) . ')';
+			$filter .= ' AND nsr.host_id IN (' . implode(',',$host_ids) . '))';
 		}
 		if ($hasudpport != null) {
 			$filter .= ' AND ' .
-				'(nsr.state_id=1 AND nsr.nmap_result_protocol = "udp" AND nsr.nmap_result_port_number in (' . mysql_real_escape_string($hasudpport) . ')';
-			$filter .= ' AND nsr.host_id IN (' . implode(',',$host_ids) . ')';
+				'(nsr.state_id=1 AND nsr.nmap_result_protocol = "udp" AND ' .
+				'nsr.nmap_result_port_number in (' . mysql_real_escape_string($hasudpport) . ')';
+			$filter .= ' AND nsr.host_id IN (' . implode(',',$host_ids) . '))';
 		}
 		$prevscan = new Collection('Nmap_result', $filter);
 		if (isset($prevscan->members) && is_array($prevscan->members)) {
@@ -207,7 +210,7 @@ else {
 	loggit("nmap_scan.php process", "The command: " . $command . " completed!");
 	
 	// Run the import
-	system('/usr/bin/php ' . $approot . 'scripts/nmap_scan_loadfile.php ' . $xmloutput);
+	system('/usr/bin/php ' . $approot . 'scripts/nmap_scan/nmap_scan_loadfile.php ' . $xmloutput);
 	
 	// Shut down nicely
 	loggit("nmap_scan.php status", "Nmap scan complete.");

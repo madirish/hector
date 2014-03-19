@@ -134,8 +134,10 @@ else {
 	$command = $ncrack;
 	$command .= ' -p ' . $services;
 	if ($delay != null) $command .= ' -g cd=' . $delay;
-	$command .= ' --user ' . implode(',', $usernames);
-	$command .= ' --pass ' . implode(',', $passwords);
+	if (count($usernames) > 0)
+		$command .= ' --user ' . implode(',', $usernames);
+	if (count($passwords) > 0)
+		$command .= ' --pass ' . implode(',', $passwords);
 	$command .= ' ' . implode(' ', array_keys($hosts));
 	ncrack_loggit("ncrack_scan.php status", $command);
 	$output = shell_exec($command);

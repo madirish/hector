@@ -79,7 +79,15 @@ class LogEntry:
       return "0000-00-00 00:00:00"
     else:
       return self.date
-    
+  
+  
+  def get_dst_ip(self, msg):
+  	if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Beginning get_dst_ip")
+  	if msg.find("DST=") > -1 :
+			return msg[msg.find("DST=") + 4:].split(' ')[0]
+  	else:
+			return 0
+          
   def get_host_id(self):
     """Return the host id from the database, or zero."""
     retval = 0
@@ -98,12 +106,45 @@ class LogEntry:
     if DEBUG: print("returning %s" % (retval,))
     return int(retval)
     
+  def get_koj_loginname(self, msg):
+  	if msg.find("login attempt [") > -1:
+  		return msg[msg.find("login attempt [") + 15:].split(' ')[0]
+  	else:
+  		return 0
+  	
+  def get_koj_password(self, msg):
+  	if msg.find("login attempt [") > -1 :
+  		return msg[msg.find("login attempt [") + 14:].split(' ')[1].split(']')[0]
+  	else:
+  		return 0
+  	
   def get_alert_log(self):
     """Return the log this alert was generated from, or blank."""
     if self.alert_log is None:
       return ""
     else:
       return self.alert_log
+  
+  def get_proto(self, msg):
+  	if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Beginning get_proto")
+  	if msg.find("PROTO=") > -1:
+  		return msg[msg.find("PROTO=") + 6:].split(' ')[0]
+  	else:
+  		return 0
+      
+  def get_src_port(self, msg):
+  	if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Beginning get_src_port")
+  	if msg.find("SPT=") > -1:
+	  	return msg[msg.find("SPT=") + 4:].split(' ')[0]
+  	else:
+	  	return 0
+	  
+  def get_dst_port(self, msg):
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Beginning get_dst_port")
+    if msg.find("DPT=") > -1:
+      return msg[msg.find("DPT=") + 4:].split(' ')[0]
+    else:
+      return 0
   
   def get_rule_id(self):
     """Return the rule_id from the database, or zero."""
@@ -285,38 +326,51 @@ class LogEntry:
           # darknet log
           if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Darknet packet detected!")
           self.log_darknet()
+        elif self.get_message().find("] login attempt [") > -1 : 
+          # Kojoney login attempt
+          self.log_kojlogin()
+        elif self.get_message().find("] COMMAND IS :") > -1 :
+          # Kojoney command
+          self.log_kojcommand()
         else :
           if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Not a darknet packet alert.")
-          
     except Exception as err:
       # syslog.syslog("There was an issue saving an OSSEC alert: ", err)
       print "Transaction error saving LogEntry object " , err
-  
-  def get_proto(self, msg):
-    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Beginning get_proto")
-    if msg.find("PROTO=") > -1:
-      return msg[msg.find("PROTO=") + 6:].split(' ')[0]
-    else:
-      return 0
-  def get_src_port(self, msg):
-    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Beginning get_src_port")
-    if msg.find("SPT=") > -1:
-      return msg[msg.find("SPT=") + 4:].split(' ')[0]
-    else:
-      return 0
-  def get_dst_port(self, msg):
-    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Beginning get_dst_port")
-    if msg.find("DPT=") > -1:
-      return msg[msg.find("DPT=") + 4:].split(' ')[0]
-    else:
-      return 0
-  def get_dst_ip(self, msg):
-    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Beginning get_dst_ip")
-    if msg.find("DST=") > -1:
-      return msg[msg.find("DST=") + 4:].split(' ')[0]
-    else:
-      return 0
     
+  def log_kojcommand(self):
+  	try:
+  		cursor = self.conn.cursor()
+  		sql = 'insert into koj_executed_command set '
+  		sql += ' ip = %s, '
+  		sql += ' ip_numeric = INET_ATON(%s), '
+  		sql += ' command = %s '
+  		cursor.execute(sql, (self.get_src_ip(),
+  			self.get_src_ip(),
+  			self.get_message()[self.get_message().find("COMMAND IS :") + 13 :]
+  			))
+  		self.conn.commit()
+  		cursor.close()
+  	except Exception as err:
+  		print("There was an issue saving a kojoney command: ", err)
+  	
+  def log_kojlogin(self):
+  	try:
+  		cursor = self.conn.cursor()
+  		sql = 'insert into koj_login_attempt set '
+  		sql += ' ip = %s, '
+  		sql += ' ip_numeric = INET_ATON(%s), '
+  		sql += ' username = %s,'
+  		sql += ' password = %s'
+  		cursor.execute(sql, (self.get_src_ip(),
+  			self.get_src_ip(),
+  			self.get_koj_loginname(self.get_message()),
+  			self.get_koj_password(self.get_message())))
+  		self.conn.commit()
+  		cursor.close()
+  	except Exception as err:
+  		print("There was an issues saving a kojoney login attempt: ", err)
+  		
   def log_darknet(self):
     if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Beginning log_darknet()")
     try:

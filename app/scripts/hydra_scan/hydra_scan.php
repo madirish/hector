@@ -128,38 +128,35 @@ else {
     $fp = fopen($approot . 'scripts/hydra_scan/passwords.txt', 'w');
     foreach($results as $result) fwrite($fp, $result->passwd . "\n");
     fclose($fp);
+    $fp = fopen($approot . 'scripts/hydra_scan/targets.txt', 'w');
+    foreach ($hosts as $ip=>$host) fwrite($fp, $ip . "\n");
+    fclose($fp);
 
-    foreach ($hosts as $ip=>$host) {
-        $command = $hydra;
-        $command .= ' -L ' .  $approot . 'scripts/hydra_scan/usernames.txt '; 
-        $command .= ' -P ' .  $approot . 'scripts/hydra_scan/passwords.txt '; 
-        $command .= ' ' . $ip;
-        $command .= ' ' . $services;
-    
-        hydra_loggit("hydra_scan.php status", $command);
-        //print("Preparing to execute command: \n");
-        print($command . "\n");
-        exec(escapeshellcmd($command), $output, $retval);
-        if ($retval != 0) {
-            syslog(LOG_WARNING, 'hydra_scan error!  retval was ' . $retval);
-        }
-        print_r($output);
-        foreach ($output as $line) {
-            //print($line . "\n");
-            // ex: [22][ssh] host: 10.10.0.23   login: root   password: password
-            if(preg_match_all("/\[(\d+)\]\[(\w+)\]\W+host\:\W+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\W+login:\W+(\w+)\W+password:\W+([[:graph:]]+)/", $line, $matches, PREG_SET_ORDER)) {
-                print_r($matches);
-                foreach($matches as $match) {
-                    $text = 'Easily guessed credentials for service: ' . $match[3] . 
-                            ' on port: ' . $match[1] . ' (service ' . $match[2] . ')' .
-                            ' with credentials: (' . $match[4] . ':' . $match[5] . ')';
-                    $vuln_detail = new Vuln_detail();
-                    $vuln_detail->set_vuln_id($vuln->get_id());
-                    $vuln_detail->set_text($text);
-                    $vuln_detail->set_host_id($hosts[$match[3]]->get_id());
-                    $vuln_detail->save();
-                    print "Saved\n";
-                }
+    $command = $hydra;
+    $command .= ' -L ' . $approot . 'scripts/hydra_scan/usernames.txt '; 
+    $command .= ' -P ' . $approot . 'scripts/hydra_scan/passwords.txt '; 
+    $command .= ' -M ' . $approot . 'scripts/hydra_scan/targets.txt '; 
+    $command .= ' ' . $services;
+
+    hydra_loggit("hydra_scan.php status", $command);
+  
+    exec(escapeshellcmd($command), $output, $retval);
+    if ($retval != 0) {
+        syslog(LOG_WARNING, 'hydra_scan error!  retval was ' . $retval);
+    }
+
+    foreach ($output as $line) {
+        // ex: [22][ssh] host: 10.10.0.23   login: root   password: password
+        if(preg_match_all("/\[(\d+)\]\[(\w+)\]\W+host\:\W+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\W+login:\W+(\w+)\W+password:\W+([[:graph:]]+)/", $line, $matches, PREG_SET_ORDER)) {
+            foreach($matches as $match) {
+                $text = 'Easily guessed credentials for service: ' . $match[3] . 
+                        ' on port: ' . $match[1] . ' (service ' . $match[2] . ')' .
+                        ' with credentials: (' . $match[4] . ':' . $match[5] . ')';
+                $vuln_detail = new Vuln_detail();
+                $vuln_detail->set_vuln_id($vuln->get_id());
+                $vuln_detail->set_text($text);
+                $vuln_detail->set_host_id($hosts[$match[3]]->get_id());
+                $vuln_detail->save();
             }
         }
     }

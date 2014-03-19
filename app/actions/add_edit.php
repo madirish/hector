@@ -23,6 +23,7 @@ else {
 		$id = isset($_GET['id']) ? intval($_GET['id']) : '';
 		$generic = new $object($id);
 		// Include any object specific JavaScripts if necessary
+		$footer_scripts = '';
 		if (method_exists($generic,'get_footer_scripts')) $footer_scripts .= $generic->get_footer_scripts();
 		
 		// Work out the display
@@ -101,44 +102,18 @@ else {
 				$template = 'add_edit_user';
 				break;
 			case 'Scan_type':
-				$template = 'add_edit_scan_type';
+				if (isset($_GET['id'])) {
+                    $scandir = substr($generic->get_script(), 0, -4);
+                    $template = 'edit_scan_type';
+                }
+				else 
+					$template = 'add_scan_type';
+				break;
 				break;
 			default:
 				$template = 'add_edit';
 		}
-		$object_readable = str_ireplace("_"," ", $object);
-		switch ($object) {
-			case 'Scan':
-				$object_readable = 'Scan Schedule';
-				break;
-			case 'Supportgroup':
-				$object_readable = 'Support Group';
-				break;
-			case 'Vuln':
-				$object_readable = 'Vulnerability Class';
-				break;
-			case 'Api_key':
-				$object_readable = 'API Key';
-				break;
-			case 'IRAction':
-				$object_readable = 'Incident Report Action';
-				break;
-			case 'IRAgent':
-				$object_readable = 'Incident Report Agent';
-				break;
-			case 'IRAsset':
-				$object_readable = 'Incident Report Asset';
-				break;
-			case 'IRDiscovery':
-				$object_readable = 'Incident Report Discovery Method';
-				break;
-			case 'IRMagnitude':
-				$object_readable = 'Incident Report Magnitude';
-				break;
-			case 'IRTimeframe':
-				$object_readable = 'Incident Report Timeframe';
-				break;
-		}
+		$object_readable = method_exists($generic, 'get_label') ? $generic->get_label() : str_ireplace("_"," ", $object);
 		$form = new Form();
 		$form->set_name($form_name);
 		$token = $form->get_token();

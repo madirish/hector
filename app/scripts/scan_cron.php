@@ -14,12 +14,13 @@
  * Make sure of the environment
  */ 
 if(php_sapi_name() == 'cli') {
-	system('/bin/python ' . $approot . 'scripts/rssimport.py');
 	/**
 	 * Defined vars
 	 */
 	$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 	$approot = realpath(substr($_SERVER['PATH_TRANSLATED'],0,strrpos($_SERVER['PATH_TRANSLATED'],'/')) . '/../') . '/';
+    
+	system('/usr/bin/python ' . $approot . 'scripts/rssimport.py');
 	
 	/**
 	 * Neccesary includes
@@ -50,16 +51,22 @@ if(php_sapi_name() == 'cli') {
 			
 			// Enumerate the scripts
 			$script = $scan->get_type()->get_script();
+			// ex: /usr/bin/php /opt/hector/app/scripts/nmap_scan/nmap_scan.php
+			$scriptfile = $approot . 'scripts/' . substr($script, 0, -4) . '/' . $script;
 			$flags = $scan->get_type()->get_flags();
 			// Set flags for group targets
 			$flags .= " " . $scan->get_group_flags();
-			// Log the result
-			syslog(LOG_INFO, 'scan_cron.php is running ' . $script . ' ' . $flags);
 			$alert = new Alert();
 			$alert->set_host_id(1);
 			$alert->set_string('Scan ' . $scan->get_name() . ' finished successfully!');
 			// Run the scan
-			system('/usr/bin/php ' . $approot . 'scripts/' . $script . ' ' . $flags);
+			if (is_file($scriptfile)) {
+				$last_line = system('/usr/bin/php ' . $scriptfile . ' ' . $flags, $retval);
+				// Log the result
+				syslog(LOG_INFO, 'scan_cron.php ran ' . $scriptfile . ' ' . $flags . ' [retval was ' . $retval . ']');
+			}				
+			else 
+				syslog(LOG_ERROR, 'scan_cron.php cannot file the file ' . $scriptfile);
 			
 			// Alert
 			$alert->save();

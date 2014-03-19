@@ -8,6 +8,9 @@
 /**
  * Setup defaults.
  */
+ 
+$object_readable = 'Unknown';
+
 if (! isset($_GET['object'])) {
 	// in case we don't have the right input
 	$template = 'default';
@@ -25,6 +28,7 @@ else {
 	}
 	$message = 'Record deleted';
 	$_GET['id'] = null;
+	$object_readable = method_exists($target, 'get_label') ? $target->get_label() : str_ireplace("_"," ", $object);
 }
 if (isset($_GET['ajax'])) {
 	$ajax = true;

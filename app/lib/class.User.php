@@ -265,6 +265,17 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 		if ((boolean) $this->is_admin) $retval = 'Yes';
 		return $retval;
 	}
+	
+	/**
+     * Return the printable string use for the object in interfaces
+     *
+     * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return String The printable string of the object name
+     */
+    public function get_label() {
+        return 'User';
+    } 
 
 	/**
 	 * Get the HTML display safe user name

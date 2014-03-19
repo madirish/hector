@@ -2,11 +2,13 @@
 """
 This script is part of HECTOR.
 by Justin C. Klein Keane <jukeane@sas.upenn.edu>
-Last modified: 07 May, 2013
+Last modified: 17 Mar 2014
 
 This script is a daemonized log observer that parses OSSEC logs and then
 imports them into the HECTOR database.  It is intended to be run from the
 /etc/init.d/hector-ossec-mysql script included with HECTOR
+
+@TODO: Determine the correct host_id from the source column
 """
 import MySQLdb
 import time
@@ -25,6 +27,8 @@ PASSWORD = configr.get('hector', 'db_pass')
 DB = configr.get('hector', 'db')
 PORT = 3306
 DEBUG = False
+
+syslog.openlog('hector-ossec-mysql')
 
 class LogEntry: 
   """ This is just the object that we craft to 
@@ -78,10 +82,21 @@ class LogEntry:
     
   def get_host_id(self):
     """Return the host id from the database, or zero."""
+    retval = 0
     if self.host_id is None:
-      return 0
+      """ Try looking it up """
+      cursor = self.conn.cursor()
+      cursor.execute(""" SELECT host_id FROM host WHERE host_ip = %s""", self.get_src_ip())
+      host_id = cursor.fetchone()[0]
+      if host_id == None :
+      	retval = 0
+      else:
+      	self.host_id = host_id
+      	retval = host_id
     else:
-      return self.host_id
+      retval = self.host_id
+    if DEBUG: print("returning %s" % (retval,))
+    return int(retval)
     
   def get_alert_log(self):
     """Return the log this alert was generated from, or blank."""
@@ -100,7 +115,7 @@ class LogEntry:
   def get_src_ip(self):
     """Return the source id from the alert, or zero."""
     if self.src_ip is None:
-      return "0.0.0.0"
+      return "127.0.0.1"
     elif self.src_ip == "(none)":
       return "127.0.0.1"
     else:
@@ -177,7 +192,7 @@ class LogEntry:
     number = rulesplit[1]
     message = rulestr.split('->')[1][2:-1]
     level = rulesplit[3][0:-1]
-    if DEBUG : syslog.syslog("Attempting to set new rule number %s" % number)
+    if DEBUG : print("Attempting to set new rule number %s" % number)
     try:
       cursor = self.conn.cursor()
       sql = 'insert into ossec_rule set '
@@ -192,8 +207,7 @@ class LogEntry:
         return False
       return True
     except Exception as err:
-      syslog.syslog("There was an issue saving a new rule: ", err)
-      # print "Transaction error saving new rule (set_new_rule()) in LogEntry object " , err
+      print "Transaction error saving new rule (set_new_rule()) in LogEntry object " , err
       return False
     
   # OSSEC alerts identifiers in the form 1297702559.16083181
@@ -217,7 +231,6 @@ class LogEntry:
       sql = 'select rule_id from ossec_rule where rule_number = %s'
       cursor.execute(sql , (rule_number)) 
       rule_id = int(cursor.fetchone()[0])
-      print "Rule id is %d" % rule_id
     except Exception as err:
       # this error output is useless, always prints out: 'NoneType' object is unsubscriptable
       #syslog.syslog("Transaction error in set_rule_id() in LogEntry object:" , err)
@@ -241,7 +254,7 @@ class LogEntry:
     
   def save(self):
     """Persist the complete record back to the database."""
-    if DEBUG : syslog.syslog("Beginning OSSEC alert save()")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Beginning OSSEC alert save()")
     try:
       # Make sure we have a valid entry to cut down on db interacts
       if self.get_ossec_alert_id() > 0 and self.get_src_ip() > 0:
@@ -256,12 +269,13 @@ class LogEntry:
         sql += ' rule_src_ip = %s, '
         sql += ' rule_src_ip_numeric = INET_ATON(%s), '
         sql += ' alert_ossec_id = %s '
+        if DEBUG : print "Host id is %d" % self.get_host_id()
         cursor.execute(sql , (self.get_date(),
                               self.get_host_id(),
-                              self.get_message(),
+                              self.get_alert_log(),
                               self.get_rule_id(),
                               self.get_user(),
-                              self.get_alert_log(),
+                              self.get_message(),
                               self.get_src_ip(),
                               self.get_src_ip(),
                               self.get_ossec_alert_id()))
@@ -269,42 +283,42 @@ class LogEntry:
         cursor.close()
         if self.get_message().find("iptables IN=") > -1 :
           # darknet log
-          if DEBUG : syslog.syslog("Darknet packet detected!")
+          if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Darknet packet detected!")
           self.log_darknet()
         else :
-          if DEBUG : syslog.syslog("Not a darknet packet alert.")
+          if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Not a darknet packet alert.")
           
     except Exception as err:
-      syslog.syslog("There was an issue saving an OSSEC alert: ", err)
-      # print "Transaction error saving LogEntry object " , err
+      # syslog.syslog("There was an issue saving an OSSEC alert: ", err)
+      print "Transaction error saving LogEntry object " , err
   
   def get_proto(self, msg):
-    if DEBUG : syslog.syslog("Beginning get_proto")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Beginning get_proto")
     if msg.find("PROTO=") > -1:
       return msg[msg.find("PROTO=") + 6:].split(' ')[0]
     else:
       return 0
   def get_src_port(self, msg):
-    if DEBUG : syslog.syslog("Beginning get_src_port")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Beginning get_src_port")
     if msg.find("SPT=") > -1:
       return msg[msg.find("SPT=") + 4:].split(' ')[0]
     else:
       return 0
   def get_dst_port(self, msg):
-    if DEBUG : syslog.syslog("Beginning get_dst_port")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Beginning get_dst_port")
     if msg.find("DPT=") > -1:
       return msg[msg.find("DPT=") + 4:].split(' ')[0]
     else:
       return 0
   def get_dst_ip(self, msg):
-    if DEBUG : syslog.syslog("Beginning get_dst_ip")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Beginning get_dst_ip")
     if msg.find("DST=") > -1:
       return msg[msg.find("DST=") + 4:].split(' ')[0]
     else:
       return 0
     
   def log_darknet(self):
-    if DEBUG : syslog.syslog("Beginning log_darknet()")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Beginning log_darknet()")
     try:
       cursor = self.conn.cursor()
       sql = 'insert into darknet set '
@@ -314,23 +328,23 @@ class LogEntry:
       sql += ' dst_port = %s, '
       sql += ' proto = %s, '
       sql += ' received_at = STR_TO_DATE(%s,\'%%Y %%b %%d %%H:%%i:%%s\') ' 
-      if DEBUG : syslog.syslog("SQL composed in log_darknet()")
+      if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "SQL composed in log_darknet()")
       src_port = self.get_src_port(self.get_message())
       dst_port = self.get_dst_port(self.get_message())
       dst_ip = self.get_dst_ip(self.get_message())
       proto = self.get_proto(self.get_message())
-      if DEBUG : syslog.syslog("Starting cursor execution in log_darknet().")
+      if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Starting cursor execution in log_darknet().")
       cursor.execute(sql , (self.get_src_ip(),
                             dst_ip,
                             src_port,
                             dst_port,
                             proto,
                             self.get_date()))
-      if DEBUG : syslog.syslog("SQL executed in log_darknet()")
+      if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "SQL executed in log_darknet()")
       self.conn.commit() 
       cursor.close()
     except Exception as err:
-      syslog.syslog("There was an issue saving a darknet sensor alert: ", err)
+      print("There was an issue saving a darknet sensor alert: ", err)
 
 import unittest
 
@@ -348,7 +362,7 @@ class TestLogEntry(unittest.TestCase):
                                   port=PORT)
     except Exception as err:
       print "Error connecting to the database" , err
-      syslog.syslog("Error connecting to the database" , err)
+      syslog.syslog(syslog.LOG_ERR, "Error connecting to the database" , err)
       
     self.log = LogEntry(self.conn)
     self.log.process("** Alert 1297702559.16083181: - apache,")
@@ -387,143 +401,12 @@ class TestLogEntry(unittest.TestCase):
     self.assertEqual(self.log.get_user(), "(none)")
   def test_get_message(self):
     self.assertEqual(self.log.get_message(), "[Mon Feb 14 11:56:00 2011] [error] [client 128.91.34.6] PHP Warning:  Call-time pass-by-reference has been deprecated - argument passed by value;  If you would like to pass it by reference, modify the declaration of task_send_extra_email().  If you would like to enable call-time pass-by-reference, you can set allow_call_time_pass_reference to true in your INI file.  However, future versions may not support this any longer.  in /www/data/drupal-6.19/sites/oni.sas.upenn.edu.taskmgr/modules/task/task.module on line 254, referer: https://oni.sas.upenn.edu/taskmgr/")
-
-import sys, os, time, atexit
-from signal import SIGTERM
- 
-class Daemon:
-        """
-        A generic daemon class from http://www.jejik.com/articles/2007/02/a_simple_unix_linux_daemon_in_python/
-       
-        Usage: subclass the Daemon class and override the run() method
-        """
-        def __init__(self, pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
-                self.stdin = stdin
-                self.stdout = stdout
-                self.stderr = stderr
-                self.pidfile = pidfile
-       
-        def daemonize(self):
-                """
-                do the UNIX double-fork magic, see Stevens' "Advanced
-                Programming in the UNIX Environment" for details (ISBN 0201563177)
-                http://www.erlenstar.demon.co.uk/unix/faq_2.html#SEC16
-                """
-                try:
-                  pid = os.fork()
-                  if pid > 0:
-                    # exit first parent
-                    sys.exit(0)
-                except OSError, e:
-                  sys.stderr.write("fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
-                  syslog.syslog("fork #1 in Daemon failed: %d (%s)" % (e.errno, e.strerror))
-                  sys.exit(1)
-       
-                # decouple from parent environment
-                os.chdir("/")
-                os.setsid()
-                os.umask(0)
-       
-                # do second fork
-                try:
-                  pid = os.fork()
-                  if pid > 0:
-                    # exit from second parent
-                    sys.exit(0)
-                except OSError, e:
-                  sys.stderr.write("fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
-                  syslog.syslog("fork #2 in Daemon failed: %d (%s)" % (e.errno, e.strerror))
-                  sys.exit(1)
-       
-                # redirect standard file descriptors
-                sys.stdout.flush()
-                sys.stderr.flush()
-                si = file(self.stdin, 'r')
-                so = file(self.stdout, 'a+')
-                se = file(self.stderr, 'a+', 0)
-                os.dup2(si.fileno(), sys.stdin.fileno())
-                os.dup2(so.fileno(), sys.stdout.fileno())
-                os.dup2(se.fileno(), sys.stderr.fileno())
-       
-                # write pidfile
-                os.umask(077)
-                atexit.register(self.delpid)
-                pid = str(os.getpid())
-                file(self.pidfile,'w+').write("%s\n" % pid)
-       
-        def delpid(self):
-                os.remove(self.pidfile)
- 
-        def start(self):
-                """
-                Start the daemon
-                """
-                # Check for a pidfile to see if the daemon already runs
-                try:
-                  pf = file(self.pidfile,'r')
-                  pid = int(pf.read().strip())
-                  pf.close()
-                except IOError:
-                  pid = None
-       
-                if pid:
-                  message = "pidfile %s already exist. Daemon already running?\n"
-                  syslog.syslog("pidfile %s already exist. Daemon already running?" % self.pidfile)
-                  sys.stderr.write(message % self.pidfile)
-                  sys.exit(1)
-               
-                # Start the daemon
-                self.daemonize()
-                self.run()
- 
-        def stop(self):
-                """
-                Stop the daemon
-                """
-                # Get the pid from the pidfile
-                try:
-                  pf = file(self.pidfile,'r')
-                  pid = int(pf.read().strip())
-                  pf.close()
-                except IOError:
-                  syslog.syslog("There was an error closing put the pidfile in stop")
-                  pid = None
-       
-                if not pid:
-                  message = "pidfile %s does not exist. Daemon not running?\n"
-                  syslog.syslog("pidfile %s does not exist. Daemon not running?" % self.pidfile)
-                  sys.stderr.write(message % self.pidfile)
-                  return # not an error in a restart
- 
-                # Try killing the daemon process       
-                try:
-                  while 1:
-                    os.kill(pid, SIGTERM)
-                    time.sleep(0.1)
-                except OSError, err:
-                  err = str(err)
-                  if err.find("No such process") > 0:
-                    if os.path.exists(self.pidfile):
-                      os.remove(self.pidfile)
-                  else:
-                    print str(err)
-                    sys.exit(1)
- 
-        def restart(self):
-                """
-                Restart the daemon
-                """
-                self.stop()
-                self.start()
- 
-        def run(self):
-                """
-                Nothing to see here, move along. Move along.
-                """
                 
 from datetime import date
+import sys, os, time, atexit
+from signal import SIGTERM
 
-class OSSECLogParser(Daemon):
+class OSSECLogParser():
   """This is the log watching object that tails the ossec alert file
   and writes entries into the database.
   """
@@ -532,13 +415,17 @@ class OSSECLogParser(Daemon):
   daystr = None
   yearstr = None
   monthstr = None
+  
+  def __init__(self):
+  	while True:
+  		self.do_log()
 
   def follow(self):
     """Tail (follow) the log file and parse it into the database."""
-    if DEBUG : syslog.syslog("Beginning follow")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Beginning follow")
     self.logfile.seek(0,2)      # Go to the end of the file
     sleep = 0.00001
-    if DEBUG: syslog.syslog("Entering follow loop")
+    if DEBUG: syslog.syslog(syslog.LOG_DEBUG, "Entering follow loop")
     try:
       while True:
         # Roll to the new logfile each day
@@ -553,24 +440,18 @@ class OSSECLogParser(Daemon):
         sleep = 0.00001
         yield line
     except Exception as err:
-      syslog.syslog("Error in follow method: ", err)
-      
-  def run(self):
-    """Start the process, extended from Daemon."""
-    while True:
-      self.do_log()
-      #time.sleep(1)
+      syslog.syslog(syslog.LOG_ERR, "Error in follow method: ", err)
       
   def get_logfile(self):
     """ Create a singleton of the log file which will
     rotate daily as the OSSEC scheduler archives older
     logs.
     """ 
-    if DEBUG : syslog.syslog("Start get_logfile")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Start get_logfile")
     if self.logfile is not None:
       self.logfile.close()
       
-    if DEBUG : syslog.syslog("Closed logfile loop passed")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Closed logfile loop passed")
     # We have to open the days log in order to maintain our lock on 
     # the file as the time passes midnight
     
@@ -582,17 +463,17 @@ class OSSECLogParser(Daemon):
       self.daystr = '0' + self.daystr
     self.logdir = '/var/ossec/logs/alerts/' + self.yearstr + '/' + self.monthstr + '/ossec-alerts-' + self.daystr + '.log'
       
-    if DEBUG : syslog.syslog("Strings set up, opening log file %s." % self.logdir)
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Strings set up, opening log file %s." % self.logdir)
     # Wait until OSSEC rotates the logfile into existence
     while not os.path.exists(self.logdir) :
-        syslog.syslog("File doesn't exist yet, passing a cycle")
+        syslog.syslog(syslog.LOG_INFO, "File doesn't exist yet, passing a cycle")
         pass
     try: 
       self.logfile = open(self.logdir)
-      syslog.syslog("Opened logfile %s" % self.logdir)
+      syslog.syslog(syslog.LOG_INFO, "Opened logfile %s" % self.logdir)
     except Exception as err:
       syslog.syslog("Error opening logfile %s " % self.logdir, err)
-    if DEBUG : syslog.syslog("get_logfile is done")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "get_logfile is done")
     
   def do_log(self):
     """Connect to the database and watch the logfile."""
@@ -603,17 +484,17 @@ class OSSECLogParser(Daemon):
                                   db=DB,
                                   port=PORT)
     except Exception as err:
-      syslog.syslog("Error connecting to the database: " , err)
+      syslog.syslog(syslog.LOG_ERR, "Error connecting to the database: " , err)
       print "Error connecting to the database" , err
-    if DEBUG : syslog.syslog("Looking up logfile from do_log")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Looking up logfile from do_log")
     self.get_logfile()
-    if DEBUG : syslog.syslog("Logfile open")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Logfile open")
     loglines = self.follow()
-    if DEBUG : syslog.syslog("Opening db connection")
+    if DEBUG : syslog.syslog(syslog.LOG_DEBUG, "Opening db connection")
     log = LogEntry(conn)
     for line in loglines:
-      # start a new log if necessary
-      if line[0:8] == '** Alert':
+      # Blank lines separate log entries, save the old one.
+      if line.strip() == '':
         if log.get_ossec_alert_id() is not "":
           if DEBUG : print log.get_alert_log()
           if DEBUG : print log.get_date()
@@ -624,19 +505,15 @@ class OSSECLogParser(Daemon):
           if DEBUG : print log.get_src_ip()
           if DEBUG : print log.get_user()
           log.save()
+          
+      # start a new log on Alert
+      if line[0:8] == '** Alert':
         log.clear()
       log.process(line)
           
 if __name__ == '__main__':
-  daemon = OSSECLogParser('/tmp/hector-ossec-mysql.pid')
   if len(sys.argv) == 2:
-    if 'start' == sys.argv[1]:
-      daemon.start()
-    elif 'stop' == sys.argv[1]:
-      daemon.stop()
-    elif 'restart' == sys.argv[1]:
-      daemon.restart()
-    elif 'test' == sys.argv[1]:
+    if 'test' == sys.argv[1]:
       suite = unittest.TestLoader().loadTestsFromTestCase(TestLogEntry)
       unittest.TextTestRunner(verbosity=2).run(suite)
     else:
@@ -644,7 +521,7 @@ if __name__ == '__main__':
       sys.exit(2)
     sys.exit(0)
   else:
-    print "usage: %s start|stop|restart|test" % sys.argv[0]
-    sys.exit(2)
+  	parser = OSSECLogParser()
+sys.exit(0)
 
     

@@ -243,6 +243,17 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
     }
     
     /**
+     * Return the printable string use for the object in interfaces
+     *
+     * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return String The printable string of the object name
+     */
+    public function get_label() {
+        return 'Vulnerability';
+    } 
+    
+    /**
      * Return the display safe name
      * 
      * @access public

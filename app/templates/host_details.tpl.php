@@ -1,3 +1,7 @@
+<?php if (isset($message)) {?>
+<div id="message" class="alert"><?php echo $message;?></div>
+<?php } ?>
+
 <div class="row">
 <div class="span5">
 <table id="host_details" class="table table-bordered">
@@ -151,5 +155,25 @@ foreach($host->get_urls() as $url) {
 <?php } ?> 
 </tbody>
 </table>
+</div>
+</div>
+<div colspan="12"><table><tr>
+    <td class="editcell"><a class="btn" title="Edit this item" href="?action=add_edit&object=host&id=<?php echo $host->get_id();?>">Edit</a></td>
+    <td class="deletecell"><a href="#deleteModal<?php echo $host->get_id();?>" role="button" class="btn" data-toggle="modal">Delete</a></td>
+</tr></table>
+</div>
+
+<!-- Delete Modal -->
+<div id="deleteModal<?php echo $host->get_id();?>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 id="deleteModalLabel">Confirm delete!</h3>
+</div>
+<div class="modal-body">
+<p><i class="icon-warning-sign"></i> You are about to <em>permanently</em> delete this record.  This cannot be undone.  Please confirm that you wish to proceed.</p>
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+<a class="btn btn-danger" href="?action=delete&object=host&id=<?php echo $host->get_id();?>">Confirm delete</a>
 </div>
 </div>

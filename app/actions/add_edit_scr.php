@@ -44,6 +44,9 @@ if (isset($template) && $template == 'default') {
 }
 else {	
 	$_GET['action'] = 'details';
-	include_once($approot . 'actions/details.php');
+    if (strtolower($object) == 'host')
+        include_once($approot . 'actions/host_details.php');
+    else
+        include_once($approot . 'actions/details.php');
 }
 ?>

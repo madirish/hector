@@ -299,21 +299,20 @@ class Nessus
     }
     
    /**
-	* Retreive technical details about the scanner such as Server Version etc.
+	* Start a new scan on the nessus server.
 	*
-	* @return An array containing the server details
+	* @return An array containing scan uuid values.
 	*/
-    public function scan_new($target, $policyID) {
+    public function scan_new($target, $policy_id, $scan_name) {
 
         // Set a new the Sequence
         $this->setSequence();
-        $target = "coop.sas.upenn.edu";
-		$policyID = -1;
+
         // Set POST variables
         $fields = array(
         	"target" => urlencode($target),
-        	"policy_id" => urlencode($policyID),
-        	"scan_name" => urlencode("Scan 5"),
+        	"policy_id" => urlencode($policy_id),
+        	"scan_name" => urlencode($scan_name),
             "token" =>urlencode($this->token),
             "seq" =>urlencode($this->sequence)
         );
@@ -333,9 +332,9 @@ class Nessus
     }
     
    /**
-	* Retreive a list of all the reports in the scanner.
+	* Retreive a list of all the policies on the scanner.
 	*
-	* @return An array containing the report list
+	* @return An array containing a list of the policies
 	*/
     public function policy_list() {
 
@@ -358,7 +357,6 @@ class Nessus
         $values = array ();
         foreach ($xml->contents->policies->policy as $response) {
 	    	$values["policies"][(string)$response->policyID]["policyName"] = (string)$response->policyName;
-	    	//$values["policies"][(string)$response->policyID]["policyOwner"] = (string)$response->policyOwner;
         }
 
         // Return what we get
@@ -366,7 +364,7 @@ class Nessus
     }
     
    /**
-	* Retreive a list of all the reports in the scanner.
+	* Retreive a list of all the reports on the scanner.
 	*
 	* @return An array containing the report list
 	*/
@@ -400,9 +398,9 @@ class Nessus
     }
     
    /**
-	* Retreive a list of all the reports in the scanner.
+	* Retreive a list of all the hosts scanned
 	*
-	* @return An array containing the report list
+	* @return An array containing the list of hosts
 	*/
     public function report_hosts($uuid) {
  
@@ -432,6 +430,11 @@ class Nessus
         return($values);
     }
     
+    /**
+	* Retreive a list of all the ports scanned
+	*
+	* @return An array containing the list of all ports and protocols
+	*/
 	public function report_ports($uuid, $hostname) {
 		
 		// Set a new Sequence
@@ -444,38 +447,35 @@ class Nessus
 			"seq" => urlencode($this->sequence),
 			"token" => urlencode($this->token)
 		);
-		
+
 		// Set the API Endpoint we will call
 		$endpoint = "/report/ports";
 		
 		// Do the Request
 		$xml = $this->callApi($fields, $endpoint);
 		
-		$values = array ();
-		foreach ($xml->contents->portList->port as $response) {
-			$values["portList"][(string)$response->portNum]["protocol"] = (string)$response->protocol;
-//			if ($response->portNum == $response->portNum) {
-//				foreach ($response->portNum as $test){
-//					$values = array(
-//						"port" => $test,
-//						"protocol" => $response->protocol
-//					);
-//					print_r($values);
-//				}
-//			}
+		$values = array();
+		//$values1 =array();
+		foreach ($xml->contents->portList->port as $key => $val) {
+			$values[] = array(
+				"port" => (string)$val->portNum,
+				"protocol" => (string)$val->protocol
+			);
 		}
-		
+	
 		// Return what we got
 		return($values);
 	}
     
+    /**
+	* Retreive a list of each scan details
+	*
+	* @return An array containing the scan details
+	*/
 	public function report_details($uuid, $hostname, $port, $protocol) {
 		
 		// Set a new Sequence
 		$this->setSequence();
-		
-		//$vuln_port = "0";
-		//$protocol = "tcp";
 		
 		// Set POST variables
 		$fields = array(
@@ -503,11 +503,140 @@ class Nessus
 			$values["portDetails"][(string)$response->pluginID]["data"]["risk_factor"] = (string)$response->data->risk_factor;
 			$values["portDetails"][(string)$response->pluginID]["data"]["synopsis"] = (string)$response->data->synopsis;
 			$values["portDetails"][(string)$response->pluginID]["data"]["plugin_output"] = (string)$response->data->plugin_output;
-			//$values["portDetails"][(string)$response->pluginID]["data"]["plugin_version"] = (string)$response->data->plugin_version;
 		}
 		
 		// Return what we got
 		return($values);
 	}
+	
+	// Must be a Nessus Administrator to run this
+	public function plugins_update() {
+		
+		// Set a new Sequence
+		$this->setSequence();
+		
+		// Set POST Variables
+		$fields = array(
+			"seq" => urlencode($this->sequence),
+			"token" => urlencode($this->token)
+		);
+		
+		// Set the API Endpoint we will call
+		$endpoint = "/plugins/process";
+		
+		// Do the Request
+		$xml = $this->callApi($fields, $endpoint);
+		
+		$values = array (
+			"Status Request" => $xml->contents->plugins_processing
+		);
+		
+		// Return what we got
+		return($values);
+	}
+	
+	public function new_scan_template($template_name, $policy_id, $target, $start_time, $rrules) {
+		
+		// Set a new Sequence
+		$this->setSequence();
+		
+		// Set POST Variables
+		$fields = array (
+			"template_name" => urlencode($template_name),
+			"policy_id" => urlencode($policy_id),
+			"target" => urlencode($target),
+			"startTime" => urlencode($start_time),
+			"rRules" => urlencode($rrules),
+			"seq" => urlencode($this->sequence),
+			"token" => urlencode($this->token)
+		);
+		
+		// Set the API Endpoint we will call
+		$endpoint = "/scan/template/new";
+		
+		// Do the Request
+		$xml = $this->callApi($fields, $endpoint);
+		
+		$values = array (
+			"status" => $xml->status,
+			"template name" => $xml->contents->name
+		);
+		
+		// Return what we got
+		return($values);
+	}
+	
+	/**
+	* Retreive a list of all the active scans
+	*
+	* @return An array containing the scan ids and statuses 
+	*/
+	public function launch_scan_template($template) {
+		
+		// Set a new Sequence
+		$this->setSequence();
+		
+		// Set POST Variables
+		$fields = array (
+			"template" => urlencode($template),
+			"seq" => urlencode($this->sequence),
+			"token" => urlencode($this->token)
+		);
+		
+		// Set the API Endpoint we will call
+		$endpoint = "/scan/tmeplate/launch";
+		
+		// Do the Request
+		$xml = $this->callApi($fields, $endpoint);
+		
+		$values = array (
+			"status" => $xml->status,
+			"uuid" => $xml->contents->uuid,
+			"start time" => $xml->contents->start_time
+		);
+		
+		// Return what we got
+		return($values);
+	}
+	
+	/**
+	* Retreive a list of all the vuln information
+	*
+	* @return An array containing the cve's and osvdb's for each vuln
+	*/
+	public function report_plugin_details($uuid, $hostname, $port, $protocol, $severity, $plugin_id) {
+		
+		// Set a new Sequence
+		$this->setSequence();
+		
+		// Set POST variables
+		$fields = array(
+			"report" => urlencode($uuid),
+			"hostname" => urlencode($hostname),
+			"port" => urlencode($port),
+			"protocol" => urlencode($protocol),
+			"severity" => urlencode($severity),
+			"plugin_id" => urlencode($plugin_id),
+			"seq" => urlencode($this->sequence),
+			"token" => urlencode($this->token)
+		);
+		
+		// Set the API Endpoint we will call
+		$endpoint = "/report2/details/plugin";
+		
+		// Do the Request
+		$xml = $this->callApi($fields, $endpoint);
+		
+		$values = array ();
+		foreach ($xml->contents->portDetails->ReportItem as $response) {
+			$values["portDetails"][(string)$response->pluginID]["pluginName"] = (string)$response->pluginName;
+			$values["portDetails"][(string)$response->pluginID]["cve"] = (string)$response->data->cve;
+			$values["portDetails"][(string)$response->pluginID]["osvdb"] = (string)$response->data->osvdb;
+		}
+		
+		// Return what we got
+		return($values);
+	}
+
 }
 ?>

@@ -2,7 +2,7 @@
 
 from NessusXMLRPC import Scanner
 
-x = Scanner( "probe.security.isc.upenn.edu", 8834, login="jamed", password="")
+x = Scanner( "probe.security.isc.upenn.edu", 8834, login="", password="")
 
 reports = x.reportList()
 

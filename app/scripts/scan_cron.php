@@ -58,7 +58,6 @@ if(php_sapi_name() == 'cli') {
 			$flags .= " " . $scan->get_group_flags();
 			$alert = new Alert();
 			$alert->set_host_id(1);
-			$alert->set_string('Scan ' . $scan->get_name() . ' finished successfully!');
 			// Run the scan
 			if (is_file($scriptfile)) {
 				$last_line = system('/usr/bin/php ' . $scriptfile . ' ' . $flags, $retval);
@@ -70,6 +69,7 @@ if(php_sapi_name() == 'cli') {
 			
 			// Alert
 			$alert->save();
+			$alert->set_string('Scan ' . $scan->get_name() . ' finished successfully!');
 		}
 	 }
 	syslog(LOG_INFO, 'scan_cron.php scans complete.');

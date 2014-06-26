@@ -1,0 +1,3 @@
+; Info file to let HECTOR know this is a user configurable scan type
+name    =   hydra_scan
+display = Hydra Scan

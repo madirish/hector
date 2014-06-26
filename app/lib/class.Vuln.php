@@ -243,6 +243,17 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
     }
     
     /**
+     * Return the printable string use for the object in interfaces
+     *
+     * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return String The printable string of the object name
+     */
+    public function get_label() {
+        return 'Vulnerability';
+    } 
+    
+    /**
      * Return the display safe name
      * 
      * @access public
@@ -265,6 +276,18 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
      */
     public function get_osvdb() {
 		return htmlspecialchars($this->osvdb);
+    }
+    
+    public function lookup_by_name($name) {
+    	$sql = array('select * from vuln where vuln_name = \'?s\'', $name);
+        $result = $this->db->fetch_object_array($sql);
+        if (isset($result[0])) {
+            $this->id = $result[0]->vuln_id;
+            $this->name = $result[0]->vuln_name;
+            $this->description = $result[0]->vuln_description;
+            $this->cve = $result[0]->vuln_cve;
+            $this->osvdb = $result[0]->vuln_osvdb;
+        }       
     }
     
     /**

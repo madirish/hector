@@ -404,6 +404,17 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
         return intval($this->year);
      }
      
+     /**
+     * Return the printable string use for the object in interfaces
+     *
+     * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return String The printable string of the object name
+     */
+    public function get_label() {
+        return 'Incident';
+    } 
+     
      private function get_magnitude_readable($id) {
      	$sql = array('SELECT magnitude_name ' .
                     'FROM incident_magnitude ' .

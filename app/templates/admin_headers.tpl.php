@@ -9,6 +9,7 @@
 	<link href="css/bootstrap.css" rel="stylesheet">
 	<link href="css/bootstrap-responsive.css" rel="stylesheet">
 	<link href="css/penn.css" rel="stylesheet">
+	<link href="css/chart-legend.css" rel="stylesheet">
 	
 	<script type="text/javascript" src="js/ajaxFunctions.js"></script> 
 	<script type="text/javascript" src="js/jquery.js"></script>
@@ -85,6 +86,7 @@
         <li><a href="?action=honeypot">Honeypot data</a></li>
         <li><a href="?action=attackerip">Malicious IP database</a></li>
         <li><a href="?action=ossecalerts">OSSEC Alerts</a></li>
+        <li><a href="?action=nessus_scans">Nessus Scans</a></li>
       </ul>
     </li>
     <li class="dropdown">

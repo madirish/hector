@@ -1,0 +1,14 @@
+
+.chart-legend {
+    width: 10em;
+    border: 1px solid black;
+    display: inline-block;
+}
+
+.chart-legend .title {
+    display: block;
+    margin: 0.5em;
+    border-style: solid;
+    border-width: 0 0 0 1em;
+    padding: 0 0.3em;
+}

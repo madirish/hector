@@ -68,10 +68,19 @@ to perform automated scans of hosts.</p>
 	?>
 	</tbody>
 	</table>
-
-	</div><div class="span6">
+	<div>
+		<div id="incidentChartLabels" class="hidden"><?php echo $incidentchart_labels?></div>
+		<div id="incidentChartCounts" class="hidden"><?php echo $incidentchart_counts?></div>
+		<h3>Incident Reports</h3>
+		<canvas id="incidentChart"></canvas>
+		<div id="incidentChartLegend"></div>
+	</div>
+  </div>
+  
+  <div class="span6">
 	<h3>Darknet:  Top Port Probes in Last 4 Days</h3>
 	<canvas id="darknetChart"  width="400"></canvas>
+	
 
 	<div id="darknetSummaryChartLabels" class="hidden"><?php echo $darknetSummaryLabels;?></div>
   	<div id="darknetSummaryChartData" class="hidden"><?php echo $darknetSummaryCounts;?></div>

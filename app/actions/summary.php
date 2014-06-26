@@ -13,6 +13,12 @@
  * Require the database
  */
 require_once($approot . 'lib/class.Db.php');
+
+/**
+ * Include the Collection class
+ */
+include_once($approot . 'lib/class.Collection.php');
+
 $db = Db::get_instance();
 global $appuser;
 if (! isset($appuser)) {
@@ -83,6 +89,10 @@ $javascripts .= "<script type='text/javascript' src='js/Chart.js'></script>\n";
 $javascripts .= "<script type='text/javascript' src='js/portSummaryChart.js'></script>\n";
 $javascripts .= "<script type='text/javascript' src='js/darknetSummaryChart.js'></script>\n";
 
+//Include incidentChart script
+$javascripts .= "<script type='text/javascript' src='js/incidentChart.js'></script>\n";
+$javascripts .= "<script type='text/javascript' src='js/legend.js'></script>\n";
+
 $portSummaryLabels = "";
 $portSummaryCounts = "";
 $darknetSummaryLabels = "";
@@ -120,6 +130,32 @@ foreach ($probe_result as $row) {
 }
 $darknetSummaryLabels = trim($darknetSummaryLabels, ',');
 $darknetSummaryCounts = trim($darknetSummaryCounts, ',');
+
+// Incident Summary of Incident summary Chart
+
+
+$IRActions = new Collection('IRAction');
+$IRAction_labels = array();
+
+foreach($IRActions->members as $action){
+	$IRAction_labels[] = $action->get_action();
+}
+
+$incidentchart_labels = json_encode($IRAction_labels);
+
+$incident_reports = new Collection('Incident');
+$action_count = array();
+foreach ($incident_reports->members as $report){
+	$action = $report->get_action()->get_action();
+	if (array_key_exists($action,$action_count)){
+		$action_count[$action] += 1;
+	}else{
+		$action_count[$action] = 1;
+	}
+	
+}
+
+$incidentchart_counts = json_encode($action_count);
 
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates . 'summary.tpl.php');

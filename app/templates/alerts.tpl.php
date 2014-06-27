@@ -37,6 +37,10 @@
 
 <script type="text/javascript" >
 $(document).ready( function () {
-    $('#tablealerts').DataTable();
+    var table = $('#tablealerts').DataTable({
+    	"ordering": true
+    });
+    table.column('0:visible').order('desc');
+    table.draw();
 } );
 </script>

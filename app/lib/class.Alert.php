@@ -122,6 +122,41 @@ class Alert {
     	return false;
     }
     
+    public function get_collection_by_dates_ip($filter, $orderby='') {
+        $startdate='0000-00-00';
+        $enddate='';
+        $ip='0.0.0.0';
+        $limit = '';
+        if (is_array($filter)) {
+        	if (isset($filter['startdate'])) $startdate = $filter['startdate'];
+            if (isset($filter['enddate'])) $enddate = $filter['enddate'];
+            if (isset($filter['ip'])) $ip = $filter['ip'];
+        }
+        $startdate = mysql_real_escape_string(date('Y-m-d', strtotime($startdate)));
+    	if ($startdate !== '') {
+            $limit .= ' AND a.alert_timestamp >= "' . $startdate . '" ';
+        }
+        // Validate the endtime and add it to the string
+        $enddate = ($enddate !== '') ? mysql_real_escape_string(date('Y-m-d', strtotime($enddate))) : '';
+        if ($enddate !== '') {
+            $limit .= ' AND a.alert_timestamp <= "' . $enddate . ' 23:59:59" ';
+        }
+        
+        // Validate the IP and add it to the query
+        if ($ip !== '0.0.0.0' && filter_var($ip, FILTER_VALIDATE_IP)) {
+            $ip = mysql_real_escape_string($ip);
+            $limit .= ' AND h.host_ip_numeric = inet_aton("' . $ip . '") ';
+        }
+        
+        
+        $sql = 'SELECT a.alert_id ' .
+            'FROM alert a, host h ' .
+            'WHERE a.host_id = h.host_id ' .
+            $limit . 
+            ' ORDER BY a.alert_timestamp desc'; 
+        return $sql;
+    }
+    
     /** 
      * This function directly supports the Collection class.
 	 * 
@@ -330,4 +365,4 @@ class Alert {
 
 } /* end of class Alert */
 
-?>
+?> 

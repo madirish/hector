@@ -145,14 +145,16 @@ $incidentchart_labels = json_encode($IRAction_labels);
 
 $incident_reports = new Collection('Incident');
 $action_count = array();
-foreach ($incident_reports->members as $report){
-	$action = $report->get_action()->get_action();
-	if (array_key_exists($action,$action_count)){
-		$action_count[$action] += 1;
-	}else{
-		$action_count[$action] = 1;
-	}
-	
+if (is_array($incident_reports->members)) {
+    foreach ($incident_reports->members as $report){
+    	$action = $report->get_action()->get_action();
+    	if (array_key_exists($action,$action_count)){
+    		$action_count[$action] += 1;
+    	}
+        else{
+    		$action_count[$action] = 1;
+    	}
+    }
 }
 
 $incidentchart_counts = json_encode($action_count);

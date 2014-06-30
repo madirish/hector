@@ -1,8 +1,14 @@
+#incident-div {
+	position: relative;
+}
 
 .chart-legend {
-    width: 10em;
+    width: 12em;
     border: 1px solid black;
     display: inline-block;
+    position: absolute;
+    right: 0px;
+    top: 25%;
 }
 
 .chart-legend .title {

@@ -131,20 +131,16 @@ foreach ($probe_result as $row) {
 $darknetSummaryLabels = trim($darknetSummaryLabels, ',');
 $darknetSummaryCounts = trim($darknetSummaryCounts, ',');
 
-// Incident Summary of Incident summary Chart
+$month = date('F');
+$cy = date('Y');
+$ly = $cy - 1;
+$timespan =    $month . ' ' . $ly . ' - ' . $cy ;
 
+$incident_filter = "AND STR_TO_DATE(CONCAT(incident_year,'-',incident_month,'-','31'),'%Y-%m-%d') >= DATE_SUB(NOW(),INTERVAL 12 MONTH)";
 
-$IRActions = new Collection('IRAction');
-$IRAction_labels = array();
-
-foreach($IRActions->members as $action){
-	$IRAction_labels[] = $action->get_action();
-}
-
-$incidentchart_labels = json_encode($IRAction_labels);
-
-$incident_reports = new Collection('Incident');
+$incident_reports = new Collection('Incident',$filter = $incident_filter);
 $action_count = array();
+
 if (is_array($incident_reports->members)) {
     foreach ($incident_reports->members as $report){
     	$action = $report->get_action()->get_action();
@@ -157,7 +153,12 @@ if (is_array($incident_reports->members)) {
     }
 }
 
+
 $incidentchart_counts = json_encode($action_count);
+$IRAction_labels = array_keys($action_count);
+$incidentchart_labels = json_encode($IRAction_labels);
+
+$incident_report_header = json_encode("Incident Reports " . $timespan);
 
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates . 'summary.tpl.php');

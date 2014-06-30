@@ -7,24 +7,24 @@
  * Doughnut Chart implementation for Hector summary page
  */
 $(document).ready(function(){
+	var chartHeader = JSON.parse(document.getElementById('incidentReportHeader').textContent);
+	console.log(chartHeader);
 	var chartLabels = JSON.parse(document.getElementById('incidentChartLabels').textContent);
 	var chartData = JSON.parse(document.getElementById('incidentChartCounts').textContent);
-	var colors = ["#F7464A","#E2EAE9","#D4CCC5","#949FB1","#4D5360","#F38630","#E0E4CC","#69D2E7","#D97041","#C7604C"];
+	var colors = ["#F8FF01","#FF0F00","#69D2E7","#FF6600","#b0de09","#DDDDDD","#FFCC99","#D97041","#C7604C","#CCCFFF"];
 	var data = [];
-	for (x in chartLabels){
-		var label = chartLabels[x];
-		if (chartData.hasOwnProperty(label)){
-			var count = chartData[label];       
-		}else{
-			var count =  0;
-		}
-		data.push({value:count,color:colors[x],title:label})
+	
+	for (i = 0; i < chartLabels.length; i++){
+		var label = chartLabels[i];
+		var count = chartData[label];
+		data.push({value:count , color:colors[i] ,title:label + " - " + count});
 	}
-	var options = {percentageInnerCutout: 50}
+	
+	document.getElementById("incidentChartHeader").innerHTML = chartHeader;
 	var ctx = document.getElementById("incidentChart").getContext("2d");
 	ctx.canvas.width = 300;
 	ctx.canvas.height = 300;
-	var incidentChart = new Chart(ctx).Doughnut(data,options);
+	var incidentChart = new Chart(ctx).Pie(data);
 	legend(document.getElementById("incidentChartLegend"),data)
 	
 })

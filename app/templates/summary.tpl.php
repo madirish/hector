@@ -68,10 +68,11 @@ to perform automated scans of hosts.</p>
 	?>
 	</tbody>
 	</table>
-	<div>
+	<div id="incident-div">
+		<div id="incidentReportHeader" class="hidden"><?php echo $incident_report_header?></div>
 		<div id="incidentChartLabels" class="hidden"><?php echo $incidentchart_labels?></div>
 		<div id="incidentChartCounts" class="hidden"><?php echo $incidentchart_counts?></div>
-		<h3>Incident Reports</h3>
+		<h3 id="incidentChartHeader"></h3>
 		<canvas id="incidentChart"></canvas>
 		<div id="incidentChartLegend"></div>
 	</div>

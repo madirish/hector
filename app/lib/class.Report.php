@@ -36,12 +36,16 @@ require_once('class.Host.php');
  */
 class Report {
     
+    public function __construct() {
+    	$this->db = Db::get_instance();
+    }
+    
     public function darknetSummary() {
     	// Darknet summary:
         $sql = "SELECT CONCAT(dst_port, '/', proto) AS port, count(id) AS cnt " .
                 "FROM darknet WHERE received_at > DATE_SUB(NOW(), INTERVAL 4 DAY) " .
                 "GROUP BY port ORDER BY cnt DESC LIMIT 10";
-        return $db->fetch_object_array($sql);
+        return $this->db->fetch_object_array($sql);
     }
     
     public function getHostCount($appuser) {
@@ -53,20 +57,20 @@ class Report {
                     "WHERE h.supportgroup_id = x.supportgroup_id" .
                     " AND x.user_id = " . $appuser->get_id();
         }
-        $hostcount = $db->fetch_object_array($sql);
+        $hostcount = $this->db->fetch_object_array($sql);
         $count = $hostcount[0]->hostcount;
         return $count;
     }
     
     public function scanCount() {
     	$sql = 'SELECT COUNT(scan_id) AS thecount FROM scan';
-        $retval = $db->fetch_object_array($sql);
+        $retval = $this->db->fetch_object_array($sql);
         return $retval[0]->thecount;
     }
     
     public function scriptCount() {
     	$sql = 'SELECT COUNT(scan_type_id) AS thecount FROM scan_type';
-        $retval = $db->fetch_object_array($sql);
+        $retval = $this->db->fetch_object_array($sql);
         return $retval[0]->thecount;
     }
  
@@ -90,7 +94,7 @@ class Report {
                     "ORDER BY portcount desc " .
                     "LIMIT 10 ";
         }
-        $port_result = $db->fetch_object_array($sql);
+        $port_result = $this->db->fetch_object_array($sql);
         return $port_result;
     }   
 }

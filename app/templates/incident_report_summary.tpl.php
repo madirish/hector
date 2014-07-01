@@ -20,7 +20,7 @@
     <legend>Loss</legend>
     <div class="row">
         <div class="span2">Data exposure</div>
-        <div class="span4"><?php echo $report->get_confidential_data() ? 'No confidential data exposed' : 'Yes, confidential data was exposed.';?></div>
+        <div class="span4"><?php echo $report->get_confidential_data() ? 'Yes, confidential data was exposed.' : 'No confidential data exposed';?></div>
     </div>
     <div class="row">
         <div class="span2">Integrity loss</div>

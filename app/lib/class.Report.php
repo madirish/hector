@@ -43,8 +43,11 @@ class Report {
     public function darknetSummary() {
     	// Darknet summary:
         $sql = "SELECT CONCAT(dst_port, '/', proto) AS port, count(id) AS cnt " .
-                "FROM darknet WHERE received_at > DATE_SUB(NOW(), INTERVAL 4 DAY) " .
-                "WHERE dst_port > 0 GROUP BY port ORDER BY cnt DESC LIMIT 10";
+                "FROM darknet " .
+                "WHERE received_at > DATE_SUB(NOW(), INTERVAL 4 DAY) " .
+                "AND dst_port > 0 " .
+                "GROUP BY port " .
+                "ORDER BY cnt DESC LIMIT 10";
         return $this->db->fetch_object_array($sql);
     }
     

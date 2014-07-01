@@ -196,7 +196,7 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
       $sql .= ' ' . $orderby;
     }
     else if ($orderby == '') {
-      $sql .= ' ORDER BY i.incident_year, i.incident_month DESC';
+      $sql .= ' ORDER BY i.incident_year DESC, i.incident_month ASC';
     }
     return $sql;
   }

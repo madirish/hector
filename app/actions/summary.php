@@ -95,6 +95,7 @@ $timespan =    $month . ' ' . $ly . ' - ' . $cy ;
 
 $incident_reports = new Collection('Incident','','get_incidents_in_last_year');
 $action_count = array();
+$sorter = array();
 
 if (is_array($incident_reports->members)) {
     foreach ($incident_reports->members as $report){
@@ -106,7 +107,9 @@ if (is_array($incident_reports->members)) {
         else{
     		$action_count[$action]['count'] = 1;
     	}
+    	$sorter[$action] = $action_count[$action]['count'];
     }
+    array_multisort($sorter,SORT_DESC,$action_count);
 }
 
 

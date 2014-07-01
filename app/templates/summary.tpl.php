@@ -54,7 +54,7 @@ to perform automated scans of hosts.</p>
 	
 	<table class="table table-striped table-condensed" id="top-ports-dectected">
 	<thead>
-	<tr><th>#</th><th>Port Number</th><th>Hosts with port open</th></tr>
+	<tr><th>#</th><th>Port Number</th><th>Protocol</th><th>Hosts with port open</th></tr>
 	</thead>
 	<tbody>
 	<?php
@@ -62,8 +62,10 @@ to perform automated scans of hosts.</p>
 	foreach ($port_result as $row) {
 		echo "<tr";
 		if ($x%2) echo " class='odd'";
+        $portproto = explode('/', $row->port_number);
 		echo "><td>" . $x++ . "</td><td><a href='?action=reports&report=by_port&ports=" .
-				$row->port_number . "'>" . $row->port_number . "</a></td><td>" . $row->portcount . "</td></tr>";
+				$row->port_number . "'>" . $row->port_number . "</a></td><td>" . 
+                getservbyport($portproto[0],$portproto[1]) . "</td><td>" . $row->portcount . "</td></tr>";
 	}
 	?>
 	</tbody>
@@ -87,16 +89,17 @@ to perform automated scans of hosts.</p>
   	<div id="darknetSummaryChartData" class="hidden"><?php echo $darknetSummaryCounts;?></div>
 	<table class="table table-striped table-condensed" id="darknet-probes-summary">
 	<thead>
-	<tr><th>#</th><th>Port Number</th><th>Total darknet probes</th></tr>
+	<tr><th>#</th><th>Port Number</th><th>Protocol</th><th>Total darknet probes</th></tr>
 	</thead>
 	<tbody>
 	<?php
 	$x=1;
 	foreach ($probe_result as $row) {
+        $portproto = explode('/', $row->port_number);
 		echo "<tr";
 		if ($x%2) echo " class='odd'";
 		echo "><td>" . $x++ . "</td><td><a href='?action=reports&report=by_port&ports=" .$row->port ."'> " .
-				$row->port . "</a></td><td>" . $row->cnt . "</td></tr>";
+				$row->port . "</a></td><td>" . getservbyport($portproto[0],$portproto[1]) . "</td><td>" . $row->cnt . "</td></tr>";
 	}
 	?>
 	</tbody>

@@ -95,7 +95,7 @@ to perform automated scans of hosts.</p>
 	<?php
 	$x=1;
 	foreach ($probe_result as $row) {
-        $portproto = explode('/', $row->port_number);
+        $portproto = explode('/', $row->port);
 		echo "<tr";
 		if ($x%2) echo " class='odd'";
 		echo "><td>" . $x++ . "</td><td><a href='?action=reports&report=by_port&ports=" .$row->port ."'> " .

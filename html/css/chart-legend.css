@@ -12,9 +12,15 @@
 }
 
 .chart-legend .title {
+    color: #0088cc;
     display: block;
     margin: 0.5em;
     border-style: solid;
     border-width: 0 0 0 1em;
     padding: 0 0.3em;
+    text-decoration: underline;
+}
+.chart-legend .title:hover {
+    cursor: pointer;
+	text-decoration:none;
 }

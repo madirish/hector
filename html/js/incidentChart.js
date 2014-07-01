@@ -16,7 +16,7 @@ $(document).ready(function(){
 	
 	for (i = 0; i < chartLabels.length; i++){
 		var label = chartLabels[i];
-		var count = chartData[label];
+		var count = chartData[label]['count'];
 		data.push({value:count , color:colors[i] ,title:label + " - " + count});
 	}
 	
@@ -25,6 +25,14 @@ $(document).ready(function(){
 	ctx.canvas.width = 300;
 	ctx.canvas.height = 300;
 	var incidentChart = new Chart(ctx).Pie(data);
-	legend(document.getElementById("incidentChartLegend"),data)
+	legend(document.getElementById("incidentChartLegend"),data);
 	
+	for (i = 0; i < chartLabels.length; i++){
+		console.log($("#incidentChartLegend .title")[i]);
+	}
+	
+	var i = 0;
+	$("#incidentChartLegend .title").each(function(index){
+		$(this).attr('onclick', 'location.href="?action=incident_reports&threat_action=' + chartData[chartLabels[i]]['href'] + '"');
+	});
 })

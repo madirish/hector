@@ -15,8 +15,6 @@
 require_once($approot . 'lib/class.Db.php');
 include_once($approot . 'lib/class.Collection.php');
 include_once($approot . 'lib/class.Report.php');
-
-$db = Db::get_instance();
 global $appuser;
 if (! isset($appuser)) {
 	if (! isset($_SESSION['user_id'])) die("<h2>Fatal error!<?h2>User not initialized.");
@@ -95,19 +93,18 @@ $cy = date('Y');
 $ly = $cy - 1;
 $timespan =    $month . ' ' . $ly . ' - ' . $cy ;
 
-$incident_filter = "AND STR_TO_DATE(CONCAT(incident_year,'-',incident_month,'-','31'),'%Y-%m-%d') >= DATE_SUB(NOW(),INTERVAL 12 MONTH)";
-
-$incident_reports = new Collection('Incident',$filter = $incident_filter);
+$incident_reports = new Collection('Incident','','get_incidents_in_last_year');
 $action_count = array();
 
 if (is_array($incident_reports->members)) {
     foreach ($incident_reports->members as $report){
     	$action = $report->get_action()->get_action();
-    	if (array_key_exists($action,$action_count)){
-    		$action_count[$action] += 1;
+        $action_count[$action]['href'] = '?action=incident_summaries&threat_action=' . $report->get_action_id();
+    	if (isset($action_count[$action]['count'])){
+    		$action_count[$action]['count'] += 1;
     	}
         else{
-    		$action_count[$action] = 1;
+    		$action_count[$action]['count'] = 1;
     	}
     }
 }

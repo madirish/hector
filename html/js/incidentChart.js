@@ -34,5 +34,6 @@ $(document).ready(function(){
 	var i = 0;
 	$("#incidentChartLegend .title").each(function(index){
 		$(this).attr('onclick', 'location.href="?action=incident_reports&threat_action=' + chartData[chartLabels[i]]['href'] + '"');
+		i++;
 	});
 })

@@ -70,14 +70,7 @@ to perform automated scans of hosts.</p>
 	?>
 	</tbody>
 	</table>
-	<div id="incident-div">
-		<div id="incidentReportHeader" class="hidden"><?php echo $incident_report_header?></div>
-		<div id="incidentChartLabels" class="hidden"><?php echo $incidentchart_labels?></div>
-		<div id="incidentChartCounts" class="hidden"><?php echo $incidentchart_counts?></div>
-		<h3 id="incidentChartHeader"></h3>
-		<canvas id="incidentChart"></canvas>
-		<div id="incidentChartLegend"></div>
-	</div>
+    
   </div>
   
   <div class="span6">
@@ -108,3 +101,50 @@ to perform automated scans of hosts.</p>
 	</div>
 </div>
 
+<div class="row">
+    <!-- Incident Pie Chart -->
+    <div class="span6"> 
+        <div id="incident-div">
+            <div id="incidentReportHeader" class="hidden"><?php echo $incident_report_header?></div>
+            <div id="incidentChartLabels" class="hidden"><?php echo $incidentchart_labels?></div>
+            <div id="incidentChartCounts" class="hidden"><?php echo $incidentchart_counts?></div>
+            <h3 id="incidentChartHeader"></h3>
+            <canvas id="incidentChart"></canvas>
+            <div id="incidentChartLegend"></div>
+        </div>
+    </div>
+    
+    <div class="span6">
+    <h3>Darknet:  Probes in Last 4 Days by Country</h3>
+    <figure><div id="world-map-gdp" style="height:300px;"></div>
+    <script>
+    <?php
+    foreach ($darknetmapcounts as $key=>$val) {
+    	?>
+        gdpData['<?php echo $key;?>']=<?php echo $val;?>;
+        <?php
+    }
+    ?>
+      //@code_start
+      $(function(){
+        $('#world-map-gdp').vectorMap({
+          map: 'world_mill_en',
+          series: {
+            regions: [{
+              values: gdpData,
+              scale: ['#C8EEFF', '#0071A4'],
+              normalizeFunction: 'polynomial'
+            }]
+          },
+            onRegionLabelShow: function(event, label, code){
+                label.html(
+                    '<b>'+label.html()+'</b></br>'+gdpData[code]+ ' probes'
+            );
+          }
+        });
+      });
+      //@code_end
+    </script></figure>
+    </div>
+
+</div>

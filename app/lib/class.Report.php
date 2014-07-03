@@ -51,6 +51,26 @@ class Report {
         return $this->db->fetch_object_array($sql);
     }
     
+    public function getDarknetCountryCount() {
+        $retval = array();
+        $countrycount = array();
+    	$sql = 'SELECT DISTINCT(d.src_ip) as src_ip, g.country_code as country_code ' .
+                'FROM darknet d, geoip g ' .
+                'WHERE d.received_at > DATE_SUB(NOW(), INTERVAL 4 DAY) ' .
+                'AND d.src_ip > g.start_ip_long ' .
+                'AND d.src_ip < g.end_ip_long';
+        $result = $this->db->fetch_object_array($sql);
+        foreach($result as $row) {            
+            if (isset($retval[$row->country_code])) {
+            	$retval[$row->country_code] ++ ;
+            }
+            else {
+            	$retval[$row->country_code] = 1;
+            }
+        }
+        return $retval;
+    }
+    
     public function getHostCount($appuser) {
         if ($appuser->get_is_admin())
         $sql = "select count(host_id) as hostcount from host";

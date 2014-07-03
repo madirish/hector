@@ -89,7 +89,7 @@ sed -i "s/database_password/${HECTORPASS}/g" ${HECTOR_PATH}/app/conf/config.ini
 sed -i "s|approot = /opt/hector/app|approot = /opt/hector|g" ${HECTOR_PATH}/app/conf/config.ini
 
 echo " [+] Customizing config at /etc/ossec2mysql.conf"
-cp ${HECTOR_PATH}/app/conf/ossec2mysql.conf.blank /etc/ossec2mysql.conf
+cp ${HECTOR_PATH}/app/scripts/ossec2mysql.conf.blank /etc/ossec2mysql.conf
 sed -i "s/hectorpass/${HECTORPASS}/g" /etc/ossec2mysql.conf
 
 

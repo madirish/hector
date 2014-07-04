@@ -78,7 +78,6 @@ echo " [+] Customizing config at $HECTOR_PATH/app/conf/config.ini"
 cp ${HECTOR_PATH}/app/conf/config.ini.blank ${HECTOR_PATH}/app/conf/config.ini
 chgrp apache ${HECTOR_PATH}/app/conf/config.ini
 chmod g+r ${HECTOR_PATH}/app/conf/config.ini
-
 sed -i "s|/path/to/hector|${HECTOR_PATH}/app|g" $HECTOR_PATH/app/conf/config.ini
 
 echo " [+] Setting database parameters in $HECTOR_PATH/app/conf/config.ini"
@@ -88,6 +87,11 @@ sed -i "s/database_password/${HECTORPASS}/g" ${HECTOR_PATH}/app/conf/config.ini
 
 
 sed -i "s|approot = /opt/hector/app|approot = /opt/hector|g" ${HECTOR_PATH}/app/conf/config.ini
+
+echo " [+] Customizing config at /etc/ossec2mysql.conf"
+cp ${HECTOR_PATH}/app/scripts/ossec2mysql.conf.blank /etc/ossec2mysql.conf
+sed -i "s/hectorpass/${HECTORPASS}/g" /etc/ossec2mysql.conf
+
 
 echo "    Please enter your HECTOR server name or IP:"
 read SERVERNAME
@@ -166,12 +170,12 @@ fi
 
 
 echo " [+] Scheduling OSSEC monitoring services."
-mv ${HECTOR_PATH}/app/scripts/hector-ossec-mysql /etc/init.d/
-chmod +x /etc/init.d/hector-ossec-mysql
-/sbin/chkconfig --add hector-ossec-mysql
-/sbin/chkconfig --level 345 hector-ossec-mysql
+mv ${HECTOR_PATH}/app/scripts/ossec2hector /etc/init.d/
+chmod +x /etc/init.d/ossec2hector
+/sbin/chkconfig --add ossec2hector
+/sbin/chkconfig --level 345 ossec2hector
 /sbin/service ossec restart
-/sbin/service hector-ossec-mysql start
+/sbin/service ossec2hector start
 
 echo -e "Do you wish to allow remote OSSEC (UDP 1514)? (y/n):"
 read configiptables

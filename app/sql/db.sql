@@ -74,6 +74,17 @@ CREATE TABLE IF NOT EXISTS `form` (
 	PRIMARY KEY  (`form_id`)
 ) ENGINE = INNODB;
 
+-- http://geolite.maxmind.com/download/geoip/database/GeoIPCountryCSV.zip
+CREATE TABLE IF NOT EXISTS `geoip` (
+  `start_ip_str` VARCHAR(15),
+  `end_ip_str` VARCHAR(15),
+  `start_ip_long` INT UNSIGNED,
+  `end_ip_long` INT UNSIGNED,
+  `country_code` VARCHAR(2),
+  `country_name` VARCHAR(255)
+) ENGINE = INNODB;
+LOAD DATA INFILE '/opt/hector/app/sql/GeoIPCountryWhois.csv' INTO TABLE geoip FIELDS TERMINATED BY "," ENCLOSED BY '"';
+
 -- Hosts are IP based machines, the crux of the system
 CREATE TABLE IF NOT EXISTS `host` (
   `host_id` INT NOT NULL AUTO_INCREMENT,

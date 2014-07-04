@@ -46,6 +46,12 @@ $javascripts .= "<script type='text/javascript' src='js/Chart.js'></script>\n";
 $javascripts .= "<script type='text/javascript' src='js/portSummaryChart.js'></script>\n";
 $javascripts .= "<script type='text/javascript' src='js/darknetSummaryChart.js'></script>\n";
 
+// jQuery jvectormap
+$javascripts .= "<link href='css/jquery-jvectormap-1.2.2.css' rel='stylesheet'>\n";
+$javascripts .= "<link href='css/jquery-ui-1.8.22.custom.css' rel='stylesheet'>\n";
+$javascripts .= "<script type='text/javascript' src='js/jquery-jvectormap-1.2.2.min.js'></script>\n";
+$javascripts .= "<script type='text/javascript' src='js/jquery-jvectormap-1.2.2-map.js'></script>\n";
+
 //Include incidentChart script
 $javascripts .= "<script type='text/javascript' src='js/incidentChart.js'></script>\n";
 $javascripts .= "<script type='text/javascript' src='js/legend.js'></script>\n";
@@ -93,14 +99,19 @@ $cy = date('Y');
 $ly = $cy - 1;
 $timespan =    $month . ' ' . $ly . ' - ' . $cy ;
 
+
+/**
+ * Incidents Pie Chart
+ */
+
 $incident_reports = new Collection('Incident','','get_incidents_in_last_year');
 $action_count = array();
 $sorter = array();
 
 if (is_array($incident_reports->members)) {
-    foreach ($incident_reports->members as $report){
-    	$action = $report->get_action()->get_action();
-        $action_count[$action]['href'] = '?action=incident_summaries&threat_action=' . $report->get_action_id();
+    foreach ($incident_reports->members as $irreport){
+    	$action = $irreport->get_action()->get_action();
+        $action_count[$action]['href'] = '?action=incident_summaries&threat_action=' . $irreport->get_action_id();
     	if (isset($action_count[$action]['count'])){
     		$action_count[$action]['count'] += 1;
     	}
@@ -118,6 +129,12 @@ $IRAction_labels = array_keys($action_count);
 $incidentchart_labels = json_encode($IRAction_labels);
 
 $incident_report_header = json_encode("Incident Reports " . $timespan);
+
+/**
+ * Darknet map
+ */
+
+$darknetmapcounts = $report->getDarknetCountryCount();
 
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates . 'summary.tpl.php');

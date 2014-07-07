@@ -1038,3 +1038,4 @@ insert into darknet (src_ip, dst_ip, src_port, dst_port, proto, received_at) val
 insert into darknet (src_ip, dst_ip, src_port, dst_port, proto, received_at) values ('3659147843', '2776316270', '    6000', '    3306', 'tcp  ', CONCAT(NOW(),'%Y-%m-%d ', ' 08:59:19'));
 insert into darknet (src_ip, dst_ip, src_port, dst_port, proto, received_at) values ('  18748564', '2776316270', '   34412', '      22', 'tcp  ', CONCAT(NOW(),'%Y-%m-%d ', ' 09:03:24'));
 insert into darknet (src_ip, dst_ip, src_port, dst_port, proto, received_at) values ('1946861494', '2776316270', '    6000', '      22', 'tcp  ', CONCAT(NOW(),'%Y-%m-%d ', ' 09:30:08'));
+update darknet d set d.country_code = (select g.country_code from geoip g where d.src_ip >= g.start_ip_long AND d.src_ip <= g.end_ip_long);

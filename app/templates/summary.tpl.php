@@ -50,54 +50,14 @@ to perform automated scans of hosts.</p>
   	<div id="portSummaryChartLabels" class="hidden"><?php echo $portSummaryLabels;?></div>
   	<div id="portSummaryChartData" class="hidden"><?php echo $portSummaryCounts;?></div>
 	<canvas id="topPortsChart" width="400"></canvas>
-	
-	
-	<table class="table table-striped table-condensed" id="top-ports-dectected">
-	<thead>
-	<tr><th>#</th><th>Port Number</th><th>Protocol</th><th>Hosts with port open</th></tr>
-	</thead>
-	<tbody>
-	<?php
-	$x=1;
-	foreach ($port_result as $row) {
-		echo "<tr";
-		if ($x%2) echo " class='odd'";
-        $portproto = explode('/', $row->port_number);
-		echo "><td>" . $x++ . "</td><td><a href='?action=reports&report=by_port&ports=" .
-				$row->port_number . "'>" . $row->port_number . "</a></td><td>" . 
-                getservbyport($portproto[0],$portproto[1]) . "</td><td>" . $row->portcount . "</td></tr>";
-	}
-	?>
-	</tbody>
-	</table>
     
   </div>
   
   <div class="span6">
 	<h3>Darknet:  Top Port Probes in Last 4 Days</h3>
 	<canvas id="darknetChart"  width="400"></canvas>
-	
-
 	<div id="darknetSummaryChartLabels" class="hidden"><?php echo $darknetSummaryLabels;?></div>
   	<div id="darknetSummaryChartData" class="hidden"><?php echo $darknetSummaryCounts;?></div>
-	<table class="table table-striped table-condensed" id="darknet-probes-summary">
-	<thead>
-	<tr><th>#</th><th>Port Number</th><th>Protocol</th><th>Total darknet probes</th></tr>
-	</thead>
-	<tbody>
-	<?php
-	$x=1;
-	foreach ($probe_result as $row) {
-        $portproto = explode('/', $row->port);
-		echo "<tr";
-		if ($x%2) echo " class='odd'";
-		echo "><td>" . $x++ . "</td><td><a href='?action=reports&report=by_port&ports=" .$row->port ."'> " .
-				$row->port . "</a></td><td>" . getservbyport($portproto[0],$portproto[1]) . "</td><td>" . $row->cnt . "</td></tr>";
-	}
-	?>
-	</tbody>
-	</table>
-
 	</div>
 </div>
 
@@ -121,26 +81,29 @@ to perform automated scans of hosts.</p>
     <?php
     foreach ($darknetmapcounts as $key=>$val) {
     	?>
-        gdpData['<?php echo $key;?>']=<?php echo $val;?>;
+        countryData['<?php echo $key;?>']=<?php echo $val;?>;
         <?php
     }
     ?>
-      //@code_start
-      $(function(){
-        $('#world-map-gdp').vectorMap({
-          map: 'world_mill_en',
-          series: {
+    //@code_start
+    $(function(){
+    $('#world-map-gdp').vectorMap({
+        map: 'world_mill_en',
+        series: {
             regions: [{
-              values: gdpData,
-              scale: ['#C8EEFF', '#0071A4'],
-              normalizeFunction: 'polynomial'
+                values: countryData,
+                scale: ['#C8EEFF', '#0071A4'],
+                normalizeFunction: 'polynomial'
             }]
-          },
-            onRegionLabelShow: function(event, label, code){
-                label.html(
-                    '<b>'+label.html()+'</b></br>'+gdpData[code]+ ' probes'
+        },
+        onRegionLabelShow: function(event, label, code){
+            label.html(
+                '<b>'+label.html()+'</b></br>'+countryData[code]+ ' probes'
             );
-          }
+        },
+        onRegionClick: function (event, code) {
+            location.href = "?action=darknetsummary&country="+code;
+        }
         });
       });
       //@code_end

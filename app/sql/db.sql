@@ -59,6 +59,7 @@ CREATE TABLE IF NOT EXISTS `darknet` (
 	`src_port` INT UNSIGNED NOT NULL,
 	`dst_port` INT UNSIGNED NOT NULL,
 	`proto` ENUM('tcp','udp','icmp'),
+	`country_code` VARCHAR(2),
 	`received_at` TIMESTAMP,
 	PRIMARY KEY (`id`),
 	INDEX USING HASH (src_ip)
@@ -89,7 +90,7 @@ LOAD DATA INFILE '/opt/hector/app/sql/GeoIPCountryWhois.csv' INTO TABLE geoip FI
 CREATE TABLE IF NOT EXISTS `host` (
   `host_id` INT NOT NULL AUTO_INCREMENT,
   `host_ip` VARCHAR(15) NOT NULL,
-  `host_ip_numeric` INT NOT NULL,
+  `host_ip_numeric` INT UNSIGNED NOT NULL,
   `host_name` TINYTEXT NOT NULL,
   `host_os` VARCHAR(100) DEFAULT NULL,
   `host_link` VARCHAR(255) DEFAULT NULL,
@@ -276,7 +277,7 @@ CREATE TABLE IF NOT EXISTS `koj_executed_command` (
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ip` VARCHAR(15) NOT NULL,
   `command` VARCHAR(255),
-  `ip_numeric` INT NOT NULL,
+  `ip_numeric` INT UNSIGNED NOT NULL,
   `session_id` INT UNSIGNED,
   `sensor_id` INT UNSIGNED,
   PRIMARY KEY (`id`)
@@ -288,7 +289,7 @@ CREATE TABLE IF NOT EXISTS `koj_login_attempt` (
   `ip` VARCHAR(15) NOT NULL,
   `username` VARCHAR(50),
   `password` VARCHAR(50),
-  `ip_numeric` INT NOT NULL,
+  `ip_numeric` INT UNSIGNED NOT NULL,
   `sensor_id` INT(10) UNSIGNED,
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
@@ -314,7 +315,7 @@ CREATE TABLE IF NOT EXISTS `malware` (
   `time` TIMESTAMP,
   `source` VARCHAR(255),
   `source_ip` VARCHAR(15) NOT NULL,
-  `source_ip_numeric` INT NOT NULL,
+  `source_ip_numeric` INT UNSIGNED NOT NULL,
   `source_url` VARCHAR(255),
   `md5sum` VARCHAR(32),
   `filetype` VARCHAR(255),
@@ -356,7 +357,7 @@ CREATE TABLE IF NOT EXISTS `ossec_alert` (
 	`alert_log` VARCHAR(255) DEFAULT NULL,
 	`rule_id` INT NOT NULL,
 	`rule_src_ip` VARCHAR(15) DEFAULT NULL,
-	`rule_src_ip_numeric` INT,
+	`rule_src_ip_numeric` INT UNSIGNED,
 	`rule_user` VARCHAR(20) DEFAULT NULL,
 	`rule_log` TEXT DEFAULT NULL,
 	`alert_ossec_id` VARCHAR(50) NOT NULL,

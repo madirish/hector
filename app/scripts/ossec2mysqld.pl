@@ -425,10 +425,12 @@ sub insert_ossec {
     $spt = substr($message, index($message,"SPT=")+4, index($message, " DPT=")-index($message,"SPT=")-4);
     $dpt = substr($message, index($message,"DPT=")+4, index($message, " WINDOW=")-index($message,"DPT=")-4);
     $proto = substr($message, index($message,"PROTO=")+6, index($message, " SPT=")-index($message,"PROTO=")-6);
-    my $dnet_sql = "INSERT INTO darknet SET src_ip = inet_aton(?), dst_ip = inet_aton(?), src_port = ?,
-        dst_port = ?, proto = ?, received_at = ?";
+    $src = unpack "N", inet_aton($src);
+    $dst = unpack "N", inet_aton($dst);
+    my $dnet_sql = "INSERT INTO darknet SET src_ip = ?, dst_ip = ?, src_port = ?,
+        dst_port = ?, proto = ?, received_at = ?, country_code=(select country_code from geoip where ? > start_ip_long AND ? < end_ip_long)";
     my $dnet_sth = $dbi->{dbh}->prepare($dnet_sql) || die("Couldn't prepare darknet insert statement.");
-    $dnet_sth->execute($src, $dst, $spt, $dpt, $proto, $date);
+    $dnet_sth->execute($src, $dst, $spt, $dpt, $proto, $date, $src, $src);
     $dnet_sth->finish();
   }
   elsif ($ossec_rule_number == 200011) {

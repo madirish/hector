@@ -43,11 +43,12 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-hdd"></i> Assets <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li><a href="?action=browse_ip">Browse</a></li>
-        <li><a href="?action=ossec">OSSEC Clients</a></li>
+        <li><a href="?action=host_groups">Host groups</a></li>
+        <li><a href="?action=ossec">OSSEC clients</a></li>
         <li class="divider"></li>
         <li class="nav-header">Search</li>
         <li><a href="?action=assets&object=search">Search</a></li>
-        <li><a href="?action=assets&object=ports">Advanced Search</a></li>
+        <li><a href="?action=assets&object=ports">Advanced search</a></li>
         <li class="divider"></li>
         <li class="nav-header">State changes</li>
         <li><a href="?action=assets&object=alerts">View alerts</a></li>
@@ -59,8 +60,8 @@
     <li class="dropdown">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Security Incidents."><i class="icon-warning-sign"></i> Incidents <b class="caret"></b></a>
       <ul class="dropdown-menu">
-        <li><a href="?action=incident_reports">Incident Reports</a></li>
-        <li><a href="?action=new_ir">New Incident Report</a></li>
+        <li><a href="?action=incident_reports">Incident reports</a></li>
+        <li><a href="?action=new_ir">New incident report</a></li>
         <li class="nav-header">Configuration</li>
         <li><a href="?action=details&object=IRAction">Threat actions</a></li>
         <li><a href="?action=details&object=IRAgent">Incident agents</a></li>
@@ -85,8 +86,8 @@
         <li><a href="?action=detection">Detection summary</a></li>
         <li><a href="?action=honeypot">Honeypot data</a></li>
         <li><a href="?action=attackerip">Malicious IP database</a></li>
-        <li><a href="?action=ossecalerts">OSSEC Alerts</a></li>
-        <li><a href="?action=nessus_scans">Nessus Scans</a></li>
+        <li><a href="?action=ossecalerts">OSSEC alerts</a></li>
+        <li><a href="?action=nessus_scans">Nessus scans</a></li>
       </ul>
     </li>
     <li class="dropdown">
@@ -100,8 +101,8 @@
       <ul class="dropdown-menu">
         <!-- <li><a href="?action=config">Overview</a></li> -->
         <li class="nav-header">Scans</li>
-        <li><a href="?action=config&object=scan">Scan Schedule</a></li>
-        <li><a href="?action=config&object=scan_type">Script Configuration</a></li>
+        <li><a href="?action=config&object=scan">Scan schedule</a></li>
+        <li><a href="?action=config&object=scan_type">Script configuration</a></li>
         <li class="divider"></li>
         <li class="nav-header">Designations</li>
         <li><a href="?action=config&object=host_group">Host groups</a></li>

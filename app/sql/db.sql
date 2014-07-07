@@ -188,15 +188,15 @@ CREATE TABLE IF NOT EXISTS `incident_action` (
   `action_action` VARCHAR(255) NOT NULL,
   PRIMARY KEY  (`action_id`)
 ) ENGINE = INNODB;
-INSERT INTO `incident_action` SET `action_id` = 1, `action_action` = 'Malware' ON DUPLICATE KEY UPDATE;
-INSERT INTO `incident_action` SET `action_id` = 2, `action_action` = 'Hacking';
-INSERT INTO `incident_action` SET `action_id` = 3, `action_action` = 'Social';
-INSERT INTO `incident_action` SET `action_id` = 4, `action_action` = 'Spam';
-INSERT INTO `incident_action` SET `action_id` = 5, `action_action` = 'Misuse';
-INSERT INTO `incident_action` SET `action_id` = 6, `action_action` = 'Physical';
-INSERT INTO `incident_action` SET `action_id` = 7, `action_action` = 'Error';
-INSERT INTO `incident_action` SET `action_id` = 8, `action_action` = 'Environmental';
-INSERT INTO `incident_action` SET `action_id` = 9, `action_action` = 'Phishing';
+INSERT INTO `incident_action` SET `action_id` = 1, `action_action` = 'Malware' ON DUPLICATE KEY UPDATE `action_id`=1;
+INSERT INTO `incident_action` SET `action_id` = 2, `action_action` = 'Hacking' ON DUPLICATE KEY UPDATE `action_id`=2;
+INSERT INTO `incident_action` SET `action_id` = 3, `action_action` = 'Social' ON DUPLICATE KEY UPDATE `action_id`=3;
+INSERT INTO `incident_action` SET `action_id` = 4, `action_action` = 'Spam' ON DUPLICATE KEY UPDATE `action_id`=4;
+INSERT INTO `incident_action` SET `action_id` = 5, `action_action` = 'Misuse' ON DUPLICATE KEY UPDATE `action_id`=5;
+INSERT INTO `incident_action` SET `action_id` = 6, `action_action` = 'Physical' ON DUPLICATE KEY UPDATE `action_id`=6;
+INSERT INTO `incident_action` SET `action_id` = 7, `action_action` = 'Error' ON DUPLICATE KEY UPDATE `action_id`=7;
+INSERT INTO `incident_action` SET `action_id` = 8, `action_action` = 'Environmental' ON DUPLICATE KEY UPDATE `action_id`=8;
+INSERT INTO `incident_action` SET `action_id` = 9, `action_action` = 'Phishing' ON DUPLICATE KEY UPDATE `action_id`=9;
 
 -- Source of the agent who caused the incident
 CREATE TABLE IF NOT EXISTS `incident_agent` (
@@ -204,10 +204,10 @@ CREATE TABLE IF NOT EXISTS `incident_agent` (
   `agent_agent` VARCHAR(255) NOT NULL,
   PRIMARY KEY  (`agent_id`)
 ) ENGINE = INNODB;
-INSERT INTO `incident_agent` SET `agent_id` = 1, `agent_agent` = 'External';
-INSERT INTO `incident_agent` SET `agent_id` = 2, `agent_agent` = 'Internal';
-INSERT INTO `incident_agent` SET `agent_id` = 3, `agent_agent` = 'Partner';
-INSERT INTO `incident_agent` SET `agent_id` = 4, `agent_agent` = 'Other/Unknown';
+INSERT INTO `incident_agent` SET `agent_id` = 1, `agent_agent` = 'External' ON DUPLICATE KEY UPDATE `agent_id`=1;
+INSERT INTO `incident_agent` SET `agent_id` = 2, `agent_agent` = 'Internal' ON DUPLICATE KEY UPDATE `agent_id`=2;
+INSERT INTO `incident_agent` SET `agent_id` = 3, `agent_agent` = 'Partner' ON DUPLICATE KEY UPDATE `agent_id`=3;
+INSERT INTO `incident_agent` SET `agent_id` = 4, `agent_agent` = 'Other/Unknown' ON DUPLICATE KEY UPDATE `agent_id`=4;
   
 -- Asset affected by the incident
 CREATE TABLE IF NOT EXISTS `incident_asset` (
@@ -215,16 +215,16 @@ CREATE TABLE IF NOT EXISTS `incident_asset` (
   `asset_asset` VARCHAR(255) NOT NULL,
   PRIMARY KEY  (`asset_id`)
 ) ENGINE = INNODB;
-INSERT INTO `incident_asset` SET `asset_id` = 1, `asset_asset` = 'Database server';
-INSERT INTO `incident_asset` SET `asset_id` = 2, `asset_asset` = 'Desktop / Workstation';
-INSERT INTO `incident_asset` SET `asset_id` = 3, `asset_asset` = 'Laptop';
-INSERT INTO `incident_asset` SET `asset_id` = 4, `asset_asset` = 'Mail server';
-INSERT INTO `incident_asset` SET `asset_id` = 5, `asset_asset` = 'Mobile device';
-INSERT INTO `incident_asset` SET `asset_id` = 6, `asset_asset` = 'Multifunction printer';
-INSERT INTO `incident_asset` SET `asset_id` = 7, `asset_asset` = 'Removable media';
-INSERT INTO `incident_asset` SET `asset_id` = 8, `asset_asset` = 'Web app or server';
-INSERT INTO `incident_asset` SET `asset_id` = 9, `asset_asset` = 'Credentials';
-INSERT INTO `incident_asset` SET `asset_id` = 10, `asset_asset` = 'Proxy server';
+INSERT INTO `incident_asset` SET `asset_id` = 1, `asset_asset` = 'Database server' ON DUPLICATE KEY UPDATE `asset_id`=1;
+INSERT INTO `incident_asset` SET `asset_id` = 2, `asset_asset` = 'Desktop / Workstation' ON DUPLICATE KEY UPDATE `asset_id`=2;
+INSERT INTO `incident_asset` SET `asset_id` = 3, `asset_asset` = 'Laptop' ON DUPLICATE KEY UPDATE `asset_id`=3;
+INSERT INTO `incident_asset` SET `asset_id` = 4, `asset_asset` = 'Mail server' ON DUPLICATE KEY UPDATE `asset_id`=4;
+INSERT INTO `incident_asset` SET `asset_id` = 5, `asset_asset` = 'Mobile device' ON DUPLICATE KEY UPDATE `asset_id`=5;
+INSERT INTO `incident_asset` SET `asset_id` = 6, `asset_asset` = 'Multifunction printer' ON DUPLICATE KEY UPDATE `asset_id`=6;
+INSERT INTO `incident_asset` SET `asset_id` = 7, `asset_asset` = 'Removable media' ON DUPLICATE KEY UPDATE `asset_id`=7;
+INSERT INTO `incident_asset` SET `asset_id` = 8, `asset_asset` = 'Web app or server' ON DUPLICATE KEY UPDATE `asset_id`=8;
+INSERT INTO `incident_asset` SET `asset_id` = 9, `asset_asset` = 'Credentials' ON DUPLICATE KEY UPDATE `asset_id`=9;
+INSERT INTO `incident_asset` SET `asset_id` = 10, `asset_asset` = 'Proxy server' ON DUPLICATE KEY UPDATE `asset_id`=10;
 
 -- Method of incident discovery
 CREATE TABLE IF NOT EXISTS `incident_discovery` (
@@ -232,15 +232,15 @@ CREATE TABLE IF NOT EXISTS `incident_discovery` (
   `discovery_method` VARCHAR(100) NOT NULL,
   PRIMARY KEY  (`discovery_id`)
 ) ENGINE = INNODB;  
-INSERT INTO `incident_discovery` SET `discovery_id` = 1, `discovery_method` = '3rd party event monitoring';
-INSERT INTO `incident_discovery` SET `discovery_id` = 2, `discovery_method` = 'Network intrusion detection system (NIDS)';
-INSERT INTO `incident_discovery` SET `discovery_id` = 3, `discovery_method` = 'Host-based intrusion detection system (HIDS)';
-INSERT INTO `incident_discovery` SET `discovery_id` = 4, `discovery_method` = 'Anti-virus';
-INSERT INTO `incident_discovery` SET `discovery_id` = 5, `discovery_method` = 'Internal security audit';
-INSERT INTO `incident_discovery` SET `discovery_id` = 6, `discovery_method` = 'Unusual system behaviour';
-INSERT INTO `incident_discovery` SET `discovery_id` = 7, `discovery_method` = 'End user report';
-INSERT INTO `incident_discovery` SET `discovery_id` = 8, `discovery_method` = 'Application monitoring system';
-INSERT INTO `incident_discovery` SET `discovery_id` = 8, `discovery_method` = 'Public disclosure via 3rd party';
+INSERT INTO `incident_discovery` SET `discovery_id` = 1, `discovery_method` = '3rd party event monitoring' ON DUPLICATE KEY UPDATE `discovery_id`=1;
+INSERT INTO `incident_discovery` SET `discovery_id` = 2, `discovery_method` = 'Network intrusion detection system (NIDS)' ON DUPLICATE KEY UPDATE `discovery_id`=2;
+INSERT INTO `incident_discovery` SET `discovery_id` = 3, `discovery_method` = 'Host-based intrusion detection system (HIDS)' ON DUPLICATE KEY UPDATE `discovery_id`=3;
+INSERT INTO `incident_discovery` SET `discovery_id` = 4, `discovery_method` = 'Anti-virus' ON DUPLICATE KEY UPDATE `discovery_id`=4;
+INSERT INTO `incident_discovery` SET `discovery_id` = 5, `discovery_method` = 'Internal security audit' ON DUPLICATE KEY UPDATE `discovery_id`=5;
+INSERT INTO `incident_discovery` SET `discovery_id` = 6, `discovery_method` = 'Unusual system behaviour' ON DUPLICATE KEY UPDATE `discovery_id`=6;
+INSERT INTO `incident_discovery` SET `discovery_id` = 7, `discovery_method` = 'End user report' ON DUPLICATE KEY UPDATE `discovery_id`=7;
+INSERT INTO `incident_discovery` SET `discovery_id` = 8, `discovery_method` = 'Application monitoring system' ON DUPLICATE KEY UPDATE `discovery_id`=8;
+INSERT INTO `incident_discovery` SET `discovery_id` = 9, `discovery_method` = 'Public disclosure via 3rd party' ON DUPLICATE KEY UPDATE `discovery_id`=9;
 
 -- Incident magnitudes
 CREATE TABLE IF NOT EXISTS `incident_magnitude` (
@@ -249,12 +249,12 @@ CREATE TABLE IF NOT EXISTS `incident_magnitude` (
   `magnitude_level` INT NOT NULL,
   PRIMARY KEY  (`magnitude_id`)
 ) ENGINE = INNODB;  
-INSERT INTO `incident_magnitude` SET `magnitude_id` = 1, `magnitude_name` = 'None', `magnitude_level` = 0; 
-INSERT INTO `incident_magnitude` SET `magnitude_id` = 2, `magnitude_name` = 'Insignificant', `magnitude_level` = 1; 
-INSERT INTO `incident_magnitude` SET `magnitude_id` = 3, `magnitude_name` = 'Minor', `magnitude_level` = 2; 
-INSERT INTO `incident_magnitude` SET `magnitude_id` = 4, `magnitude_name` = 'Moderate', `magnitude_level` = 3; 
-INSERT INTO `incident_magnitude` SET `magnitude_id` = 5, `magnitude_name` = 'Major', `magnitude_level` = 4; 
-INSERT INTO `incident_magnitude` SET `magnitude_id` = 6, `magnitude_name` = 'Unknown', `magnitude_level` = '-1'; 
+INSERT INTO `incident_magnitude` SET `magnitude_id` = 1, `magnitude_name` = 'None', `magnitude_level` = 0 ON DUPLICATE KEY UPDATE `magnitude_id`=1;
+INSERT INTO `incident_magnitude` SET `magnitude_id` = 2, `magnitude_name` = 'Insignificant', `magnitude_level` = 1 ON DUPLICATE KEY UPDATE `magnitude_id`=2;
+INSERT INTO `incident_magnitude` SET `magnitude_id` = 3, `magnitude_name` = 'Minor', `magnitude_level` = 2 ON DUPLICATE KEY UPDATE `magnitude_id`=3;
+INSERT INTO `incident_magnitude` SET `magnitude_id` = 4, `magnitude_name` = 'Moderate', `magnitude_level` = 3 ON DUPLICATE KEY UPDATE `magnitude_id`=4;
+INSERT INTO `incident_magnitude` SET `magnitude_id` = 5, `magnitude_name` = 'Major', `magnitude_level` = 4 ON DUPLICATE KEY UPDATE `magnitude_id`=5;
+INSERT INTO `incident_magnitude` SET `magnitude_id` = 6, `magnitude_name` = 'Unknown', `magnitude_level` = '-1' ON DUPLICATE KEY UPDATE `magnitude_id`=6;
 
 -- Timeframes for incident discovery, containment, and outages
 CREATE TABLE IF NOT EXISTS `incident_timeframe` (
@@ -262,15 +262,15 @@ CREATE TABLE IF NOT EXISTS `incident_timeframe` (
   `timeframe_duration` VARCHAR(50) NOT NULL,
   PRIMARY KEY  (`timeframe_id`)
 ) ENGINE = INNODB;  
-INSERT INTO `incident_timeframe` SET `timeframe_id` = 1, `timeframe_duration` = 'n/a';
-INSERT INTO `incident_timeframe` SET `timeframe_id` = 2, `timeframe_duration` = 'seconds';
-INSERT INTO `incident_timeframe` SET `timeframe_id` = 3, `timeframe_duration` = 'minutes';
-INSERT INTO `incident_timeframe` SET `timeframe_id` = 4, `timeframe_duration` = 'hours';
-INSERT INTO `incident_timeframe` SET `timeframe_id` = 5, `timeframe_duration` = 'days';
-INSERT INTO `incident_timeframe` SET `timeframe_id` = 6, `timeframe_duration` = 'weeks';
-INSERT INTO `incident_timeframe` SET `timeframe_id` = 7, `timeframe_duration` = 'months';
-INSERT INTO `incident_timeframe` SET `timeframe_id` = 8, `timeframe_duration` = 'years';
-INSERT INTO `incident_timeframe` SET `timeframe_id` = 9, `timeframe_duration` = 'forever';
+INSERT INTO `incident_timeframe` SET `timeframe_id` = 1, `timeframe_duration` = 'n/a' ON DUPLICATE KEY UPDATE `timeframe_id`=1;
+INSERT INTO `incident_timeframe` SET `timeframe_id` = 2, `timeframe_duration` = 'seconds' ON DUPLICATE KEY UPDATE `timeframe_id`=2;
+INSERT INTO `incident_timeframe` SET `timeframe_id` = 3, `timeframe_duration` = 'minutes' ON DUPLICATE KEY UPDATE `timeframe_id`=3;
+INSERT INTO `incident_timeframe` SET `timeframe_id` = 4, `timeframe_duration` = 'hours' ON DUPLICATE KEY UPDATE `timeframe_id`=4;
+INSERT INTO `incident_timeframe` SET `timeframe_id` = 5, `timeframe_duration` = 'days' ON DUPLICATE KEY UPDATE `timeframe_id`=5;
+INSERT INTO `incident_timeframe` SET `timeframe_id` = 6, `timeframe_duration` = 'weeks' ON DUPLICATE KEY UPDATE `timeframe_id`=6;
+INSERT INTO `incident_timeframe` SET `timeframe_id` = 7, `timeframe_duration` = 'months' ON DUPLICATE KEY UPDATE `timeframe_id`=7;
+INSERT INTO `incident_timeframe` SET `timeframe_id` = 8, `timeframe_duration` = 'years' ON DUPLICATE KEY UPDATE `timeframe_id`=8;
+INSERT INTO `incident_timeframe` SET `timeframe_id` = 9, `timeframe_duration` = 'forever' ON DUPLICATE KEY UPDATE `timeframe_id`=9;
 
 -- Free tagging of incidents
 CREATE TABLE IF NOT EXISTS `incident_x_tag` (

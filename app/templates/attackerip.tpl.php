@@ -14,15 +14,32 @@ Search malicious IP database: <input type="text" name="ip"/> <input type="submit
 <div class="well well-small">
 <h4>Darknet sensors</h4>
 Your search returned <?php echo count($darknet_drops);?> results from darknet sensors.
+<table id="tabledarknet_drops" name="tabledarknet_drops" class="table table-striped">
+<thead>
+    <tr><th>Attacker IP</th><th>Target IP</th><th>Source Port</th><th>Destination Port</th><th>Protocol</th><th>Observed at:</th></tr>
+</thead>
+<tbody>
 <?php 
 if (count($darknet_drops) > 0) {
-	echo $content;	
+if (isset($darknet_drops) && is_array($darknet_drops)) {
+    foreach ($darknet_drops as $drop) {
+        echo '<tr><td>' . $ip . '</td>';
+        echo '<td>' . $drop->dst_ip . '</td>';
+        echo '<td>' . $drop->src_port . '</td>';
+        echo '<td>' . $drop->dst_port . '</td>';
+        echo '<td>' . $drop->proto . '</td>';
+        echo '<td>' . $drop->received_at . '</td>';
+        echo '</tr>';
+    }
+}
+$content .= '';
 }
 ?>
+</tbody></table>
 </div>
 <div class="well">
 <h4>OSSEC alerts</h4>
-<table class="table table striped">
+<table id="ossecalerttable" name="ossecalerttable" class="table table striped">
 <thead>
 <tr><th>Alert date</th><th>Alert level</th><th>Log entry</th></tr>
 </thead><tbody>
@@ -36,5 +53,20 @@ foreach ($ossec_alerts as $alert) {
 </tbody>
 </table>
 </div>
+<script type="text/javascript" >
+$(document).ready( function () {
+    var table1 = $('#tabledarknet_drops').DataTable({
+        "ordering": true
+    });
+    table1.column('0:visible').order('desc');
+    table1.draw();
+
+    var table2 = $('#ossecalerttable').DataTable({
+        "ordering": true
+    });
+    table2.column('0:visible').order('desc');
+    table2.draw();
+} );
+</script>
 <?php } ?>
 </div>

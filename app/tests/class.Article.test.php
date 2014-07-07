@@ -17,6 +17,12 @@ class TestOfArticleClass extends UnitTestCase {
   function tearDown() {
     $this->article->delete();
   }
+  
+  function testArticleDate() {
+  	$date = '2013-04-09';
+    $this->article->set_date($date);
+    $this->assertEqual($date, $this->article->get_date());
+  }
 
   function testArticleConstructor() {
     $this->assertIsA($this->article, 'Article');

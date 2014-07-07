@@ -31,6 +31,9 @@ Class BulkHostAdder {
      *
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @param String The start IP listed in dot notation
+     * @param String The end IP listed in dot notation
+     * @param Array An arrayof hostgroups to assign the new hosts to
      * @return Boolean True on success or False on error.
      */
     public function addByIp($start_ip, $end_ip, $hostgroups = array()) {

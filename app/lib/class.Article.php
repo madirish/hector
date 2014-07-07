@@ -412,7 +412,7 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
     }
     
     /**
-     * Expects 2013-043-09
+     * Expects 2013-04-09
      */
     public function set_date($date) {
     	$datesplit = explode('-', $date);

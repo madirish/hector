@@ -191,6 +191,15 @@ class Darknet extends Maleable_Object {
         return $sql;
     }
     
+    /**
+     * Get a collection of darknets by country
+     * 
+     * @access public
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @param String The two letter country code
+     * @param String The SQL order by clause
+     * @return String The SQL to pass to the Collection class
+     */
     public function get_collection_by_country($country, $orderby) {
         $country = substr($country, 0, 2);
     	$filter = ' AND d.country_code = \'' . mysql_real_escape_string($country) . '\' ';

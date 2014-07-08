@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `darknet` (
 	`dst_port` INT UNSIGNED NOT NULL,
 	`proto` ENUM('tcp','udp','icmp'),
 	`country_code` VARCHAR(2),
-	`received_at` TIMESTAMP,
+	`received_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`),
 	INDEX USING HASH (src_ip)
 ) ENGINE = INNODB;
@@ -82,8 +82,10 @@ CREATE TABLE IF NOT EXISTS `geoip` (
   `start_ip_long` INT UNSIGNED,
   `end_ip_long` INT UNSIGNED,
   `country_code` VARCHAR(2),
-  `country_name` VARCHAR(255)
+  `country_name` VARCHAR(255),
+  INDEX USING HASH (start_ip_long, end_ip_long)
 ) ENGINE = INNODB;
+DELETE FROM geoip;
 LOAD DATA INFILE '/opt/hector/app/sql/GeoIPCountryWhois.csv' INTO TABLE geoip FIELDS TERMINATED BY "," ENCLOSED BY '"';
 
 -- Hosts are IP based machines, the crux of the system
@@ -186,7 +188,7 @@ CREATE TABLE IF NOT EXISTS `incident_action` (
   `action_action` VARCHAR(255) NOT NULL,
   PRIMARY KEY  (`action_id`)
 ) ENGINE = INNODB;
-INSERT INTO `incident_action` SET `action_id` = 1, `action_action` = 'Malware';
+INSERT INTO `incident_action` SET `action_id` = 1, `action_action` = 'Malware' ON DUPLICATE KEY UPDATE;
 INSERT INTO `incident_action` SET `action_id` = 2, `action_action` = 'Hacking';
 INSERT INTO `incident_action` SET `action_id` = 3, `action_action` = 'Social';
 INSERT INTO `incident_action` SET `action_id` = 4, `action_action` = 'Spam';
@@ -194,6 +196,7 @@ INSERT INTO `incident_action` SET `action_id` = 5, `action_action` = 'Misuse';
 INSERT INTO `incident_action` SET `action_id` = 6, `action_action` = 'Physical';
 INSERT INTO `incident_action` SET `action_id` = 7, `action_action` = 'Error';
 INSERT INTO `incident_action` SET `action_id` = 8, `action_action` = 'Environmental';
+INSERT INTO `incident_action` SET `action_id` = 9, `action_action` = 'Phishing';
 
 -- Source of the agent who caused the incident
 CREATE TABLE IF NOT EXISTS `incident_agent` (
@@ -220,6 +223,8 @@ INSERT INTO `incident_asset` SET `asset_id` = 5, `asset_asset` = 'Mobile device'
 INSERT INTO `incident_asset` SET `asset_id` = 6, `asset_asset` = 'Multifunction printer';
 INSERT INTO `incident_asset` SET `asset_id` = 7, `asset_asset` = 'Removable media';
 INSERT INTO `incident_asset` SET `asset_id` = 8, `asset_asset` = 'Web app or server';
+INSERT INTO `incident_asset` SET `asset_id` = 9, `asset_asset` = 'Credentials';
+INSERT INTO `incident_asset` SET `asset_id` = 10, `asset_asset` = 'Proxy server';
 
 -- Method of incident discovery
 CREATE TABLE IF NOT EXISTS `incident_discovery` (
@@ -234,6 +239,8 @@ INSERT INTO `incident_discovery` SET `discovery_id` = 4, `discovery_method` = 'A
 INSERT INTO `incident_discovery` SET `discovery_id` = 5, `discovery_method` = 'Internal security audit';
 INSERT INTO `incident_discovery` SET `discovery_id` = 6, `discovery_method` = 'Unusual system behaviour';
 INSERT INTO `incident_discovery` SET `discovery_id` = 7, `discovery_method` = 'End user report';
+INSERT INTO `incident_discovery` SET `discovery_id` = 8, `discovery_method` = 'Application monitoring system';
+INSERT INTO `incident_discovery` SET `discovery_id` = 8, `discovery_method` = 'Public disclosure via 3rd party';
 
 -- Incident magnitudes
 CREATE TABLE IF NOT EXISTS `incident_magnitude` (

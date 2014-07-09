@@ -35,6 +35,15 @@ require_once('class.Host.php');
  * @package HECTOR
  */
 class Report {
+
+    // --- ATTRIBUTES ---
+    /**
+     * Instance of the Db
+     * 
+     * @access private
+     * @var Db An instance of the Db
+     */
+    private $db = null;
     
     public function __construct() {
     	$this->db = Db::get_instance();
@@ -71,6 +80,21 @@ class Report {
         return $retval;
     }
     
+    /**
+     * Get a listing of class C networks in which we are 
+     * tracking hosts for a given class B input.
+     * 
+     * @access public
+     * @param String A dot notation Class B address, such as 10.0
+     * @return Array An array of Class C networks in dot notation such as 10.0.0
+     */
+    public function getClassCinClassB($classB) {
+    	$query = 'select distinct(substring_index(host_ip, \'.\', 3)) as ipclass, count(host_id) as thecount';
+        $query .= ' from host where host_ip like \'?s%\' group by ipclass';
+        $query = array($query, $classB);
+        return $this->db->fetch_object_array($query);
+    }
+    
     public function getHostCount($appuser) {
         if ($appuser->get_is_admin())
         $sql = "select count(host_id) as hostcount from host";
@@ -95,6 +119,19 @@ class Report {
     	$sql = 'SELECT COUNT(scan_type_id) AS thecount FROM scan_type';
         $retval = $this->db->fetch_object_array($sql);
         return $retval[0]->thecount;
+    }
+    
+    /**
+     * Return an array of Class B networks containing hosts that we track
+     * 
+     * @author Justin C. Klein Kenae <jukeane@sas.upen.edu> 
+     * @access public
+     * @return Array An array of Class B networks in 192.156 style dot notation
+     */
+    public function getClassBs() {
+    	$query = 'select distinct(substring_index(host_ip, \'.\', 2)) as ipclass, count(host_id) as thecount';
+        $query .= ' from host group by ipclass';
+        return $this->db->fetch_object_array($query); 
     }
  
     public function topTenPorts($appuser) {

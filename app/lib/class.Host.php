@@ -734,6 +734,29 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		}
 		return $sql;
 	}
+    
+    /**
+     * This function directly supports the Collection class.
+     * Gets a collection based on a class C network of the host
+     *
+     * @access public
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @param String The dot notation of the class C network (i.e. 192.168.1)
+     * @param String The optional SQL ORDER BY clause arguments
+     * @return String SQL select string
+     */
+    public function get_collection_by_classC($classC, $orderby='') {
+        $sql = 'SELECT h.host_id FROM host h ' .
+                'WHERE h.host_ip LIKE \'?s%\' ';
+        if ($orderby != '') {
+            $sql .= ' ' . $orderby;
+        }
+        else if ($orderby == '') {
+            $sql .= ' ORDER BY h.host_ip_numeric';
+        }
+        $sql = array($sql, $classC);
+        return $sql; 
+    }
 	
     /**
      * This function directly supports the Collection class.

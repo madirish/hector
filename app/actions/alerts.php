@@ -39,8 +39,8 @@ $filter_form->set_name('alert_filter_form');
 $filter_form_token = $filter_form->get_token();
 $filter_form->save();
 
-$javascripts .= '<script type="text/javascript" charset="utf8" src="js/jquery.dataTables.js"></script>';
-$javascripts .= '<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.0/css/jquery.dataTables.css">';
+$javascripts .= '<script type="text/javascript" charset="utf8" src="js/jquery.dataTables.js"></script>' . "\n";
+$javascripts .= '<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">' . "\n";
 
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates . 'alerts.tpl.php');

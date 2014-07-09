@@ -40,7 +40,7 @@ class Report {
     	$this->db = Db::get_instance();
     }
     
-    public function darknetSummary() {
+    public function darknetSummary() { 
     	// Darknet summary:
         $sql = "SELECT CONCAT(dst_port, '/', proto) AS port, count(id) AS cnt " .
                 "FROM darknet " .
@@ -54,18 +54,18 @@ class Report {
     public function getDarknetCountryCount() {
         $retval = array();
         $countrycount = array();
-    	$sql = 'SELECT DISTINCT(d.src_ip) as src_ip, g.country_code as country_code ' .
-                'FROM darknet d, geoip g ' .
-                'WHERE d.received_at > DATE_SUB(NOW(), INTERVAL 4 DAY) ' .
-                'AND d.src_ip > g.start_ip_long ' .
-                'AND d.src_ip < g.end_ip_long';
+    	$sql = 'SELECT DISTINCT(src_ip), country_code from darknet';
         $result = $this->db->fetch_object_array($sql);
+        $seenip = array();
         foreach($result as $row) {            
-            if (isset($retval[$row->country_code])) {
+            if (! isset($seenip[$row->src_ip])) {
+            	if (isset($retval[$row->country_code])) {
             	$retval[$row->country_code] ++ ;
-            }
-            else {
-            	$retval[$row->country_code] = 1;
+                }
+                else {
+                	$retval[$row->country_code] = 1;
+                }
+                $seenip[$row->src_ip] = 'seen';
             }
         }
         return $retval;
@@ -119,5 +119,35 @@ class Report {
         }
         $port_result = $this->db->fetch_object_array($sql);
         return $port_result;
-    }   
+    }
+    
+    public function getTopDarknetCountries() {
+        $retval = array();
+    	$sql = 'SELECT DISTINCT(country_code), COUNT(id) AS countid ' .
+                'FROM darknet ' .
+                'WHERE received_at > date_sub(now(), interval 7 day) ' .
+                'AND country_code IS NOT NULL ' .
+                'GROUP BY country_code ' .
+                'ORDER BY countid desc LIMIT 10';
+        $top_countries = $this->db->fetch_object_array($sql);
+        if (is_array($top_countries)) {
+        	foreach ($top_countries as $country) {
+        		$retval[] = $country->country_code;
+        	}
+        }
+        return $retval;
+    }
+    
+    public function getProbesByCountryDate($country, $date) {
+        $date = strtotime($date);
+    	$datemin = date('Y-m-d 00:00:00', $date);
+        $datemax = date('Y-m-d 24:59:59', $date);
+        $sql = 'SELECT COUNT(id) AS idcount ' .
+                'FROM darknet ' .
+                'WHERE country_code = "' . mysql_real_escape_string($country) . '" ' .
+                'AND received_at >= "' . $datemin . '" ' .
+                'AND received_at <= "' . $datemax . '"';
+        $count = $this->db->fetch_object_array($sql);
+        return $count[0]->idcount;
+    }
 }

@@ -23,6 +23,8 @@ $ip = '';
 if (isset($_GET['ip'])) $ip = $_GET['ip']; 
 if (isset($_POST['ip'])) $ip = $_POST['ip']; 
 
+if (! filter_var($ip, FILTER_VALIDATE_IP)) $ip = '';
+
 if ($ip != '') {
 	require_once($approot . 'lib/class.Db.php');
 	$db = Db::get_instance();
@@ -51,9 +53,9 @@ if ($ip != '') {
 
 $tablename='darknet_drops';
 	
-$content .= '<table id="table' . $tablename . '" class="table table-striped">';
+$content = '<table id="table' . $tablename . '" class="table table-striped">';
 $content .= '<thead><tr><th>Attacker IP</th><th>Target IP</th><th>Source Port</th><th>Destination Port</th><th>Protocol</th><th>Observed at:</th></tr></thead><tbody>';
-if (is_array($darknet_drops)) {
+if (isset($darknet_drops) && is_array($darknet_drops)) {
 	foreach ($darknet_drops as $drop) {
 		$content .= '<tr><td>' . $ip . '</td>';
 		$content .= '<td>' . $drop->dst_ip . '</td>';
@@ -66,8 +68,8 @@ if (is_array($darknet_drops)) {
 }
 $content .= '</tbody></table>';
 
-$ip_addr = htmlspecialchars($ip);
-$ip_name = gethostbyaddr($ip);
+$ip_addr = ($ip == '') ? '' : htmlspecialchars($ip);
+$ip_name = ($ip == '') ? '' : gethostbyaddr($ip);
 $ip_rpt_display = $ip_addr;
 if ($ip_addr != $ip_name) {
 	$ip_rpt_display .= ' - ' . $ip_name;

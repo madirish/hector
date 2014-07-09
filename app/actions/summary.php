@@ -136,6 +136,21 @@ $incident_report_header = json_encode("Incident Reports " . $timespan);
 
 $darknetmapcounts = $report->getDarknetCountryCount();
 
+/**
+ * Darknet Country Trends
+ */
+$datelabels = array();
+for ($i=0; $i<7; $i++) {
+	$datelabels[$i] = date('Y-m-d', mktime(0,0,0,date('m'),date('d')-$i,date('Y')));
+}
+$topCountries = $report->getTopDarknetCountries();
+$countrycountdates = array();
+foreach ($topCountries as $country) {
+	foreach($datelabels as $datelabel) {
+		$countrycountdates[$country][$datelabel] = $report->getProbesByCountryDate($country, $datelabel);
+	}
+}
+
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates . 'summary.tpl.php');
 

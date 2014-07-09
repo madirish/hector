@@ -153,7 +153,8 @@ class Alert {
             'FROM alert a, host h ' .
             'WHERE a.host_id = h.host_id ' .
             $limit . 
-            ' ORDER BY a.alert_timestamp desc'; 
+            ' ORDER BY a.alert_timestamp DESC ' .
+            ' LIMIT 200'; 
         return $sql;
     }
     

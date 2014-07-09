@@ -13,4 +13,8 @@ $(document).ready(function(){
         ]
     }
     var myNewChart = new Chart(document.getElementById("topPortsChart").getContext("2d")).Bar(data);
-})
+	$("#topPortsChart").click(function (evt) {
+		var activeBars = myNewChart.getBarsAtEvent(evt);
+		location.href="?action=reports&report=by_port&ports=" + activeBars[0]["label"];
+	});    
+});

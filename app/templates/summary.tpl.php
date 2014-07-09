@@ -50,54 +50,14 @@ to perform automated scans of hosts.</p>
   	<div id="portSummaryChartLabels" class="hidden"><?php echo $portSummaryLabels;?></div>
   	<div id="portSummaryChartData" class="hidden"><?php echo $portSummaryCounts;?></div>
 	<canvas id="topPortsChart" width="400"></canvas>
-	
-	
-	<table class="table table-striped table-condensed" id="top-ports-dectected">
-	<thead>
-	<tr><th>#</th><th>Port Number</th><th>Protocol</th><th>Hosts with port open</th></tr>
-	</thead>
-	<tbody>
-	<?php
-	$x=1;
-	foreach ($port_result as $row) {
-		echo "<tr";
-		if ($x%2) echo " class='odd'";
-        $portproto = explode('/', $row->port_number);
-		echo "><td>" . $x++ . "</td><td><a href='?action=reports&report=by_port&ports=" .
-				$row->port_number . "'>" . $row->port_number . "</a></td><td>" . 
-                getservbyport($portproto[0],$portproto[1]) . "</td><td>" . $row->portcount . "</td></tr>";
-	}
-	?>
-	</tbody>
-	</table>
     
   </div>
   
   <div class="span6">
 	<h3>Darknet:  Top Port Probes in Last 4 Days</h3>
 	<canvas id="darknetChart"  width="400"></canvas>
-	
-
 	<div id="darknetSummaryChartLabels" class="hidden"><?php echo $darknetSummaryLabels;?></div>
   	<div id="darknetSummaryChartData" class="hidden"><?php echo $darknetSummaryCounts;?></div>
-	<table class="table table-striped table-condensed" id="darknet-probes-summary">
-	<thead>
-	<tr><th>#</th><th>Port Number</th><th>Protocol</th><th>Total darknet probes</th></tr>
-	</thead>
-	<tbody>
-	<?php
-	$x=1;
-	foreach ($probe_result as $row) {
-        $portproto = explode('/', $row->port);
-		echo "<tr";
-		if ($x%2) echo " class='odd'";
-		echo "><td>" . $x++ . "</td><td><a href='?action=reports&report=by_port&ports=" .$row->port ."'> " .
-				$row->port . "</a></td><td>" . getservbyport($portproto[0],$portproto[1]) . "</td><td>" . $row->cnt . "</td></tr>";
-	}
-	?>
-	</tbody>
-	</table>
-
 	</div>
 </div>
 
@@ -121,30 +81,93 @@ to perform automated scans of hosts.</p>
     <?php
     foreach ($darknetmapcounts as $key=>$val) {
     	?>
-        gdpData['<?php echo $key;?>']=<?php echo $val;?>;
+        countryData['<?php echo $key;?>']=<?php echo $val;?>;
         <?php
     }
     ?>
-      //@code_start
-      $(function(){
-        $('#world-map-gdp').vectorMap({
-          map: 'world_mill_en',
-          series: {
+    //@code_start
+    $(function(){
+    $('#world-map-gdp').vectorMap({
+        map: 'world_mill_en',
+        series: {
             regions: [{
-              values: gdpData,
-              scale: ['#C8EEFF', '#0071A4'],
-              normalizeFunction: 'polynomial'
+                values: countryData,
+                scale: ['#C8EEFF', '#0071A4'],
+                normalizeFunction: 'polynomial'
             }]
-          },
-            onRegionLabelShow: function(event, label, code){
-                label.html(
-                    '<b>'+label.html()+'</b></br>'+gdpData[code]+ ' probes'
+        },
+        onRegionLabelShow: function(event, label, code){
+            label.html(
+                '<b>'+label.html()+'</b></br>'+countryData[code]+ ' probes'
             );
-          }
+        },
+        onRegionClick: function (event, code) {
+            location.href = "?action=darknetsummary&country="+code;
+        }
         });
       });
       //@code_end
     </script></figure>
     </div>
 
+</div>
+
+<div class="row">
+    <div class="span6">
+    Nothing here yet...
+    </div>
+  
+    <div class="span6">
+        <h3>Timeline of Probes</h3>
+        <canvas id="darknetCountryChart" width="500"></canvas>
+        <script>
+        $(document).ready(function(){
+            //var displayLabels = document.getElementById('darknetSummaryChartLabels').textContent.split(",");
+            //var dataPoints = document.getElementById('darknetSummaryChartData').textContent.split(",");
+        
+            var data = {
+                labels : [<?php print "'" . implode("','", $datelabels) . "'";?>],
+                datasets : [ 
+<?php 
+                        $colors = array("220,220,220", 
+                                        "151,187,205", 
+                                        "121,187,105", 
+                                        "131,187,205", 
+                                        "179,107,205", 
+                                        "101,27,205", 
+                                        "251,207,205", 
+                                        "51,150,205", 
+                                        "101,113,205", 
+                                        "205,190,205", 
+                                        "63,135,205");
+                        $x = 0;
+                        foreach ($countrycountdates as $country_code=>$countarray) {
+                        	print "\t\t\t\t\t{\n";
+                            print "\t\t\t\t\t\tlabel: \"" . $country_code . "\",\n";
+                            print "\t\t\t\t\t\ttitle: \"" . $country_code . "\",\n";
+                            print "\t\t\t\t\t\tfillColor : \"rgba(".$colors[$x].",0.2)\",\n";
+                            print "\t\t\t\t\t\tstrokeColor : \"rgba(".$colors[$x].",1)\",\n";
+                            print "\t\t\t\t\t\tpointColor : \"rgba(".$colors[$x].",1)\",\n";
+                            print "\t\t\t\t\t\tpointStrokeColor: \"#fff\",\n";
+                            print "\t\t\t\t\t\tpointHighlightFill: \"#fff\",\n";
+                            print "\t\t\t\t\t\tpointHighlightStroke : \"rgba(".$colors[$x].",1)\",\n";
+                            print "\t\t\t\t\t\tdata : [" . implode(",", $countarray) . "]\n";
+                            print "\t\t\t\t\t},\n";
+                            $x++;
+                        }
+?>
+                ]
+            };
+            var options = {
+            	bezierCurve: true,
+                multiTooltipTemplate: "<%= datasetLabel%> - <%= value %>",
+            };
+            var myNewChart = new Chart(document.getElementById("darknetCountryChart").getContext("2d")).Line(data, options);
+            $("#darknetCountryChart").hover(function (evt) {
+                var activeBars = myNewChart.getPointsAtEvent(evt);
+                console.log(activeBars);
+            });        
+        });
+        </script>
+    </div>
 </div>

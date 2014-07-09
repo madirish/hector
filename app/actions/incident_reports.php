@@ -1,5 +1,9 @@
 <?php
-include_once($approot . 'templates/admin_headers.tpl.php');
+/**
+ * This is the subcontroller for the incident report summary page
+ * 
+ * @package HECTOR
+ */
 include_once($approot . 'lib/class.Collection.php');
 
 if (isset($_GET['threat_action'])) {
@@ -16,5 +20,9 @@ if (isset($incident_reports->members)) {
     }	
 }
 
+$javascripts .= '<script type="text/javascript" charset="utf8" src="js/jquery.dataTables.js"></script>' . "\n";
+$javascripts .= '<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">' . "\n";
+
+include_once($approot . 'templates/admin_headers.tpl.php');
 include_once($approot . 'templates/incident_reports.tpl.php');
 ?> 

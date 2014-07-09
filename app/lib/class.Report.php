@@ -95,6 +95,57 @@ class Report {
         return $this->db->fetch_object_array($query);
     }
     
+    public function get_ossec_alert_count($ip) {
+    	$sql = 'select a.alert_date, a.rule_log, r.rule_level from ossec_alert a, ossec_rule r ' .
+            'where a.rule_id = r.rule_id and r.rule_level >= 7 AND ' .
+            'a.rule_src_ip_numeric = inet_aton(\'' . $ip . '\') order by alert_date DESC';
+        $ossec_alerts = $this->db->fetch_object_array($sql);
+    }
+    
+    /**
+     * Return the number of commands the IP address executed on a kojoney honeypot
+     * 
+     * @access public
+     * @author Justin Klein Keane <jukeane@sas.upenn.edu>
+     * @param String The dot notation IP address
+     * @return String The number of commands or 'no'
+     */
+    public function get_koj_executed_commands($ip) {
+        $ip = mysql_real_escape_string($ip);
+        $commands = '';
+        $sql = 'select count(id) as thecount from koj_executed_command where ip = \'' . $ip . '\'';
+        $honeypot_commands = $this->db->fetch_object_array($sql);
+        if (isset($honeypot_commands[0])) $commands = $honeypot_commands[0]->thecount;
+        if ($commands == '') $commands = 'no';
+        return $commands;
+    }
+    
+    public function get_darknet_drops($ip) {
+    	$ip = mysql_real_escape_string($ip);
+        $sql = 'select inet_ntoa(dst_ip) as dst_ip, src_port, dst_port, proto, received_at from darknet ' .
+                'where src_ip = inet_aton(\'' . $ip . '\') order by received_at desc';
+        return $this->db->fetch_object_array($sql);
+    }
+    
+    /**
+     * Determine how many times an IP has been detected attempting to log into 
+     * the honeypot.
+     * 
+     * @access public
+     * @author Justin C. Klien Keane
+     * @param String IP address in dot notation
+     * @return String The number of logins or "no"
+     */
+    public function get_honeynet_logins($ip) {
+        $login_attempts = '';
+        $ip = mysql_real_escape_string($ip);
+    	$sql = 'select count(id) as thecount from koj_login_attempt where ip_numeric = inet_aton(\'' . $ip . '\')';
+        $honeypot_logins = $this->db->fetch_object_array($sql);
+        if (isset($honeypot_logins[0])) $login_attempts = $honeypot_logins[0]->thecount;
+        if ($login_attempts == '') $login_attempts = 'no';
+        return $login_attempts;
+    }
+    
     public function getHostCount($appuser) {
         if ($appuser->get_is_admin())
         $sql = "select count(host_id) as hostcount from host";

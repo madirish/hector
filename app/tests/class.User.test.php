@@ -25,6 +25,11 @@ class TestOfUserClass extends UnitTestCase {
 		$name = 'Test';
 		$this->user->set_name($name);
 		$this->assertEqual($this->user->get_name(), $name);
+        $this->assertTrue($this->user->save());
+        $id = $this->user->get_id();
+        $user2 = new User();
+        $user2->get_by_name($name);
+        $this->assertEqual($id, $user2->get_id());
 	}
 	
 	function testGetAddAlterForm() {
@@ -53,6 +58,23 @@ class TestOfUserClass extends UnitTestCase {
 		$this->assertFalse($this->user->validate($uname,'NotThePasswordForThisUser'));
 	}
 	
+    function testSupportGroupIDs() {
+    	$sgids = array(1,2,3,4);
+        $this->assertTrue($this->user->set_supportgroup_ids($sgids));
+        $this->assertEqual($sgids, $this->user->get_supportgroup_ids());
+        $sgids[] = 'bad';
+        $this->assertFalse($this->user->set_supportgroup_ids($sgids));
+        $this->assertNotEqual($sgids, $this->user->get_supportgroup_ids());
+    }
+    
+    function testIsAdmin() {
+    	$this->assertTrue($this->user->set_is_admin(1));
+        $this->assertEqual(true, $this->user->get_is_admin());
+        $this->assertEqual('Yes', $this->user->get_is_admin_readable());
+        $this->assertTrue($this->user->set_is_admin(0));
+        $this->assertEqual('No', $this->user->get_is_admin_readable());
+    }
+    
 
 	function testGetHostIds() {
 		$sgids = 1234;

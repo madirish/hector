@@ -61,6 +61,32 @@ class TestOfAlertClass extends UnitTestCase {
   	$this->assertEqual($this->alert->get_host(), '130.91.128.192');
   }
   
+  function testAlertGetHostLinked() {
+    $this->alert->set_host_id(1);
+    $host = $this->alert->get_host();
+    $this->assertTrue(is_string($host));
+  	$this->assertTrue(is_string($this->alert->get_host_linked()));
+  }
+  
+  function testTimestamp() {
+  	$tstamp = '2014-01-30 12:00:00';
+    $this->alert->set_timestamp($tstamp);
+    $this->assertEqual($tstamp, $this->alert->get_timestamp());
+    $bad = '<script>alert("xss");</script>';
+    $this->alert->set_timestamp($bad);
+    $this->assertNotEqual($bad, $this->alert->get_timestamp());
+  }
+  
+  function testGetCollectionDateIP() {
+    $goodstartdate = '2014-01-01';
+    $goodenddate = '2014-02-01';
+    $goodip = '127.0.0.1';
+    $badstartdate = '2014-02-30';
+    $badenddate = '2013-01-01';
+    $badip = '127.0.0.256';
+    $barestring = 'SELECT a.alert_id FROM alert a, host h WHERE a.host_id = h.host_id  ORDER BY a.alert_timestamp DESC  LIMIT 200';
+    $this->assertEqual($barestring, $this->alert->get_collection_by_dates_ip(array(),''));
+  }
   function testAlertDelete() {
   	$this->alert->set_host_id(1);
   	$this->alert->set_string('Test string');

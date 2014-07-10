@@ -92,7 +92,7 @@ header("Content-Security-Policy: $policy");*/
 /**
  * Hand off to subcontrollers
  */
-if ($_GET['action'] == 'csp-report') {
+if ($action == 'csp-report') {
 	include_once($approot . 'actions/csp-report.php');
 }
 else {
@@ -100,7 +100,7 @@ else {
 			$_SESSION['user_id'] == null || 
 			$action == 'logout') ) {
 		// User isn't logged in, use static header template
-		if ($_GET['action'] !== 'login_scr') {
+		if ($action !== 'login_scr') {
 			include_once($templates . 'header.tpl.php');
 		}
 		

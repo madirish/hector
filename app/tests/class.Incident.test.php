@@ -3,7 +3,7 @@ require_once(dirname(__FILE__) . '/../software/simpletest/autorun.php');
 require_once(dirname(__FILE__) . '/../lib/class.Incident.php');
 
 
-class TestOfLocationClass extends UnitTestCase {
+class TestOfIncidentClass extends UnitTestCase {
     
     function setUp() {
         $this->incident = new Incident();

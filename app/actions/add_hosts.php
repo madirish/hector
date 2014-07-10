@@ -43,11 +43,11 @@ if (isset($_POST['startip'])) {
 		}
 	}
 	
-    if ($adder->addByIp($_POST['startip'], $_POST['endip'], $hostgroups)) {
+    if ($adder->add_by_IP($_POST['startip'], $_POST['endip'], $hostgroups)) {
     	$message = "Hosts added.";
     }
 	else {
-		$message = $adder->getError();
+		$message = $adder->get_error();
 	}
 }
 

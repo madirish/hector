@@ -28,6 +28,10 @@ class TestOfScan_typeClass extends UnitTestCase {
 		$this->scan_type->set_name($name);
 		$this->assertEqual($this->scan_type->get_name(), $name);
 	}
+    
+    function testFooterScripts() {
+    	$this->assertEqual($this->scan_type->get_footer_scripts(), '');
+    }
 	
 	function testScan_typeFlags() {
 		$flags = 'Test';

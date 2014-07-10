@@ -16,5 +16,9 @@ class TestOfMaleable_ObjectClass extends UnitTestCase {
 	function testId() {
 		$this->assertEqual($this->maleable_object->get_id(), 0);
 	}
+    
+    function testSave() {
+    	// $this->malleable_object->save();
+    }
 }
 ?>

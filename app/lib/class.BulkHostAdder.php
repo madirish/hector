@@ -31,9 +31,12 @@ Class BulkHostAdder {
      *
      * @access public
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @param String The start IP listed in dot notation
+     * @param String The end IP listed in dot notation
+     * @param Array An arrayof hostgroups to assign the new hosts to
      * @return Boolean True on success or False on error.
      */
-    public function addByIp($start_ip, $end_ip, $hostgroups = array()) {
+    public function add_by_IP($start_ip, $end_ip, $hostgroups = array()) {
         
         $db = Db::get_instance();
         $startip = ip2long($start_ip); 
@@ -106,7 +109,7 @@ Class BulkHostAdder {
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
      * @return String Any error message that's been set
      */
-    public function getError() {
+    public function get_error() {
         return $this->error_message;
     }
 }

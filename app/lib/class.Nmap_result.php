@@ -537,7 +537,7 @@ class Nmap_result {
     	$retval = TRUE;
     	$state = intval($state);
     	// restrict to good values
-    	if ($state < 0 || $state > 5) $retval =  false;
+    	if ($state < 1 || $state > 5) $retval =  false;
     	else {
     		$this->state_id = $state;
     	}

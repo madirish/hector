@@ -52,7 +52,7 @@ $(document).ready( function () {
             aTargets: [ -1 ]
         }]
     });
-    table.column('0:visible').order('desc');
+    table.column('0:visible').order('asc');
     table.draw();
 } );
 </script>

@@ -32,6 +32,10 @@ if (is_array($results->members)) {
 	$darknets = $results->members;
 }
 
+
+$javascripts .= '<script type="text/javascript" charset="utf8" src="js/jquery.dataTables.js"></script>' . "\n";
+$javascripts .= '<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">' . "\n";
+
 if (! isset($_GET['ajax']) && ! isset($ajax)) {
     include_once($templates. 'admin_headers.tpl.php');
 }

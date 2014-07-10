@@ -1,5 +1,5 @@
 <h2>Darknet Summary</h2>
-<table class="table table-striped table-condensed" id="darknet-probes-summary">
+<table class="table table-striped table-condensed" id="darknet-probes-summary" name="darknet-probes-summary">
     <thead>
     <tr><th>Source IP</th><th>Protocol</th><th>Destination Port</th><th>Source Port</th><th>Country</th><th>Time</th></tr>
     </thead>
@@ -21,4 +21,13 @@
     ?>
     </tbody>
 </table>
-</ol>
+
+
+<script type="text/javascript" >
+$(document).ready( function () {
+    var table = $('#darknet-probes-summary').DataTable({
+        "ordering": true
+    });
+    table.draw();
+} );
+</script>

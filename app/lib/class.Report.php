@@ -63,7 +63,7 @@ class Report {
     public function getDarknetCountryCount() {
         $retval = array();
         $countrycount = array();
-    	$sql = 'SELECT DISTINCT(src_ip), country_code from darknet';
+    	$sql = 'SELECT DISTINCT(src_ip), country_code from darknet where received_at > DATE_SUB(NOW(), INTERVAL 4 DAY)';
         $result = $this->db->fetch_object_array($sql);
         $seenip = array();
         foreach($result as $row) {            

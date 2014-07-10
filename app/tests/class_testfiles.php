@@ -8,6 +8,7 @@ class TestOfTestFiles extends UnitTestCase {
     if ($dirhandle = opendir($libdir)) {
       while (false !== ($entry = readdir($dirhandle))) {
         if ($entry !== '.' && $entry !== '..') {
+          if ($entry == 'interface.Maleable_Object_interface.php') continue; // Skip this one
           $testfile = dirname(__FILE__) . '/' . substr($entry,0,-3) . 'test.php';
           if (! $this->assertTrue(file_exists($testfile))) {
             print(" *** Test missing for $entry, should be  " . dirname(__FILE__) . '/' . substr($entry,0,-3) . 'test.php' . "\n");

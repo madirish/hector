@@ -45,6 +45,46 @@ class TestOfArticleClass extends UnitTestCase {
     $this->assertTrue($this->article->get_title() == '&lt;Title&gt;');
   }
   
+  function testTagIDs() {
+  	$tag_ids = array(1,2,3,4);
+    $bad_tagids = array(1,2,3,'foo');
+    $bad = 'foo';
+    $this->assertFalse($this->article->set_tag_ids($bad));
+    $this->assertTrue($this->article->set_tag_ids($tag_ids));
+    $this->assertEqual($tag_ids, $this->article->get_tag_ids());
+    $tag_ids[] = 5;
+    $this->assertTrue($this->article->add_tag_id(5));
+    $this->assertEqual($tag_ids, $this->article->get_tag_ids());
+    $this->article->set_tag_ids($bad_tagids);
+    $this->assertNotEqual($bad_tagids, $this->article->get_tag_ids());
+  }
+  
+  function testURL() {
+  	$url = 'http://localhost';
+    $bad = 'foo';
+    $badurl = 'http://localhost?id=<script>alert("xss");</script>';
+    $this->assertTrue($this->article->set_url($url));
+    $this->assertEqual($url, $this->article->get_url());
+    $this->assertEqual('<a href="http://localhost">http://localhost</a>', $this->article->get_linked_url());
+    $this->assertFalse($this->article->set_url($bad));
+    $this->assertTrue($this->article->set_url($badurl));
+    $this->assertNotEqual($badurl, $this->article->get_url());
+  }
+  
+  function testAddAlterForm() {
+  	$this->assertTrue(is_array($this->article->get_add_alter_form()));
+  }
+  
+  
+  function testTeaser() {
+  	$teaser = 'foo';
+    $bad = '<script>alert("xss");</script>';
+    $this->assertTrue($this->article->set_teaser($teaser));
+    $this->assertEqual($teaser, $this->article->get_teaser());
+    $this->article->set_teaser($bad);
+    $this->assertFalse($this->article->get_teaser(), $bad);
+  }
+  
   function testSetArticleBody() {
     $this->article->set_body('Body string');
     $this->assertTrue($this->article->get_body() == 'Body string');

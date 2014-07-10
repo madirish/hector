@@ -27,6 +27,13 @@ class TestOfIRMagnitudeClass extends UnitTestCase {
         $this->assertEqual($this->magnitude->get_name(), $name);
     }
     
+    function testLevel() {
+    	$this->magnitude->set_level(1);
+        $this->assertEqual(1, $this->magnitude->get_level());
+        $this->magnitude->set_level('bad');
+        $this->assertNotEqual('bad', $this->magnitude->get_level());
+    }
+    
     function testGetAddAlterForm() {
         $this->assertIsA($this->magnitude->get_add_alter_form(), 'Array');
     }

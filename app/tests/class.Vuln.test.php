@@ -20,6 +20,23 @@ class TestOfVulnClass extends UnitTestCase {
   	$this->assertIsA($this->vuln, 'Vuln');
   }
   
+  function testAddAlterForm() {
+  	$this->assertTrue(is_array($this->vuln->get_add_alter_form()));
+  }
+  
+  function testLookupByName() {
+  	$name = "Polly Shouldn't Be!";
+    $vuln = new Vuln();
+    $vuln->set_name($name);
+    $vuln->save();
+    $id = $vuln->get_id();
+    $vuln2 = new Vuln();
+    $vuln2->lookup_by_name($name);
+    $this->assertEqual($id, $vuln2->get_id());
+    $this->assertEqual($name, $vuln2->get_name());
+    $this->assertTrue($vuln2->delete());
+  }
+  
   function testVulnSave() {
   	$this->assertTrue($this->vuln->get_id() == 0);
   	$this->vuln->set_description('Test string');

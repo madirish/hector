@@ -31,6 +31,19 @@ class TestOfIRTimeframeClass extends UnitTestCase {
         $this->assertIsA($this->timeframe->get_add_alter_form(), 'Array');
     }
     
+    function testDuration() {
+    	$duration1 = "seconds";
+        $duration2 = "<script>alert('xss');</script>";
+        $this->timeframe->set_duration($duration1);
+        $this->assertEqual($duration1, $this->timeframe->get_duration());
+        $this->timeframe->set_duration($duration2);
+        $this->assertNotEqual($duration2, $this->timeframe->get_duration());
+    }
+    
+    function testLabel() {
+    	asesrtEqual('Incident Report Timeframe', $this->timeframe->get_label());
+    }
+    
     function testGetCollectionDefinition() {
         $this->assertIsA($this->timeframe->get_collection_definition(), 'String');
     }

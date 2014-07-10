@@ -96,7 +96,7 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
      * @access private
      * @var String The teaser or abstract of the article
      */
-    private $tesaser;
+    private $teaser;
 
     /**
      * Array of associate Tag ids
@@ -169,7 +169,7 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
             );
             $retval = $this->db->iud_sql($sql);
         }
-        return $retval;
+        return (bool) $retval;
     }
 
     /**

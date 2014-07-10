@@ -64,6 +64,14 @@ class IRMagnitude extends Maleable_Object implements Maleable_Object_Interface {
      * @var String The name of the magnitude
      */
     private $name;
+    
+    /**
+     * magnitude level
+     * 
+     * @access private
+     * @var String The level of the magnitude (high, med, low, etc.)
+     */
+    private $level;
 
     // --- OPERATIONS ---
 
@@ -116,7 +124,7 @@ class IRMagnitude extends Maleable_Object implements Maleable_Object_Interface {
             $retval = $this->db->iud_sql($sql);
             // Delete incidents with this magnitude
             $sql = array(
-                'DELETE FROM incident WHERE magnitude_id = \'?i\'',
+                'DELETE FROM incident WHERE impact_magnitude_id = \'?i\'',
                 $this->get_id()
             );
             $this->db->iud_sql($sql);

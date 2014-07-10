@@ -21,12 +21,6 @@ class TestOfIRTimeframeClass extends UnitTestCase {
         $this->assertEqual($this->timeframe->get_id(), 0);
     }
     
-    function testName() {
-        $name = 'Test';
-        $this->timeframe->set_name($name);
-        $this->assertEqual($this->timeframe->get_name(), $name);
-    }
-    
     function testGetAddAlterForm() {
         $this->assertIsA($this->timeframe->get_add_alter_form(), 'Array');
     }
@@ -41,7 +35,7 @@ class TestOfIRTimeframeClass extends UnitTestCase {
     }
     
     function testLabel() {
-    	asesrtEqual('Incident Report Timeframe', $this->timeframe->get_label());
+    	$this->assertEqual('Incident Report Timeframe', $this->timeframe->get_label());
     }
     
     function testGetCollectionDefinition() {
@@ -49,7 +43,7 @@ class TestOfIRTimeframeClass extends UnitTestCase {
     }
     
     function testSaveDelete() {
-        $this->timeframe->set_name('Test');
+        $this->timeframe->set_duration('Test');
         $this->assertTrue($this->timeframe->save());
         $this->assertTrue($this->timeframe->get_id() > 0 );
         $this->assertTrue($this->timeframe->delete());

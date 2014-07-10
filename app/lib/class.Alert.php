@@ -122,6 +122,14 @@ class Alert {
     	return false;
     }
     
+    /**
+     * Get collection definition by date range or IP
+     * 
+     * @access public
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @param Array An associative array('startdate'=>date, 'enddate'=>date, 'ip'=>ip)
+     * @return String The SQL string to select items
+     */
     public function get_collection_by_dates_ip($filter, $orderby='') {
         $startdate='0000-00-00';
         $enddate='';
@@ -132,8 +140,8 @@ class Alert {
             if (isset($filter['enddate'])) $enddate = $filter['enddate'];
             if (isset($filter['ip'])) $ip = $filter['ip'];
         }
-        $startdate = mysql_real_escape_string(date('Y-m-d', strtotime($startdate)));
-    	if ($startdate !== '') {
+        $startdate = ($startdate !== '0000-00-00') ? mysql_real_escape_string(date('Y-m-d', strtotime($startdate))) : '0000-00-00';
+    	if ($startdate !== '0000-00-00') {
             $limit .= ' AND a.alert_timestamp >= "' . $startdate . '" ';
         }
         // Validate the endtime and add it to the string

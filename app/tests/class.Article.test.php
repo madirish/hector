@@ -58,7 +58,6 @@ class TestOfArticleClass extends UnitTestCase {
     $this->assertTrue($this->article->save());
     $id = $this->article->get_id();
     $this->assertTrue($id > 0);
-    $this->article->delete();
-    $this->assertEqual($this->article->get_id(), 0);
+    $this->assertTrue($this->article->delete());
   }
 }

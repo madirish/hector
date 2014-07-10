@@ -22,8 +22,8 @@ class TestOfBulkHostAdderClass extends UnitTestCase {
     function testAddByIP() {
         $startip = '127.0.0.10';
         $endip = '127.0.0.5';
-    	assertFalse($this->dba->addByIP($startip, $endip));
-        assertEqual($this->bha->get_error(), 'Start IP must be less than end IP.');
+    	$this->assertFalse($this->bha->add_by_IP($startip, $endip));
+        $this->assertEqual($this->bha->get_error(), 'Start IP must be less than end IP.');
     }
 }
 ?>

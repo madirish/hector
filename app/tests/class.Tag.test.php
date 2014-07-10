@@ -25,6 +25,9 @@ class TestOfTagClass extends UnitTestCase {
 		$name = 'Test';
 		$this->tag->set_name($name);
 		$this->assertEqual($this->tag->get_name(), $name);
+        $badname = '<script>alert("xss");</script>';
+        $this->tag->set_name($badname);
+        $this->assertNotEqual($badname, $this->tag->get_name());
 	}
 	
 	function testGetAddAlterForm() {

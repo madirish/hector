@@ -20,9 +20,13 @@ class TestOfTestFiles extends UnitTestCase {
             $methods = get_class_methods($classname);
             foreach ($methods as $methodname) {
                 // Ignore built-ins or inheirited methods
-                if ($methodname == "__construct" || $methodname == "process_form" || $methodname == "get_displays" || $methodname == "get_label") continue;
+                if ($methodname == "__construct" || 
+                    $methodname == "process_form" || 
+                    $methodname == "get_displays" || 
+                    $methodname == "get_collection_definition" ||
+                    $methodname == "get_label") continue;
                 if (! $this->assertTrue(strpos(file_get_contents($testfile),$methodname) > 1)) {
-                    print "*** Missing test for $classname::$methodname in $testfile !";
+                    print "*** Missing test for $classname::$methodname in $testfile !\n";
                 }   
             }
           }

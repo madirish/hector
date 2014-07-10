@@ -112,14 +112,14 @@ class IRTimeframe extends Maleable_Object implements Maleable_Object_Interface {
         if ($this->id > 0 ) {
             // Delete an existing record
             $sql = array(
-                'DELETE FROM incident_timeframe WHERE timeframe_id = \'?i\'',
+                'DELETE FROM incident_timeframe WHERE timeframe_id = ?i',
                 $this->get_id()
             );
             $retval = $this->db->iud_sql($sql);
             // Delete incidents with this timeframe
             $sql = array(
-                'DELETE FROM incident WHERE timeframe_id = \'?i\'',
-                $this->get_id()
+                'DELETE FROM incident WHERE action_to_discovery_timeframe_id = ?i OR discovery_to_containment_timeframe_id = ?i OR availability_loss_timeframe_id = ?i',
+                $this->get_id(), $this->get_id(), $this->get_id()
             );
             $this->db->iud_sql($sql);
         }

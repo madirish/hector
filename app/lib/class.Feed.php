@@ -165,20 +165,6 @@ class Feed extends Maleable_Object implements Maleable_Object_Interface {
 		}
 		return $sql;
 	}
-	
-	/**
-	 * The method to return the HTML for the details on this specific host
-	 * 
-	 * @access public
-	 * @return String HTML string for display in the details template.
-	 */
-	public function get_details() {
-		$retval = '<table id="feed_details">' . "\n";
-		$retval .= '<tr id="name"><td style="font-weight:bold;">Feed name:</td><td>' . $this->get_name() . '</td></tr>' . "\n";
-		$retval .= '<tr id="url"><td style="font-weight:bold;">Feed url:</td><td>' . $this->get_url() . '</td></tr>' . "\n";
-		$retval .= '</table>';
-		return $retval;
-	}
 
 	/**
 	 * Array for the displays template

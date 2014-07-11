@@ -122,7 +122,7 @@ to perform automated scans of hosts.</p>
   
     <div class="span6">
         <h3>Timeline of Probes</h3>
-        <canvas id="darknetCountryChart" width="500"></canvas>
+        <canvas id="darknetCountryChart" height="300"></canvas>
         <script>
         $(document).ready(function(){
             //var displayLabels = document.getElementById('darknetSummaryChartLabels').textContent.split(",");

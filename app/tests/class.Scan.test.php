@@ -80,12 +80,17 @@ class TestOfScanClass extends UnitTestCase {
     
     function testScanType() {
     	$stype = new Scan_type();
+        $stype->set_name('foo');
+        $stype->set_script('nmap_scan.php');
         $stype->save();
         $id = $stype->get_id();
         $this->scan->set_type_by_id($id);
+        $this->scan->set_group_ids(array(1,2,3));
+        $this->assertEqual($this->scan->get_group_flags(), '-g=1,2,3');
         $this->assertEqual($id, $this->scan->get_scan_type_id());
         $this->assertTrue($this->scan->set_type($stype));
         $this->assertEqual($stype, $this->scan->get_type());
+        $this->assertEqual($stype->get_name(), $this->scan->get_type_name());
         $stype->delete();
     }
 	

@@ -30,6 +30,11 @@ class TestOfLocationClass extends UnitTestCase {
 	function testGetAddAlterForm() {
 		$this->assertIsA($this->location->get_add_alter_form(), 'Array');
 	}
+    
+    function testGetDetails() {
+    	$this->location->set_name('foo');
+        $this->assertTrue(strpos($this->location->get_details(), 'foo') > -1);
+    }
 	
 	function testGetCollectionDefinition() {
 		$this->assertIsA($this->location->get_collection_definition(), 'String');

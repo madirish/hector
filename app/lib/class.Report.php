@@ -81,6 +81,31 @@ class Report {
     }
     
     /**
+     * Get a count of distinct Kojoney login attempts by country
+     * 
+     * @access public
+     * @return Array an associative array of countries and their login attempt counts
+     */
+    public function getKojoneyCountryCount(){
+    	$retval = array();
+    	$countrycount = array();
+    	$sql = 'SELECT DISTINCT(ip), country_code from koj_login_attempt WHERE time > DATE_SUB(NOW(), INTERVAL 4 DAY) ';
+    	$result = $this->db->fetch_object_array($sql);
+    	$seenip = array();
+    	foreach ($result as $row){
+    		if (! isset($seenip[$row->ip])){
+    			if (isset($retval[$row->country_code])){
+    				$retval[$row->country_code] ++;
+    			}else{
+    				$retval[$row->country_code] = 1;
+    			}
+    			$seenip[$row->ip] = 'seen';
+    		}
+    	}
+    	return $retval;
+    }
+    
+    /**
      * Get a listing of class C networks in which we are 
      * tracking hosts for a given class B input.
      * 

@@ -56,6 +56,9 @@ $javascripts .= "<script type='text/javascript' src='js/jquery-jvectormap-1.2.2-
 $javascripts .= "<script type='text/javascript' src='js/incidentChart.js'></script>\n";
 $javascripts .= "<script type='text/javascript' src='js/legend.js'></script>\n";
 
+// Include kojoneymap Script
+$javascripts .= "<script type='text/javascript' src='js/kojoneymap.js'></script>\n";
+
 $portSummaryLabels = "";
 $portSummaryCounts = "";
 $darknetSummaryLabels = "";
@@ -150,6 +153,12 @@ foreach ($topCountries as $country) {
 		$countrycountdates[$country][$datelabel] = $report->getProbesByCountryDate($country, $datelabel);
 	}
 }
+
+/**
+ * Kojoney login attempt map
+ */
+$kojoneyCountryCount = $report->getKojoneyCountryCount();
+$kojoneymapcounts = json_encode($kojoneyCountryCount);
 
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates . 'summary.tpl.php');

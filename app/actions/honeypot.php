@@ -11,7 +11,19 @@
  * Necessary includes
  */
 require_once($approot . 'lib/class.Db.php');
+
+// Include CSS files;
+$css = '';
+$css .= "<link href='css/jquery.dataTables.css' rel='stylesheet'>\n";
+
+// Include Javascripts;
+$javascripts = '';
+$javascripts .= "<script type='text/javascript' src='js/jquery.dataTables.min.js'></script>\n";
+$javascripts .= "<script type='text/javascript' src='js/honeypotlogins.js'></script>\n";
+
+
 $db = Db::get_instance();
+
 
 // Latest auth attempts
 $sql = 'select ip, time, username, password from koj_login_attempt ' .
@@ -23,6 +35,7 @@ array_map(htmlspecialchars, $login_attempts);
 $sql = 'select time, ip, command from koj_executed_command ' .
 		'where time > date_sub(curdate(), interval 2 day) order by time desc';
 $commands = $db->fetch_object_array($sql);
+
 
 require_once($approot . 'lib/class.Form.php');
 $form = new Form();

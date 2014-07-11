@@ -27,6 +27,10 @@ class TestOfIncidentClass extends UnitTestCase {
         $this->assertEqual($this->incident->get_title(), $name);
     }
     
+    function testGetAddAlterForm() {
+    	$this->assertTrue($this->incident->get_add_alter_form());
+    }
+    
     function testMonth() {
     	$this->assertFalse($this->incident->set_month(13));
         $this->assertTrue($this->incident->set_month(1));
@@ -99,18 +103,39 @@ class TestOfIncidentClass extends UnitTestCase {
     }
     
     function testAvailityLossTimeframe() {
-    	$this->assertTrue($this->incident->set_availability_loss_timeframe_id(1));
-        $this->assertEqual($this->incident->get_availability_loss_timeframe_id(), 1);
+        $tframe = new IRTimeframe();
+        $dur = 'A long time.';
+        $tframe->set_duration($dur);
+        $tframe->save();
+        $id = $tframe->get_id();
+    	$this->assertTrue($this->incident->set_availability_loss_timeframe_id($id));
+        $this->assertEqual($this->incident->get_availability_loss_timeframe_id(), $id);
+        $this->assertEqual($this->incident->get_availability_loss_timeframe_friendly(), $dur);
+        $tframe->delete();
     }
     
     function testActionToDiscoveryTimeframe() {
-        $this->assertTrue($this->incident->set_action_to_discovery_timeframe_id(1));
-        $this->assertEqual($this->incident->get_action_to_discovery_timeframe_id(), 1);
+        $tframe = new IRTimeframe();
+        $dur = 'A long time.';
+        $tframe->set_duration($dur);
+        $tframe->save();
+        $id = $tframe->get_id();
+        $this->assertTrue($this->incident->set_action_to_discovery_timeframe_id($id));
+        $this->assertEqual($this->incident->get_action_to_discovery_timeframe_id(), $id);
+        $this->assertEqual($this->incident->get_action_to_discovery_timeframe_friendly(), $dur);
+        $tframe->delete();
     }
     
     function testDiscoveryToContainmentTimeframe() {
-        $this->assertTrue($this->incident->set_discovery_to_containment_timeframe_id(1));
-        $this->assertEqual($this->incident->get_discovery_to_containment_timeframe_id(), 1);
+        $tframe = new IRTimeframe();
+        $dur = 'A long time.';
+        $tframe->set_duration($dur);
+        $tframe->save();
+        $id = $tframe->get_id();
+        $this->assertTrue($this->incident->set_discovery_to_containment_timeframe_id($id));
+        $this->assertEqual($this->incident->get_discovery_to_containment_timeframe_id(), $id);
+        $this->assertEqual($this->incident->get_discovery_to_containment_timeframe_friendly(), $dur);
+        $tframe->delete();
     }
     
     function testDiscoveryMethod() {
@@ -139,23 +164,51 @@ class TestOfIncidentClass extends UnitTestCase {
     }
     
     function testAssetLossMagnitude() {
-    	$this->assertTrue($this->incident->set_asset_loss_magnitude_id(1));
-        $this->assertEqual($this->incident->get_asset_loss_magnitude_id(), 1);
+        $mag = new IRMagnitude();
+        $name = 'Magnanimous';
+        $mag->set_name($name);
+        $mag->save();
+        $id = $mag->get_id();
+    	$this->assertTrue($this->incident->set_asset_loss_magnitude_id($id));
+        $this->assertEqual($this->incident->get_asset_loss_magnitude_id(), $id);
+        $this->assertEqual($this->incident->get_asset_loss_magnitude_friendly(), $name);
+        $mag->delete();
     }
     
     function testDisruptionMagnitude() {
-    	$this->assertTrue($this->incident->set_disruption_magnitude_id(1));
-        $this->assertEqual($this->incident->get_disruption_magnitude_id(), 1);
+        $mag = new IRMagnitude();
+        $name = 'Magnanimous';
+        $mag->set_name($name);
+        $mag->save();
+        $id = $mag->get_id();
+    	$this->assertTrue($this->incident->set_disruption_magnitude_id($id));
+        $this->assertEqual($this->incident->get_disruption_magnitude_id(), $id);
+        $this->assertEqual($this->incident->get_disruption_magnitude_friendly(), $name);
+        $mag->delete();
     }
     
     function testResponseCostMagnitude() {
-        $this->assertTrue($this->incident->set_response_cost_magnitude_id(1));
-        $this->assertEqual($this->incident->get_response_cost_magnitude_id(), 1);
+        $mag = new IRMagnitude();
+        $name = 'Magnanimous';
+        $mag->set_name($name);
+        $mag->save();
+        $id = $mag->get_id();
+        $this->assertTrue($this->incident->set_response_cost_magnitude_id($id));
+        $this->assertEqual($this->incident->get_response_cost_magnitude_id(), $id);
+        $this->assertEqual($this->incident->get_response_cost_magnitude_friendly(), $name);
+        $mag->delete();
     }
     
     function testImpactMagnitude() {
-        $this->assertTrue($this->incident->set_impact_magnitude_id(1));
-        $this->assertEqual($this->incident->get_impact_magnitude_id(), 1);
+        $mag = new IRMagnitude();
+        $name = 'Magnanimous';
+        $mag->set_name($name);
+        $mag->save();
+        $id = $mag->get_id();
+        $this->assertTrue($this->incident->set_impact_magnitude_id($id));
+        $this->assertEqual($this->incident->get_impact_magnitude_id(), $id);
+        $this->assertEqual($this->incident->get_impact_magnitude_friendly(), $name);
+        $mag->delete();
     }
     
     function testHindsight() {

@@ -168,13 +168,15 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
 
   /**
    * This is a functional method designed to return
-   * the form associated with altering a tag.
+   * the form associated with altering an Incident.
    * 
    * @access public
+   * @deprecated
    * @return Array The array for the default CRUD template.
    */
   public function get_add_alter_form() {
     // Not used to to complexity of incident template
+    return true;
   }
 
   /**

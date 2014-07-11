@@ -25,11 +25,13 @@ $javascripts .= "<script type='text/javascript' src='js/honeypotlogins.js'></scr
 $db = Db::get_instance();
 
 
+/**
+ * @todo Move this all into a class, even Report, filtering output
+ */
 // Latest auth attempts
 $sql = 'select ip, time, username, password from koj_login_attempt ' .
 		'order by time desc limit 30;';
 $login_attempts = $db->fetch_object_array($sql);
-array_map(htmlspecialchars, $login_attempts);
 
 // Get the latest sessions:
 $sql = 'select time, ip, command from koj_executed_command ' .

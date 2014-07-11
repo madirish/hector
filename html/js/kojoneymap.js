@@ -262,10 +262,6 @@ $(function(){
 	$('#kojoney-worldmap').vectorMap({
 		map: 'world_mill_en',
 		series:{
-			regions: [{
-				values:data,
-				scale: ['#C8EEFF', '#0071A4'],
-			}],
 			markers: [{
 		        attribute: 'r',
 		        scale: [5, 15],
@@ -280,6 +276,12 @@ $(function(){
 				 stroke: '#FF0F00'
 			 }
 		 },
+		 regionStyle: {
+		      initial: {
+		        fill: '#B8E186'
+		      },
+		 },
+		 backgroundColor: '#C8EEFF',
 		 onMarkerLabelShow: function(event,label,index){
 			 console.log(markers[index]);
 			 label.html(

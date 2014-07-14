@@ -16,14 +16,11 @@ include_once($approot . 'lib/class.Collection.php');
 // Include CSS files;
 $css = '';
 $css .= "<link href='css/jquery.dataTables.css' rel='stylesheet'>\n";
-$css .= "<link href='css/dataTables.bootstrap.css' rel='stylesheet'>\n";
 
 // Include Javascripts;
 $javascripts = '';
 $javascripts .= "<script type='text/javascript' src='js/jquery.dataTables.min.js'></script>\n";
-$javascripts .= "<script type='text/javascript' src='js/honeypotlogins.js'></script>\n";
-$javascripts .= "<script type='text/javascript' src='js/honeypotcommands.js'></script>\n";
-$javascripts .= "<script type='text/javascript' src='js/dataTables.bootstrap.js'></script>\n";
+$javascripts .= "<script type='text/javascript' src='js/honeypot.js'></script>\n";
 
 $honey_pot = new Collection('HoneyPotConnect', $filter = ' AND time > DATE_SUB(NOW(), INTERVAL 4 DAY)');
 $attempts = array();

@@ -218,6 +218,17 @@ class HoneyPotConnect extends Maleable_Object {
 	}
 	
 	/**
+	 * Get the hostname of the ip address used in the login attempt
+	 * 
+	 * @access public
+	 * @return String the hostname of the ip address
+	 */
+	public function get_hostname(){
+		return gethostbyaddr($this->get_ip());
+	}
+	
+	
+	/**
 	 * Set the username attribute.
 	 * 
 	 * @access public

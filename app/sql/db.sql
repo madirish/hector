@@ -384,7 +384,8 @@ CREATE TABLE IF NOT EXISTS `ossec_rule` (
 	`rule_level` INT NOT NULL,
 	`rule_message` VARCHAR(255) NOT NULL,
 	PRIMARY KEY (`rule_id`),
-	KEY (`rule_number`,`rule_level`)
+	KEY (`rule_number`,`rule_level`),
+  INDEX USING BTREE (rule_level)
 );
 
 -- Table for regularly generated reports

@@ -49,13 +49,13 @@ to perform automated scans of hosts.</p>
   	<h3>Scanner:  Top Ports Detected</h3>
   	<div id="portSummaryChartLabels" class="hidden"><?php echo $portSummaryLabels;?></div>
   	<div id="portSummaryChartData" class="hidden"><?php echo $portSummaryCounts;?></div>
-	<canvas id="topPortsChart" width="400"></canvas>
+	<canvas id="topPortsChart" height="300" width="550"></canvas>
     
   </div>
   
   <div class="span6">
 	<h3>Darknet:  Top Port Probes in Last 4 Days</h3>
-	<canvas id="darknetChart"  width="400"></canvas>
+	<canvas id="darknetChart"  height="300" width="550"></canvas>
 	<div id="darknetSummaryChartLabels" class="hidden"><?php echo $darknetSummaryLabels;?></div>
   	<div id="darknetSummaryChartData" class="hidden"><?php echo $darknetSummaryCounts;?></div>
 	</div>
@@ -122,7 +122,7 @@ to perform automated scans of hosts.</p>
   
     <div class="span6">
         <h3>Timeline of Probes</h3>
-        <canvas id="darknetCountryChart" height="300"></canvas>
+        <canvas id="darknetCountryChart" height="300" width="550"></canvas>
         <script>
         $(document).ready(function(){
             //var displayLabels = document.getElementById('darknetSummaryChartLabels').textContent.split(",");

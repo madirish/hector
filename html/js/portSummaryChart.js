@@ -6,8 +6,8 @@ $(document).ready(function(){
         labels : displayLabels,
         datasets : [ 
             { 
-            fillColor : "rgba(220,220,220,0.2)",
-            strokeColor : "rgba(220,220,220,1)",
+            fillColor : "rgba(120,220,220,0.2)",
+            strokeColor : "rgba(120,220,220,1)",
             data : dataPoints
             }
         ]

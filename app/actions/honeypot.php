@@ -22,9 +22,10 @@ $css .= "<link href='css/dataTables.bootstrap.css' rel='stylesheet'>\n";
 $javascripts = '';
 $javascripts .= "<script type='text/javascript' src='js/jquery.dataTables.min.js'></script>\n";
 $javascripts .= "<script type='text/javascript' src='js/honeypotlogins.js'></script>\n";
+$javascripts .= "<script type='text/javascript' src='js/honeypotcommands.js'></script>\n";
 $javascripts .= "<script type='text/javascript' src='js/dataTables.bootstrap.js'></script>\n";
 
-$honey_pot = new Collection('HoneyPotConnect');
+$honey_pot = new Collection('HoneyPotConnect', $filter = ' AND time > DATE_SUB(NOW(), INTERVAL 4 DAY)');
 $attempts = array();
 
 if (is_array($honey_pot->members)){
@@ -33,6 +34,17 @@ if (is_array($honey_pot->members)){
 	}
 }
 $attempts_json = json_encode($attempts);
+
+$honeypotsession = new Collection('HoneyPotSession', $filter = ' AND time > DATE_SUB(NOW(), INTERVAL 4 DAY)');
+$commands = array();
+
+if (is_array($honeypotsession->members)){
+	foreach ($honeypotsession->members as $command){
+		$commands[] = $command->get_object_as_array();
+	}
+}
+$commands_json = json_encode($commands);
+
 
 require_once($approot . 'lib/class.Form.php');
 $form = new Form();

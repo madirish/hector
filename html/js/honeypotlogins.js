@@ -1,7 +1,7 @@
 $(function(){
 	var raw = $('#login-attempts').text();
-	console.log(raw);
 	var data = JSON.parse(raw);
+	console.log(data);
 	columns = [
 	           {data: 'id', "visible":false},
 	           {data: 'ip'},
@@ -11,7 +11,6 @@ $(function(){
 	           {data: 'password'},
 	           
 	           ];
-	console.log(data);
 	$('#logins-table').DataTable({
 		data:data,
 		columns:columns,

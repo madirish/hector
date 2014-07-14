@@ -10,6 +10,7 @@
 	<link href="css/bootstrap-responsive.css" rel="stylesheet">
 	<link href="css/penn.css" rel="stylesheet">
 	<link href="css/chart-legend.css" rel="stylesheet">
+	<?php if (isset($css)) echo $css;?>
 	
 	<script type="text/javascript" src="js/ajaxFunctions.js"></script> 
 	<script type="text/javascript" src="js/jquery.js"></script>

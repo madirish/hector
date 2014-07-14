@@ -114,12 +114,15 @@ to perform automated scans of hosts.</p>
 
 <div class="row">
     <div class="span6">
-    Nothing here yet...
+    <!-- Kojoney Login Attempts Map -->
+    <h3>Kojoney: Login Attempts in Last 4 Days by Country</h3>
+		<div id="kojoney-map-counts" class="hidden"><?php echo $kojoneymapcounts ?></div>
+		<div id="kojoney-worldmap" style="height:300px;"></div>
     </div>
   
     <div class="span6">
         <h3>Timeline of Probes</h3>
-        <canvas id="darknetCountryChart" width="500"></canvas>
+        <canvas id="darknetCountryChart" height="300"></canvas>
         <script>
         $(document).ready(function(){
             //var displayLabels = document.getElementById('darknetSummaryChartLabels').textContent.split(",");

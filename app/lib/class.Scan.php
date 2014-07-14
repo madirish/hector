@@ -592,9 +592,14 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
      * @param Int Is this a daily scan, 0=No, 1=Yes
      */
     public function set_daily($int) {
+        $retval = true;
     	$int = (int) $int;
-    	if ($int != 1) $int = 0;
+    	if ($int != 1) {
+    		$int = 0;
+            $retval = false;
+    	}
     	$this->daily = $int;
+        return $retval;
     }
     
     /**
@@ -604,9 +609,14 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
      * @param Int The day of the month to scan.
      */
     public function set_dayofmonth($int) {
+        $retval = true;
     	$int = (int) $int;
-    	if ($int > 32 || $int < 1) $int = 0;
+    	if ($int > 32 || $int < 1) {
+    		$int = 0;
+            $retval = false;
+    	}
     	$this->dayofmonth = $int;
+        return $retval;
     }
     
     /**
@@ -616,9 +626,14 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
      * @param Int The day of the week (0-7) to scan, 0=No
      */
     public function set_dayofweek($int) {
+        $retval = true;
     	$int = (int) $int;
-    	if ($int > 7 || $int < 1) $int = 0;
+    	if ($int > 7 || $int < 1) {
+    		$int = 0;
+            $retval = false;
+    	}
     	$this->dayofweek = $int;
+        return $retval;
     }
     
     /**
@@ -628,9 +643,14 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
      * @param Int The day of the year for the scan
      */
     public function set_dayofyear($int) {
+        $retval = false;
     	$int = (int) $int;
-    	if ($int > 365 || $int < 1) $int = 0;
-    	$this->dayofyear = $int;    	
+    	if ($int > 365 || $int < 1) {
+    		$int = 0;
+            $retval = false;
+    	}
+    	$this->dayofyear = $int;   
+        return $retval; 	
     }
     
     /**
@@ -640,14 +660,17 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
      * @param Array An array of the group id's that should be scanned
      */
     public function set_group_ids($ids) {
-    	$retval = array();
+        $retval = true;
+    	$groupids = array();
     	if (is_array($ids)) {
     		foreach ($ids as $id) {
     			$id = (int) $id;
-    			if ($id > 0) $retval[] = $id;
+    			if ($id > 0) $groupids[] = $id;
+                else $retval = false;
     		}
     	}
-    	$this->group_ids = $retval;
+    	$this->group_ids = $groupids;
+        return $retval;
     }
     
     /**
@@ -667,7 +690,10 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
      * @param Scan_type The Scan_type for this scan
      */
     public function set_type(Scan_type $type) {
-    	$this->type = $type;
+        $retval = true;
+        if (is_a($type, 'Scan_type')) $this->type = $type;
+        else $retval = false;
+        return $retval;
     }
     
     /**

@@ -298,6 +298,7 @@ CREATE TABLE IF NOT EXISTS `koj_login_attempt` (
   `password` VARCHAR(50),
   `ip_numeric` INT UNSIGNED NOT NULL,
   `sensor_id` INT(10) UNSIGNED,
+  `country_code` VARCHAR(2),
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 

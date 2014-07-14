@@ -82,8 +82,15 @@ class TestOfDarknetClass extends UnitTestCase {
         $this->assertEqual($goodValue, $this->dnet->get_country_code());
     }
     
-    function testDarknetDstIP() {
-    	
+    function testSave() {
+        $this->dnet->set_country_code('US');
+        $this->dnet->set_src_ip('127.0.0.1');
+        $this->dnet->set_dst_ip('127.0.0.1');
+        $this->dnet->set_received_at();
+        $this->dnet->set_proto('tcp');
+        $this->dnet->set_src_port(0);
+        $this->dnet->set_dst_port(0);
+        $this->assertTrue($this->dnet->save());	
     }
 }
 ?>

@@ -442,11 +442,12 @@ sub insert_ossec {
     my $session_id = $sshservice[1];
     my $remote_ip = $sshservice[2];
     my $command = substr($message, index($message, 'COMMAND IS :') + 13);
-    my $koj_exec_sql = "INSERT INTO koj_executed_command set time = ?, ip = ?,
-        command = ?, ip_numeric = inet_aton(?), session_id = ?,
-        sensor_id = ?";
+    my $koj_exec_sql = "INSERT INTO koj_executed_command c SET c.time = ?, c.ip = ?,
+        c.command = ?, c.ip_numeric = inet_aton(?), c.session_id = ?,
+        c.sensor_id = ?, c.country_code = 
+        (SELECT g.country_code FROM geoip g WHERE g.start_ip_long < inet_aton(?) AND g.end_ip_long > inet_aton(?))";
     my $koj_exec_sth = $dbi->{dbh}->prepare($koj_exec_sql) || die("Couldn't prepare kojoney insert statement.");
-    $koj_exec_sth->execute($datestamp, $remote_ip, $command, $remote_ip, $session_id, $host_id);
+    $koj_exec_sth->execute($datestamp, $remote_ip, $command, $remote_ip, $session_id, $host_id, $remote_ip, $remote_ip);
     $koj_exec_sth->finish();
   }
   elsif ($ossec_rule_number == 200012) {
@@ -463,9 +464,10 @@ sub insert_ossec {
     my $pwordstart = index($message, $user) + length($user) + 1;
     my $password = substr($message, $pwordstart, rindex($message, ']') - $pwordstart);
     my $koj_login_sql = "INSERT INTO koj_login_attempt SET time = ?, username = ?, password = ?,
-        ip_numeric = inet_aton(?), ip = ?, sensor_id = ?";
+        ip_numeric = inet_aton(?), ip = ?, sensor_id = ?, country_code = 
+        (SELECT g.country_code FROM geoip g WHERE g.start_ip_long < inet_aton(?) AND g.end_ip_long > inet_aton(?))";
     my $koj_login_sth = $dbi->{dbh}->prepare($koj_login_sql) || die("Couldn't prepare kojoney login statement.");
-    $koj_login_sth->execute($datestamp, $username, $password, $remote_ip, $remote_ip, $host_id);
+    $koj_login_sth->execute($datestamp, $username, $password, $remote_ip, $remote_ip, $host_id, $remote_ip, $remote_ip);
     $koj_login_sth->finish();
   }
 }

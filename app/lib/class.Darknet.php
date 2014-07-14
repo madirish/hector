@@ -130,7 +130,7 @@ class Darknet extends Maleable_Object {
         $this->log = Log::get_instance();
         if ($id != '') {
             $sql = array(
-                'SELECT id as darknet_id, src_ip, dst_ip, src_port, dst_port, proto, received_at, country_code FROM darknet WHERE id = ?i',
+                'SELECT id AS darknet_id, src_ip, dst_ip, src_port, dst_port, proto, received_at, country_code FROM darknet WHERE id = ?i',
                 $id
             );
             $result = $this->db->fetch_object_array($sql);
@@ -174,7 +174,10 @@ class Darknet extends Maleable_Object {
      * @return String SQL select string
      */
     public function get_collection_definition($filter = '', $orderby = '') {
-        $sql = 'SELECT d.id as darknet_id FROM darknet d WHERE d.id > 0';
+        $sql = 'SELECT d.id as darknet_id ' .
+                'FROM darknet d ' .
+                'WHERE d.dst_port > 0 ' .
+                'AND d.id > 0';
         if ($filter != '' && is_array($filter))  {
             $sql .= ' ' . array_shift($filter);
             $sql = $this->db->parse_query(array($sql, $filter));

@@ -67,6 +67,7 @@ class Report {
                 'FROM darknet WHERE' .
                 ' received_at > DATE_SUB(NOW(), INTERVAL 4 DAY) ' .
                 ' AND country_code IS NOT NULL ' .
+                ' AND dst_port > 0 ' .
                 ' GROUP BY country_code ';
         $result = $this->db->fetch_object_array($sql);
         $seenip = array();
@@ -119,10 +120,14 @@ class Report {
         return $this->db->fetch_object_array($query);
     }
     
-    public function get_ossec_alert_count($ip) {
-    	$sql = 'select a.alert_date, a.rule_log, r.rule_level from ossec_alert a, ossec_rule r ' .
-            'where a.rule_id = r.rule_id and r.rule_level >= 7 AND ' .
-            'a.rule_src_ip_numeric = inet_aton(\'' . $ip . '\') order by alert_date DESC';
+    public function get_ossec_alerts($ip) {
+    	$sql = 'SELECT a.alert_date, a.rule_log, r.rule_level ' .
+            'FROM ossec_alert a, ossec_rule r ' .
+            'WHERE a.rule_id = r.rule_id ' .
+            'AND r.rule_level >= 7 ' .
+            'AND a.rule_src_ip_numeric = INET_ATON(\'' . $ip . '\') ' .
+            'AND a.alert_date > DATE_SUB(NOW(), INTERVAL 1 YEAR) ' .
+            'ORDER BY a.alert_date DESC';
         $ossec_alerts = $this->db->fetch_object_array($sql);
     }
     
@@ -150,6 +155,7 @@ class Report {
                 'FROM darknet ' .
                 'WHERE src_ip = INET_ATON(\'' . $ip . '\') ' .
                 'AND received_at > DATE_SUB(NOW(), INTERVAL 1 YEAR) ' .
+                'AND dst_port > 0 ' .
                 'ORDER BY received_at DESC';
         return $this->db->fetch_object_array($sql);
     }
@@ -242,6 +248,7 @@ class Report {
                 'FROM darknet ' .
                 'WHERE received_at > date_sub(now(), interval 7 day) ' .
                 'AND country_code IS NOT NULL ' .
+                'AND dst_port > 0 ' .
                 'GROUP BY country_code ' .
                 'ORDER BY countid desc LIMIT 10';
         $top_countries = $this->db->fetch_object_array($sql);
@@ -259,7 +266,8 @@ class Report {
         $datemax = date('Y-m-d 24:59:59', $date);
         $sql = 'SELECT COUNT(id) AS idcount ' .
                 'FROM darknet ' .
-                'WHERE country_code = "' . mysql_real_escape_string($country) . '" ' .
+                'WHERE dst_port > 0 ' .
+                'AND country_code = "' . mysql_real_escape_string($country) . '" ' .
                 'AND received_at >= "' . $datemin . '" ' .
                 'AND received_at <= "' . $datemax . '"';
         $count = $this->db->fetch_object_array($sql);

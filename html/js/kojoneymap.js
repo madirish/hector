@@ -250,6 +250,7 @@ $(function(){
 	var data = $.parseJSON($('#kojoney-map-counts').text());
 	var markers = [];
 	var markerValues = [];
+	console.log(data);
 	for (iso in data){
 		loc = [latlong[iso]["latitude"],latlong[iso]["longitude"]];
 		val = data[iso]

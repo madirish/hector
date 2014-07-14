@@ -3,7 +3,7 @@
  */
 
 .headergrey{
-  background: url(http://www.sas.upenn.edu/home/assets/img/global/sas_header_fill_grey.jpg) top left repeat-x;
+  background: url(https://www.sas.upenn.edu/home/assets/img/global/sas_header_fill_grey.jpg) top left repeat-x;
   position: relative;
   width: 100%;
 }
@@ -35,7 +35,7 @@
 }
 
 .sasgrey{
-  background: url(http://www.sas.upenn.edu/home/assets/img/global/sas_header_college_grey.jpg) right no-repeat;
+  background: url(https://www.sas.upenn.edu/home/assets/img/global/sas_header_college_grey.jpg) right no-repeat;
 }
 
 #sas_header img{

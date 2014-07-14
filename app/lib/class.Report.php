@@ -85,7 +85,10 @@ class Report {
     public function getKojoneyCountryCount(){
     	$retval = array();
     	$countrycount = array();
-    	$sql = 'SELECT DISTINCT(ip), country_code from koj_login_attempt WHERE time > DATE_SUB(NOW(), INTERVAL 4 DAY) ';
+    	$sql = 'SELECT DISTINCT(ip), country_code ' .
+                'FROM koj_login_attempt ' .
+                'WHERE time > DATE_SUB(NOW(), INTERVAL 4 DAY) ' .
+                'AND country_code IS NOT NULL';
     	$result = $this->db->fetch_object_array($sql);
     	$seenip = array();
     	foreach ($result as $row){

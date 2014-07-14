@@ -143,7 +143,7 @@ $darknetmapcounts = $report->getDarknetCountryCount();
  * Darknet Country Trends
  */
 $datelabels = array();
-for ($i=0; $i<7; $i++) {
+for ($i=6; $i>=0; $i--) {
 	$datelabels[$i] = date('Y-m-d', mktime(0,0,0,date('m'),date('d')-$i,date('Y')));
 }
 $topCountries = $report->getTopDarknetCountries();

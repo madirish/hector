@@ -243,6 +243,7 @@ $(function(){
 	latlong["YE"] = {'latitude':15,'longitude':48,'name':"Yemen"}
 	latlong["ZM"] = {'latitude':-15,'longitude':30,'name':"Zambia"}
 	latlong["ZW"] = {'latitude':-20,'longitude':30,'name':"Zimbabwe"}
+	latlong[""] = {'latitude':0,'longitude':0,'name':"Unknown"}	
 
 
 
@@ -250,6 +251,7 @@ $(function(){
 	var data = $.parseJSON($('#kojoney-map-counts').text());
 	var markers = [];
 	var markerValues = [];
+	console.log(data);
 	for (iso in data){
 		loc = [latlong[iso]["latitude"],latlong[iso]["longitude"]];
 		val = data[iso]

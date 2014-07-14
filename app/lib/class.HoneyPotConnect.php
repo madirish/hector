@@ -30,6 +30,8 @@ require_once('class.Maleable_Object.php');
 /**
  * HoneyPots are decoy systems for gathering information 
  * about attackers
+ * 
+ * HoneyPotConnect represents an attempt to connect to the Honey Pot (Kojoney)
  *
  * @package HECTOR
  * @author Ubani Anthony Balogun <ubani@sas.upenn.edu>
@@ -121,12 +123,12 @@ class HoneyPotConnect extends Maleable_Object {
 	// --- OPERATIONS ---
 	
 	/**
-	 * Construct a new blank HoneyPot or instantiate one
+	 * Construct a new blank HoneyPotConnect or instantiate one
 	 * from the data layer based on ID
 	 * 
 	 * @access public
 	 * @author Ubani Anthony Balogun <ubani@sas.upenn.edu>
-	 * @param Int The unique ID of the HoneyPot
+	 * @param Int The unique ID of the HoneyPotConnect
 	 * @return void
 	 */
 	public function __construct($id  = ''){
@@ -330,6 +332,7 @@ class HoneyPotConnect extends Maleable_Object {
 		return htmlspecialchars($this->country_code);
 	}
 	
+	
 	/**
 	 * Return the pritable string used for the object in interfaces
 	 * 
@@ -362,6 +365,7 @@ class HoneyPotConnect extends Maleable_Object {
 		}
 		return $sql;
 	}
+	
 	
 	/**
 	 *  This function returns the attributes of the object in an associative array

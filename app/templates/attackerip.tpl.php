@@ -21,19 +21,15 @@ Your search returned <?php echo count($darknet_drops);?> results from darknet se
 <tbody>
 <?php 
 if (count($darknet_drops) > 0) {
-if (isset($darknet_drops) && is_array($darknet_drops)) {
-    foreach ($darknet_drops as $drop) {
-        echo '<tr><td>' . $ip . '</td>';
-        echo '<td>' . $drop->dst_ip . '</td>';
-        echo '<td>' . $drop->src_port . '</td>';
-        echo '<td>' . $drop->dst_port . '</td>';
-        echo '<td>' . $drop->proto . '</td>';
-        echo '<td>' . $drop->received_at . '</td>';
-        echo '</tr>';
-    }
-}
-$content .= '';
-}
+foreach ($darknet_drops as $drop) {
+    echo '<tr><td>' . $ip . '</td>';
+    echo '<td>' . $drop->dst_ip . '</td>';
+    echo '<td>' . $drop->src_port . '</td>';
+    echo '<td>' . $drop->dst_port . '</td>';
+    echo '<td>' . $drop->proto . '</td>';
+    echo '<td>' . $drop->received_at . '</td>';
+    echo '</tr>';
+}}
 ?>
 </tbody></table>
 </div>
@@ -44,11 +40,12 @@ $content .= '';
 <tr><th>Alert date</th><th>Alert level</th><th>Log entry</th></tr>
 </thead><tbody>
 <?php
+if (count($ossec_alerts) > 0) {
 foreach ($ossec_alerts as $alert) {
 	echo "<tr><td>" . $alert->alert_date . "</td>";
 	echo "<td>" . $alert->rule_level . "</td>";
 	echo "<td>" . htmlspecialchars($alert->rule_log) . "</td></tr>\n";
-}
+}}
 ?>
 </tbody>
 </table>

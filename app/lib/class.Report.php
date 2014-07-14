@@ -146,8 +146,11 @@ class Report {
     
     public function get_darknet_drops($ip) {
     	$ip = mysql_real_escape_string($ip);
-        $sql = 'select inet_ntoa(dst_ip) as dst_ip, src_port, dst_port, proto, received_at from darknet ' .
-                'where src_ip = inet_aton(\'' . $ip . '\') order by received_at desc';
+        $sql = 'SELECT INET_NTOA(dst_ip) AS dst_ip, src_port, dst_port, proto, received_at ' .
+                'FROM darknet ' .
+                'WHERE src_ip = INET_ATON(\'' . $ip . '\') ' .
+                'AND received_at > DATE_SUB(NOW(), INTERVAL 1 YEAR) ' .
+                'ORDER BY received_at DESC';
         return $this->db->fetch_object_array($sql);
     }
     

@@ -27,13 +27,14 @@ if (isset($_POST['ip'])) $ip = $_POST['ip'];
 
 if (! filter_var($ip, FILTER_VALIDATE_IP)) $ip = '';
 
+$darknet_drops = array();
+$ossec_alerts = array();
 if ($ip != '') {
-	require_once($approot . 'lib/class.Db.php');
 	$report = new Report();
     $darknet_drops = $report->get_darknet_drops($ip);
     $login_attempts = $report->get_honeynet_logins($ip);
     $commands = $report->get_koj_executed_commands($ip);
-	$ossec_alerts = $report->get_ossec_alert_count($ip);
+	$ossec_alerts = $report->get_ossec_alerts($ip);
 }
 
 $ip_addr = ($ip == '') ? '' : htmlspecialchars($ip);

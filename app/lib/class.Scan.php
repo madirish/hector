@@ -178,7 +178,7 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
 	/**
 	 * Get the Array for the CRUD template
 	 * 
-	 * @acces public
+	 * @access public
 	 * @return Array The Array for the CRUD template
 	 */
 	public function get_add_alter_form() {

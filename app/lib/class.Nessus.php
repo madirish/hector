@@ -1,4 +1,16 @@
 <?php
+/**
+ *
+ * class.Scan.php 
+ *
+ * The holder object for the organization
+ * of scanning schedule data (such as when to run the scan
+ * and which host groups to apply it to).  The object
+ * also contains information about the Scan_type object 
+ * which defines the actual script to be run.
+ * 
+ * @package HECTOR
+ */
 
 error_reporting(E_ALL);
 
@@ -12,7 +24,12 @@ require_once('class.Db.php');
 require_once('class.Log.php');
 
 
-
+/**
+ * The generic Scan object keeps track of schedules and
+ * names of Scan_type's that need to be run
+ *
+ * @package HECTOR
+ */
 class Nessus
 {
 	

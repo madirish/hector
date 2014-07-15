@@ -1,4 +1,14 @@
 <?php 
+/**
+ * Create a new incident report
+ * 
+ * @author Justin C. Klein Keane <jukeane@sas.upen.edu>
+ * @package HECTOR
+ */
+ 
+/**
+ * Necessary includes
+ */
 include_once($approot . 'templates/admin_headers.tpl.php');
 require_once($approot . 'lib/class.Form.php');
 require_once($approot . 'lib/class.IRAgent.php');

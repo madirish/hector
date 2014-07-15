@@ -12,7 +12,7 @@ Search malicious IP database: <input type="text" name="ip"/> <input type="submit
 <div class="tab-content">
 	<div class="tab-pane active" id="logins">
 		<p class="lead"> Recent Login Attempts</p>
-		<div class="hidden" id="login-attempts"><?php echo $attempts_json; ?></div>
+		<div class="hidden" id="login-attempts"><?php echo htmlentities($attempts_json); ?></div>
 		<div class="dataTables_wrapper form-inline no-footer">
 			<table id="logins-table" class="table table-striped table-bordered table-responsive">
 				<thead>
@@ -31,7 +31,7 @@ Search malicious IP database: <input type="text" name="ip"/> <input type="submit
 	
 	<div class="tab-pane" id="sessions">
 		<p class="lead">Sessions Yesterday</p>
-		<div id="connections" class="hidden"> <?php echo $commands_json;?></div>
+		<div id="connections" class="hidden"> <?php echo htmlentities($commands_json);?></div>
 		<div class="dataTables_wrapper form-inline no-footer">
 			<table id="commands-table" class="table table-striped table-bordered table-responsive">
 				<thead>

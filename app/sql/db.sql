@@ -287,6 +287,7 @@ CREATE TABLE IF NOT EXISTS `koj_executed_command` (
   `ip_numeric` INT UNSIGNED NOT NULL,
   `session_id` INT UNSIGNED,
   `sensor_id` INT UNSIGNED,
+  `country_code` VARCHAR(2),
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 

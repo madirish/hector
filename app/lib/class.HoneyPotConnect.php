@@ -257,7 +257,7 @@ class HoneyPotConnect extends Maleable_Object {
 	 * @param String The password used in the login attempt
 	 */
 	public function set_password($password){
-		$this->password = htmlspecialchars($password);
+		$this->password = utf8_encode($password);
 	}
 	
 	/**

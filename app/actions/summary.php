@@ -163,5 +163,4 @@ $kojoneymapcounts = json_encode($kojoneyCountryCount);
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates . 'summary.tpl.php');
 
-$db->close();
 ?>

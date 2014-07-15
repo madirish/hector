@@ -301,7 +301,7 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 	/**
 	 * Set whether or not the person is an admin
 	 * 
-	 * @acces spublic
+	 * @access spublic
 	 * @param Boolean Whether or not the person is an admin
 	 */
 	public function set_is_admin($val) {

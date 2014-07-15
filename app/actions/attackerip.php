@@ -7,7 +7,9 @@
  * @todo Move the SQL from this file into a utility class
  */
  
-// Necessary includes
+/**
+ * Necessary includes
+ */
 require_once($approot . 'lib/class.Report.php');
 require_once($approot . 'lib/class.Form.php');
 

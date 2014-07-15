@@ -3,7 +3,7 @@
  * HECTOR - class.HoneyPotSession.php
  * 
  * @author Ubani Anthony Balogun <ubani@sas.upenn.edu>
- * @package Hector
+ * @package HECTOR
  */
 
 /**
@@ -31,7 +31,7 @@ require_once('class.Maleable_Object.php');
  * HoneyPotSessions collect information about attackers who successfuly
  * accessed a HoneyPot
  * 
- * @package Hector
+ * @package HECTOR
  * @author Ubani Anthony Balogun <ubani@sas.upenn.edu>
  */
 class HoneyPotSession extends Maleable_Object {

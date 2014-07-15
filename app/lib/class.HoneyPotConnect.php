@@ -4,7 +4,7 @@
  * 
  * @author Ubani Anthony Balogun <ubani@sas.upenn.edu>
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
- * @package Hector
+ * @package HECTOR
  *  
  * 
  */
@@ -33,7 +33,7 @@ require_once('class.Maleable_Object.php');
  * 
  * HoneyPotConnect represents an attempt to connect to the Honey Pot (Kojoney)
  *
- * @package Hector
+ * @package HECTOR
  * @author Ubani Anthony Balogun <ubani@sas.upenn.edu>
  */
 class HoneyPotConnect extends Maleable_Object {

@@ -1,4 +1,10 @@
 <?php
+/**
+ * Process a new incident report.
+ * 
+ * @author Justin C. Klein Keane <jukeane@sas.upen.edu>
+ * @package HECTOR
+ */
 include_once($approot . 'templates/admin_headers.tpl.php');
 require_once($approot . 'lib/class.Incident.php');
 

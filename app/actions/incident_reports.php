@@ -4,6 +4,10 @@
  * 
  * @package HECTOR
  */
+ 
+/**
+ * Require the collection class
+ */
 include_once($approot . 'lib/class.Collection.php');
 
 if (isset($_GET['threat_action'])) {

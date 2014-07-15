@@ -33,7 +33,7 @@ require_once('class.Maleable_Object.php');
  * 
  * HoneyPotConnect represents an attempt to connect to the Honey Pot (Kojoney)
  *
- * @package HECTOR
+ * @package Hector
  * @author Ubani Anthony Balogun <ubani@sas.upenn.edu>
  */
 class HoneyPotConnect extends Maleable_Object {

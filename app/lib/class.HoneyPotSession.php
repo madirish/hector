@@ -31,7 +31,7 @@ require_once('class.Maleable_Object.php');
  * HoneyPotSessions collect information about attackers who successfuly
  * accessed a HoneyPot
  * 
- * @package HECTOR
+ * @package Hector
  * @author Ubani Anthony Balogun <ubani@sas.upenn.edu>
  */
 class HoneyPotSession extends Maleable_Object {

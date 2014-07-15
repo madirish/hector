@@ -75,7 +75,7 @@ to perform automated scans of hosts.</p>
     </div>
     
     <div class="span6">
-    <h3>Darknet:  Probes in Last 4 Days by Country</h3>
+    <h3>Darknet:  Probes in Last 7 Days by Country</h3>
     <figure><div id="world-map-gdp" style="height:300px;"></div>
     <script>
     <?php

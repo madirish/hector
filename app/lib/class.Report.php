@@ -49,6 +49,14 @@ class Report {
     	$this->db = Db::get_instance();
     }
     
+    /**
+     * Get darknet data by port over the last 4 days for display
+     * on the bar chart.
+     * 
+     * @access public
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @return Array An array of objects with attributes port and cnt
+     */
     public function darknetSummary() { 
     	// Darknet summary:
         $sql = "SELECT CONCAT(dst_port, '/', proto) AS port, count(id) AS cnt " .
@@ -60,6 +68,14 @@ class Report {
         return $this->db->fetch_object_array($sql);
     }
     
+    /**
+     * Get darknet data for the last week on a per country basis, for
+     * display on the world heat map.
+     * 
+     * @access public
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @return Array Array of objects with the attributes country_code, thecount
+     */
     public function getDarknetCountryCount() {
         $retval = array();
         $countrycount = array();
@@ -81,6 +97,7 @@ class Report {
      * Get a count of distinct Kojoney login attempts by country
      * 
      * @access public
+     * @author Ubani Balogin
      * @return Array an associative array of countries and their login attempt counts
      */
     public function getKojoneyCountryCount(){
@@ -88,7 +105,7 @@ class Report {
     	$countrycount = array();
     	$sql = 'SELECT DISTINCT(ip), country_code ' .
                 'FROM koj_login_attempt ' .
-                'WHERE time > DATE_SUB(NOW(), INTERVAL 4 DAY) ' .
+                'WHERE time > DATE_SUB(NOW(), INTERVAL 7 DAY) ' .
                 'AND country_code IS NOT NULL';
     	$result = $this->db->fetch_object_array($sql);
     	$seenip = array();
@@ -110,6 +127,7 @@ class Report {
      * tracking hosts for a given class B input.
      * 
      * @access public
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
      * @param String A dot notation Class B address, such as 10.0
      * @return Array An array of Class C networks in dot notation such as 10.0.0
      */
@@ -120,15 +138,46 @@ class Report {
         return $this->db->fetch_object_array($query);
     }
     
+    /**
+     * Search the last year's worth of OSSEC alert data
+     * in order to filter it to alerts from a target IP
+     * for the malicious IP search functionality.
+     * 
+     * @access public
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @param String A dot notation IP address, such as 10.0.0.1
+     * @return Array An array of objects with the attributes alert_date, rule_log, rule_level
+     * 
+     */
     public function get_ossec_alerts($ip) {
-    	$sql = 'SELECT a.alert_date, a.rule_log, r.rule_level ' .
-            'FROM ossec_alert a, ossec_rule r ' .
-            'WHERE a.rule_id = r.rule_id ' .
-            'AND r.rule_level >= 7 ' .
-            'AND a.rule_src_ip_numeric = INET_ATON(\'' . $ip . '\') ' .
-            'AND a.alert_date > DATE_SUB(NOW(), INTERVAL 1 YEAR) ' .
-            'ORDER BY a.alert_date DESC';
-        $ossec_alerts = $this->db->fetch_object_array($sql);
+        $ossec_alerts = FALSE;
+        $ip = mysql_real_escape_string($ip);
+        // First get the darknet rule so we're not double dipping
+        $sql = 'SELECT rule_id FROM ossec_rule WHERE rule_message="\'Darknet sensor detection for HECTOR.\'"';
+        $ruleid = $this->db->fetch_object_array($sql);
+        if (isset($ruleid[0])) {
+            $dnetrule = $ruleid[0]->rule_id;
+            // Next get the alert ids for this IP
+            $sql = 'SELECT alert_id ' .
+                    'FROM ossec_alert ' .
+                    'WHERE alert_date > DATE_SUB(NOW(), INTERVAL 1 YEAR) ' .
+                    'AND rule_src_ip_numeric = INET_ATON(\'' . $ip . '\') ' .
+                    'AND rule_id != ' . $dnetrule;
+            $alertids = $this->db->fetch_object_array($sql);
+            if (count($alertids) > 0) {
+                $idscreen = array();
+                foreach ($alertids as $alertid) $idscreen[] = $alertid->alert_id;
+                // Finally look for the rule matches
+                $sql = 'SELECT a.alert_date, a.rule_log, r.rule_level ' .
+                    'FROM ossec_alert a, ossec_rule r ' .
+                    'WHERE a.rule_id = r.rule_id ' .
+                    'AND r.rule_level >= 7 ' .
+                    'AND a.alert_id IN (' . join(',', $idscreen) . ')' .
+                    'ORDER BY a.alert_date DESC';
+                $ossec_alerts = $this->db->fetch_object_array($sql);
+            }
+        }
+        return $ossec_alerts;
     }
     
     /**
@@ -149,6 +198,14 @@ class Report {
         return $commands;
     }
     
+    /**
+     * Search the darknet data for drops over the last year for a given IP
+     * 
+     * @access public
+     * @author Justin Klein Keane <jukeane@sas.upenn.edu>
+     * @param String The dot notation IP address
+     * @return Array An array of objects with attributes dst_ip, src_port, dst_port, proto, received_at
+     */
     public function get_darknet_drops($ip) {
     	$ip = mysql_real_escape_string($ip);
         $sql = 'SELECT INET_NTOA(dst_ip) AS dst_ip, src_port, dst_port, proto, received_at ' .
@@ -165,7 +222,7 @@ class Report {
      * the honeypot.
      * 
      * @access public
-     * @author Justin C. Klien Keane
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
      * @param String IP address in dot notation
      * @return String The number of logins or "no"
      */
@@ -179,6 +236,16 @@ class Report {
         return $login_attempts;
     }
     
+    /**
+     * Get the total number of hosts tracked in the system, if used by
+     * and admin user, or the total number of hosts in supportgroups to
+     * which the logged in user has access.
+     * 
+     * @access public
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @param Object The User object for the currently logged in user
+     * @return Integer The number of hosts.
+     */
     public function getHostCount($appuser) {
         if ($appuser->get_is_admin())
         $sql = "select count(host_id) as hostcount from host";
@@ -193,12 +260,30 @@ class Report {
         return $count;
     }
     
+    /**
+     * Get the number of scheduled scans so that we can determine
+     * if any are scheduled at all.
+     * 
+     * 
+     * @access public
+     * @author Justin C. Klein Keane
+     * @return Integer The integer count of how many scans are scheduled
+     */
     public function scanCount() {
     	$sql = 'SELECT COUNT(scan_id) AS thecount FROM scan';
         $retval = $this->db->fetch_object_array($sql);
         return $retval[0]->thecount;
     }
     
+    /**
+     * Get the number of scan scripts so that we can determine
+     * if any are configured at all.
+     * 
+     * 
+     * @access public
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @return Integer The integer count of how many scripts there are
+     */
     public function scriptCount() {
     	$sql = 'SELECT COUNT(scan_type_id) AS thecount FROM scan_type';
         $retval = $this->db->fetch_object_array($sql);
@@ -208,7 +293,7 @@ class Report {
     /**
      * Return an array of Class B networks containing hosts that we track
      * 
-     * @author Justin C. Klein Kenae <jukeane@sas.upen.edu> 
+     * @author Justin C. Klein Keane <jukeane@sas.upen.edu> 
      * @access public
      * @return Array An array of Class B networks in 192.156 style dot notation
      */
@@ -218,6 +303,13 @@ class Report {
         return $this->db->fetch_object_array($query); 
     }
  
+    /**
+     * Get the top ten ports detected by scans.
+     * 
+     * @author Justin C. Klein Keane <jukeane@sas.upen.edu> 
+     * @access public
+     * @return Array An array of objects with the attributes port_number, portcount
+     */
     public function topTenPorts($appuser) {
         $port_result = array();
     	// Count of top 10 ports
@@ -242,6 +334,14 @@ class Report {
         return $port_result;
     }
     
+    
+    /**
+     * Query the top countries probing the darknet over the last week.
+     * 
+     * @author Justin C. Klein Keane <jukeane@sas.upen.edu> 
+     * @access public
+     * @return Array An array of objects with the attributes country_code, countid
+     */
     public function getTopDarknetCountries() {
         $retval = array();
     	$sql = 'SELECT DISTINCT(country_code), COUNT(id) AS countid ' .
@@ -259,7 +359,17 @@ class Report {
         }
         return $retval;
     }
-    
+ 
+    /**
+     * Get the number of probes to the darknet, by date, for the last
+     * week for display on a line chart.
+     * 
+     * @author Justin C. Klein Keane <jukeane@sas.upen.edu> 
+     * @access public
+     * @param String The country code for the query
+     * @param Date The date of the query
+     * @return Object An object with the attribute idcount
+     */
     public function getProbesByCountryDate($country, $date) {
         $date = strtotime($date);
     	$datemin = date('Y-m-d 00:00:00', $date);

@@ -4,7 +4,7 @@
  * 
  * @author Ubani Anthony Balogun <ubani@sas.upenn.edu>
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
- * @package Hector
+ * @package HECTOR
  *  
  * 
  */

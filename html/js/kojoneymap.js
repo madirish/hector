@@ -251,15 +251,13 @@ $(function(){
 	var data = $.parseJSON($('#kojoney-map-counts').text());
 	var markers = [];
 	var markerValues = [];
-	console.log(data);
 	for (iso in data){
 		loc = [latlong[iso]["latitude"],latlong[iso]["longitude"]];
 		val = data[iso]
 		country = latlong[iso]["name"];
-		markers.push({latLng:loc,value:val,name:country});
+		markers.push({latLng:loc,value:val,name:country,code:iso});
 		markerValues.push(val);
 	}
-	console.log(JSON.stringify(markers));
 	
 	$('#kojoney-worldmap').vectorMap({
 		map: 'world_mill_en',
@@ -285,12 +283,14 @@ $(function(){
 		 },
 		 backgroundColor: '#C8EEFF',
 		 onMarkerLabelShow: function(event,label,index){
-			 console.log(markers[index]);
 			 label.html(
 					 "<b>" + markers[index]['name'] + "</b><br/>"
 					 + 'Login attempts: ' + markers[index]['value']
 					 );
 		 },
+		 onMarkerClick: function(event,index){
+			 location.href = "?action=honeypot&country=" + markers[index]['code'];
+		 }
 	})
 })
 

@@ -3,7 +3,7 @@
  * HECTOR - class.HoneyPotSession.php
  * 
  * @author Ubani Anthony Balogun <ubani@sas.upenn.edu>
- * @package Hector
+ * @package HECTOR
  */
 
 /**

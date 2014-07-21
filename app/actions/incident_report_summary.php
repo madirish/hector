@@ -1,4 +1,10 @@
 <?php
+/**
+ * Incident report summary page
+ * 
+ * @package HECTOR
+ * @author Justin Klein Keane <jukeane@sas.upenn.edu>
+ */
 include_once($approot . 'templates/admin_headers.tpl.php');
 include_once($approot . 'lib/class.Incident.php');
 

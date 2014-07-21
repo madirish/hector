@@ -22,7 +22,17 @@ $javascripts = '';
 $javascripts .= "<script type='text/javascript' src='js/jquery.dataTables.min.js'></script>\n";
 $javascripts .= "<script type='text/javascript' src='js/honeypot.js'></script>\n";
 
-$honey_pot = new Collection('HoneyPotConnect', $filter = ' AND time > DATE_SUB(NOW(), INTERVAL 4 DAY)');
+//Honey Pot Login Attempts
+
+$bound = ' AND time > DATE_SUB(NOW(), INTERVAL 4 DAY)';
+
+if (isset($_GET['country'])){
+	$country = substr($_GET['country'], 0, 2);
+	$country = strtoupper($country);
+	$country = mysql_real_escape_string($country);
+	$bound .= " AND country_code = '$country'";
+}
+$honey_pot = new Collection('HoneyPotConnect', $filter = $bound);
 $attempts = array();
 
 if (is_array($honey_pot->members)){
@@ -32,7 +42,9 @@ if (is_array($honey_pot->members)){
 }
 $attempts_json = json_encode($attempts);
 
-$honeypotsession = new Collection('HoneyPotSession', $filter = ' AND time > DATE_SUB(NOW(), INTERVAL 4 DAY)');
+
+// Honey Pot Sessions
+$honeypotsession = new Collection('HoneyPotSession', $filter = $bound);
 $commands = array();
 
 if (is_array($honeypotsession->members)){

@@ -1,4 +1,11 @@
 <?php
+/**
+ * Edit an incident report.
+ * 
+ * @package HECTOR
+ * @author Justin Klein Keane <jukeane@sas.upenn.edu>
+ */
+ 
 include_once($approot . 'templates/admin_headers.tpl.php');
 require_once($approot . 'lib/class.Form.php');
 include_once($approot . 'lib/class.Incident.php');

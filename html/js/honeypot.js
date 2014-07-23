@@ -1,9 +1,10 @@
 $(function(){
 	var raw = $('#login-attempts').text();
 	var data = JSON.parse(raw);
+	console.log(data);
 	columns = [
 	           {data: 'id'},
-	           {data: 'ip'},
+	           {data: 'ip_linked'},
 	           {data: 'country_code'},
 	           {data: 'time'},
 	           {data: 'username'},
@@ -19,7 +20,7 @@ $(function(){
 	commandsColumns = [
 	                   {data: 'id',"visible":false},
 	                   {data: 'time'},
-	                   {data: 'ip'},
+	                   {data: 'ip_linked'},
 	                   {data: 'session_id'},
 	                   {data: 'command'},
 	                   ];

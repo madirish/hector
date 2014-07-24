@@ -69,8 +69,9 @@ to perform automated scans of hosts.</p>
             <div id="incidentChartLabels" class="hidden"><?php echo $incidentchart_labels?></div>
             <div id="incidentChartCounts" class="hidden"><?php echo $incidentchart_counts?></div>
             <h3 id="incidentChartHeader"></h3>
-            <canvas id="incidentChart"></canvas>
             <div id="incidentChartLegend"></div>
+            <canvas id="incidentChart"></canvas>
+            
         </div>
     </div>
     
@@ -181,8 +182,9 @@ to perform automated scans of hosts.</p>
 			<h3 id="incident-assets-header"><?php echo $asset_count_header?></h3>
 			<div id="incident-assets-counts" class="hidden"><?php echo $asset_count_json?></div>
 			<div id="incident-assets-labels" class="hidden"><?php echo $asset_labels_json?></div>
-			<canvas id="incident-assets-chart"></canvas>
 			<div id="incident-assets-legend"></div>
+			<canvas id="incident-assets-chart"></canvas>
+			
 		</div>
 	</div>
 </div>

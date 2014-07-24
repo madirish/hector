@@ -10,7 +10,7 @@
 $(document).ready(function(){
 	var assets_count = $.parseJSON($("#incident-assets-counts").text());
 	var labels = $.parseJSON($("#incident-assets-labels").text());
-	var colors = ["#F8FF01","#FF0F00","#69D2E7","#FF6600","#b0de09","#DDDDDD","#FFCC99","#D97041","#C7604C","#CCCFFF"];
+	var colors = ["#F8FF01","#FF0F00","#69D2E7","#FF6600","#b0de09","#DDDDDD","#FFCC99","#DCB9B3","#C7604C","#C58EF8","#F9C7F5"];
 	var data = [];
 	
 	for (var i = 0; i < labels.length; i++){

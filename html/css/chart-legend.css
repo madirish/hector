@@ -3,13 +3,11 @@
 }
 
 .chart-legend {
-    width: 12em;
+    width: auto;
     border: 1px solid black;
     display: inline-block;
-    position: absolute;
-    right: 0px;
-    top: 25%;
-    white-space: nowrap;
+    float: right;
+
 }
 
 .chart-legend .title {

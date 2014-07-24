@@ -12,6 +12,8 @@ include_once($approot . 'lib/class.Collection.php');
 
 if (isset($_GET['threat_action'])) {
     $incident_reports = new Collection('Incident', intval($_GET['threat_action']), 'get_incidents_by_action');	
+}elseif (isset($_GET['asset_id'])){
+	$incident_reports = new Collection('Incident', intval($_GET['asset_id']),'get_incidents_by_asset');
 }
 else {
 	$incident_reports = new Collection('Incident');

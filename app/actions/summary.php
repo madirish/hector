@@ -59,6 +59,10 @@ $javascripts .= "<script type='text/javascript' src='js/legend.js'></script>\n";
 // Include kojoneymap Script
 $javascripts .= "<script type='text/javascript' src='js/kojoneymap.js'></script>\n";
 
+// Include Incident Assets Script
+$javascripts .= "<script type='text/javascript' src='js/assetsAffected.js'></script>\n";
+
+
 $portSummaryLabels = "";
 $portSummaryCounts = "";
 $darknetSummaryLabels = "";
@@ -109,10 +113,14 @@ $timespan =    $month . ' ' . $ly . ' - ' . $cy ;
 
 $incident_reports = new Collection('Incident','','get_incidents_in_last_year');
 $action_count = array();
+$asset_count = array();
 $sorter = array();
+$asset_count_sorter = array();
+
 
 if (is_array($incident_reports->members)) {
     foreach ($incident_reports->members as $irreport){
+    	// Get incident action count
     	$action = $irreport->get_action()->get_action();
         $action_count[$action]['href'] = '?action=incident_summaries&threat_action=' . $irreport->get_action_id();
     	if (isset($action_count[$action]['count'])){
@@ -122,16 +130,31 @@ if (is_array($incident_reports->members)) {
     		$action_count[$action]['count'] = 1;
     	}
     	$sorter[$action] = $action_count[$action]['count'];
+    	// Get Asset count
+    	$asset = $irreport->get_asset()->get_name();
+    	$asset_count[$asset]['href'] = "?action=incident_reports&asset_id=".$irreport->get_asset_id();
+    	if (isset($asset_count[$asset]['count'])){
+    		$asset_count[$asset]['count'] += 1;
+    	}else{
+    		$asset_count[$asset]['count'] = 1;
+    	}
+    	$asset_count_sorter[$asset] = $asset_count[$asset]['count'];
+    	
     }
     array_multisort($sorter,SORT_DESC,$action_count);
+    array_multisort($asset_count_sorter,SORT_DESC,$asset_count);
 }
 
 
 $incidentchart_counts = json_encode($action_count);
 $IRAction_labels = array_keys($action_count);
 $incidentchart_labels = json_encode($IRAction_labels);
+$asset_count_json = json_encode($asset_count);
+
 
 $incident_report_header = json_encode("Incident Reports " . $timespan);
+$asset_count_header = "Assets Affected $timespan";
+$asset_labels_json = json_encode(array_keys($asset_count));
 
 /**
  * Darknet map
@@ -159,6 +182,8 @@ foreach ($topCountries as $country) {
  */
 $kojoneyCountryCount = $report->getKojoneyCountryCount();
 $kojoneymapcounts = json_encode($kojoneyCountryCount);
+
+
 
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates . 'summary.tpl.php');

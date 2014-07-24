@@ -379,6 +379,14 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
         return $this->get_collection_definition(' AND i.action_id = ' . $action_id);
      }
      
+     public function get_incidents_by_asset($asset_id){
+     	$asset_id = intval($asset_id);
+     	if ($asset_id < 1){
+     		return false;
+     	}
+     	return $this->get_collection_definition(' AND i.asset_id = ' . $asset_id);
+     }
+     
      public function get_incidents_in_last_year() {
         $incident_filter = " AND STR_TO_DATE(CONCAT(incident_year,'-',incident_month,'-','1'),'%Y-%m-%d') >= DATE_SUB(NOW(),INTERVAL 12 MONTH) ";
         return $this->get_collection_definition($incident_filter);

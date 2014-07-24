@@ -210,6 +210,18 @@ class HoneyPotSession extends Maleable_Object {
 	}
 	
 	/**
+	 * Get a link to the malicious ip database page for the ip address
+	 *
+	 * @access public
+	 * @return String The link to the malicious ip database page for the ip address
+	 */
+	public function get_ip_linked(){
+		$ip = $this->get_ip();
+		$retval = "<a href='?action=attackerip&ip=$ip'>$ip</a>";
+		return $retval;
+	}
+	
+	/**
 	 * Set the ip_numeric attribute.
 	 *
 	 * @access public
@@ -336,6 +348,7 @@ class HoneyPotSession extends Maleable_Object {
 				'sensor_id' => $this->get_sensor_id(),
 				'session_id' => $this->get_session_id(),
 				'command' => $this->get_command(),
+				'ip_linked' => $this->get_ip_linked(),
 				
 		);
 	}

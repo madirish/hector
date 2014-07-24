@@ -75,9 +75,34 @@ to perform automated scans of hosts.</p>
         </div>
     </div>
     
+    <!-- Incident Assets Pie chart -->
+	<div class="span6">
+		<div id="asset-chart-div" class="chart-container">
+			<h3 id="incident-assets-header"><?php echo $asset_count_header?></h3>
+			<div id="incident-assets-counts" class="hidden"><?php echo $asset_count_json?></div>
+			<div id="incident-assets-labels" class="hidden"><?php echo $asset_labels_json?></div>
+			<div id="incident-assets-legend"></div>
+			<canvas id="incident-assets-chart"></canvas>
+			
+		</div>
+	</div>
+
+
+</div>
+
+<div class="row">
     <div class="span6">
+    <!-- Kojoney Login Attempts Map -->
+    <h3>Kojoney: Login Attempts in Last 7 Days</h3>
+		<div id="kojoney-map-counts" class="hidden"><?php echo $kojoneymapcounts ?></div>
+		<div id="kojoney-worldmap" style="height:300px;"></div>
+    </div>
+    
+    	
+	<div class="span6">
+    <!-- Darknet Probes Map -->
     <h3>Darknet:  Probes in Last 7 Days by Country</h3>
-    <figure><div id="world-map-gdp" style="height:300px;"></div>
+    <div id="world-map-gdp" style="height:300px;"></div>
     <script>
     <?php
     foreach ($darknetmapcounts as $key=>$val) {
@@ -108,20 +133,13 @@ to perform automated scans of hosts.</p>
         });
       });
       //@code_end
-    </script></figure>
+    </script>
     </div>
-
 </div>
-
 <div class="row">
-    <div class="span6">
-    <!-- Kojoney Login Attempts Map -->
-    <h3>Kojoney: Login Attempts in Last 4 Days by Country</h3>
-		<div id="kojoney-map-counts" class="hidden"><?php echo $kojoneymapcounts ?></div>
-		<div id="kojoney-worldmap" style="height:300px;"></div>
-    </div>
-  
-    <div class="span6">
+    
+        <div class="span6">
+    <!-- Timeline of Probes -->
         <h3>Timeline of Probes</h3>
         <canvas id="darknetCountryChart" height="300" width="550"></canvas>
         <script>
@@ -174,17 +192,4 @@ to perform automated scans of hosts.</p>
         });
         </script>
     </div>
-</div>
-<div class="row">
-	<!-- Incident Assets Pie chart -->
-	<div class="span6">
-		<div id="asset-chart-div" class="chart-container">
-			<h3 id="incident-assets-header"><?php echo $asset_count_header?></h3>
-			<div id="incident-assets-counts" class="hidden"><?php echo $asset_count_json?></div>
-			<div id="incident-assets-labels" class="hidden"><?php echo $asset_labels_json?></div>
-			<div id="incident-assets-legend"></div>
-			<canvas id="incident-assets-chart"></canvas>
-			
-		</div>
-	</div>
 </div>

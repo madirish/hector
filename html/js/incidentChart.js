@@ -4,7 +4,7 @@
  * @date: June 19, 2014
  * @requires: Chart.js, legend.js
  * 
- * Doughnut Chart implementation for Hector summary page
+ * Pie Chart implementation for Hector summary page
  */
 $(document).ready(function(){
 	var chartHeader = JSON.parse(document.getElementById('incidentReportHeader').textContent);
@@ -14,7 +14,7 @@ $(document).ready(function(){
 	var colors = ["#F8FF01","#FF0F00","#69D2E7","#FF6600","#b0de09","#DDDDDD","#FFCC99","#D97041","#C7604C","#CCCFFF"];
 	var data = [];
 	
-	for (i = 0; i < chartLabels.length; i++){
+	for (var i = 0; i < chartLabels.length; i++){
 		var label = chartLabels[i];
 		var count = chartData[label]['count'];
 		data.push({value:count , color:colors[i] ,title:label + " - " + count});

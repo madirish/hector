@@ -64,7 +64,7 @@ to perform automated scans of hosts.</p>
 <div class="row">
     <!-- Incident Pie Chart -->
     <div class="span6"> 
-        <div id="incident-div">
+        <div id="incident-div" class="chart-container">
             <div id="incidentReportHeader" class="hidden"><?php echo $incident_report_header?></div>
             <div id="incidentChartLabels" class="hidden"><?php echo $incidentchart_labels?></div>
             <div id="incidentChartCounts" class="hidden"><?php echo $incidentchart_counts?></div>
@@ -173,4 +173,16 @@ to perform automated scans of hosts.</p>
         });
         </script>
     </div>
+</div>
+<div class="row">
+	<!-- Incident Assets Pie chart -->
+	<div class="span6">
+		<div id="asset-chart-div" class="chart-container">
+			<h3 id="incident-assets-header"><?php echo $asset_count_header?></h3>
+			<div id="incident-assets-counts" class="hidden"><?php echo $asset_count_json?></div>
+			<div id="incident-assets-labels" class="hidden"><?php echo $asset_labels_json?></div>
+			<canvas id="incident-assets-chart"></canvas>
+			<div id="incident-assets-legend"></div>
+		</div>
+	</div>
 </div>

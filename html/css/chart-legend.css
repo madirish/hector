@@ -1,4 +1,4 @@
-#incident-div {
+.chart-container {
 	position: relative;
 }
 
@@ -9,6 +9,7 @@
     position: absolute;
     right: 0px;
     top: 25%;
+    white-space: nowrap;
 }
 
 .chart-legend .title {

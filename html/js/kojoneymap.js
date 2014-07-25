@@ -290,6 +290,12 @@ $(function(){
 		 },
 		 onMarkerClick: function(event,index){
 			 location.href = "?action=honeypot&country=" + markers[index]['code'];
+		 },
+		 onMarkerOver: function(event,label){
+			 $(this).css('cursor','pointer');
+		 },
+		 onMarkerOut: function(event,label){
+			 $(this).css('cursor','default');
 		 }
 	})
 })

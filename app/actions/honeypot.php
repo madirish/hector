@@ -24,7 +24,7 @@ $javascripts .= "<script type='text/javascript' src='js/honeypot.js'></script>\n
 
 //Honey Pot Login Attempts
 
-$bound = ' AND time > DATE_SUB(NOW(), INTERVAL 4 DAY)';
+$bound = ' AND time > DATE_SUB(NOW(), INTERVAL 7 DAY)';
 
 if (isset($_GET['country'])){
 	$country = substr($_GET['country'], 0, 2);

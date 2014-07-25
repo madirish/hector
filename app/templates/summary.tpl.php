@@ -129,7 +129,13 @@ to perform automated scans of hosts.</p>
         },
         onRegionClick: function (event, code) {
             location.href = "?action=darknetsummary&country="+code;
-        }
+        },
+        onRegionOver: function(event,label){
+			 $(this).css('cursor','pointer');
+		 },
+		 onRegionOut: function(event,label){
+			 $(this).css('cursor','default');
+		 }
         });
       });
       //@code_end

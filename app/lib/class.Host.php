@@ -1794,6 +1794,21 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		}
 		return $retval;
 	}
+	
+	/**
+	 * Get object as array
+	 * 
+	 * @access public
+	 * @author Ubani Anthony Balogun <ubani@sas.upenn.edu>
+	 * @return Array return the object's attributes as an associative array
+	 */
+	public function get_object_as_array(){
+		return array(
+				'ip' => $this->get_ip(),
+				'name' => $this->get_name(),
+				'urls' => $this->get_urls(),	
+		);
+	}
 
 } /* end of class Host */
 

@@ -81,7 +81,7 @@ class Report {
         $countrycount = array();
     	$sql = 'SELECT count(src_ip) as thecount, country_code ' .
                 'FROM darknet WHERE' .
-                ' received_at > DATE_SUB(NOW(), INTERVAL 4 DAY) ' .
+                ' received_at > DATE_SUB(NOW(), INTERVAL 7 DAY) ' .
                 ' AND country_code IS NOT NULL ' .
                 ' AND dst_port > 0 ' .
                 ' GROUP BY country_code ';
@@ -105,7 +105,7 @@ class Report {
     	$countrycount = array();
     	$sql = 'SELECT DISTINCT(ip), country_code ' .
                 'FROM koj_login_attempt ' .
-                'WHERE time > DATE_SUB(NOW(), INTERVAL 4 DAY) ' .
+                'WHERE time > DATE_SUB(NOW(), INTERVAL 7 DAY) ' .
                 'AND country_code IS NOT NULL';
     	$result = $this->db->fetch_object_array($sql);
     	$seenip = array();

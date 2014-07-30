@@ -76,7 +76,7 @@ $(document).ready(function () {
             $('#udpPortList').val(portString.substring(upos + 2)); 
         }
         // Either TCP or UDP specifications
-        if (portString.search("U:") > -1) {
+        else if (portString.search("U:") > -1) {
         	$('#udpPortList').val(portString.split(":")[1]);
         }
         else {

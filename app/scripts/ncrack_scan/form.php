@@ -1,4 +1,5 @@
 <!-- ncrack form -->
+<?php global $generic;?>
 <script type="text/javascript">
 $(document).ready(function () {
 	// Set the scan name in the form from parent template
@@ -84,6 +85,10 @@ $form->save();
 	<p> Protocols supported include RDP, SSH, http(s), SMB, pop3(s), VNC, FTP, and telnet.</p>
 	<p>Usernames and passwords are pulled from 10 most common usernames and passwords attempted
 	by attackers using Kojoney2 data in HECTOR.</p>
+    <?php if (! is_executable($_SESSION['ncrack_exec_path'])) { ?> 
+    <p><strong>Ncrack not found!</strong></p>
+    <p>Either Ncrack is not installed on your system or you need to update your config.ini to point to it.</p>
+    <?php } else { ?> 
 		<table>
 		<tr><td><strong>Scan name:</strong></td><td><input type="text" id="name" name="name" class="input-block-level" placeholder="Descriptive scan name"/></td></tr>
 		<tr><td style="vertical-align: text-top;"><strong>Specifications:<strong></td><td>
@@ -100,4 +105,5 @@ $form->save();
 		</td></tr>
 		<tr><td>&nbsp;</td><td><input type="button" id="saveScan" value="Save Scan"/></td></tr>
 		</table>
+     <?php } ?>
 </fieldset>

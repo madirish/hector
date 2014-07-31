@@ -12,25 +12,26 @@ ToDo: Auto-tag articles based on tag keywords showing up in the article
 title or teaser
 """
 
-import sys
-sys.path.append('/opt/hector/app/software/feedparser')
 import datetime
 import feedparser
 import MySQLdb
-import ConfigParser
 import logging
+import sys, os
+# appPath - for example /opt/hector/app
+appPath = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + "/../../")
+sys.path.append(appPath + "/lib/pylib")
+sys.path.append(appPath + "/software/feedparser")
+from pull_config import Configurator
 
 
 DEBUG = False
 
 # Credentials used for the database connection
-configr = ConfigParser.ConfigParser()
-configr.read('/opt/hector/app/conf/config.ini')
-global HOST, USERNAME, PASSWORD, DB, PORT
-HOST = configr.get('hector', 'db_host')
-USERNAME =  configr.get('hector', 'db_user')
-PASSWORD = configr.get('hector', 'db_pass')
-DB = configr.get('hector', 'db')
+configr = Configurator()
+DB = configr.get_var('db')
+HOST = configr.get_var('db_host')
+USERNAME = configr.get_var('db_user')
+PASSWORD = configr.get_var('db_pass')
 PORT = 3306
 conn = MySQLdb.connect(host=HOST,
       user=USERNAME,
@@ -41,7 +42,7 @@ cursor = conn.cursor()
 
 #logging set up
 logger = logging.getLogger('hectorss')
-hdlr = logging.FileHandler('/opt/hector/app/logs/message_log')
+hdlr = logging.FileHandler(appPath + '/logs/message_log')
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 hdlr.setFormatter(formatter)
 logger.addHandler(hdlr) 

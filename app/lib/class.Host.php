@@ -1414,8 +1414,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 * @return Boolean False if the URL doesn't validate or the screenshot doesn't exist.
 	 */
 	public function set_add_url($url, $filepath) {
-        print_r("set_add_url($url, $filepath)");
-		global $approot;
+		global $approot; 
 		$retval = FALSE;
 		if (filter_var($url, FILTER_VALIDATE_URL)) {
 			$retval = TRUE;
@@ -1438,7 +1437,6 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 				$this->urls[] = array($url, $filepath);
 			}
 		}
-        print_r($this->urls);
 		return $retval;
 	}
 

@@ -2,7 +2,7 @@
 <script type="text/javascript">
 $(document).ready(function () {
 	// Set the scan name in the form from parent template
-	$('#script').val('nmap_scan.php');
+	$('#add_scan_type_form #script').val('nmap_scan.php');
 	// User input validation
 	$('.portnumber').bind('change', function() {
 		if ($(this).val().replace(/[^\d^,^\-]/g) !== $(this).val()) {

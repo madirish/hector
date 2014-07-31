@@ -28,7 +28,7 @@ $(document).ready(function() {
 </fieldset>
 </form>
 
-<form name="add_scan_type_form" id="add_scan_type_form" method="POST" action="?action=add_edit_scr&object=<?php echo $object;?>&id=<?php echo $id;?>">
+<form name="add_scan_type_form" id="add_scan_type_form" class="form-horizontal" method="POST" action="?action=add_edit_scr&object=<?php echo $object;?>&id=<?php echo $id;?>">
 <div id="configform">
 
 </div>
@@ -40,5 +40,6 @@ $(document).ready(function() {
 <!-- JavaScripts have to go here so they can reach the parts of the DOM (above) they maniuplate -->
 <?php 
 global $javascripts;
+global $generic;
 if(isset($javascripts)  && is_array($javascripts)) foreach($javascripts as $script) echo $script;
 ?>

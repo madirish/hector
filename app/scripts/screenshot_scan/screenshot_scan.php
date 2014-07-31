@@ -29,7 +29,7 @@
  
 if(php_sapi_name() == 'cli') {
 	$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-	$approot = realpath(substr($_SERVER['PATH_TRANSLATED'],0,strrpos($_SERVER['PATH_TRANSLATED'],'/')) . '/../') . '/';	
+	$approot = realpath(substr($_SERVER['PATH_TRANSLATED'],0,strrpos($_SERVER['PATH_TRANSLATED'],'/')) . '/../../') . '/';	
 }
 
 /**
@@ -46,17 +46,7 @@ require_once($approot . 'lib/class.Scan_type.php');
 // Make sure of the environment
 global $add_edit;
 if(php_sapi_name() != 'cli') {
-	$is_executable[] = array('screenshot_scan.php' => 'Screenshot scan');
-		global $javascripts;
-	$javascripts .= <<<EOT
-	<script type="text/javascript">
-		function screenshot_scan_display() {
-			var screenshotHTML = "Screenshot";
-			document.getElementById("specs").innerHTML = screenshotHTML;
-		}
-	</script>
-EOT;
-	$onselects['screenshot_scan.php'] = 'screenshot_scan_display()';
+	// Error, we shouldn't use this script from the web interface
 }
 else {	
 	// Set high mem limit to prevent resource exhaustion
@@ -75,8 +65,8 @@ else {
 	populate_database();
 	$dblog->log("screenshot_scan.php process", "screenshot_scan.py invoked");
 	$log->write_message("screeshot scan: screenshot_scan.py invoked");
-	shell_exec($_SESSION['python_exec_path'] . ' ' . $approot . 'scripts/screenshot_scan/screenshot_scan.py');
-	$dblog->log("screenshot_scan.php process", "screenshot_scan.py complete");
+	$output = system($_SESSION['python_exec_path'] . ' ' . $approot . 'scripts/screenshot_scan/screenshot_scan.py', $retval);
+	$dblog->log("screenshot_scan.php process", "screenshot_scan.py complete [return code was $retval]");
 	$log->write_message("screeshot scan: screenshot_scan.py complete");
 	remove_old();
 	
@@ -167,13 +157,14 @@ function populate_database() {
  * removes unreferenced files from the screenshots directory
  */
 function remove_old() {
+    global $approot;
 	$db = Db::get_instance();
 	$db = Db::get_instance();
 	$dblog = Dblog::get_instance();
 	$log = Log::get_instance();
 	$dblog->log("screenshot_scan.php process", "remove old screenshot files started");
 	$log->write_message("screeshot scan: remove old screenshot files started");
-	$approot = realpath(substr($_SERVER['PATH_TRANSLATED'],0,strrpos($_SERVER['PATH_TRANSLATED'],'/')) . '/../') . '/';
+    
 	if ($files = opendir($approot . '/screenshots')) {
 		while (($dir = readdir($files)) !== false) {
 			if (substr($dir, -4) == ".png") {

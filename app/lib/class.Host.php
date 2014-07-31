@@ -293,7 +293,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 					foreach($url_results as $url) {
 						// Do some housekeeping to delete non-existent screenshots
 						global $approot;
-						if ( ! file_exists($approot . 'screenshots/' . $url->url_screenshot)) {
+						if ( ! file_exists($approot . 'screenshots/' . $url->url_screenshot) && $url->url_screenshot !== '') {
 							$sql = array('UPDATE url ' .
 									'SET url_screenshot = NULL ' .
 									'WHERE url_id = ?i ',
@@ -1414,19 +1414,31 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 * @return Boolean False if the URL doesn't validate or the screenshot doesn't exist.
 	 */
 	public function set_add_url($url, $filepath) {
+        print_r("set_add_url($url, $filepath)");
 		global $approot;
 		$retval = FALSE;
 		if (filter_var($url, FILTER_VALIDATE_URL)) {
 			$retval = TRUE;
 		}
-		$filepath = $approot . 'screenshots/' . $filepath;
-		if (! file_exists($filepath)) $retval = FALSE;
+        else {
+        	// Try prepending http://
+            $tmp_url = 'http://' . $url;
+            if (filter_var($tmp_url, FILTER_VALIDATE_URL)) {
+            	$url = $tmp_url;
+                $retval = TRUE;
+            }
+        }
+        if ($filepath != '') {
+            $filepath = $approot . 'screenshots/' . $filepath;
+            if (! file_exists($filepath)) $retval = FALSE;	
+        }
 		if ($retval) {
 			// prevent dupes
 			if (! in_array($url, $this->urls)) {
 				$this->urls[] = array($url, $filepath);
 			}
 		}
+        print_r($this->urls);
 		return $retval;
 	}
 

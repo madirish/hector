@@ -1425,9 +1425,17 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
             if (filter_var($tmp_url, FILTER_VALIDATE_URL)) {
             	$url = $tmp_url;
                 // Persist this change to the databse
-                $sql = array('UPDATE url SET url_url = "?s" WHERE url_id = ?i', $tmp_url, $id);
-                $this->db->iud_sql($sql);
-                $retval = TRUE;
+                $sql = array('SELECT url_id FROM url WHERE url_url = "?s"', $tmp_url);
+                $result = $this->db->fetch_object_array($sql);
+                if (is_array($result) && is_object($result[0])) {
+                    // This is a duplicate
+                    $retval = FALSE;
+                }
+                else {
+                	$sql = array('UPDATE url SET url_url = "?s" WHERE url_id = ?i', $tmp_url, $id);
+                    $this->db->iud_sql($sql);
+                    $retval = TRUE;
+                }
             }
         }
         if ($filepath != '') {

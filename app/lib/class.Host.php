@@ -301,7 +301,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 									);	
 							$this->db->iud_sql($sql);
 						}
-						$this->set_add_url($url->url_url, $url->url_screenshot);
+						$this->set_add_url($url->url_url, $url->url_screenshot, $url->url_id);
 					}
 				}
 				// Is there an exclusion?  Should it be honored?
@@ -1413,7 +1413,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 * @param String A valid filename of the screenshot image
 	 * @return Boolean False if the URL doesn't validate or the screenshot doesn't exist.
 	 */
-	public function set_add_url($url, $filepath) {
+	public function set_add_url($url, $filepath, $id) {
 		global $approot; 
 		$retval = FALSE;
 		if (filter_var($url, FILTER_VALIDATE_URL)) {
@@ -1424,6 +1424,9 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
             $tmp_url = 'http://' . $url;
             if (filter_var($tmp_url, FILTER_VALIDATE_URL)) {
             	$url = $tmp_url;
+                // Persist this change to the databse
+                $sql = array('UPDATE url SET url_url = "?s" WHERE url_id = ?i', $tmp_url, $id);
+                $this->db->iud_sql($sql);
                 $retval = TRUE;
             }
         }

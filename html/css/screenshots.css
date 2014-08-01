@@ -1,13 +1,14 @@
 #screenshot-table img {
 	max-width: 250px;
+	max-height: 250px;
 	margin: 5px;
 	border: 1px solid #808080;
 	
 }
 
 #screenshot-table img:hover {
-	-webkit-transform: scale(2.0);
-  	-moz-transform: scale(2.0);
+	-webkit-transform: scale(3.0);
+  	-moz-transform: scale(3.0);
   	position: relative;
   	z-index: 5;
 }

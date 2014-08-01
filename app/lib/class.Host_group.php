@@ -128,7 +128,12 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
     				'set host_group_id = \'?i\', host_id = \'?i\'',
     				$this->id,
     				$host_id);
-    		$retval = $this->db->iud_sql($sql);
+            if (! in_array($host_id, $this->get_host_ids())) {
+            	$retval = $this->db->iud_sql($sql);
+            }
+            else {
+            	$retval = TRUE;
+            }
     	}
     	return $retval;
     }

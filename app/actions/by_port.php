@@ -4,11 +4,11 @@
  * now with insanely complex queries!
  * 
  * by Justin C. Klein Keane <jukeane@sas.upenn.edu>
- * Last updated 18 October, 2012
+ * Last updated 1 August 2014
  * 
  * @author Justin Klein Keane <jukeane@sas.upenn.edu>
  * @package HECTOR
- * @todo Move the SQL out of this file into a utility class
+ * @todo Move the SQL out of this file into a utility class!!!
  */
 
 /**
@@ -346,31 +346,27 @@ if ($tempTablePopulated > 0) {
 			'GROUP BY t.host_id';
 	$host_results = $db->fetch_object_array($sql);
 	if (count(array_keys($host_results)) < 1) $host_results = null;
-	$content .= '<h4>' . count($host_results) . ' records found</h4>';
-	$content .= '<table id="table-port-result" class="table table-striped">';
-	$content .= '<thead>' .
-			'<tr><th>Hostname</th>' .
-			'<th>Support Group</th>' . 
-			'<th>IP Address</th>' .
-			'<th>Last seen on:</th>' .
-			'</tr></thead>' .
-			'<tbody>';
+    $search_results = array();
 	if (is_array($host_results)) {
 		foreach ($host_results as $ret) {
-			$host = new Host($ret->host_id);
-			$supportgroup = new Supportgroup($host->get_supportgroup_id());
-			$content .= '<tr><td>' . $host->get_name_linked() . '</td>' .
-					'<td>' . $supportgroup->get_name() . '</td>' .
-					'<td>' . $host->get_ip() . '</td>' .
-					'<td>' . $ret->maxtime . '</td></tr>';
-		}
-		if (count($host_results) < 1) {
-			$content .= '<tr><td colspan="4">No results available ';
-			if (! $appuser->get_is_admin()) $content .=	'(you may not have permissions to see specific hosts).';
-			$content .= '</td></tr>';
+            $tmphost = new Host($ret->host_id);
+            $tmphost->maxtime = $ret->maxtime;
+            $search_results[] = $tmphost;
 		}
 	}
-	$content .= '</tbody></table>';	
+    $hgcollection = new Collection('Host_group');
+    $hostgroups = array();
+    if (is_array($hgcollection->members)) {
+    	foreach ($hgcollection->members as $group) $hostgroups[] = $group;
+    }
+    $javascripts .= '<script src="js/jquery.dataTables.js" charset="utf8" type="text/javascript"></script>'. "\n";
+    $javascripts .= '<link href="css/jquery.dataTables.css" type="text/css" rel="stylesheet">' . "\n";
+    require_once($approot . 'lib/class.Form.php');
+    $form = new Form();
+    $formname = 'searchResultsToHostGroup';
+    $form->set_name($formname);
+    $token = $form->get_token();
+    $form->save();
 }
 else {
 	

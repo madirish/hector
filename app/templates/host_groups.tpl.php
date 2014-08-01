@@ -5,7 +5,7 @@
 if (isset($_GET['host_group_id'])) { // Specific Host Group
 ?>
 <h3><?php echo $hostgroup->get_name();?> Hostgroup Members</h3>
-<table id="hostgroupstable">
+<table id="hostgroupstable" class="table table-striped">
 <thead>
 <tr>
     <th>Hostname</th>

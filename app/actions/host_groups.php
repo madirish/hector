@@ -13,6 +13,15 @@ require_once($approot . 'lib/class.Host.php');
 require_once($approot . 'lib/class.Host_group.php');
 require_once($approot . 'lib/class.Collection.php');
 
+if (isset($_POST['hostgroup'])) {
+	// Adding hosts from the search form
+    $hostgroup = new Host_group($_POST['hostgroup']);
+    foreach ($_POST['host_id'] as $host_id) {
+    	$hostgroup->add_host_to_group($host_id);
+    }
+    $_GET['host_group_id'] = $_POST['hostgroup'];
+}
+
 if (isset($_GET['delete']) && $_GET['delete'] == 'yes') {
 	$hostgroup = new Host_group($_GET['id']);
     $hostgroup->delete();

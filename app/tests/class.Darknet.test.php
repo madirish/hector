@@ -26,7 +26,7 @@ class TestOfDarknetClass extends UnitTestCase {
     	$this->dnet->set_dst_port($port);
         $this->assertEqual($port, $this->dnet->get_dst_port());
         $this->dnet->set_dst_port($bad);
-        $this->assertNotEqual($bad, $this->dnet->get_dst_port());
+        $this->assertNotIdentical($bad, $this->dnet->get_dst_port());
     }
     
     function testSrcPort() {
@@ -35,7 +35,7 @@ class TestOfDarknetClass extends UnitTestCase {
         $this->dnet->set_src_port($port);
         $this->assertEqual($port, $this->dnet->get_src_port());
         $this->dnet->set_src_port($bad);
-        $this->assertNotEqual($bad, $this->dnet->get_src_port());
+        $this->assertNotIdentical($bad, $this->dnet->get_src_port());
     }
     
     function testSrcDstIP() {

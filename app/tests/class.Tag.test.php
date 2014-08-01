@@ -5,7 +5,7 @@ require_once(dirname(__FILE__) . '/../lib/class.Tag.php');
 
 class TestOfTagClass extends UnitTestCase {
 	
-	function setup() {
+	function setUp() {
 		$this->tag = new Tag();
 	}
 	

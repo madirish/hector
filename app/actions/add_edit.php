@@ -36,21 +36,21 @@ else {
 				$value = (isset($display['value_function'])) ? call_user_func(array($generic, $display['value_function'])) : '';
 				switch ($display['type']) {
 					case 'textarea':
-						$row['form'] = '<textarea type="text" name="' . 
+						$row['form'] = '<textarea type="text" class="input-xxlarge" name="' . 
 										$display['name'] . '">' . $value . '</textarea>';
 						break;
 					case 'text':
-						$row['form'] = '<input type="text" name="' . 
+						$row['form'] = '<input type="text" class="input-xxlarge text" name="' . 
 										$display['name'] . '" id="' . 
-										$display['name'] . '" value="' . $value . '" class="text"/>';
+										$display['name'] . '" value="' . $value . '" />';
 						break;
 					case 'password':
-						$row['form'] = '<input type="password" name="' . 
+						$row['form'] = '<input type="password" class="input-xxlarge" name="' . 
 										$display['name'] . '" id="' . 
 										$display['name'] . '" value="' . $value . '"/>';
 						break;
 					case 'select':
-						$row['form'] = '<select name="' . $display['name'] . '" id="' . 
+						$row['form'] = '<select name="' . $display['name'] . '" class="input-xxlarge" id="' . 
 										$display['name'] . '">';
 						foreach ($display['options'] as $key=>$val) {
 							$row['form'] .= '<option value="' . $key . '"';

@@ -125,6 +125,7 @@ CREATE TABLE IF NOT EXISTS `host_alts` (
 CREATE TABLE IF NOT EXISTS `host_group` (
 	`host_group_id` INT NOT NULL AUTO_INCREMENT,
 	`host_group_name` VARCHAR(255) NOT NULL,
+	`host_group_detail` TEXT,
   PRIMARY KEY  (`host_group_id`)
 ) ENGINE = INNODB;
 

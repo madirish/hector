@@ -651,7 +651,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 					'options'=>array(0=>'No',1=>'Yes'), 
 					'value_function'=>'get_portscan_exclusion',
 					'process_callback'=>'set_portscan_exclusion'),
-			array(
+			array('label'=>'Excluded by',
 					'name'=>'excludedby',
 					'type'=>'hidden', 
 					'value_function'=>'get_excludedby',

@@ -1,0 +1,3 @@
+; Info file to let HECTOR know this is a user configurable scan type
+name    =   screenshot_scan
+display = Screenshot Scan

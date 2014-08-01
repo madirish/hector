@@ -2,7 +2,7 @@
 <script type="text/javascript">
 $(document).ready(function () {
 	// Set the scan name in the form from parent template
-	$('#script').val('nmap_scan.php');
+	$('#add_scan_type_form #script').val('nmap_scan.php');
 	// User input validation
 	$('.portnumber').bind('change', function() {
 		if ($(this).val().replace(/[^\d^,^\-]/g) !== $(this).val()) {
@@ -76,7 +76,7 @@ $(document).ready(function () {
             $('#udpPortList').val(portString.substring(upos + 2)); 
         }
         // Either TCP or UDP specifications
-        if (portString.search("U:") > -1) {
+        else if (portString.search("U:") > -1) {
         	$('#udpPortList').val(portString.split(":")[1]);
         }
         else {

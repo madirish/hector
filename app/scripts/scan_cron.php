@@ -26,7 +26,9 @@ if(php_sapi_name() == 'cli') {
 	 * Neccesary includes
 	 */
 	require_once($approot . 'lib/class.Config.php');
+    require_once($approot . 'lib/class.Dblog.php');
 	require_once($approot . 'lib/class.Host.php');
+    require_once($approot . 'lib/class.Log.php');
 	require_once($approot . 'lib/class.Alert.php');
 	require_once($approot . 'scripts/mail_alerts.php');
 	$scriptrun = 1;
@@ -36,6 +38,8 @@ if(php_sapi_name() == 'cli') {
 	 */
 	new Config();
 	$db = Db::get_instance();
+    $log = Log::get_instance();
+    $dblog = Dblog::get_instance();
 	
 	/**
 	 * Determine which scans we need to run
@@ -45,7 +49,7 @@ if(php_sapi_name() == 'cli') {
 				'scan_dayofmonth = date_format(now(), \'%d\')+1 OR ' . 
 				'scan_dayofyear = date_format(now(), \'%j\')+1';
 	$scans = new Collection('Scan', $match_time);
-	syslog(LOG_INFO, 'scan_cron.php starting');
+	log_scan_cron('scan_cron.php starting');
 	if (isset($scans->members) && is_array($scans->members)) {
 		foreach ($scans->members as $scan) {
 			
@@ -62,20 +66,33 @@ if(php_sapi_name() == 'cli') {
 			if (is_file($scriptfile)) {
 				$last_line = system('/usr/bin/php ' . $scriptfile . ' ' . $flags, $retval);
 				// Log the result
-				syslog(LOG_INFO, 'scan_cron.php ran ' . $scriptfile . ' ' . $flags . ' [retval was ' . $retval . ']');
+                if ($retval == 0) {
+                	log_scan_cron('Success!  scan_cron.php ran ' . $scriptfile . ' ' . $flags . ' [retval was ' . $retval . ']');
+                }
+                else {
+                	log_scan_cron('FAILED!  scan_cron.php ran ' . $scriptfile . ' ' . $flags . ' [retval was ' . $retval . ']');
+                }
 			}				
 			else 
-				syslog(LOG_ERROR, 'scan_cron.php cannot file the file ' . $scriptfile);
+				log_scan_cron('scan_cron.php cannot file the file ' . $scriptfile);
 			
 			// Alert
 			$alert->save();
 			$alert->set_string('Scan ' . $scan->get_name() . ' finished successfully!');
 		}
 	 }
-	syslog(LOG_INFO, 'scan_cron.php scans complete.');
+	log_scan_cron('scan_cron.php scans complete.');
 	mail_alerts();
 	
 	// Shut down nicely
 	$db->close();
+}
+
+function log_scan_cron($message) {
+	global $log;
+    global $dblog;
+    $log->write_message($message);
+    $dblog->log('scan_cron', $message);
+    syslog(LOG_INFO, $message);
 }
 ?>

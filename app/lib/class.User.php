@@ -201,7 +201,7 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 				'SELECT * FROM user WHERE user_name = \'?s\'',
 				$name);
 		$result = $this->db->fetch_object_array($sql); 
-		if (is_array($result) && is_object($result[0])){  
+		if (is_array($result) && isset($result[0]) && is_object($result[0])){  
 			$this->set_id($result[0]->user_id);
 			$this->set_name($result[0]->user_name);
 			$this->set_is_admin($result[0]->user_is_admin);

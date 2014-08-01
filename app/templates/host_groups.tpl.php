@@ -3,7 +3,7 @@
 if (isset($_GET['host_group_id'])) {
     echo "<h3>" . $hostgroup->get_name() . " Hostgroup</h3>\n<ul>";
 	foreach ($hosts as $host) {
-		echo "<li><a href='action=host_details&id=" . 
+		echo "<li><a href='?action=host_details&id=" . 
         $host->get_id() . "'>" . $host->get_ip() . "</a></li>\n";
 	}
 }

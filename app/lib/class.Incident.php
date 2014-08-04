@@ -245,13 +245,20 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
      }
      public function get_action() {
      	require_once('class.IRAction.php');
-        return new IRAction($this->get_action_id());
+        if (is_null($this->action)) $this->action = new IRAction($this->get_action_id());
+        return $this->action;
+     }
+     
+     public function get_action_name() {
+     	$action = $this->get_action();
+        return $action->get_action();
      }
      
      public function get_agent() {
      	if (isset($this->agent_id)) {
      		require_once('class.IRAgent.php');
-            return new IRAgent($this->agent_id);
+            $this->agent = new IRAgent($this->agent_id);
+            return $this->agent;
      	}
         else {
         	return false;
@@ -262,9 +269,17 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
      	return intval($this->agent_id);
      }
      
+     public function get_agent_name() {
+     	if ($agent = $this->get_agent()) {
+     		return $agent->get_name();
+     	}
+        else return false;
+     }
+     
      public function get_asset() {
      	require_once('class.IRAsset.php');
-        return new IRAsset($this->get_asset_id());
+        $this->asset = new IRAsset($this->get_asset_id());
+        return $this->asset;
      }
      
      public function get_asset_id() {
@@ -281,6 +296,11 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
         	return $ret->get_name();
         }
         return false;
+     }
+     
+     public function get_asset_name() {
+     	$asset = $this->get_asset();
+        return $asset->get_name();
      }
      
      /**

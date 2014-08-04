@@ -186,6 +186,15 @@ class IRMagnitude extends Maleable_Object implements Maleable_Object_Interface {
     public function get_displays() {
         return array('Magnitude'=>'get_name');
     }
+    
+    /**
+     * Get text for the details screen explaining what this is
+     * 
+     * @return String A description of this object's purpose
+     */
+    public function get_explaination() {
+        return "Magnitude is an arbitrary scale used to describe the incident's impact, loss, etc. from low to high or minor to major.";
+    }
 
     /**
      * Get the unique ID for the object

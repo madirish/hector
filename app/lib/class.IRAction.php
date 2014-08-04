@@ -172,6 +172,15 @@ class IRAction extends Maleable_Object implements Maleable_Object_Interface {
     public function get_displays() {
         return array('Action'=>'get_action');
     }
+    
+    /**
+     * Get text for the details screen explaining what this is
+     * 
+     * @return String A description of this object's purpose
+     */
+    public function get_explaination() {
+        return "Threat actions are the methods malicious operators use to cause an incident, such as hacking, social engineering, etc.";
+    }
 
     /**
      * Get the unique ID for the object

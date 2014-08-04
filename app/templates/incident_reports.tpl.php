@@ -1,4 +1,32 @@
 <h2>Incident Reports</h2>
+<div class="row-fluid">
+    <div class="span3">
+        <div class="well">
+        <h4>Top Threat Agent</h4>
+        <p><?php echo $agentpercent . "% ". $agent_names[0]; ?></p>
+        </div>
+    </div>
+    <div class="span3">
+        <div class="well">
+        <h4>Top Threat Actions</h4>
+        <p><?php echo $actionpercent . "% ". $action_names[0]; ?></p>
+        </div>
+    </div>
+    <div class="span3">
+        <div class="well">
+        <h4>Top Assets Affected</h4>
+        <p><?php echo $assetpercent . "% ". $asset_names[0]; ?></p>
+        </div>
+    </div>
+    <div class="span3">
+        <div class="well">
+        <h4>Top Discovery Method</h4>
+        <p><?php echo $discopercent . "% ". $disco_names[0]; ?></p>
+        </div>
+    </div>
+</div>
+
+
 <table id="incidenttable" name="incidenttable" class="table table-striped table-bordered">
 <thead>
 <tr>

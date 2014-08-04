@@ -78,7 +78,7 @@
         <li><a href="?action=reports&report=by_port">Ports detected</a></li>
         <li><a href="?action=reports&report=danger_host">Dangerous hosts</a></li>
         <li><a href="?action=reports&report=nonisuswebservers">Non ISUS Server Report</a></li>
-        <li><a href="?action=vuln">Vulnerabilities <?php echo $vuln_badge ;?></a></li>
+        <li><a href="?action=vuln">Vulnerabilities <?php if (isset($vuln_badge)) echo $vuln_badge ;?></a></li>
       </ul>
     </li>
     <li class="dropdown">

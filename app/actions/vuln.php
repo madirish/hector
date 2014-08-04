@@ -14,7 +14,11 @@
  * Require the factory class
  */
 require_once($approot . 'lib/class.Collection.php');
-$vuln_details = new Collection('Vuln_detail');
+$vuln_detailcoll = new Collection('Vuln_detail');
+$vuln_details = array();
+if (is_array($vuln_detailcoll->members)) {
+	foreach($vuln_detailcoll->members as $item) $vuln_details[] = $item;
+}
 
 include_once($templates . 'admin_headers.tpl.php');
 include_once($templates . 'vuln.tpl.php');

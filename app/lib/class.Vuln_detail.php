@@ -512,6 +512,33 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
     }
     
     /**
+     * Get vulnerability details for a specific host.
+     * 
+     * @access public
+     * @author Justin C. Klein Keane
+     * @param Int The host id for the desired host
+     * @param Object An instance of the database connection
+     * @return Array An object array with attributes vuln_name, vuln_detail_id, vuln_detail_text, vuln_detail_datetime, vuln_detail_ignore, and vuln_detail_fixed
+     */
+    public function get_vuln_details_by_host($host_id, $db='') {
+        if ($db == '') $db = $this->db;
+        $host_id = intval($host_id);
+    	$sql = array('SELECT v.vuln_name, ' .
+                    'd.vuln_detail_id, ' .
+                    'd.vuln_detail_text, ' .
+                    'd.vuln_detail_datetime, ' .
+                    'd.vuln_detail_ignore, ' .
+                    'd.vuln_detail_fixed ' .
+                'FROM vuln_detail d, ' .
+                    'vuln v ' .
+                'WHERE d.vuln_id = v.vuln_id AND ' .
+                    'd.host_id = ?i ' .
+                'ORDER BY d.vuln_detail_datetime DESC', 
+                $host_id);
+        return $db->fetch_object_array($sql);
+    }
+    
+    /**
      * The unique id fo the Vuln object for this detail record.
      * 
      * @access public

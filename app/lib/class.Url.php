@@ -157,7 +157,7 @@ class Url extends Maleable_Object {
 	 *  @access protected
 	 *  @param Int The host_id from the data layer
 	 */
-	protected function set_host_id($id){
+	public function set_host_id($id){
 		$this->host_id = intval($id);
 	}
 	

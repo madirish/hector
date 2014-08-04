@@ -17,7 +17,7 @@
 <!--
 <td><input type="button" name="submit" value="Save changes" onClick='javascript:if (checkAHForm()) {getPage("?action=add_edit_scr&object=<?php echo $object;?>&id=<?php echo $id;?>", "POST", "<?php echo $form_name;?>");}'/></td></tr>
 -->
-<td><input type="submit" name="submit" value="Save changes"/></td></tr>
+<td><input type="submit" name="submit" value="Save changes" class="btn"/></td></tr>
 </table>
 </fieldset>
 <input type="hidden" name="token" value="<?php echo $token;?>"/>

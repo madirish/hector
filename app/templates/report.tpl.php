@@ -1,20 +1,5 @@
-<script type="text/javascript" src="js/jquery.js"></script>
-<script type="text/javascript" src="js/jquery.tablesorter.js"></script>
 <div id="content">
-
-
-<?php
-	if (! isset($content)) {
-?>
-<ol>
-	<li><a href="?action=reports&report=by_port">Ports detected</a></li>
-	<li><a href="?action=reports&report=danger_host">Dangerous host list</a></li>
-	<li><a href="?action=reports&report=nonisuswebservers">Web servers (excluding WKS managed or printers)</a></li>
-<?php	
-	}
-else {
-	if ($content == '') {
-?>
+<?php if (! isset($search_results)) { ?>
 <form method="post" action="?action=reports&report=by_port" name="<?php echo $formname;?>" id="<?php echo $formname;?>">
 <fieldset>
 	<legend>Find hosts with:</legend>
@@ -31,18 +16,61 @@ else {
 		<tr><td>None of these Tags:</td><td><select name="tagsex[]" size="4" multiple="multiple">
 			<?php foreach ($tags as $tag) echo '<option value="' . $tag->get_id() . '">' . $tag->get_name() . '</option>'; ?>
 			</select> (do not report machines with these tags)</td></tr>
-		<tr><td>&nbsp;</td><td><input type="submit" value="Search"/></td></tr>
+		<tr><td>&nbsp;</td><td><input type="submit" value="Search" class="btn"/></td></tr>
 	</table>
 </fieldset>
 <input type="hidden" name="token" value="<?php echo $token;?>"/>
 <input type="hidden" name="form_name" value="<?php echo $formname;?>"/>
 </form>
 		
-<?php		
-	}
-	else {
-		echo $content;	
-	}
-}
-?>
+<?php }	else { ?>
+<h4><?php echo count($host_results);?> records found</h4>
+    <?php if (count($host_results) < 1) {?>
+    <p>No records found.  Perhaps you do not have permission to relevant hosts.</p>
+    <?php } else { ?>
+    <form method="post" action="?action=host_groups" name="searchResultsToHostGroup" id="searchResultsToHostGroup">
+    <input type="hidden" name="token" value="<?php echo $token;?>"/>
+    <input type="hidden" name="form_name" value="<?php echo $formname;?>"/>
+    <table id="tablePortSearchResult" class="table table-striped">
+    <thead>
+    <tr>
+        <th>&nbsp;</th>
+        <th>Hostname</th>
+        <th>Support Group</th>
+        <th>IP Address</th>
+        <th>Last seen on:</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($search_results as $host) { ?>
+    <tr>
+        <td><input type="checkbox" name="host_id[]" value="<?php echo $host->get_id();?>"/></td>
+        <td><?php echo $host->get_name_linked() ;?></td>
+        <td><?php echo $host->get_supportgroup_name() ;?></td>
+        <td><?php echo $host->get_ip() ;?></td>
+       <td><?php echo $host->maxtime ;?></td>
+    </tr>
+    <?php } ?>
+    </tbody>
+    </table>
+    <div class="input-prepend input-append">
+    <span class="add-on">Add checked records to host group: </span><select name="hostgroup">
+    <?php
+        foreach ($hostgroups as $group) {?>
+        <option value="<?php echo $group->get_id();?>"><?php echo $group->get_name();?></option>
+        <?php } ?>
+    </select><input type="submit" value="Add" class="btn"/>
+    </div>
+    </form>
+    <script type="text/javascript" >
+    $(document).ready( function () {
+        var table = $('#tablePortSearchResult').DataTable({
+            "ordering": true
+        });
+        table.column('0:visible').order('desc');
+        table.draw();
+    } );
+    </script>
+    <?php } ?>
+<?php } ?>
 </div>

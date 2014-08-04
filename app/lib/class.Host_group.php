@@ -74,6 +74,14 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
      * @var String The name of the Host_group
      */
     private $name = null;
+    
+    /**
+     * A description of the group
+     *
+     * @access private
+     * @var String A more verbose description of the Host_group
+     */
+    private $detail = null;
 
 
     // --- OPERATIONS ---
@@ -95,8 +103,11 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
 				$id
 			);
 			$result = $this->db->fetch_object_array($sql);
-			$this->id = $result[0]->host_group_id;
-			$this->name = $result[0]->host_group_name;
+            if (isset($result[0]) && is_object($result[0])) {
+    			$this->id = $result[0]->host_group_id;
+    			$this->name = $result[0]->host_group_name;
+                $this->detail = $result[0]->host_group_detail;
+            }
 		}
     }
     
@@ -117,7 +128,12 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
     				'set host_group_id = \'?i\', host_id = \'?i\'',
     				$this->id,
     				$host_id);
-    		$retval = $this->db->iud_sql($sql);
+            if (! in_array($host_id, $this->get_host_ids())) {
+            	$retval = $this->db->iud_sql($sql);
+            }
+            else {
+            	$retval = TRUE;
+            }
     	}
     	return $retval;
     }
@@ -195,6 +211,11 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
 						'name'=>'hostname',
 						'value_function'=>'get_name',
 						'process_callback'=>'set_name'),
+                array('label'=>'Description',
+                        'type'=>'text',
+                        'name'=>'detail',
+                        'value_function'=>'get_detail',
+                        'process_callback'=>'set_name'),
 				array('label'=>'Apply to all hosts?',
 						'type'=>'select',
 						'name'=>'applytoall',
@@ -208,9 +229,14 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
 			return array (
 				array('label'=>'Group name',
 						'type'=>'text',
-						'name'=>'hostname',
+						'name'=>'groupname',
 						'value_function'=>'get_name',
-						'process_callback'=>'set_name')
+						'process_callback'=>'set_name'),
+                array('label'=>'Description',
+                        'type'=>'text',
+                        'name'=>'detail',
+                        'value_function'=>'get_detail',
+                        'process_callback'=>'set_detail')
 			);
 		}
 	}
@@ -256,6 +282,17 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
 		return $sql;
 	}
 
+    /**
+     * Return the description of this host group.
+     * 
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @access public
+     * @return String The description of this host group.
+     */
+    public function get_detail() {
+        return $this->detail;
+    }
+
 	/**
 	 * Get the display criteria for the add/edit/alter form.
 	 * 
@@ -264,7 +301,8 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
 	 * @return Array Display details for the default template
 	 */
 	public function get_displays() {
-		return array('Group name'=>'get_name');
+		return array('Group name'=>'get_name',
+                     'Description' => 'get_detail');
 	}
 
 	/**
@@ -322,8 +360,9 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
     	if ($this->get_id() > 0 ) {
     		// Update an existing user
 	    	$sql = array(
-	    		'UPDATE host_group SET host_group_name = \'?s\' WHERE host_group_id = \'?i\'',
+	    		'UPDATE host_group SET host_group_name = \'?s\', host_group_detail = \'?s\' WHERE host_group_id = \'?i\'',
 	    		$this->get_name(),
+                $this->get_detail(),
 	    		$this->get_id()
 	    	);
 	    	$retval = $this->db->iud_sql($sql);
@@ -344,8 +383,9 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
 			else {
 	    		// Insert a new value
 		    	$sql = array(
-		    		'INSERT INTO host_group SET host_group_name = \'?s\'',
+		    		'INSERT INTO host_group SET host_group_name = \'?s\', host_group_detail = \'?s\'',
 		    		$this->get_name(),
+                    $this->get_detail()
 		    	);
 		    	$retval = $this->db->iud_sql($sql);
 		    	// Now set the id
@@ -384,6 +424,17 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
 	  		$retval = $this->db->iud_sql($sql);
     	}
     	return $retval;
+    }
+
+    /**
+     * Set the sanitized description of this host group.
+     * 
+     * @param String The description of the host_group
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @access public
+     */
+    public function set_detail($detail) {
+        $this->detail = htmlspecialchars($detail);
     }
 
 	/**

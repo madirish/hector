@@ -267,7 +267,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 				);
 			}
 			$result = $this->db->fetch_object_array($sql);
-			if (is_array($result) && is_object($result[0])) {			
+			if (is_array($result) && isset($result[0]) && is_object($result[0])) {			
 				$this->set_id($result[0]->host_id);
 				$this->set_ip($result[0]->host_ip);
 				$this->set_name($result[0]->host_name);
@@ -293,7 +293,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 					foreach($url_results as $url) {
 						// Do some housekeeping to delete non-existent screenshots
 						global $approot;
-						if ( ! file_exists($approot . 'screenshots/' . $url->url_screenshot)) {
+						if ( ! file_exists($approot . 'screenshots/' . $url->url_screenshot) && $url->url_screenshot !== '') {
 							$sql = array('UPDATE url ' .
 									'SET url_screenshot = NULL ' .
 									'WHERE url_id = ?i ',
@@ -301,7 +301,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 									);	
 							$this->db->iud_sql($sql);
 						}
-						$this->set_add_url($url->url_url, $url->url_screenshot);
+						$this->set_add_url($url->url_url, $url->url_screenshot, $url->url_id);
 					}
 				}
 				// Is there an exclusion?  Should it be honored?
@@ -651,7 +651,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 					'options'=>array(0=>'No',1=>'Yes'), 
 					'value_function'=>'get_portscan_exclusion',
 					'process_callback'=>'set_portscan_exclusion'),
-			array(
+			array('label'=>'Excluded by',
 					'name'=>'excludedby',
 					'type'=>'hidden', 
 					'value_function'=>'get_excludedby',
@@ -1413,14 +1413,35 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 * @param String A valid filename of the screenshot image
 	 * @return Boolean False if the URL doesn't validate or the screenshot doesn't exist.
 	 */
-	public function set_add_url($url, $filepath) {
-		global $approot;
+	public function set_add_url($url, $filepath, $id) {
+		global $approot; 
 		$retval = FALSE;
 		if (filter_var($url, FILTER_VALIDATE_URL)) {
 			$retval = TRUE;
 		}
-		$filepath = $approot . 'screenshots/' . $filepath;
-		if (! file_exists($filepath)) $retval = FALSE;
+        else {
+        	// Try prepending http://
+            $tmp_url = 'http://' . $url;
+            if (filter_var($tmp_url, FILTER_VALIDATE_URL)) {
+            	$url = $tmp_url;
+                // Persist this change to the databse
+                $sql = array('SELECT url_id FROM url WHERE url_url = "?s"', $tmp_url);
+                $result = $this->db->fetch_object_array($sql);
+                if (is_array($result) && is_object($result[0])) {
+                    // This is a duplicate
+                    $retval = FALSE;
+                }
+                else {
+                	$sql = array('UPDATE url SET url_url = "?s" WHERE url_id = ?i', $tmp_url, $id);
+                    $this->db->iud_sql($sql);
+                    $retval = TRUE;
+                }
+            }
+        }
+        if ($filepath != '') {
+            $filepath = $approot . 'screenshots/' . $filepath;
+            if (! file_exists($filepath)) $retval = FALSE;	
+        }
 		if ($retval) {
 			// prevent dupes
 			if (! in_array($url, $this->urls)) {

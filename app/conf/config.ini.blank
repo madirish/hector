@@ -24,6 +24,8 @@ xprobe2_exec_path  = /usr/bin/xprobe2
 ncrack_exec_path  = /usr/bin/ncrack
 hydra_exec_path = /usr/local/bin/hydra
 
+phantomjs_exec_path = /no/such/path
+
 timezone		=	America/New_York
 
 site_url		= http://yoursite/hector_html

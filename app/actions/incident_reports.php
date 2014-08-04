@@ -56,28 +56,28 @@ else {
             }
     	}
     }
-    arsort($agents); print_r($agents);
+    arsort($agents); 
     $agent_names = array_keys($agents);
     $agent_values = array_values($agents);
     $totalagent = array_sum($agents);
     $topagent = $agent_values[0];
     $agentpercent = round(($topagent / $totalagent) * 100, 2);
     
-    arsort($actions); print_r($agents);
+    arsort($actions); 
     $action_names = array_keys($actions);
     $action_values = array_values($actions);
     $actiontotal = array_sum($actions);
     $topaction = $action_values[0];
     $actionpercent = round(($topaction / $actiontotal) * 100, 2);
     
-    arsort($assets); print_r($agents);
+    arsort($assets); 
     $asset_names = array_keys($assets);
     $asset_values = array_values($assets);
     $assettotal = array_sum($assets);
     $topasset = $asset_values[0];
     $assetpercent = round(($topasset / $assettotal) * 100, 2);
     
-    arsort($discos); print_r($agents);
+    arsort($discos); 
     $disco_names = array_keys($discos);
     $disco_values = array_values($discos);
     $discototal = array_sum($discos);

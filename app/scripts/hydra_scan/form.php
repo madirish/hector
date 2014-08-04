@@ -1,4 +1,5 @@
 <!-- hydra form -->
+<?php global $generic;?>
 <script type="text/javascript">
 $(document).ready(function () {
     // Set the scan name in the form from parent template

@@ -172,6 +172,15 @@ class IRAgent extends Maleable_Object implements Maleable_Object_Interface {
     public function get_displays() {
         return array('Agent'=>'get_name');
     }
+    
+    /**
+     * Get text for the details screen explaining what this is
+     * 
+     * @return String A description of this object's purpose
+     */
+    public function get_explaination() {
+        return "Agents are the actors that cause the incident, usually described as internal, external, organized crime, etc.";
+    }
 
     /**
      * Get the unique ID for the object

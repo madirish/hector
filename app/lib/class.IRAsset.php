@@ -172,6 +172,15 @@ class IRAsset extends Maleable_Object implements Maleable_Object_Interface {
     public function get_displays() {
         return array('Asset'=>'get_name');
     }
+    
+    /**
+     * Get text for the details screen explaining what this is
+     * 
+     * @return String A description of this object's purpose
+     */
+    public function get_explaination() {
+        return "Assets are the things that are affected by the incident, from laptops to tablets to login credentials.";
+    }
 
     /**
      * Get the unique ID for the object

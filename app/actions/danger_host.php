@@ -117,6 +117,6 @@ No <a href="#dangerModal" data-toggle="modal" title="About dangerous hosts">dang
 	
 EOT;
 }
-
+$template = $templates . 'dangerhost.tpl.php';
 
 ?>

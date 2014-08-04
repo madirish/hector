@@ -96,6 +96,9 @@ else {
 			
 			// Work out the display
 			$displays = $generic->get_displays();
+            if (method_exists($generic, 'get_explaination')) {
+            	$explaination = $generic->get_explaination();
+            }
 			$template = 'details';
 		}
 	}

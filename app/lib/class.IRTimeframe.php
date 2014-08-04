@@ -175,6 +175,15 @@ class IRTimeframe extends Maleable_Object implements Maleable_Object_Interface {
     public function get_displays() {
         return array('Timeframe'=>'get_duration');
     }
+    
+    /**
+     * Get text for the details screen explaining what this is
+     * 
+     * @return String A description of this object's purpose
+     */
+    public function get_explaination() {
+        return "Timeframe is an arbitrary unit of time to guage how quickly or slowly an incident took place, was resolved, etc.";
+    }
 
     /**
      * Get the unique ID for the object

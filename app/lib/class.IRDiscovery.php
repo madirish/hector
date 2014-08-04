@@ -172,6 +172,15 @@ class IRDiscovery extends Maleable_Object implements Maleable_Object_Interface {
     public function get_displays() {
         return array('Asset'=>'get_method');
     }
+    
+    /**
+     * Get text for the details screen explaining what this is
+     * 
+     * @return String A description of this object's purpose
+     */
+    public function get_explaination() {
+        return "How was the incident uncovered? Was detection internal via something like an IDS or antivirus or external via something like a 3rd party or press release.";
+    }
 
     /**
      * Get the unique ID for the object

@@ -237,6 +237,48 @@ class Report {
     }
     
     /**
+     * Get the 10 most common usernames used to attempt access
+     * to the honeypot
+     * 
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @access public
+     * @return Array An array of the top 10 login usernames
+     */
+    public function get_honeypot_top_l0_logins() {
+        $usernames = array();
+    	$sql = 'select ' . 
+                'distinct(username) as uname, ' .
+                'count(id) as ucount ' .
+            'from koj_login_attempt ' . 
+            'group by username ' .
+            'order by ucount desc limit 10';
+        $results= $this->db->fetch_object_array($sql);
+        foreach($results as $result) $usernames[] = $result->uname;
+        return $usernames;
+    }
+    
+    /**
+     * Get the 10 most common passwords used to attempt access
+     * to the honeypot
+     * 
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @access public
+     * @return Array An array of the top 10 login passwords
+     */
+    public function get_honeypot_top_l0_passwords() {
+        $passwords = array();
+        $sql = 'select ' .
+                'distinct(password) as passwd, ' .
+                'count(id) as pcount ' .
+            'from koj_login_attempt ' .
+            'group by passwd ' .
+            'order by pcount desc limit 10';
+        $results= $this->db->fetch_object_array($sql);
+        foreach($results as $result) $passwords[] = $result->passwd;
+        return $passwords;
+    }
+    
+    /**
      * Get the total number of hosts tracked in the system, if used by
      * and admin user, or the total number of hosts in supportgroups to
      * which the logged in user has access.

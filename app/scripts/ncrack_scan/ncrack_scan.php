@@ -30,6 +30,9 @@ require_once($approot . 'lib/class.Config.php');
 require_once($approot . 'lib/class.Dblog.php');
 require_once($approot . 'lib/class.Host.php');
 require_once($approot . 'lib/class.Scan_type.php');
+require_once($approot . 'lib/class.Report.php');
+require_once($approot . 'lib/class.Vuln.php');
+require_once($approot . 'lib/class.Vuln_detail.php');
 	
 // Make sure of the environment
 global $add_edit;
@@ -83,11 +86,12 @@ else {
 	$passwords = array();	 
 	
 	// Parse through the command line arguments
-	foreach ($argv as $arg) {
+	foreach ($argv as $arg) { 
 		if (substr($arg, -15) == 'ncrack_scan.php') continue;
 		$flag = substr(strtolower($arg),0,2);
 		if ($flag == '-g') $groups = substr($arg,strpos($arg,'=')+1);
 		if ($flag == '-p') $services = substr($arg,strpos($arg,'=')+1);
+        else $services = 22; // Just in case this isn't specified
 		if ($flag == '-d') $delay = substr($arg, strpos($arg, '=')+1);
 		if ($flag == '-c') $check_port = true;
 	}
@@ -114,25 +118,12 @@ else {
 			}
 		}
 	}
-	$sql = 'select ' . 
-				'distinct(username) as uname, ' .
-				'count(id) as ucount ' .
-			'from koj_login_attempt ' . 
-			'group by username ' .
-			'order by ucount desc limit 10';
-	$results= $db->fetch_object_array($sql);
-	foreach($results as $result) $usernames[] = $result->uname;
-	$sql = 'select ' .
-				'distinct(password) as passwd, ' .
-				'count(id) as pcount ' .
-			'from koj_login_attempt ' .
-			'group by passwd ' .
-			'order by pcount desc limit 10';
-	$results= $db->fetch_object_array($sql);
-	foreach($results as $result) $passwords[] = $result->passwd;
+    $report = new Report();
+    $usernames = $report->get_honeypot_top_l0_logins();
+    $passwords = $report->get_honeypot_top_l0_passwords();
 
 	$command = $ncrack;
-	$command .= ' -p ' . $services;
+	$command .= ' -T5 -p ' . $services;
 	if ($delay != null) $command .= ' -g cd=' . $delay;
 	if (count($usernames) > 0)
 		$command .= ' --user ' . implode(',', $usernames);
@@ -144,20 +135,22 @@ else {
 	//print_r($output);
 	if(preg_match_all("/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d+\/\w+) (\w+)\: \'(.+)\' \'(.+)\'/", $output, $matches, PREG_SET_ORDER)) {
 		//print_r($matches);
+        $vuln = new Vuln();
+        $vuln->lookup_by_name("Easily guessed credentials");
+        if ($vuln->get_id() < 1) {
+        	$vuln->set_name("Easily guessed credentials.");
+            $vuln->set_description("Easily guessed or default credentials could allow an attacker to brute force or guess authentication credentials.");
+            $vuln->save();
+        }
 		foreach($matches as $match) {
+            $vulndetail = new Vuln_detail();
 			$text = 'Easily guessed credentials for service: ' . $match[3] . 
 					' on port: ' . $match[2] . 
 					' with credentials: (' . $match[4] . ':' . $match[5] . ')';
-			$sql = array(
-					'insert into vuln_detail set '.
-						'vuln_id=?i, ' .
-						'vuln_detail_text=\'?s\', '.
-						'host_id=?i',
-					1,
-					$text,
-					$hosts[$match[1]]->get_id()
-					);
-			$db->iud_sql($sql);
+            $vulndetail->set_text($text);
+            $vulndetail->set_vuln_id($vuln->get_id());
+            $vulndetail->set_host_id($hosts[$match[1]]->get_id());
+			$vulndetail->save();
 		}
 	}
 	ncrack_loggit("ncrack_scan.php status", "ncrack_scan.php complete.");

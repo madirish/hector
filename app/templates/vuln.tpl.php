@@ -1,16 +1,30 @@
 <h3>Vulnerability Report</h3>
 <table class="table table-striped" id="vulns">
-	<tbody>
 	<thead>
 	<tr><th>Type</th><th>Host</th><th>Last seen</th><th>Fixed</th><th>Ignore</th></tr>
 	</thead>
-	<?php foreach ($vuln_details as $vuln_detail) {
-		$output = '<tr><td><a href=?action=vuln_details&id=' . $vuln_detail->get_id() . '>' . $vuln_detail->get_vuln_name() . '</a></td>';
-		$output .= '<td><a href=?action=host_details&id=' . $vuln_detail->get_host_id() . '>' . $vuln_detail->get_host_name(). '</a></td>';
-		$output .= '<td>' . $vuln_detail->get_datetime() . '</td>';
-		$output .= '<td>' . ($vuln_detail->get_fixed()==1 ? '<i class="icon-ok"></i>':'') . '</td>';
-		$output .= '<td>' . ($vuln_detail->get_ignore()==1 ? '<i class="icon-ok"></i>':'') . '</td></tr>';
-		echo $output;
-		}?>
+    <tbody>
+	<?php foreach ($vuln_details as $vuln_detail) {?>
+		<tr>
+            <td><a href="?action=vuln_details&id=<?php echo $vuln_detail->get_id();?>"><?php echo $vuln_detail->get_vuln_name();?></a></td>
+            <td><a href="?action=host_details&id=<?php echo $vuln_detail->get_host_id();?>"><?php echo $vuln_detail->get_host_name();?></a></td>
+            <td><?php echo $vuln_detail->get_datetime();?></td>
+            <td><?php echo ($vuln_detail->get_fixed()==1 ? '<i class="icon-ok"></i>':'') ;?></td>
+            <td><?php echo ($vuln_detail->get_ignore()==1 ? '<i class="icon-ok"></i>':'') ;?></td>
+        </tr>
+	<?php }?>
 	</tbody>
 </table>
+
+
+<script type="text/javascript" >
+$(document).ready( function () {
+    var table = $('#vulns').DataTable({
+        "ordering": true,
+        "aoColumnDefs": [
+          { 'bSortable': false, 'aTargets': [ 3,4 ] } ] /** No sort on button column **/
+    });
+    table.column('2:visible').order('desc');
+    table.draw();
+} );
+</script>

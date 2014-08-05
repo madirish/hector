@@ -49,6 +49,9 @@ else {
 		case 'IRTimeframe':
 			$object_readable = 'Incident Report Timeframe';
 			break;
+		default:
+			$object_readable = ucfirst($object);
+			break;
 	}
 	if (isset($_GET['id']) && ($_GET['id'] != '')) {
 		// generate a unique detail 
@@ -60,7 +63,7 @@ else {
 			$output = 'An error occurred. Cannot retrieve details for specific object (perhaps no get_details() method exists).';
 			if (method_exists($specific, 'get_details')) {
 				$output = $specific->get_details();
-				$template = 'unique';
+				$template = strtolower($object);
 			}
 			else {
 				// Try the overview route
@@ -103,6 +106,9 @@ else {
 		}
 	}
 }
+
+$javascripts .= '<script type="text/javascript" charset="utf8" src="js/jquery.dataTables.js"></script>' . "\n";
+$javascripts .= '<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">' . "\n";
 
 if (! isset($_GET['ajax']) && ! isset($ajax)) {
 	include_once($templates. 'admin_headers.tpl.php');

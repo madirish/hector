@@ -264,6 +264,24 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
 	    	if (isset($result[0]) && $result[0]->last_id > 0) {
 	    		$this->set_id($result[0]->last_id);
 	    	}
+	    	// Auto update all content with this tag 
+	    	$sql = array('SELECT article_id ' .
+	    					'FROM article ' .
+	    					'WHERE lower(article_title) LIKE \'%?s%\' ' .
+	    					'OR lower(article_teaser) LIKE \'%?s%\' ' .
+	    					'OR lower(article_body) LIKE \'%?s%\'',
+	    					strtolower($this->get_name()),
+	    					strtolower($this->get_name()),
+	    					strtolower($this->get_name()) );
+	    	$result = $this->db->fetch_object_array($sql);
+	    	if (isset($result[0])) {
+	    		foreach ($result as $row) {
+	    			$sql = array('INSERT INTO article_x_tag SET article_id = ?i, tag_id = ?i',
+	    						$row->article_id,
+	    						$this->get_id());
+	    			$this->db->iud_sql($sql);
+	    		}
+	    	}
     	}
     	return $retval;
     }

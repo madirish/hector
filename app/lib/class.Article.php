@@ -104,7 +104,7 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
      * @access private
      * @var Array An array of Tag ids associated with this article
      */
-    private $tag_ids;
+    private $tag_ids = array();
 
     // --- OPERATIONS ---
 
@@ -141,6 +141,7 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
             $sql = array('SELECT tag_id FROM article_x_tag WHERE article_id = ?i',$id);
             $result = $this->db->fetch_object_array($sql);
              if (count($result) > 0) {
+             	require_once('class.Tag.php');
              	foreach ($result as $item) {
              		$this->add_tag_id($item->tag_id);
              	}
@@ -230,7 +231,7 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
      * @return String The HTML display safe body of the Article.
      */
     public function get_body() {
-        return htmlspecialchars($this->body);
+        return htmlentities($this->body);
     }
 
     /**
@@ -266,6 +267,22 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
     public function get_date() {
         return htmlspecialchars($this->date);
     }
+    
+    public function get_details() {
+    	$output = array();
+    	$output['id'] = $this->get_id();
+    	$output['title'] = $this->get_title();
+    	$output['teaser'] = $this->get_teaser();
+    	$output['body'] = $this->get_body();
+    	$output['date'] = $this->get_date();
+    	$output['link'] = $this->get_linked_url();
+    	$output['tags'] = array();
+    	foreach ($this->get_tag_ids() as $tag_id) {
+            require_once('class.Tag.php');
+    		$output['tags'][] = new Tag($tag_id);
+    	}
+    	return $output;
+    }
 
     /**
      * Get the displays for the default details template
@@ -273,7 +290,7 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
      * @return Array Dispalays for default template
      */
     public function get_displays() {
-        return array('Title'=>'get_title', 'Date'=>'get_date', 'URL'=>'get_linked_url', 'Teaser'=>'get_teaser');
+        return array('Title'=>'get_linked_title', 'Date'=>'get_date', 'URL'=>'get_linked_url', 'Teaser'=>'get_teaser');
     }
 
     /**
@@ -299,6 +316,16 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
     } 
 
     /**
+     * The HTML linked title of the Article
+     * 
+     * @access public
+     * @return String The HTML linked safe title of the Article.
+     */
+    public function get_linked_title() {
+        return '<a href="?action=details&object=article&id=' . $this->id . '">' . strip_tags($this->title) . '</a>';
+    }
+
+    /**
      * The HTML linked url of the Article
      * 
      * @access public
@@ -319,7 +346,7 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
      * @return String The HTML display safe teaser of the Article.
      */
     public function get_teaser() {
-        return htmlspecialchars($this->teaser);
+        return htmlentities($this->teaser);
     }
 
     /**
@@ -329,7 +356,7 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
      * @return String The HTML display safe title of the Article.
      */
     public function get_title() {
-        return htmlspecialchars($this->title);
+        return htmlentities($this->title);
     }
 
     /**

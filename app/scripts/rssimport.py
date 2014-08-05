@@ -13,15 +13,16 @@ title or teaser
 """
 
 import datetime
-import feedparser
 import MySQLdb
 import logging
 import sys, os
 # appPath - for example /opt/hector/app
-appPath = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + "/../../")
+appPath = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + "/../../app")
 sys.path.append(appPath + "/lib/pylib")
 sys.path.append(appPath + "/software/feedparser")
+
 from pull_config import Configurator
+import feedparser
 
 
 DEBUG = False
@@ -50,6 +51,11 @@ logger.setLevel(logging.INFO)
 if DEBUG : logger.setLevel(logging.DEBUG)
 logger.info('RSS feed import from rssimport.py is starting')
 
+# get tags
+sql = "SELECT * FROM tag"
+cursor.execute(sql)
+tags = cursor.fetchall()
+
 cursor.execute('select rss_url from rss')
 results = cursor.fetchall()
 
@@ -73,14 +79,31 @@ for feedurl in results:
       mysqldate += str(feeditem["date_parsed"][5])
     else:
       mysqldate = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    
     sql = "INSERT INTO article (article_date, article_title, article_url, article_teaser)"
     sql += " SELECT %s, %s, %s, %s FROM DUAL WHERE NOT EXISTS "
     sql += "(SELECT article_id FROM article WHERE article_url = %s)"
-    
+
     try:
       cursor.execute(sql,(mysqldate, feeditem["title"], feeditem["link"], feeditem["summary"], feeditem["link"]))
+      if DEBUG: print "Inserted " + str(conn.insert_id())
     except MySQLdb.OperationalError, e:
       raise e
+    
+    tagged = 0
+    
+    # Autotag articles
+    for (tag_id, tag_name) in tags:
+      if feeditem["title"].find(tag_name) > 0 :
+          sql = "insert into article_x_tag set article_id = %s, tag_id = %s"
+          cursor.execute(sql, (conn.insert_id(), tag_id))
+          tagged = 1
+          if DEBUG: print "[+] Found tag_id " + str(tag_id) + " named " + tag_name + " in: " + feeditem["title"]
+      if feeditem["summary"].find(tag_name) > 0 and tagged == 0 :
+          sql = "insert into article_x_tag set article_id = %s, tag_id = %s"
+          cursor.execute(sql, (conn.insert_id(), tag_id))
+          if DEBUG: print "[+] Found tag_id " + str(tag_id) + " named " + tag_name + " in: " + feeditem["title"]
+    
 
 conn.commit()
 conn.close()

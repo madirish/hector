@@ -28,7 +28,9 @@ else {
 		foreach ($post_values as $val) {
 			//strip off any post array demarkers 
 			if (substr($val['name'],-2)=='[]') $val['name'] = substr($val['name'], 0, -2);
-			$generic->process_form($val['process_callback'], $_POST[$val['name']]);
+			if (isset($_POST[$val['name']])) {// Empty checkboxes won't pass back
+				$generic->process_form($val['process_callback'], $_POST[$val['name']]);
+			}
 		}
 		$generic->save();
 		$object_readable = method_exists($generic, 'get_label') ? $generic->get_label() : str_ireplace("_"," ", $object);

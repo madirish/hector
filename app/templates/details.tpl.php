@@ -16,26 +16,34 @@
 			echo '<th>' . $header . '</th>' . "\n\t";
 		} 
 	?>
-	<th colspan="2" class="optionscell">Options</th>
-</tr></thead><tbody>
+	<th class="optionscell">Options</th>
+</tr>
+</thead>
+<tbody>
 	<?php
-		$x=0;
-		foreach ($items as $item) {
-			echo '<tr';
-			if ($x%2) echo ' class="gray"';
-			echo '>' . "\n";
-			foreach (array_values($displays) as $cell) {
-				echo '<td>' . call_user_func(array($item, $cell)) . '</td>' . "\n\t";
-			}
-			?>
-			<td class="editcell"><a class="btn" title="Edit this item" href="?action=add_edit&object=<?php echo $object;?>&id=<?php echo $item->get_id();?>">Edit</a></td>
-			<td class="deletecell"><a href="#deleteModal<?php echo $item->get_id();?>" role="button" class="btn" data-toggle="modal">Delete</a></td>
+		foreach ($items as $item) {?>
+			<tr>
+				<?php foreach (array_values($displays) as $cell) { ?>
+				<td><?php echo call_user_func(array($item, $cell));?></td>
+				<?php } ?>
+			<td>
+				<a class="btn" title="Edit this item" href="?action=add_edit&object=<?php echo $object;?>&id=<?php echo $item->get_id();?>">Edit</a>
+				<a href="#deleteModal<?php echo $item->get_id();?>" role="button" class="btn" data-toggle="modal">Delete</a>
+			</td>
 			</tr>
-			<?php
-			$x++;
-		}
-	?></tbody>
+			<?php } ?>
+	</tbody>
 </table>
+
+<script type="text/javascript" >
+$(document).ready( function () {
+    var table = $('#listtable').DataTable({
+        "ordering": true
+    });
+    table.column('0:visible').order('asc');
+    table.draw();
+} );
+</script>
 
 <?php foreach ($items as $item) { ?>
 <!-- Delete Modal -->

@@ -43,8 +43,8 @@ else {
     }
 }
 
-$javascripts .= '<script type="text/javascript" charset="utf8" src="js/jquery.dataTables.js"></script>';
-$javascripts .= '<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">';
+$javascripts .= '<script type="text/javascript" charset="utf8" src="js/jquery.dataTables.js"></script>' . "\n";
+$javascripts .= '<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">' . "\n";
 
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates . 'host_groups.tpl.php');

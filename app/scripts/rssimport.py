@@ -25,7 +25,7 @@ from pull_config import Configurator
 import feedparser
 
 
-DEBUG = True
+DEBUG = False
 
 # Credentials used for the database connection
 configr = Configurator()

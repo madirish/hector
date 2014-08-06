@@ -1099,7 +1099,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		$result = $this->db->fetch_object_array($sql);
 		if (is_array($result) && isset($result[0])) {
 			foreach ($result as $row) {
-				$retval[] = $row->nmap_result_port_number . '/' . $row->nmap_result_protcol;
+				$retval[] = $row->nmap_result_port_number . '/' . $row->nmap_result_protocol;
 			}
 		}
 		return $retval;

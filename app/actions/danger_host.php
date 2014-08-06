@@ -31,7 +31,7 @@ $query = 'select n.host_id, h.supportgroup_id ' .
 $host_results = $db->fetch_object_array($query);
 $sevenporthosts = array();
 foreach ($host_results as $result) {
-	$sevenporthosts = new Host($result->host_id);
+	$sevenporthosts[] = new Host($result->host_id);
 }
 
 

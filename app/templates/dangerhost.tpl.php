@@ -17,7 +17,7 @@
 		<td><?php echo $host->get_name_linked();?></td>
 		<td><?php echo $host->get_ip();?></td>
 		<td><?php echo $host->get_supportgroup_name();?></td>
-		<td><?php echo join(',', $host->get_ports());?></td>
+		<td><?php echo join(',', $host->get_open_ports_array());?></td>
 	</tr>
 	<?php } ?>
 </tdbody>

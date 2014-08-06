@@ -116,11 +116,15 @@ foreach(array_keys($incidentYearMonthCount) as $year) {
 	}
 	for ($x=$startval; $x<=12; $x++) {
 		if (! isset($incidentYearMonthCount[$year][$x])) $incidentYearMonthCount[$year][$x] = 0;
+		if ($year == date('Y') && $x == date('n')) {
+			break;
+		}
 	}
 	if ($firstyear) $firstyear = FALSE;
+	ksort($incidentYearMonthCount[$year]);
 }
 $monthnames = array("[huh?]","January","February","March","April","May","June","July","August","September","October","November","December");
-
+print_r($incidentYearMonthCount);
 foreach($incidentYearMonthCount as $year=>$values) {
 	foreach ($incidentYearMonthCount[$year] as $month=>$val) {
 		$chartlabels[] = '"' . $monthnames[$month] . " " . $year . '"';

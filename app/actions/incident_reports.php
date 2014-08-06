@@ -86,13 +86,28 @@ else {
     
 }
 
+$months = array();
 $incidents = array();
 if (isset($incident_reports->members)) {
     foreach ($incident_reports->members as $report) {
     	$incidents[] = $report;
+        if (isset($months[$report->get_month()])) {
+        	$months[$report->get_year()][$report->get_month()] ++ ;
+        }
+        else {
+        	$months[$report->get_year()][$report->get_month()] = 1;
+        }
     }	
 }
+ksort($months);
+foreach (array_keys($months) as $year) {
+	for ($x=0;$x<12;$x++) if (! isset($months[$year][$x])) $months[$year][$x] = 0;
+    ksort($months[$year]);
+}
+array_map('ksort', $months);
+$monthnames = array("January","February","March","April","May","June","July","August","September","October","November","December");
 
+$javascripts .= "<script type='text/javascript' src='js/Chart.js'></script>\n";
 $javascripts .= '<script type="text/javascript" charset="utf8" src="js/jquery.dataTables.js"></script>' . "\n";
 $javascripts .= '<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">' . "\n";
 

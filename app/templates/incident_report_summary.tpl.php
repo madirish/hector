@@ -2,6 +2,7 @@
     <legend>Metadata</legend>
     <p><?php echo $report->get_title();?></p>
     <p><?php echo $report->get_month_friendly() . ' ' . $report->get_year();?></p>
+    <p><?php if (is_array($report->get_tag_ids())) echo "Tags: " . implode(", ",$report->get_tag_names());?></p>
     
     <legend>Details</legend>
     <div class="row">

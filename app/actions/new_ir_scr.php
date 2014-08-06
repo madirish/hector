@@ -32,8 +32,7 @@ $incident->set_response_cost_magnitude_id($_POST['responseCostMag']);
 $incident->set_impact_magnitude_id($_POST['impactMag']);
 $incident->set_hindsight($_POST['2020hindsight']);
 $incident->set_correction_recommended($_POST['correctiveaction']);
-
-
+$tag_ids = array();
 if (isset($_POST['incidentTags'])){
 	$incident_tags =  explode(",",$_POST['incidentTags']);
 	if (is_array($incident_tags)){
@@ -49,11 +48,12 @@ if (isset($_POST['incidentTags'])){
 				}else{
 					$tag_id = intval($is_tag);
 				}
-				$incident->add_tag_id($tag_id);
+				$tag_ids[] = $tag_id;
 			}
-		}	
+		}
 	}
 }
+$incident->set_tag_ids($tag_ids);
 
 if (! $incident->save()) {
 	die("Error: Unable to save incident report.");

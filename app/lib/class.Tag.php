@@ -287,6 +287,8 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
     public function set_name($name) {
     	$this->name = $name;
     }
+    
+    
 
 } /* end of class Tag */
 

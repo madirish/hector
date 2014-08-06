@@ -30,6 +30,12 @@
 			<?php } ?>
 			</select>
 		</div>
+		<label class="control-label" for="incidentTags">Tags</label>
+		<div class="controls">
+			<input type="text" id="incidentTags" name="incidentTags" placeholder="Tags relevant to Incident" class="input-xxlarge">
+			<div id="availableTags" class="hidden"><?php echo $tags_json?></div>
+		</div>
+	
 	</div>
 	
 	<legend>Details</legend>
@@ -57,6 +63,7 @@
 				<?php } ?>
 			</select>
 		</div>
+	
 		
 	<legend>Loss</legend>
 	<label class="control-label" for="incidentPII">Data exposure</label>
@@ -175,6 +182,7 @@
     </div>
 		
 </fieldset>
+<input type="hidden" id="selectedTags" name="selectedTags" value="">
 <input type="hidden" name="token" value="<?php echo $ir_form_token;?>"/>
 <input type="hidden" name="form_name" value="<?php echo $ir_form_name;?>"/>
 </form>

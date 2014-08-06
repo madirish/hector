@@ -20,8 +20,11 @@ $sql = 'SELECT distinct(host_id) FROM ossec_alert';
 $result = $db->fetch_object_array($sql);
 $hosts = array();
 foreach($result as $host) {
-	$hosts[] = new Host($host->host_id);
+	$host_object = new Host($host->host_id);
+	$hosts[] = $host_object->get_object_as_array();
+	//$hosts[] = new Host($host->host_id);
 }
+$hosts_json = json_encode($hosts);
 
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates . 'ossec.tpl.php');

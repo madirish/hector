@@ -95,7 +95,14 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
      private $disruption_magnitude_id = null; // INT NOT NULL,
      private $response_cost_magnitude_id = null; // INT NOT NULL,
      private $impact_magnitude_id = null; // INT NOT NULL,
-
+     
+    /**
+     * Array of associate Tag ids
+     * 
+     * @access private
+     * @var Array An array of Tag ids associated with this article
+     */
+     private $tag_ids;
     // --- OPERATIONS ---
 
     /**
@@ -818,7 +825,33 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
 	public function set_year($year) {
 		$this->year = intval($year);
 	}
-
+	
+	/**
+	 * Adds a tag id to the tag_ids attribute
+	 * 
+	 * @access public
+	 * @author Ubani Balogun <ubani@sas.upenn.edu>
+	 * @param int the id to add
+	 * @return void
+	 */
+	public function add_tag_id($id){
+		$this->tag_ids[] = intval($id);
+	}
+	
+	/**
+	 * Set tags associated with this Incident
+	 * 
+	 * @access public
+	 * @author Ubani Balogun <ubani@sas.upenn.edu>
+	 * @param Array an array of Tag ids (integers)
+	 * @return void
+	 */
+	public function set_tag_ids($array){
+		if (is_array($array)){
+			$array = array_map('intval',$array);
+			$this->tag_ids = $array;
+		}
+	}
 } /* end of class Incident */
 
 ?>

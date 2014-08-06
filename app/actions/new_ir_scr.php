@@ -2,7 +2,7 @@
 /**
  * Process a new incident report.
  * 
- * @author Justin C. Klein Keane <jukeane@sas.upen.edu>
+ * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * @package HECTOR
  */
 include_once($approot . 'templates/admin_headers.tpl.php');

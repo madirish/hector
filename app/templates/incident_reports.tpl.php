@@ -26,6 +26,39 @@
     </div>
 </div>
 
+<div class="row-fluid">
+<div class="span12 pagination-centered">
+<h3>Timeline of Incident Reports</h3>
+        <canvas id="incidentCountChart" height="300" width="600"></canvas>
+        <script>
+        $(document).ready(function(){
+            var data = {labels: [<?php echo join(',', $chartlabels);?>],
+                        datasets: [
+                            {
+                                label: "My First dataset",
+                                fillColor: "rgba(255,255,255,0.1)",
+                                strokeColor: "rgba(220,220,220,1)",
+                                pointColor: "rgba(220,220,220,1)",
+                                pointStrokeColor: "#fff",
+                                pointHighlightFill: "#fff",
+                                pointHighlightStroke: "rgba(220,220,220,1)",
+                                data: [<?php echo join(',', $chartvalues); ?>]
+                            }
+                        ]
+            };
+            var options = {
+                bezierCurve: false,
+                multiTooltipTemplate: "<%= datasetLabel%> - <%= value %>",
+            };
+            var myNewChart = new Chart(document.getElementById("incidentCountChart").getContext("2d")).Line(data, options);
+            $("#incidentCountChart").hover(function (evt) {
+                var activeBars = myNewChart.getPointsAtEvent(evt);
+                console.log(activeBars);
+            });        
+        });
+        </script>
+</div>
+</div>
 
 <table id="incidenttable" name="incidenttable" class="table table-striped table-bordered">
 <thead>

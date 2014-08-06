@@ -1081,6 +1081,31 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	}
 	
 	/**
+	 * Get a list of open ports
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @return Array An array of open ports
+	 */
+	public function get_open_ports_array() {
+		$retval = array();
+		$sql = array('SELECT nmap_result_port_number, nmap_result_protocol ' .
+				'FROM nmap_result ' .
+				'WHERE host_id = ?i ' .
+				'AND state_id = 1 ' .
+				'ORDER BY nmap_result_port_number',
+				$this->id
+				);
+		$result = $this->db->fetch_object_array($sql);
+		if (is_array($result) && isset($result[0])) {
+			foreach ($result as $row) {
+				$retval[] = $row->nmap_result_port_number . '/' . $row->nmap_result_protocol;
+			}
+		}
+		return $retval;
+	}
+	
+	/**
 	 * Get the operating system for this host.
 	 * 
 	 * @access public

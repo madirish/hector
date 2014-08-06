@@ -1,5 +1,5 @@
 <?php
-/**
+/** 
  * This is the subcontroller for the incident report summary page
  * 
  * @package HECTOR
@@ -86,13 +86,55 @@ else {
     
 }
 
-$incidents = array();
 if (isset($incident_reports->members)) {
     foreach ($incident_reports->members as $report) {
     	$incidents[] = $report;
     }	
 }
 
+$chartlabels = array();
+$chartvalues = array();
+$incidentYearMonthCount = array();
+foreach ($incidents as $incident) {
+	$iyear = $incident->get_year();
+	$imonth = $incident->get_month();
+	if (! isset($incidentYearMonthCount[$iyear][$imonth])) {
+		$incidentYearMonthCount[$iyear][$imonth] = 1;
+	}
+	else {
+		$incidentYearMonthCount[$iyear][$imonth] ++;
+	}
+}
+ksort($incidentYearMonthCount);
+$firstyear = TRUE;
+foreach(array_keys($incidentYearMonthCount) as $year) {
+	ksort($incidentYearMonthCount[$year]);
+	$startval = 1;
+	if ($firstyear) { 
+		$firstkey = array_keys($incidentYearMonthCount[$year]);
+		$startval = $firstkey[0];
+	}
+	for ($x=$startval; $x<=12; $x++) {
+		if (! isset($incidentYearMonthCount[$year][$x])) $incidentYearMonthCount[$year][$x] = 0;
+		if ($year == date('Y') && $x == date('n')) {
+			break;
+		}
+	}
+	if ($firstyear) $firstyear = FALSE;
+	ksort($incidentYearMonthCount[$year]);
+}
+// Our month array is 1-12 so we just create an empty element 0
+$monthnames = array("[huh?]","January","February","March","April","May","June","July","August","September","October","November","December");
+
+foreach($incidentYearMonthCount as $year=>$values) {
+	foreach ($incidentYearMonthCount[$year] as $month=>$val) {
+		$chartlabels[] = '"' . $monthnames[$month] . " " . $year . '"';
+		$chartvalues[] = $val;
+	}
+}
+
+
+$javascripts .= "<script type='text/javascript' src='js/Chart.js'></script>\n";
 $javascripts .= '<script type="text/javascript" charset="utf8" src="js/jquery.dataTables.js"></script>' . "\n";
 $javascripts .= '<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">' . "\n";
 

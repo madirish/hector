@@ -16,7 +16,11 @@ require_once($approot . 'lib/class.Db.php');
 require_once($approot . 'lib/class.Host.php');
 require_once($approot . 'lib/class.Supportgroup.php');
 $db = Db::get_instance();
-$content .= '<h3>Dangerous Hosts</h3>';
+
+
+$javascripts .= '<script type="text/javascript" charset="utf8" src="js/jquery.dataTables.js"></script>' . "\n";
+$javascripts .= '<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">' . "\n";
+
 $has_content = false;
 
 $query = 'select n.host_id, h.supportgroup_id ' .
@@ -25,31 +29,11 @@ $query = 'select n.host_id, h.supportgroup_id ' .
 		'group by n.host_id having count(n.nmap_result_port_number) > 7 ' .
 		'order by h.supportgroup_id';
 $host_results = $db->fetch_object_array($query);
-
-if (is_array($host_results) && count($host_results) > 0) {
-	$content .= '<h4>Hosts with more than 7 open ports</h4>';
-	$content .= '<table id="dhost"><tr>' .
-		'<th>Host</th>' .
-		'<th>IP</th>' .
-		'<th>Support Group</th>' .
-		'<th>Open Ports</th></tr>' . "\n";
-		
-	foreach ($host_results as $ret) {
-		$host = new Host($ret->host_id);
-		$supportgroup = new Supportgroup($ret->supportgroup_id);
-		$ports = array();
-		foreach($host->get_ports() as $port) {
-			if ($port->get_state() == 'open') $ports[] = $port->get_port_number();
-		}
-		$ports = implode(', ', $ports);
-		$content .= '<tr><td>' . $host->get_name_linked() . '</td>' .
-				'<td>' . $host->get_ip() . '</td>' .
-				'<td style="white-space: nowrap;">' . $supportgroup->get_name() . '</td>' .
-				'<td>' . $ports . '</td></tr>' . "\n";
-	}	
-	$content .= '</table>';
-	$has_content = true;
+$sevenporthosts = array();
+foreach ($host_results as $result) {
+	$sevenporthosts[] = new Host($result->host_id);
 }
+
 
 $query = 'select n.host_id, h.supportgroup_id ' .
 		'from nmap_result n, host h ' .

@@ -32,7 +32,7 @@
         <canvas id="incidentCountChart" height="300" width="600"></canvas>
         <script>
         $(document).ready(function(){
-            var data = {labels: [<?php foreach ($months as $year=>$month){ foreach (array_keys($month) as $monthnum) { echo '"' . $monthnames[$monthnum] . ' ' . $year . '",' ;}}?>],
+            var data = {labels: [<?php echo join(',', $chartlabels);?>],
                         datasets: [
                             {
                                 label: "My First dataset",
@@ -42,7 +42,7 @@
                                 pointStrokeColor: "#fff",
                                 pointHighlightFill: "#fff",
                                 pointHighlightStroke: "rgba(220,220,220,1)",
-                                data: [<?php foreach ($months as $year) {foreach ($year as $month) echo $month . ',';} ?>]
+                                data: [<?php echo join(',', $chartvalues); ?>]
                             }
                         ]
             };

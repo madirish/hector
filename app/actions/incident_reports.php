@@ -124,7 +124,7 @@ foreach(array_keys($incidentYearMonthCount) as $year) {
 	ksort($incidentYearMonthCount[$year]);
 }
 $monthnames = array("[huh?]","January","February","March","April","May","June","July","August","September","October","November","December");
-print_r($incidentYearMonthCount);
+
 foreach($incidentYearMonthCount as $year=>$values) {
 	foreach ($incidentYearMonthCount[$year] as $month=>$val) {
 		$chartlabels[] = '"' . $monthnames[$month] . " " . $year . '"';

@@ -123,6 +123,7 @@ foreach(array_keys($incidentYearMonthCount) as $year) {
 	if ($firstyear) $firstyear = FALSE;
 	ksort($incidentYearMonthCount[$year]);
 }
+// Our month array is 1-12 so we just create an empty element 0
 $monthnames = array("[huh?]","January","February","March","April","May","June","July","August","September","October","November","December");
 
 foreach($incidentYearMonthCount as $year=>$values) {

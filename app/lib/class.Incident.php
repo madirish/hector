@@ -95,7 +95,14 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
      private $disruption_magnitude_id = null; // INT NOT NULL,
      private $response_cost_magnitude_id = null; // INT NOT NULL,
      private $impact_magnitude_id = null; // INT NOT NULL,
-
+     
+    /**
+     * Array of associate Tag ids
+     * 
+     * @access private
+     * @var Array An array of Tag ids associated with this article
+     */
+     private $tag_ids;
     // --- OPERATIONS ---
 
     /**
@@ -143,6 +150,14 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
           $this->set_utility_loss($r->utility_loss);
           $this->set_year($r->incident_year);
         }
+        
+        $sql = array('SELECT tag_id FROM incident_x_tag WHERE incident_id = ?i',$id);
+        $result = $this->db->fetch_object_array($sql);
+        if (count($result) > 0){
+        	foreach ($result as $item){
+        		$this->add_tag_id($item->tag_id);
+        	}
+        }
     }
 
 
@@ -163,6 +178,12 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
         );
         $retval = $this->db->iud_sql($sql);
       }
+      // Delete incident_x_tag mapping for the incident
+      $sql = array(
+      	'DELETE FROM incident_x_tag WHERE incident_id = \'?i\'',
+      		$this->get_id()
+      );
+      $this->db->iud_sql($sql);
       return $retval;
     }
 
@@ -620,6 +641,21 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
           $this->set_id($result[0]->last_id);
         }
       }
+      
+      // Add/Update tags if any
+      $sql = array(
+      	'DELETE FROM incident_x_tag WHERE incident_id = ?i',
+      		$this->get_id()
+      );
+      $this->db->iud_sql($sql);
+      if (is_array($this->get_tag_ids()) && count($this->get_tag_ids()) > 0){
+      	foreach ($this->get_tag_ids() as $tag_id){
+      		$sql = array('INSERT INTO incident_x_tag SET incident_id = ?i, tag_id = ?i',
+      				$this->get_id(),$tag_id
+      		);
+      		$this->db->iud_sql($sql);
+      	}
+      }
       return $retval;
     }
     
@@ -818,7 +854,64 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
 	public function set_year($year) {
 		$this->year = intval($year);
 	}
-
+	
+	/**
+	 * Adds a tag id to the tag_ids attribute
+	 * 
+	 * @access public
+	 * @author Ubani Balogun <ubani@sas.upenn.edu>
+	 * @param int the id to add
+	 * @return void
+	 */
+	public function add_tag_id($id){
+		$this->tag_ids[] = intval($id);
+	}
+	
+	/**
+	 * Set tags associated with this Incident
+	 * 
+	 * @access public
+	 * @author Ubani Balogun <ubani@sas.upenn.edu>
+	 * @param Array an array of tag ids (integers)
+	 * @return void
+	 */
+	public function set_tag_ids($array){
+		if (is_array($array)){
+			$array = array_map('intval',$array);
+			$this->tag_ids = $array;
+		}
+	}
+	/**
+	 * Returns the tag ids associated with incident
+	 * 
+	 * @access public
+	 * @author Ubani Balogun <ubani@sas.upenn.edu>
+	 * @return Array an array of tag ids (integers)
+	 */
+	public function get_tag_ids(){
+		return $this->tag_ids;
+	}
+	
+	/**
+	 * Gets the names off all tags associated with an incident
+	 * 
+	 * @access public
+	 * @author Ubani Balogun <ubani@sas.upenn.edu>
+	 * @return Array an array of tag names (strings)
+	 */
+	public function get_tag_names(){
+		$retval = array();
+		$tag_ids = $this->get_tag_ids();
+		require_once('class.Tag.php');
+		if (is_array($tag_ids)){
+			foreach ($tag_ids as $tag_id){
+				$tag = new Tag($tag_id);
+				$retval[] = $tag->get_name();
+			}
+		}
+		return $retval;
+	}
+	
 } /* end of class Incident */
 
 ?>

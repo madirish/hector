@@ -6,9 +6,18 @@
  * @author Justin Klein Keane <jukeane@sas.upenn.edu>
  */
  
-include_once($approot . 'templates/admin_headers.tpl.php');
+
 require_once($approot . 'lib/class.Form.php');
 include_once($approot . 'lib/class.Incident.php');
+
+// Javascripts
+$javascripts = '';
+$javascripts .= "<script type='text/javascript' src='js/jquery-ui.js'></script>\n";
+$javascripts .= "<script type='text/javascript' src='js/new_ir.js'></script>\n";
+
+// CSS
+$css = '';
+$css .= "<link href='css/jquery-ui.min.css' rel='stylesheet'>\n";
 
 $ir_form = new Form();
 $ir_form_name = 'incident_report_edit_form';
@@ -69,5 +78,16 @@ if (is_array($irmagnitudes->members)) {
     }
 }
 
+$irtags = new Collection("Tag");
+$tags = array();
+if (is_array($irtags->members)){
+	foreach ($irtags->members as $tag){
+		$tags[] = $tag->get_name();
+	}
+}
+
+$tags_json = json_encode($tags);
+
+include_once($approot . 'templates/admin_headers.tpl.php');
 include_once($approot . 'templates/incident_report_edit.tpl.php');
 ?>

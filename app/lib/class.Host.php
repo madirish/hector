@@ -1852,7 +1852,8 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		return array(
 				'ip' => $this->get_ip(),
 				'name' => $this->get_name(),
-				'urls' => $this->get_urls(),	
+				'urls' => $this->get_urls(),
+				'name_linked' => $this->get_name_linked(),	
 		);
 	}
 

@@ -40,6 +40,7 @@ conn = MySQLdb.connect(host=HOST,
       db=DB,
       port=PORT)
 cursor = conn.cursor()
+conn.set_character_set('utf8')
 
 #logging set up
 logger = logging.getLogger('hectorss')
@@ -80,14 +81,17 @@ for feedurl in results:
     else:
       mysqldate = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     
-    sql = "INSERT INTO article (article_date, article_title, article_url, article_teaser)"
-    sql += " SELECT %s, %s, %s, %s FROM DUAL WHERE NOT EXISTS "
+    sql = "INSERT INTO article (article_date, article_title, article_url, article_teaser, article_body)"
+    sql += " SELECT %s, %s, %s, %s, %s FROM DUAL WHERE NOT EXISTS "
     sql += "(SELECT article_id FROM article WHERE article_url = %s)"
 
     try:
-      cursor.execute(sql,(mysqldate, feeditem["title"], feeditem["link"], feeditem["summary"], feeditem["link"]))
-      if DEBUG: print "Inserted " + str(conn.insert_id())
+      if DEBUG: print "[+] Attempting to insert item "
+      if DEBUG: print feeditem
+      cursor.execute(sql,(mysqldate, feeditem["title"], feeditem["link"], feeditem["summary"], feeditem["description"], feeditem["link"]))
+      if DEBUG: print "[+] Inserted " + str(conn.insert_id())
     except MySQLdb.OperationalError, e:
+      print "Error importing feeditem " + feeditem["title"]
       raise e
     
     tagged = 0

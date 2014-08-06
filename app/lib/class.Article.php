@@ -231,7 +231,7 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
      * @return String The HTML display safe body of the Article.
      */
     public function get_body() {
-        return htmlentities($this->body);
+        return $this->body;
     }
 
     /**
@@ -290,7 +290,7 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
      * @return Array Dispalays for default template
      */
     public function get_displays() {
-        return array('Title'=>'get_linked_title', 'Date'=>'get_date', 'URL'=>'get_linked_url', 'Teaser'=>'get_teaser');
+        return array( 'Date'=>'get_date', 'Title'=>'get_linked_title', 'URL'=>'get_linked_url', 'Teaser'=>'get_teaser');
     }
 
     /**
@@ -346,7 +346,7 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
      * @return String The HTML display safe teaser of the Article.
      */
     public function get_teaser() {
-        return htmlentities($this->teaser);
+        return $this->teaser;
     }
 
     /**

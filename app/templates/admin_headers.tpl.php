@@ -96,6 +96,7 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="View open source intelligence collections."><i class="icon-globe"></i> OSINT <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li><a href="?action=details&object=article">Articles</a></li>
+        <li><a href="?action=add_edit&object=Article">Add Article</a></li>
       </ul>
     </li>
     <li class="dropdown">

@@ -2,7 +2,7 @@
 <h3>Dangerous Hosts</h3>
 <?php if (count($sevenporthosts) > 0) { ?>
 <h4>Hosts with more than 7 open ports</h4>
-<table id="dhost">
+<table id="dhost" class="table table-striped">
 <thead>
 	<tr>
 		<th>Host</th>

@@ -7,7 +7,7 @@
  */
 include_once($approot . 'templates/admin_headers.tpl.php');
 require_once($approot . 'lib/class.Incident.php');
-
+require_once($approot . 'lib/class.Tag.php');
 
 $incident = new Incident();
 $incident->set_title($_POST['incidentTitle']);
@@ -32,6 +32,28 @@ $incident->set_response_cost_magnitude_id($_POST['responseCostMag']);
 $incident->set_impact_magnitude_id($_POST['impactMag']);
 $incident->set_hindsight($_POST['2020hindsight']);
 $incident->set_correction_recommended($_POST['correctiveaction']);
+
+
+if (isset($_POST['incidentTags'])){
+	$incident_tags =  explode(",",$_POST['incidentTags']);
+	if (is_array($incident_tags)){
+		foreach ($incident_tags as $each){
+			$tag_name = trim($each);
+			if ($tag_name){
+				$tag = new Tag();
+				$is_tag = $tag->get_tag_by_name($tag_name);
+				if (!$is_tag){
+					$tag->set_name($tag_name);
+					$tag->save();
+					$tag_id = $tag->get_id();
+				}else{
+					$tag_id = intval($is_tag);
+				}
+				$incident->add_tag_id($tag_id);
+			}
+		}	
+	}
+}
 
 if (! $incident->save()) {
 	die("Error: Unable to save incident report.");

@@ -149,6 +149,11 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
 	    		$this->get_id()
 	    	);
 	    	$this->db->iud_sql($sql);
+	    	$sql = array(
+	    		'DELETE FROM incident_x_tag WHERE tag_id = \'?i\'',
+	    			$this->get_id()
+	    	);
+	    	$this->db->iud_sql($sql);
     	}
     	return $retval;
     }
@@ -304,6 +309,27 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
 	 */
     public function set_name($name) {
     	$this->name = $name;
+    }
+    
+    /**
+     * Gets the id of a given tag
+     * 
+     * @access public
+     * @author Ubani A Balogun
+     * @param String The tag to search for
+     * @return Int the id of the tag. 0 if tag does not exist
+     */
+    public function get_tag_by_name($name){
+    	$retval = false;
+    	$sql = array(
+    		'SELECT tag_id FROM tag WHERE tag_name = \'?s\'',
+    			$name
+    	);
+    	$result = $this->db->fetch_object_array($sql);
+    	if (isset($result[0])){
+    		$retval = intval($result[0]->tag_id);
+    	}
+    	return $retval;
     }
     
     

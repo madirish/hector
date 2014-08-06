@@ -170,6 +170,12 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
         );
         $retval = $this->db->iud_sql($sql);
       }
+      // Delete incident_x_tag mapping for the incident
+      $sql = array(
+      	'DELETE FROM incident_x_tag WHERE incident_id = \'?i\'',
+      		$this->get_id()
+      );
+      $this->db->iud_sql($sql);
       return $retval;
     }
 
@@ -625,6 +631,15 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
         $result = $this->db->fetch_object_array($sql);
         if (isset($result[0]) && $result[0]->last_id > 0) {
           $this->set_id($result[0]->last_id);
+        }
+        // Add tags to the incident
+        if (isset($this->tag_ids)){
+        	foreach ($this->tag_ids as $tag_id){
+        		$sql = array('INSERT INTO incident_x_tag SET incident_id = ?i, tag_id = ?i',
+        				$this->get_id(),intval($tag_id)	
+        		);
+        		$this->db->iud_sql($sql);
+        	}
         }
       }
       return $retval;

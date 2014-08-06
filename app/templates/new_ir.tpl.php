@@ -32,7 +32,8 @@
 		</div>
 		<label class="control-label" for="incidentTags">Tags</label>
 		<div class="controls">
-			<input type="text" id="incidentTags" name="incidentTags" placeholder="Tags relevant to Incident" class="input-xxlarge">
+			<input type="text" id="incidentTags" name="incidentTags" placeholder="Incident Tags" class="input-xxlarge">
+			</select><span class="help-inline tagTip"><i class="icon-info-sign"></i></span>
 			<div id="availableTags" class="hidden"><?php echo $tags_json?></div>
 		</div>
 	
@@ -182,7 +183,6 @@
     </div>
 		
 </fieldset>
-<input type="hidden" id="selectedTags" name="selectedTags" value="">
 <input type="hidden" name="token" value="<?php echo $ir_form_token;?>"/>
 <input type="hidden" name="form_name" value="<?php echo $ir_form_name;?>"/>
 </form>
@@ -266,5 +266,10 @@ $('.overallImpactTip').popover({
     trigger: 'hover',
     title : 'Overall Impact',
     content : 'To understand the severity of the impact relative to the organization’s tolerance for loss. Insignificant - Impact absorbed by normal activities Distracting - Limited "hard costs" but impact felt through having to deal with the incident rather than conducting normal duties Painful - Real but limited (scope, longevity) losses in the form of fines, penalties, market corrections, payouts, productivity losses, etc Damaging - Real and serious effect on the "bottom line" and/or long-term ability to generate revenue.'
+});
+$('.tagTip').popover({
+    trigger: 'hover',
+    title : 'Tags',
+    content : 'A comma separated list of tags that are relevant to the incident'
 });
 </script>

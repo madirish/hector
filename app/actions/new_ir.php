@@ -84,11 +84,13 @@ $irtags = new Collection("Tag");
 $tags = array();
 if (is_array($irtags->members)){
 	foreach ($irtags->members as $tag){
-		$tags[$tag->get_name()] = $tag->get_id();
+		$tags[] = $tag->get_name();
 	}
 }
 
 $tags_json = json_encode($tags);
+
+
 
 include_once($approot . 'templates/admin_headers.tpl.php');
 include_once($approot . 'templates/new_ir.tpl.php');

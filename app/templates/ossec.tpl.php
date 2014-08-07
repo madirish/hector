@@ -1,6 +1,4 @@
 <h2>OSSEC Hosts</h2>
-<div><?php print_r($hosts)?></div>
-
 
 <ol>
 <?php

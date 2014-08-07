@@ -400,6 +400,28 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
     	return $retval;
     }
     
+    /**
+     * Returns an array of vulnerability ids mapped to this tag
+     *
+     * @access public
+     * @author Ubani A Balogun <ubani@sas.upenn.edu>
+     * @return Array an array of article ids (int)
+     */
+    public function get_vuln_ids(){
+    	$retval = array();
+    	$sql = array(
+    			'SELECT vuln_id FROM vuln_x_tag WHERE tag_id = ?i',
+    			$this->get_id()
+    	);
+    	$result = $this->db->fetch_object_array($sql);
+    	if (isset($result[0])){
+    		foreach ($result as $row){
+    			$retval[] = $row->vuln_id;
+    		}
+    	}
+    	return $retval;
+    }
+    
     
     
 

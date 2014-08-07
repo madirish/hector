@@ -5,4 +5,7 @@ $(document).ready(function(){
 	$('#article-table').dataTable({
 		"sDom": '<"top"lf>rt<"bottom"ip>',
 			});
+	$('#vuln-table').dataTable({
+		"sDom": '<"top"lf>rt<"bottom"ip>',
+			});
 })

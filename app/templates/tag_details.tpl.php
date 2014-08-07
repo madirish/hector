@@ -56,4 +56,33 @@
 		</tbody>
 	</table>
 </div>
+
+</div>
+<h3><?php echo "Related Vulnerabilities"?></h3>
+<div class="row">
+<!-- Vulnerabilities Related to tag -->
+<div class="span12">
+	<table id="vuln-table" class="table table-striped table-bordered">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Name</th>
+				<th>Description</th>
+				<th>CVE</th>
+				<th>OSVDB</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach ($vulns as $vuln): ?>
+				<tr>
+					<td><?php echo $vuln['id']?></td>
+					<td><?php echo $vuln['name']?></td>
+					<td><?php echo $vuln['description']?></td>
+					<td><?php echo $vuln['cve']?></td>
+					<td><?php echo $vuln['osvdb']?></td>
+				</tr>
+			<?php endforeach; ?>
+		</tbody>
+	</table>
+</div>
 </div>

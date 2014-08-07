@@ -11,6 +11,7 @@ require_once($approot . 'lib/class.Db.php');
 include_once($approot . 'lib/class.Tag.php');
 include_once($approot . 'lib/class.Incident.php');
 include_once($approot . 'lib/class.Article.php');
+include_once($approot . 'lib/class.Vuln.php');
 
 // screenshots.css
 $css = '';
@@ -45,6 +46,14 @@ if (isset($article_ids[0])){
 }
 
 
+$vuln_ids = $tag->get_vuln_ids();
+$vulns = array();
+if (isset($vuln_ids[0])){
+	foreach ($vuln_ids as $vuln_id){
+		$vuln = new Vuln($vuln_id);
+		$vulns[] = $vuln->get_object_as_array();
+	}
+}
 
 
 include_once($templates. 'admin_headers.tpl.php');

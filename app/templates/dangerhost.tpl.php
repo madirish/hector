@@ -52,9 +52,9 @@ $(document).ready( function () {
 <table id="dhost4" class="table table-striped table-bordered">
 <thead>
 	<tr>
-		<th>Host</th>' .
-		<th>IP</th>' .
-		<th>Support Group</th>' .
+		<th>Host</th>
+		<th>IP</th>
+		<th>Support Group</th>
 		<th>Open Ports</th>
 	</tr>
 </thead>

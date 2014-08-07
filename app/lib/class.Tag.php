@@ -315,7 +315,7 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
      * Gets the id of a given tag
      * 
      * @access public
-     * @author Ubani A Balogun
+     * @author Ubani A Balogun <ubani@sas.upenn.edu>
      * @param String The tag to search for
      * @return Int the id of the tag. 0 if tag does not exist
      */
@@ -331,6 +331,64 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
     	}
     	return $retval;
     }
+    
+    /**
+     * Returns the tag object as an array
+     * @access public
+     * @author Ubani A Balogun <ubani@sas.upenn.edu>
+     * @return Array an associative array of tag attributes 
+     */
+    public function get_object_as_array(){
+    	return array(
+    			'id' => $this->get_id(),
+    			'name' => $this->get_name(),
+    	);
+    }
+    
+    /**
+     * Returns an array of incident ids mapped to the tag id
+     * 
+     * @access public
+     * @author Ubani A Balogun <ubani@sas.upenn.edu>
+     * @return Array of incident ids (int)
+     */
+    public function get_incident_ids(){
+    	$retval = array();
+    	$sql = array(
+    		'SELECT incident_id FROM incident_x_tag WHERE tag_id = ?i',
+    			$this->get_id()
+    	);
+    	$result = $this->db->fetch_object_array($sql);
+    	if (isset($result[0])){
+    		foreach ($result as $row){
+    			$retval[] = $row->incident_id;
+    		}
+    	}
+    	return $retval;
+    }
+    
+    /**
+     * Returns an array of article ids mapped to this tag
+     * 
+     * @access public
+     * @author Ubani A Balogun <ubani@sas.upenn.edu>
+     * @return Array an array of article ids (int)
+     */
+    public function get_article_ids(){
+    	$retval = array();
+    	$sql = array(
+    			'SELECT article_id FROM article_x_tag WHERE tag_id = ?i',
+    			$this->get_id()
+    	);
+    	$result = $this->db->fetch_object_array($sql);
+    	if (isset($result[0])){
+    		foreach ($result as $row){
+    			$retval[] = $row->article_id;
+    		}
+    	}
+    	return $retval;
+    }
+    
     
     
 

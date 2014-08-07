@@ -493,6 +493,27 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
     public function set_url($url) {
     	$this->url = $url;
     }
+    
+    /**
+     * Returns the object as an array
+     * 
+     * @access public
+     * @author Ubani A Balogun <ubani@sas.upenn.edu>
+     * @return Array an associative array of the objects attributes
+     * 
+     */
+    public function get_object_as_array(){
+    	return array(
+    			'id' => $this->get_id(),
+    			'title' => $this->get_title(),
+    			'teaser' => $this->get_teaser(),
+    			'date' => $this->get_date(),
+    			'body' => $this->get_body(),
+    			'url' => $this->get_url(),
+    			'linked_url' =>$this->get_linked_url(),
+    			'linked_title' => $this->get_linked_title(),
+    	);
+    }
 
 } /* end of class Article */
 

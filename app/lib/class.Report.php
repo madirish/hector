@@ -139,6 +139,29 @@ class Report {
     }
     
     /**
+     * Search the darknet data for drops over the last year for a given IP
+     * 
+     * @access public
+     * @author Justin Klein Keane <jukeane@sas.upenn.edu>
+     * @param String The dot notation IP address
+     * @return Array An array of objects with attributes dst_ip, src_port, dst_port, proto, received_at
+     */
+    public function get_darknet_drops($ip) {
+    	$ip = mysql_real_escape_string($ip);
+        $sql = 'SELECT INET_NTOA(dst_ip) AS dst_ip, src_port, dst_port, proto, received_at ' .
+                'FROM darknet ' .
+                'WHERE src_ip = INET_ATON(\'' . $ip . '\') ' .
+                'AND received_at > DATE_SUB(NOW(), INTERVAL 1 YEAR) ' .
+                'AND dst_port > 0 ' .
+                'ORDER BY received_at DESC';
+        return $this->db->fetch_object_array($sql);
+    }
+    
+    public function get_four_port_hosts() {
+    	
+    }
+    
+    /**
      * Search the last year's worth of OSSEC alert data
      * in order to filter it to alerts from a target IP
      * for the malicious IP search functionality.
@@ -180,6 +203,16 @@ class Report {
         return $ossec_alerts;
     }
     
+    public function get_seven_port_hosts() {
+    	$query = 'select n.host_id, h.supportgroup_id ' .
+			'from nmap_result n, host h ' .
+			'where n.host_id=h.host_id AND n.state_id=1 ' .
+			'group by n.host_id having count(n.nmap_result_port_number) > 7 ' .
+			'order by h.supportgroup_id';
+		$host_results = $this->db->fetch_object_array($query);
+		return $host_results;
+    }
+    
     /**
      * Return the number of commands the IP address executed on a kojoney honeypot
      * 
@@ -196,25 +229,6 @@ class Report {
         if (isset($honeypot_commands[0])) $commands = $honeypot_commands[0]->thecount;
         if ($commands == '') $commands = 'no';
         return $commands;
-    }
-    
-    /**
-     * Search the darknet data for drops over the last year for a given IP
-     * 
-     * @access public
-     * @author Justin Klein Keane <jukeane@sas.upenn.edu>
-     * @param String The dot notation IP address
-     * @return Array An array of objects with attributes dst_ip, src_port, dst_port, proto, received_at
-     */
-    public function get_darknet_drops($ip) {
-    	$ip = mysql_real_escape_string($ip);
-        $sql = 'SELECT INET_NTOA(dst_ip) AS dst_ip, src_port, dst_port, proto, received_at ' .
-                'FROM darknet ' .
-                'WHERE src_ip = INET_ATON(\'' . $ip . '\') ' .
-                'AND received_at > DATE_SUB(NOW(), INTERVAL 1 YEAR) ' .
-                'AND dst_port > 0 ' .
-                'ORDER BY received_at DESC';
-        return $this->db->fetch_object_array($sql);
     }
     
     /**

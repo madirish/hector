@@ -64,6 +64,7 @@ if(php_sapi_name() == 'cli') {
 			$alert->set_host_id(1);
 			// Run the scan
 			if (is_file($scriptfile)) {
+				log_scan_cron('Invoking: /usr/bin/php ' . $scriptfile . ' ' . $flags);
 				$last_line = system('/usr/bin/php ' . $scriptfile . ' ' . $flags, $retval);
 				// Log the result
                 if ($retval == 0) {

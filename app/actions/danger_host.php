@@ -26,7 +26,7 @@ foreach ($host_results as $result) {
 }
 
 $host_results = $report->get_four_port_hosts();
-$fourporthosst = array();
+$fourporthosts = array();
 foreach ($host_results as $ret) {
 	$fourporthosts[] = new Host($ret->host_id);
 }

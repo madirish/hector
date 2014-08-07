@@ -205,7 +205,7 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
 	 * @return Array Dispalays for default template
 	 */
 	public function get_displays() {
-		return array('Name'=>'get_name');
+		return array('Name'=>'get_linked_name');
 	}
 
     /**
@@ -239,7 +239,18 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
     public function get_name() {
 		return htmlspecialchars($this->name);
     }
-
+    
+    /**
+     * The HTML linked title of the Tag
+     *  
+     *  @access public 
+     *  @author Ubani A Balogun <ubani@sas.upenn.edu>
+     *  @return String the HTML linked safe title of the Article
+     */
+    public function get_linked_name(){
+    	return "<a href='?action=tag_details&id=$this->id'>" . $this->get_name() . "</a>";
+    }
+    
 	/**
 	 * Persist the Tag to the data layer
 	 * 

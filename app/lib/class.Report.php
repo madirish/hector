@@ -158,7 +158,14 @@ class Report {
     }
     
     public function get_four_port_hosts() {
-    	
+    	$query = 'select n.host_id, h.supportgroup_id ' .
+			'from nmap_result n, host h ' .
+			'WHERE n.host_id=h.host_id ' .
+			'AND n.state_id=1 ' .
+			'AND n.nmap_result_port_number IN (21,22,23,25,53,80,110,143,443,993,1433,1521,3306,8080) ' .
+			'group by n.host_id having count(n.nmap_result_port_number) > 4 ' .
+			'order by h.supportgroup_id;';
+		return $this->db->fetch_object_array($query);
     }
     
     /**

@@ -2,7 +2,7 @@
 <h3>Dangerous Hosts</h3>
 <?php if (count($sevenporthosts) > 0) { ?>
 <h4>Hosts with more than 7 open ports</h4>
-<table id="dhost" class="table table-striped table-bordered">
+<table id="dhost7" class="table table-striped table-bordered">
 <thead>
 	<tr>
 		<th>Host</th>
@@ -20,12 +20,12 @@
 		<td><?php echo join(',', $host->get_open_ports_array());?></td>
 	</tr>
 	<?php } ?>
-</tdbody>
+</tbody>
 </table>
 
 <script type="text/javascript" >
 $(document).ready( function () {
-    var table = $('#dhost').DataTable({
+    var table = $('#dhost7').DataTable({
         "ordering": true,
     });
     table.column('0:visible').order('asc');
@@ -49,7 +49,7 @@ $(document).ready( function () {
 	</div>
 </div>
 
-<table id="dhost" class="table table-striped table-bordered">
+<table id="dhost4" class="table table-striped table-bordered">
 <thead>
 	<tr>
 		<th>Host</th>' .
@@ -69,6 +69,18 @@ $(document).ready( function () {
 	<?php } ?>
 </tbody>
 </table>
+
+
+
+<script type="text/javascript" >
+$(document).ready( function () {
+    var table = $('#dhost4').DataTable({
+        "ordering": true,
+    });
+    table.column('0:visible').order('asc');
+    table.draw();
+} );
+</script>
 <?php } ?>
 <?php if (count($sevenporthosts) < 1 && count($fourporthosts) < 1) {?>
 No <a href="#dangerModal" data-toggle="modal" title="About dangerous hosts">dangerous hosts</a> detected by port scans.

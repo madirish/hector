@@ -12,6 +12,7 @@ include_once($approot . 'lib/class.Tag.php');
 include_once($approot . 'lib/class.Incident.php');
 include_once($approot . 'lib/class.Article.php');
 include_once($approot . 'lib/class.Vuln.php');
+include_once($approot . 'lib/class.Host.php');
 
 // screenshots.css
 $css = '';
@@ -54,6 +55,17 @@ if (isset($vuln_ids[0])){
 		$vulns[] = $vuln->get_object_as_array();
 	}
 }
+
+$host_ids = $tag->get_host_ids();
+$hosts = array();
+if (isset($host_ids[0])){
+	foreach ($host_ids as $host_id){
+		$host = new Host($host_id);
+		$hosts[] = $host->get_object_as_array();
+	}
+}
+
+
 
 
 include_once($templates. 'admin_headers.tpl.php');

@@ -62,6 +62,9 @@ $javascripts .= "<script type='text/javascript' src='js/kojoneymap.js'></script>
 // Include Incident Assets Script
 $javascripts .= "<script type='text/javascript' src='js/assetsAffected.js'></script>\n";
 
+// Include Tag cloud Scripts
+$javascripts .= "<script type='text/javascript' src='js/jquery.tagcloud.js'></script>\n";
+$javascripts .= "<script type='text/javascript' src='js/tagcloud.js'></script>\n";
 
 $portSummaryLabels = "";
 $portSummaryCounts = "";
@@ -182,6 +185,30 @@ foreach ($topCountries as $country) {
  */
 $kojoneyCountryCount = $report->getKojoneyCountryCount();
 $kojoneymapcounts = json_encode($kojoneyCountryCount);
+
+/**
+ * Tag cloud
+ */
+
+$tag_collection = new Collection('Tag');
+$tag_weights = array();
+$tag_sorter = array();
+
+if (is_array($tag_collection->members)){
+	foreach($tag_collection->members as $tag){
+		$name = $tag->get_name();
+		$id = $tag->get_id();
+		$incidents = count($tag->get_incident_ids());
+		$vulns = count($tag->get_vuln_ids());
+		$articles = count($tag->get_article_ids());
+		$hosts = count($tag->get_host_ids());
+		$weight = $incidents + $vulns + $articles + $hosts;
+		$tag_weights[] = array('name'=>$name,'id'=>$id,'weight'=>$weight);
+		$tag_sorter[$name] = $weight;
+	}
+	array_multisort($tag_sorter,SORT_DESC,$tag_weights);
+}
+
 
 
 

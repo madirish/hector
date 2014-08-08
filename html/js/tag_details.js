@@ -8,4 +8,7 @@ $(document).ready(function(){
 	$('#vuln-table').dataTable({
 		"sDom": '<"top"lf>rt<"bottom"ip>',
 			});
+	$('#host-table').dataTable({
+		"sDom": '<"top"lf>rt<"bottom"ip>',
+			});
 })

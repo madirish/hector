@@ -86,3 +86,29 @@
 	</table>
 </div>
 </div>
+<!-- Host with tag -->
+<h3>Hosts with this tag</h3>
+<div class="row">
+<div class="span12">
+	<table id="host-table" class="table table-striped table-bordered">
+		<thead>
+			<tr>
+				<th>Hostname</th>
+				<th>IP</th>
+				<th>OS</th>
+				<th>Support Group</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach ($hosts as $host):?>
+				<tr>
+					<td><?php echo $host['name_linked']?></td>
+					<td><?php echo $host['ip']?></td>
+					<td><?php echo $host['os']?></td>
+					<td><?php echo $host['support_group']?></td>
+				</tr>
+			<?php endforeach; ?>
+		</tbody>
+	</table>
+</div>
+</div>

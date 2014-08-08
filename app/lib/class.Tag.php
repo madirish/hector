@@ -422,7 +422,27 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
     	return $retval;
     }
     
-    
+    /**
+     * Returns an array of host ids mapped to this tag
+     * 
+     * @access public
+     * @author Ubani A Balogun <ubani@sas.upenn.edu>
+     * @return Array an array of host ids (int)
+     */
+    public function get_host_ids(){
+    	$retval = array();
+    	$sql = array(
+    			'SELECT host_id FROM host_x_tag WHERE tag_id = ?i',
+    			$this->get_id()
+    	);
+    	$result = $this->db->fetch_object_array($sql);
+    	if (isset($result[0])){
+    		foreach ($result as $row){
+    			$retval[] = $row->host_id;
+    		}
+    	}
+    	return $retval;
+    }
     
 
 } /* end of class Tag */

@@ -1,4 +1,14 @@
 <h2><?php echo isset($tag_name) ? $tag_name: "";?></h2>
+<div class="row">
+<!-- Analytics wells -->
+<div class="span3">
+	<div class="well">
+		<h4>Most Relevant To: <?php echo key($tag_weights)?></h4>
+		<p></p>
+	</div>
+</div>
+</div>
+
 <h3><?php echo "Related Incidents"?></h3>
 <div class="row">
 <!-- Incidents Related to the tag -->

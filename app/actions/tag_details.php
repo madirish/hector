@@ -27,7 +27,10 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $tag = new Tag($id);
 $tag_name = $tag->get_name();
 
+
+
 $incident_ids = $tag->get_incident_ids();
+
 $incidents = array();
 
 if (isset($incident_ids[0])){
@@ -38,7 +41,9 @@ if (isset($incident_ids[0])){
 }
 
 $article_ids = $tag->get_article_ids();
+
 $articles = array();
+
 if (isset($article_ids[0])){
 	foreach ($article_ids as $article_id){
 		$article = new Article($article_id);
@@ -48,6 +53,7 @@ if (isset($article_ids[0])){
 
 
 $vuln_ids = $tag->get_vuln_ids();
+
 $vulns = array();
 if (isset($vuln_ids[0])){
 	foreach ($vuln_ids as $vuln_id){
@@ -57,6 +63,7 @@ if (isset($vuln_ids[0])){
 }
 
 $host_ids = $tag->get_host_ids();
+
 $hosts = array();
 if (isset($host_ids[0])){
 	foreach ($host_ids as $host_id){
@@ -65,6 +72,12 @@ if (isset($host_ids[0])){
 	}
 }
 
+$tag_weights = array();
+$tag_weights['Incidents'] = count($incident_ids);
+$tag_weights['Articles'] = count($article_ids);
+$tag_weights['Vulnerabilities'] = count($vuln_ids);
+$tag_weights['Hosts'] = count($host_ids);
+arsort($tag_weights);
 
 
 

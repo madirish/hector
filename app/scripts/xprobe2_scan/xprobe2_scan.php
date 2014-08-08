@@ -82,6 +82,7 @@ else {
 	
 	// Parse through the command line arguments
 	foreach ($argv as $arg) {
+		xprobe2_loggit("xprobe2_scan.php process", "arg: " . $arg);
 		if (substr($arg, -16) == 'xprobe2_scan.php') continue;
 		$flag = substr(strtolower($arg),0,2);
 		if ($flag == '-g') $groups = substr($arg,strpos($arg,'=')+1);
@@ -105,6 +106,7 @@ else {
 	}
 	else {
 		// just grab all the hosts
+		xprobe2_loggit("xprobe2_scan.php process", "Scanning all host groups?");
 		$allhosts = new Collection('Host');
 		if (isset($allhosts->members) && is_array($allhosts->members)) {
 			foreach ($allhosts->members as $newhost) {

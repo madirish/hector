@@ -143,8 +143,7 @@ to perform automated scans of hosts.</p>
     </div>
 </div>
 <div class="row">
-    
-        <div class="span6">
+    <div class="span6">
     <!-- Timeline of Probes -->
         <h3>Timeline of Probes</h3>
         <canvas id="darknetCountryChart" height="300" width="550"></canvas>
@@ -197,5 +196,15 @@ to perform automated scans of hosts.</p>
             });        
         });
         </script>
+    </div>
+    <div class="span6">
+    <!-- Tag Cloud -->
+    <h3>Free Tags</h3>
+    	<div id="tagcloud">
+    		<?php foreach ($tag_weights as $tag): ?>
+    			<a href="?action=tag_details&id=<?php echo $tag['id'];?>" rel="<?php echo $tag['weight'];?>"><?php echo $tag['name']?></a>
+    		<?php endforeach; ?>
+    	</div>
+    
     </div>
 </div>

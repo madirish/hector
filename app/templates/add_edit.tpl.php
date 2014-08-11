@@ -20,6 +20,7 @@
 <td><input type="submit" name="submit" value="Save changes" class="btn"/></td></tr>
 </table>
 </fieldset>
+<div id="availableTags" class="hidden"><?php echo $tags_json?></div>
 <input type="hidden" name="token" value="<?php echo $token;?>"/>
 <input type="hidden" name="form_name" value="<?php echo $form_name;?>"/>
 </form>

@@ -912,6 +912,26 @@ class Incident extends Maleable_Object implements Maleable_Object_Interface {
 		return $retval;
 	}
 	
+	/**
+	 * Returns the object as an array
+	 * 
+	 * @access public
+	 * @author Ubani A Balogun <ubani@sas.upenn.edu>
+	 * @return Array an array of the objects attributes
+	 */
+	public function get_object_as_array(){
+		return array(
+				'id' => $this->get_id(),
+				'title' => $this->get_title(),
+				'agent' => $this->get_agent_name(),
+				'action' => $this->get_action_name(),
+				'asset' => $this->get_asset_name(),
+				'impact' => $this->get_impact_magnitude_friendly(),
+				'year' => $this->get_year(),
+				'month' => $this->get_month(),
+				'month_friendly' => $this->get_month_friendly(),
+		);
+	}
 } /* end of class Incident */
 
 ?>

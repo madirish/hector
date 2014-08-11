@@ -10,6 +10,16 @@
  * Include the Form in order to have XSRF protection
  */
 require_once($approot . 'lib/class.Form.php');
+require_once($approot . 'lib/class.Collection.php');
+// Javascripts
+$javascripts = '';
+$javascripts .= "<script type='text/javascript' src='js/jquery-ui.js'></script>\n";
+$javascripts .= "<script type='text/javascript' src='js/add_edit.js'></script>\n";
+
+// CSS
+$css = '';
+$css .= "<link href='css/jquery-ui.min.css' rel='stylesheet'>\n";
+
 $add_edit = 1;
 if (! isset($_GET['object'])) {
 	// in case we don't have the right input
@@ -113,6 +123,18 @@ else {
 			default:
 				$template = 'add_edit';
 		}
+		// Make tags available to template
+		$irtags = new Collection("Tag");
+		$tags = array();
+		if (is_array($irtags->members)){
+			foreach ($irtags->members as $tag){
+				$tags[] = $tag->get_name();
+			}
+		}
+		
+		$tags_json = json_encode($tags);
+		
+		
 		$object_readable = method_exists($generic, 'get_label') ? $generic->get_label() : str_ireplace("_"," ", $object);
 		$form = new Form();
 		$form->set_name($form_name);

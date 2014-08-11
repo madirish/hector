@@ -1842,6 +1842,25 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	}
 	
 	/**
+	 * Get ossec host ids
+	 * 
+	 * @access public
+	 * @author Ubani A Balogun 
+	 * @return Array An array of ossec host ids (int)
+	 */
+	public function get_ossec_host_ids(){
+		$retval = array();
+		$sql = 'SELECT distinct(host_id) FROM ossec_alert';
+		$result = $this->db->fetch_object_array($sql);
+		if (isset($result[0])){
+			foreach ($result as $row){
+				$retval[] = $row->host_id;
+			}
+		}
+		return $retval;
+	}
+	
+	/**
 	 * Get object as array
 	 * 
 	 * @access public
@@ -1853,7 +1872,9 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 				'ip' => $this->get_ip(),
 				'name' => $this->get_name(),
 				'urls' => $this->get_urls(),
-				'name_linked' => $this->get_name_linked(),	
+				'name_linked' => $this->get_name_linked(),
+				'os' => $this->get_os(),
+				'support_group' => $this->get_supportgroup_name(),
 		);
 	}
 

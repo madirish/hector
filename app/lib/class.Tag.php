@@ -366,7 +366,7 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
     public function get_incident_ids(){
     	$retval = array();
     	$sql = array(
-    		'SELECT incident_id FROM incident_x_tag WHERE tag_id = ?i',
+    		'SELECT incident_id FROM incident_x_tag WHERE tag_id = ?i AND incident_id > 0',
     			$this->get_id()
     	);
     	$result = $this->db->fetch_object_array($sql);
@@ -388,7 +388,7 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
     public function get_article_ids(){
     	$retval = array();
     	$sql = array(
-    			'SELECT article_id FROM article_x_tag WHERE tag_id = ?i',
+    			'SELECT article_id FROM article_x_tag WHERE tag_id = ?i AND article_id > 0',
     			$this->get_id()
     	);
     	$result = $this->db->fetch_object_array($sql);
@@ -410,7 +410,7 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
     public function get_vuln_ids(){
     	$retval = array();
     	$sql = array(
-    			'SELECT vuln_id FROM vuln_x_tag WHERE tag_id = ?i',
+    			'SELECT vuln_id FROM vuln_x_tag WHERE tag_id = ?i AND vuln_id > 0',
     			$this->get_id()
     	);
     	$result = $this->db->fetch_object_array($sql);
@@ -432,7 +432,7 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
     public function get_host_ids(){
     	$retval = array();
     	$sql = array(
-    			'SELECT host_id FROM host_x_tag WHERE tag_id = ?i',
+    			'SELECT host_id FROM host_x_tag WHERE tag_id = ?i AND host_id > 0',
     			$this->get_id()
     	);
     	$result = $this->db->fetch_object_array($sql);

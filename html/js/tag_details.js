@@ -4,6 +4,7 @@ $(document).ready(function(){
 			});
 	$('#article-table').dataTable({
 		"sDom": '<"top"lf>rt<"bottom"ip>',
+		"order": [[0,"desc"]],
 			});
 	$('#vuln-table').dataTable({
 		"sDom": '<"top"lf>rt<"bottom"ip>',

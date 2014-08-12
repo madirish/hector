@@ -50,7 +50,7 @@ else {
     $log = Log::get_instance();
     $dblog->log("bingfqdn_scan.php status", "bingfqdn_scan.php invoked.");
     $log->write_message("bingfqdn_scan.php invoked.");
-    $output = system($_SESSION['python_exec_path'] . ' ' . $approot . 'scripts/bingfqdn/bingfqdn.py', $retval);
+    $output = system($_SESSION['python_exec_path'] . ' ' . $approot . 'scripts/bingfqdn_scan/bingfqdn.py', $retval);
     $dblog->log("bingfqdn.php process", "bingfqdn.py complete [return code was $retval]");
     $log->write_message("bingfqdn scan: bingfqdn.py complete");
     

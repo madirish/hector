@@ -7,41 +7,58 @@ Search malicious IP database: <input type="text" name="ip"/> <input type="submit
 <div class="row">
 <div class="span4">
 <p class="lead">Port Probes Yesterday</p>
-<table class="table">
-<tr><th>Hits</th><th>Port</th><th>Protocol</th></tr>
-<?php
-
-foreach ($port_result as $row) {
-	echo "<tr><td>" . $row->cid . "</td><td><a href='?action=reports&report=by_port&ports=" . $row->dst_port . "/" . $row->proto . "'>" . $row->dst_port . "</a></td><td>" . $row->proto . "</td></tr>";
-}
-?>
+<table id="ports-yday" class="table table-bordered table-striped">
+<thead>
+	<tr>
+		<th>Hits</th>
+		<th>Port</th>
+		<th>Protocol</th>
+	</tr>	
+</thead>
+<tbody>
+	<?php foreach ($port_result as $row):?>
+		<tr>
+			<td><?php echo $row->cid; ?></td>
+			<td><a href="?action=reports&report=by_port&ports=<?php echo $row->dst_port;?>"><?php echo $row->dst_port;?></a></td>
+			<td><?php echo $row->proto;?></td>
+		</tr>
+	<?php endforeach; ?>
+</tbody>
 </table>
 
 </div><div class="span4">
 
 <p class="lead">Latest 20 distinct darknet probe IPs</p>
-<table class="table">
-<tr><th>IP Address</th></tr>
-<?php
-
-foreach ($darknet_result as $row) {
-	echo "<tr><td><a href='?action=attackerip&ip=" . $row->evilip . "'>" . $row->evilip . "</a> (" . gethostbyaddr($row->evilip) . ")</td></tr>";
-}
-?>
+<table id="distinct-probes" class="table table-bordered table-striped">
+<thead>
+	<tr>
+		<th>IP Address</th>
+	</tr>
+</thead>
+<tbody>
+	<?php foreach ($darknet_result as $row):?>
+		<tr>
+			<td><a href="?action=attackerip&ip=<?php echo $row->evilip;?>"><?php echo $row->evilip?></a> (<?php echo gethostbyaddr($row->evilip)?>)</td>
+		</tr>
+	<?php endforeach;?>
+</tbody>
 </table>
 
 </div><div class="span4">
 <p class="lead">Latest 30 attackers detected by OSSEC</p>
-<table class="table">
-<tr><th>IP Address</th></tr>
-<?php
-
-foreach ($ossec_attackers as $row) {
-	echo "<tr><td><a href='?action=attackerip&ip=" . $row->evilip . "'>" . $row->evilip . "</a> (" . gethostbyaddr($row->evilip) . ")</td></tr>";
-}
-?>
-
-</td></tr>
+<table id="attackers" class="table">
+<thead>
+	<tr>
+		<th>IP Address</th>
+	</tr>
+</thead>
+<tbody>
+	<?php foreach($ossec_attackers as $row):?>
+		<tr>
+			<td><a href="?action=attackerip&ip=<?php echo $row->evilip?>"><?php echo $row->evilip?></a> (<?php echo gethostbyaddr($row->evilip)?>)</td>
+		</tr>
+	<?php endforeach;?>
+</tbody>
 </table>
 
 </div></div>

@@ -13,6 +13,41 @@
  */
 require_once($approot . 'lib/class.Db.php');
 
+/**
+ * Necessary includes
+ */
+include_once($approot . 'lib/class.Collection.php');
+
+// css
+$css = '';
+$css .= "<link href='css/jquery.dataTables.css' rel='stylesheet'>\n";
+
+// javascripts
+$javascripts = '';
+$javascripts .= "<script type='text/javascript' src='js/jquery.dataTables.min.js'></script>\n";
+$javascripts .= "<script type='text/javascript' src='js/ossecalerts.js'></script>\n";
+
+
+$ossec_alert_collection = new Collection('Ossec_Alert','','get_ossec_alerts_in_last_week');
+$ossec_alerts = array();
+if (is_array($ossec_alert_collection->members)){
+	foreach ($ossec_alert_collection->members as $ossec_alert){
+		$ossec_alerts[] = $ossec_alert->get_object_as_array();
+	}
+}
+
+$ossec_rule_collection = new Collection('Ossec_Rule');
+$ossec_rules = array();
+
+if (is_array($ossec_rule_collection->members)){
+	foreach($ossec_rule_collection->members as $rule){
+		$ossec_rules[] = $rule->get_object_as_array();
+	}
+}
+
+
+
+
 $db = Db::get_instance();
 $limit = '';
 $leveloptions = '';

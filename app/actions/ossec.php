@@ -10,21 +10,26 @@
 /**
  * Require the database
  */
-require_once($approot . 'lib/class.Db.php');
 require_once($approot . 'lib/class.Host.php');
 
-$db = Db::get_instance();
+// screenshots.css
+$css = '';
+$css .= "<link href='css/jquery.dataTables.css' rel='stylesheet'>\n";
+
+// javascripts
+$javascripts = '';
+$javascripts .= "<script type='text/javascript' src='js/jquery.dataTables.min.js'></script>\n";
+$javascripts .= "<script type='text/javascript' src='js/ossec.js'></script>\n";
 
 
-$sql = 'SELECT distinct(host_id) FROM ossec_alert';
-$result = $db->fetch_object_array($sql);
+
+$ossec = new Host();
+$host_ids = $ossec->get_ossec_host_ids(); 
 $hosts = array();
-foreach($result as $host) {
-	$host_object = new Host($host->host_id);
-	$hosts[] = $host_object->get_object_as_array();
-	//$hosts[] = new Host($host->host_id);
+foreach($host_ids as $host_id) {
+	$host = new Host($host_id);
+	$hosts[] = $host->get_object_as_array();
 }
-$hosts_json = json_encode($hosts);
 
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates . 'ossec.tpl.php');

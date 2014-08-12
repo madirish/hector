@@ -74,7 +74,13 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
 	 * @var String
 	 */
 	private $osvdb;
-
+	
+	/**
+	 * Tag ids relating to the Vulnerability
+	 * 
+	 * @var Array
+	 */
+	private $tag_ids;
 
     // --- OPERATIONS ---
 
@@ -104,7 +110,15 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
 				$this->description = $result[0]->vuln_description;
 				$this->cve = $result[0]->vuln_cve;
 				$this->osvdb = $result[0]->vuln_osvdb;
-			}		
+			}
+			$sql = array('SELECT tag_id FROM vuln_x_tag WHERE vuln_id = ?i',$id);
+			$result = $this->db->fetch_object_array($sql);
+			if (count($result) > 0) {
+				require_once('class.Tag.php');
+				foreach ($result as $item) {
+					$this->add_tag_id($item->tag_id);
+				}
+			}
 		}
     }
 
@@ -122,8 +136,13 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
     			$this->get_id()
     		);
     		$retval = $this->db->iud_sql($sql);
-    		if ($retval) $this->id = null;
     	}
+    	// Delete vuln_x_tag mapping for the vulnerability
+    	$sql = array(
+    			'DELETE FROM vuln_x_tag WHERE vuln_id = ?i',
+    			$this->get_id()
+    	);
+    	$this->db->iud_sql($sql);
     	return $retval;
     }
     
@@ -158,7 +177,12 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
 					'type'=>'text',
 					'name'=>'osvdb',
 					'value_function'=>'get_osvdb',
-					'process_callback'=>'set_osvdb')
+					'process_callback'=>'set_osvdb'),
+			array('label'=>'Tags',
+					'type'=>'text',
+					'name'=>'tags',
+					'process_callback' =>'process_tag_values',
+					'value_function' => 'get_tag_names_callback')
 		);
 	}
 
@@ -337,6 +361,21 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
 	    		$this->id = $result[0]->last_id;
 	    	}
     	}
+    	
+    	//Add/update tags if any
+    	$sql = array(
+    		'DELETE FROM vuln_x_tag WHERE vuln_id = ?i',
+    			$this->get_id()
+    	);
+    	$this->db->iud_sql($sql);
+    	if (is_array($this->get_tag_ids()) && count($this->get_tag_ids()) > 0){
+    		foreach ($this->get_tag_ids() as $tag_id){
+    			$sql = array('INSERT INTO vuln_x_tag SET vuln_id = ?i, tag_id = ?i',
+    					$this->get_id(),$tag_id
+    			);
+    			$this->db->iud_sql($sql);
+    		}
+    	}
     	return $retval;
     }
     
@@ -390,6 +429,125 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
     	if ($osvdb != '')
     		$this->osvdb = htmlspecialchars($osvdb);
     }
+    
+    /**
+     * Set tags associated with this vulnerability
+     *
+     * @access public
+     * @author Ubani Balogun <ubani@sas.upenn.edu>
+     * @param Array an array of tag ids (integers)
+     * @return void
+     */
+    public function set_tag_ids($array){
+    	if (is_array($array)){
+    		$array = array_map('intval',$array);
+    		$this->tag_ids = $array;
+    	}
+    }
+    /**
+     * Returns the tag ids associated with vulnerability
+     *
+     * @access public
+     * @author Ubani Balogun <ubani@sas.upenn.edu>
+     * @return Array an array of tag ids (integers)
+     */
+    public function get_tag_ids(){
+    	return $this->tag_ids;
+    }
+    
+    /**
+     * Adds a tag id to the tag_ids attribute
+     *
+     * @access public
+     * @author Ubani Balogun <ubani@sas.upenn.edu>
+     * @param int the id to add
+     * @return void
+     */
+    public function add_tag_id($id){
+    	$this->tag_ids[] = intval($id);
+    }
+    
+    /**
+     * Gets the names off all tags associated with an vulnerability
+     *
+     * @access public
+     * @author Ubani Balogun <ubani@sas.upenn.edu>
+     * @return Array an array of tag names (strings)
+     */
+    public function get_tag_names(){
+    	$retval = array();
+    	$tag_ids = $this->get_tag_ids();
+    	require_once('class.Tag.php');
+    	if (is_array($tag_ids)){
+    		foreach ($tag_ids as $tag_id){
+    			$tag = new Tag($tag_id);
+    			$retval[] = $tag->get_name();
+    		}
+    	}
+    	return $retval;
+    }
+    
+    /**
+     * Value function callback for tag values of add alter form
+     * 
+     * @access public
+     * @author Ubani A Balogun
+     * @return String tag names delimited by ", "
+     */
+    public function get_tag_names_callback(){
+    	$tag_names = $this->get_tag_names();
+    	return implode(", ",$tag_names);
+    }
+    
+    /**
+     * Process the tag values received from the add/edit form
+     * 
+     * @access public 
+     * @author Ubani A Balogun <ubani@sas.upenn.edu>
+     * @return void
+     */
+    public function process_tag_values($tags){
+    	require_once('class.Tag.php');
+    	$tag_ids = array();
+    	$names = explode(",",$tags);
+    	if (is_array($names)){
+    		foreach ($names as $each){
+    			$tag_name = trim($each);
+    			if ($tag_name){
+    				$tag = new Tag();
+    				$is_tag = $tag->get_tag_by_name($tag_name);
+    				if (!$is_tag){
+    					$tag->set_name($tag_name);
+    					$tag->save();
+    					$tag_id = $tag->get_id();
+    				}else{
+    					$tag_id = $is_tag;
+    				}
+    				$tag_ids[] = $tag_id;
+    			}
+    		}
+    	}
+    	$this->set_tag_ids($tag_ids);
+    
+    }
+    
+    /**
+     * Gets the object as an array
+     * 
+     * @access public
+     * @author Ubani A Balogun <ubani@sas.upenn.edu>
+     * @return Array an associative array of the objects attributes
+     */
+    public function get_object_as_array(){
+    	return array(
+    			"id" => $this->get_id(),
+    			"name" => $this->get_name(),
+    			"description" => $this->get_description(),
+    			"cve" => $this->get_cve(),
+    			"osvdb" => $this->get_osvdb(),
+    	);
+    }
+    
 
 } /* end of class Vuln */
 

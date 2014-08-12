@@ -1,15 +1,23 @@
 <h2>OSSEC Hosts</h2>
-
-<ol>
-<?php
-	if (isset($hosts) && is_array($hosts)) {
-		foreach ($hosts as $host) {
-			echo '<li>[' . $host->get_ip() . 
-				'] ' . $host->get_name();
-			if ($host->get_name_linked() != '<a href="?action=details&object=host&id=0"></a>')
-				echo ' (' . $host->get_name_linked() . ')'; 
-			echo '</li>' . "\n";
-		}
-	}
-?>
-</ol>
+<div class="row">
+	<div class="span12">
+		<table id="ossec-table" class="table table-striped table-bordered">
+		<thead>
+			<tr>
+				<th>IP</th>
+				<th>Name</th>
+				<th>Link</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach($hosts as $host): ?>
+				<tr>
+					<td><?php echo $host['ip']?></td>
+					<td><?php echo $host['name']?></td>
+					<td><?php echo $host['name_linked']?></td>
+				</tr>
+			<?php endforeach; ?>
+		</tbody>
+		</table>
+	</div>
+</div>

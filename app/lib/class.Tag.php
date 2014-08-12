@@ -205,7 +205,7 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
 	 * @return Array Dispalays for default template
 	 */
 	public function get_displays() {
-		return array('Name'=>'get_name');
+		return array('Name'=>'get_linked_name');
 	}
 
     /**
@@ -239,7 +239,18 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
     public function get_name() {
 		return htmlspecialchars($this->name);
     }
-
+    
+    /**
+     * The HTML linked title of the Tag
+     *  
+     *  @access public 
+     *  @author Ubani A Balogun <ubani@sas.upenn.edu>
+     *  @return String the HTML linked safe title of the Article
+     */
+    public function get_linked_name(){
+    	return "<a href='?action=tag_details&id=$this->id'>" . $this->get_name() . "</a>";
+    }
+    
 	/**
 	 * Persist the Tag to the data layer
 	 * 
@@ -315,7 +326,7 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
      * Gets the id of a given tag
      * 
      * @access public
-     * @author Ubani A Balogun
+     * @author Ubani A Balogun <ubani@sas.upenn.edu>
      * @param String The tag to search for
      * @return Int the id of the tag. 0 if tag does not exist
      */
@@ -332,6 +343,106 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
     	return $retval;
     }
     
+    /**
+     * Returns the tag object as an array
+     * @access public
+     * @author Ubani A Balogun <ubani@sas.upenn.edu>
+     * @return Array an associative array of tag attributes 
+     */
+    public function get_object_as_array(){
+    	return array(
+    			'id' => $this->get_id(),
+    			'name' => $this->get_name(),
+    	);
+    }
+    
+    /**
+     * Returns an array of incident ids mapped to the tag id
+     * 
+     * @access public
+     * @author Ubani A Balogun <ubani@sas.upenn.edu>
+     * @return Array of incident ids (int)
+     */
+    public function get_incident_ids(){
+    	$retval = array();
+    	$sql = array(
+    		'SELECT incident_id FROM incident_x_tag WHERE tag_id = ?i AND incident_id > 0',
+    			$this->get_id()
+    	);
+    	$result = $this->db->fetch_object_array($sql);
+    	if (isset($result[0])){
+    		foreach ($result as $row){
+    			$retval[] = $row->incident_id;
+    		}
+    	}
+    	return $retval;
+    }
+    
+    /**
+     * Returns an array of article ids mapped to this tag
+     * 
+     * @access public
+     * @author Ubani A Balogun <ubani@sas.upenn.edu>
+     * @return Array an array of article ids (int)
+     */
+    public function get_article_ids(){
+    	$retval = array();
+    	$sql = array(
+    			'SELECT article_id FROM article_x_tag WHERE tag_id = ?i AND article_id > 0',
+    			$this->get_id()
+    	);
+    	$result = $this->db->fetch_object_array($sql);
+    	if (isset($result[0])){
+    		foreach ($result as $row){
+    			$retval[] = $row->article_id;
+    		}
+    	}
+    	return $retval;
+    }
+    
+    /**
+     * Returns an array of vulnerability ids mapped to this tag
+     *
+     * @access public
+     * @author Ubani A Balogun <ubani@sas.upenn.edu>
+     * @return Array an array of article ids (int)
+     */
+    public function get_vuln_ids(){
+    	$retval = array();
+    	$sql = array(
+    			'SELECT vuln_id FROM vuln_x_tag WHERE tag_id = ?i AND vuln_id > 0',
+    			$this->get_id()
+    	);
+    	$result = $this->db->fetch_object_array($sql);
+    	if (isset($result[0])){
+    		foreach ($result as $row){
+    			$retval[] = $row->vuln_id;
+    		}
+    	}
+    	return $retval;
+    }
+    
+    /**
+     * Returns an array of host ids mapped to this tag
+     * 
+     * @access public
+     * @author Ubani A Balogun <ubani@sas.upenn.edu>
+     * @return Array an array of host ids (int)
+     */
+    public function get_host_ids(){
+    	$retval = array();
+    	$sql = array(
+    			'SELECT host_id FROM host_x_tag WHERE tag_id = ?i AND host_id > 0',
+    			$this->get_id()
+    	);
+    	$result = $this->db->fetch_object_array($sql);
+    	if (isset($result[0])){
+    		foreach ($result as $row){
+    			$retval[] = $row->host_id;
+    		}
+    	}
+    	return $retval;
+    }
     
 
 } /* end of class Tag */

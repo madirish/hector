@@ -74,7 +74,7 @@ function mail_alerts($testing='No') {
                 	$portproto[0] = $alert->get_port();
                     $portproto[1] = 'tcp';
                 }
-            $portprotodisplay = getservbyport($portproto[0], $portproto[1]);
+            $portprotodisplay = getservbyport(intval($portproto[0]), $portproto[1]);
 			if ($host == $tmphost) {
 				$output .= "\t\t" . $alert->get_port() . " (" . $portprotodisplay . ")\n";
 				$htmloutput .= "\t<li>" . $alert->get_port() . " (" . $portprotodisplay . ")</li>\n";

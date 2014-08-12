@@ -94,16 +94,24 @@ for feedurl in results:
       print "Error importing feeditem " + feeditem["title"]
       raise e
     
-    tagged = 0
+    # Insure we got an article id
+    article_id = conn.insert_id()
+    if (article_id < 1):
+      sql = "SELECT article_id FROM article WHERE article_title = %s AND article_url = %s"
+      cursor.execute(sql,(feeditem["title"], feeditem["link"]))
+      row = cursor.fetchone()
+      while row is not None:
+        article_id = row[0]
     
     # Autotag articles
     for (tag_id, tag_name) in tags:
-      if feeditem["title"].find(tag_name) > 0 :
+      tagged = 0
+      if feeditem["title"].find(tag_name) > -1 :
           sql = "insert into article_x_tag set article_id = %s, tag_id = %s"
           cursor.execute(sql, (conn.insert_id(), tag_id))
           tagged = 1
           if DEBUG: print "[+] Found tag_id " + str(tag_id) + " named " + tag_name + " in: " + feeditem["title"]
-      if feeditem["summary"].find(tag_name) > 0 and tagged == 0 :
+      if feeditem["summary"].find(tag_name) > -1 and tagged == 0 :
           sql = "insert into article_x_tag set article_id = %s, tag_id = %s"
           cursor.execute(sql, (conn.insert_id(), tag_id))
           if DEBUG: print "[+] Found tag_id " + str(tag_id) + " named " + tag_name + " in: " + feeditem["title"]

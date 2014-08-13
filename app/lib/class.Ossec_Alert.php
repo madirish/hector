@@ -391,7 +391,7 @@ class Ossec_Alert extends Maleable_Object {
 			$sql .= ' ' . $orderby;
 		}
 		else if ($orderby == '') {
-			$sql .= ' ORDER BY o.alert_id desc';
+			$sql .= ' ORDER BY o.alert_date desc';
 		}
 		return $sql;
 	}

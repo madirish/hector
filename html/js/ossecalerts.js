@@ -49,4 +49,27 @@ $(document).ready(function(){
 		$('#minlevel').val('');
 		table.draw();
 	})
+	
+	var timeline_keys = $.parseJSON($('#timeline-keys').text());
+	var timeline_values = $.parseJSON($('#timeline-values').text());
+	console.log(timeline_keys);
+	console.log(timeline_values);
+	
+	var data = {
+			labels: timeline_keys,
+			datasets: [{
+				fillColor: "rgba(255,255,255,0.1)",
+                strokeColor: "rgba(220,220,220,1)",
+                pointColor: "rgba(220,220,220,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,220,220,1)",
+                data: timeline_values,
+			}]
+	};
+	var options = {
+            bezierCurve: false,
+            multiTooltipTemplate: "<%= datasetLabel%> - <%= value %>",
+        };
+	var timelineChart = new Chart(document.getElementById("ossec-timeline").getContext("2d")).Line(data,options);
 })

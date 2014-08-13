@@ -1,5 +1,13 @@
 <h2>OSSEC Alerts</h2>
 <strong><?php echo $record_count?> records in last week</strong>
+<div class="row">
+	<div class="span12 pagination-centered">
+		<h3>Timeline of Alerts</h3>
+		<div class="hidden" id="timeline-keys"><?php echo $timeline_keys;?></div>
+		<div class="hidden" id="timeline-values"><?php echo $timeline_values;?></div>
+		<canvas id="ossec-timeline" height="300" width="600"></canvas>
+	</div>
+</div>
 <div class="input-prepend input-append">
 	<span class="add-on">Minimum alert level:</span>
 	<input class="input-mini" name="minlevel" id="minlevel" type="text" pattern="\d*"  placeholder="0">

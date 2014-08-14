@@ -5,7 +5,7 @@
  * @author Ubani Anthony Balogun <ubani@sas.upenn.edu>
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * @package HECTOR
- *  
+ * @todo Merge get_*_freqeuncies into a get_field_frequencies function
  * 
  */
 
@@ -398,6 +398,25 @@ class HoneyPotConnect extends Maleable_Object {
 		);
 	}
 	
+	/**
+	 * Returns the frequencies of entires for a field in the data layer
+	 * 
+	 * @param String $field The field from the data layer to count
+	 * @param string $bound The bound for the data
+	 * @return Array The frequenies of entries for the field
+	 */
+	public function get_field_frequencies($field,$bound=''){
+		$retval = array();
+		$sql = array('SELECT ?s , count(?s) as frequency FROM koj_login_attempt'
+						. ' WHERE id > 0 ' . $bound . ' GROUP BY ?s order by frequency desc', $field, $field, $field);
+		$result = $this->db->fetch_object_array($sql);
+		if (isset($result[0])){
+			foreach ($result as $row){
+				$retval[$row->$field] = $row->frequency;
+			}
+		}
+		return $retval;
+	}
 }
 
 ?>

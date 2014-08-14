@@ -10,7 +10,6 @@
 /**
  * Necessary includes
  */
-require_once($approot . 'lib/class.Db.php');
 include_once($approot . 'lib/class.Collection.php');
 
 // Include CSS files;

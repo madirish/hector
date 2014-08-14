@@ -2,8 +2,8 @@
 /**
  * Hector - class.Url.php
  * 
- * @author Ubani Anthony Balogun <uban@sas.upenn.edu>
- * @package Hector
+ * @author Ubani A Balogun <uban@sas.upenn.edu>
+ * @package HECTOR
  * 
  * 
  */

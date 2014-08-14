@@ -202,7 +202,7 @@ class HoneyPotConnect extends Maleable_Object {
 	 */
 	public function set_ip($ip){
 		$retval = False;
-		if ($ip = filter_var($ip,FILTER_VALIDATE_IP)){
+		if ($ip == filter_var($ip,FILTER_VALIDATE_IP)){
 			$this->ip = $ip;
 			$retval = True;
 		}

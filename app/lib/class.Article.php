@@ -149,8 +149,17 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
         }
     }
 
+
+    /**
+     * Add a tag to the tag_ids attribute array
+     *
+     * @access public
+     * @author Justin C. Klein Keane, <jukeane@sas.upenn.edu>
+     * @return Boolean False if something goes awry
+     */
 	public function add_tag_id($id) {
 		$this->tag_ids[] = intval($id);
+		return ($id > 0) ? TRUE : FALSE;
 	}
 
     /**
@@ -334,6 +343,13 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
     public function get_linked_url() {
         return '<a href="' . htmlentities($this->url) . '">' . htmlentities($this->url) . '</a>';
     }
+
+    /**
+     * Array of tag_ids for tags this article is tagged with
+     * 
+     * @access public
+     * @return Array An array of integer tag_id values
+     */
     
     public function get_tag_ids() {
     	return $this->tag_ids;
@@ -469,15 +485,26 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
      * @return void
 	 */
     public function set_tag_ids($array) {
+    	$retval = FALSE;
     	if (is_array($array)) {
 	    	//sanitize the array
 	    	$array = array_map('intval', $array);
 	    	$this->tag_ids = $array;
+	    	$reval = TRUE;
     	}
+    	return $retval;
     }
     
+    /**
+     * Set the article teaser
+     * 
+     * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @param String The text of the teaser
+     * @return Boolean True just to return something
+     */
     public function set_teaser($text) {
     	$this->teaser = $text;
+    	return TRUE;
     }
 
     /**
@@ -485,13 +512,29 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
      * 
      * @access public
      * @param String The name of the article
+     * @return Boolean True just to return something
      */
     public function set_title($title) {
         $this->title = $title;
+    	return TRUE;
     }
-    
+
+    /**
+     * Set the URL for this article
+     * 
+     * @access public
+     * @param String The URL to set for this article
+     * @return Boolean False if something goes awry
+     */
     public function set_url($url) {
-    	$this->url = $url;
+    	$retval = TRUE;
+    	if(!filter_var($url, FILTER_VALIDATE_URL)) {
+    		$retval = FALSE;
+    	}
+    	else {
+    		$this->url = $url;
+    	}
+    	return TRUE;
     }
     
     /**

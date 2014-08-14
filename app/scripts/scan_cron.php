@@ -20,6 +20,7 @@ if(php_sapi_name() == 'cli') {
 	$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 	$approot = realpath(substr($_SERVER['PATH_TRANSLATED'],0,strrpos($_SERVER['PATH_TRANSLATED'],'/')) . '/../') . '/';
     
+    log_scan_cron('Starting RSS import with /usr/bin/python ' . $approot . 'scripts/rssimport.py');
 	system('/usr/bin/python ' . $approot . 'scripts/rssimport.py');
 	
 	/**
@@ -80,6 +81,8 @@ if(php_sapi_name() == 'cli') {
 			// Alert
 			$alert->save();
 			$alert->set_string('Scan ' . $scan->get_name() . ' finished successfully!');
+			$alert->save();
+			log_scan_cron('Scan ' . $scan->get_name() . ' finished successfully!');
 		}
 	 }
 	log_scan_cron('scan_cron.php scans complete.');
@@ -95,5 +98,7 @@ function log_scan_cron($message) {
     $log->write_message($message);
     $dblog->log('scan_cron', $message);
     syslog(LOG_INFO, $message);
+    // Print a message in case cron e-mails results
+    print($message);
 }
 ?>

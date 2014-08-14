@@ -426,7 +426,7 @@ class Ossec_Alert extends Maleable_Object {
 	 *  @return String the sql for the collection definition
 	 */
 	public function get_ossec_alerts_in_last_week(){
-		$ossec_alert_filter = " AND alert_date >= DATE_SUB(NOW(), INTERVAL 7 DAY) ";
+		$ossec_alert_filter = " AND alert_date >= DATE_SUB(NOW(), INTERVAL 5 DAY) ";
 		return $this->get_collection_definition($ossec_alert_filter);
 	}
 	

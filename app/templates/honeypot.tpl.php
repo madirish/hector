@@ -12,6 +12,32 @@ Search malicious IP database: <input type="text" name="ip"/> <input type="submit
 <div class="tab-content">
 	<div class="tab-pane active" id="logins">
 		<p class="lead"> Recent Login Attempts</p>
+		<div class="row">
+		<div class="span3">
+			<div class="well">
+				<h4>Top Country</h4>
+				<p><?php echo $c_percent . "% " . $c_top;?></p>
+			</div>
+		</div>
+		<div class="span3">
+			<div class="well">
+				<h4>Top IP</h4>
+				<p><?php echo $ip_percent . "% " . $ip_top;?></p>
+			</div>
+		</div>
+		<div class="span3">
+			<div class="well">
+				<h4>Top Username</h4>
+				<p><?php echo $u_percent . "% " . $u_top;?></p>
+			</div>
+		</div>
+		<div class="span3">
+			<div class="well">
+				<h4>Top Passwords</h4>
+				<p><?php echo $pass_percent . "% " . $pass_top;?></p>
+			</div>
+		</div>
+		</div>
 		<div class="hidden" id="login-attempts"><?php echo htmlentities($attempts_json); ?></div>
 		<div class="dataTables_wrapper form-inline no-footer">
 			<table id="logins-table" class="table table-striped table-bordered table-responsive">
@@ -30,7 +56,7 @@ Search malicious IP database: <input type="text" name="ip"/> <input type="submit
 	</div>
 	
 	<div class="tab-pane" id="sessions">
-		<p class="lead">Sessions Yesterday</p>
+		<p class="lead">Recent Sessions</p>
 		<div id="connections" class="hidden"> <?php echo htmlentities($commands_json);?></div>
 		<div class="dataTables_wrapper form-inline no-footer">
 			<table id="commands-table" class="table table-striped table-bordered table-responsive">

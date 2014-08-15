@@ -93,8 +93,8 @@ if(php_sapi_name() == 'cli') {
 }
 
 function log_scan_cron($message) {
-	global $log;
-    global $dblog;
+    $log = Log::get_instance();
+    $dblog = Dblog::get_instance();
     $log->write_message($message);
     $dblog->log('scan_cron', $message);
     syslog(LOG_INFO, $message);

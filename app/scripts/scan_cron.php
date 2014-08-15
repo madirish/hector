@@ -99,7 +99,7 @@ mail_alerts();
 $db->close();
 
 /**
- * Log to the console, the database, and the app/scripts/message_log
+ * Log to the console, the database, and the app/logs/message_log
  * Console logs are useful if the cron job e-mails results.
  * 
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>

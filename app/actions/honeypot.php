@@ -86,13 +86,7 @@ $form->set_name($formname);
 $token = $form->get_token();
 $form->save();
 
-// Include CSS files;
-$css = '';
-$css .= "<link href='css/jquery.dataTables.css' rel='stylesheet'>\n";
 
-// Include Javascripts;
-$javascripts = '';
-$javascripts .= "<script type='text/javascript' src='js/jquery.dataTables.min.js'></script>\n";
 $javascripts .= "<script type='text/javascript' src='js/honeypot.js'></script>\n";
 
 

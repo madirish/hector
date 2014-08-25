@@ -15,13 +15,7 @@ require_once($approot . 'lib/class.Db.php');
 $db = Db::get_instance();
 
 
-// screenshots.css
-$css = '';
-$css .= "<link href='css/jquery.dataTables.css' rel='stylesheet'>\n";
 
-// javascripts
-$javascripts = '';
-$javascripts .= "<script type='text/javascript' src='js/jquery.dataTables.min.js'></script>\n";
 $javascripts .= "<script type='text/javascript' src='js/detection.js'></script>\n";
 	
 // Query ports probed on the darknet

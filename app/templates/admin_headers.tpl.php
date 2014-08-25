@@ -10,11 +10,14 @@
 	<link href="css/bootstrap-responsive.css" rel="stylesheet">
 	<link href="css/penn.css" rel="stylesheet">
 	<link href="css/chart-legend.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
 	<?php if (isset($css)) echo $css;?>
 	
 	<script type="text/javascript" src="js/ajaxFunctions.js"></script> 
 	<script type="text/javascript" src="js/jquery.js"></script>
 	<script type="text/javascript" src="js/bootstrap.js"></script>
+	<script type="text/javascript" src="js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="js/Chart.js"></script>
 	
 	<?php if (isset($javascripts)) echo $javascripts;?>
 </head>

@@ -66,8 +66,7 @@ $proto_total = array_sum($proto_frequencies);
 $proto_percent = round(($proto_frequency / $proto_total) * 100);
 
 
-$javascripts .= '<script type="text/javascript" charset="utf8" src="js/jquery.dataTables.js"></script>' . "\n";
-$javascripts .= '<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">' . "\n";
+
 
 if (! isset($_GET['ajax']) && ! isset($ajax)) {
     include_once($templates. 'admin_headers.tpl.php');

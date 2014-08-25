@@ -18,6 +18,7 @@
 	<script type="text/javascript" src="js/bootstrap.js"></script>
 	<script type="text/javascript" src="js/Chart.js"></script>
 	<script type="text/javascript" src="js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="js/hector.analytics.js"></script>
 	
 	<?php if (isset($javascripts)) echo $javascripts;?>
 </head>

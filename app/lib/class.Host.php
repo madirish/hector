@@ -1888,7 +1888,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	public function get_field_frequencies($field,$bound=''){
 		$retval = array();
 		$sql = array('SELECT ?s , count(?s) as frequency FROM host'
-				. ' WHERE host_id > 0 ' . $bound . ' GROUP BY ?s order by frequency desc', $field, $field, $field);
+				. ' WHERE host_id > 0 ' . mysql_real_escape_string($bound) . ' GROUP BY ?s order by frequency desc', $field, $field, $field);
 		$result = $this->db->fetch_object_array($sql);
 		if (isset($result[0])){
 			foreach ($result as $row){

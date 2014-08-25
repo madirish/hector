@@ -476,7 +476,7 @@ class Ossec_Alert extends Maleable_Object {
 	public function get_field_frequencies($field,$bound=''){
 		$retval = array();
 		$sql = array('SELECT ?s , count(?s) as frequency FROM ossec_alert'
-				. ' WHERE id > 0 ' . $bound . ' GROUP BY ?s order by frequency desc', $field, $field, $field);
+				. ' WHERE id > 0 ' . mysql_real_escape_string($bound) . ' GROUP BY ?s order by frequency desc', $field, $field, $field);
 		$result = $this->db->fetch_object_array($sql);
 		if (isset($result[0])){
 			foreach ($result as $row){

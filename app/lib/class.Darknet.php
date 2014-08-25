@@ -176,7 +176,7 @@ class Darknet extends Maleable_Object {
     public function get_collection_definition($filter = '', $orderby = '') {
         $sql = 'SELECT d.id as darknet_id ' .
                 'FROM darknet d ' .
-                'WHERE d.dst_port >= 0 ' .
+                'WHERE d.dst_port > 0 ' .
                 'AND d.id > 0';
         if ($filter != '' && is_array($filter))  {
             $sql .= ' ' . array_shift($filter);
@@ -472,7 +472,7 @@ class Darknet extends Maleable_Object {
     public function get_field_frequencies($field,$bound=''){
     	$retval = array();
     	$sql = array('SELECT ?s , count(?s) as frequency FROM darknet d'
-    			. ' WHERE id > 0 ' . $bound . ' GROUP BY ?s order by frequency desc', $field, $field, $field);
+    			. ' WHERE id > 0 ' . mysql_real_escape_string($bound) . ' GROUP BY ?s order by frequency desc', $field, $field, $field);
     	$result = $this->db->fetch_object_array($sql);
     	if (isset($result[0])){
     		foreach ($result as $row){

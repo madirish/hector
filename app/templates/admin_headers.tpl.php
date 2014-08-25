@@ -10,11 +10,14 @@
 	<link href="css/bootstrap-responsive.css" rel="stylesheet">
 	<link href="css/penn.css" rel="stylesheet">
 	<link href="css/chart-legend.css" rel="stylesheet">
+	<link href="css/jquery.dataTables.css" rel="stylesheet">
 	<?php if (isset($css)) echo $css;?>
 	
 	<script type="text/javascript" src="js/ajaxFunctions.js"></script> 
 	<script type="text/javascript" src="js/jquery.js"></script>
 	<script type="text/javascript" src="js/bootstrap.js"></script>
+	<script type="text/javascript" src="js/Chart.js"></script>
+	<script type="text/javascript" src="js/jquery.dataTables.js"></script>
 	
 	<?php if (isset($javascripts)) echo $javascripts;?>
 </head>
@@ -95,7 +98,7 @@
     <li class="dropdown">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="View open source intelligence collections."><i class="icon-globe"></i> OSINT <b class="caret"></b></a>
       <ul class="dropdown-menu">
-        <li><a href="?action=details&object=article">Articles</a></li>
+        <li><a href="?action=articles">Articles</a></li>
         <li><a href="?action=add_edit&object=Article">Add Article</a></li>
       </ul>
     </li>

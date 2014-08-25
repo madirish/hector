@@ -40,43 +40,10 @@ function drawDoughnutChart(canvasId,dataId){
     
 }
 
-
-$(function(){
-	var raw = $('#login-attempts').text();
-	var data = JSON.parse(raw);
-	columns = [
-	           {data: 'id'},
-	           {data: 'ip_linked'},
-	           {data: 'country_code'},
-	           {data: 'time'},
-	           {data: 'username'},
-	           {data: 'password'},
-	           ];
-	$('#logins-table').DataTable({
-		data:data,
-		columns:columns,
-		"sDom": '<"top"lf>rt<"bottom"ip>',
-	})
-	
-	var commands = $.parseJSON($('#connections').text());
-	commandsColumns = [
-	                   {data: 'id',"visible":false},
-	                   {data: 'time'},
-	                   {data: 'ip_linked'},
-	                   {data: 'session_id'},
-	                   {data: 'command'},
-	                   ];
-	$('#commands-table').DataTable({
-		data:commands,
-		columns:commandsColumns,
-		"sDom": '<"top"lf>rt<"bottom"ip>',
-		
-	})
-	
+$(document).ready(function () {
+	drawDoughnutChart("top-dst","dstpercent");
 	drawDoughnutChart("top-country","countrypercent");
 	drawDoughnutChart("top-ip","ippercent");
-	drawDoughnutChart("top-user","userpercent");
-	drawDoughnutChart("top-pass","passpercent");
-	drawDoughnutChart("sess-ip","sess-ippercent");
-	drawDoughnutChart("sess-country","sess-cpercent");
-})
+	drawDoughnutChart("top-proto","protopercent");
+
+});

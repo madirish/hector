@@ -277,6 +277,18 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
         return htmlspecialchars($this->date);
     }
     
+    /**
+     * The formatted date of the Article
+     * 
+     * @access public
+     * @return The html safe formated date of the article
+     */
+    public function get_date_readable(){
+    	$date = new DateTime($this->get_date());
+    	return $date->format('M d, Y');
+    	
+    }
+    
     public function get_details() {
     	$output = array();
     	$output['id'] = $this->get_id();
@@ -384,7 +396,27 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
     public function get_url() {
         return htmlentities($this->url);
     }
-
+    
+    /**
+     * Gets the html safe domain or the url
+     * 
+     * @access public
+     * @return String The html safe domain name of the url
+     */
+    public function get_source_linked(){
+    	$url = $this->get_url();
+    	$pattern = '@^(?:http[s]?://)?([^/]+)@i';
+    	preg_match($pattern,$url,$matches);
+    	if (!empty($matches)){
+    		$source = $matches[0];
+    	}else{
+    		$source = $url;
+    	}
+    	$source_linked =  '<a href="' . htmlentities($url) . '">' . htmlentities($source) . '</a>';
+    	
+    	return $source_linked;
+    }
+    
     /**
      * Persist the Article to the data layer
      * 
@@ -503,7 +535,19 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
      * @return Boolean True just to return something
      */
     public function set_teaser($text) {
-    	$this->teaser = $text;
+    	$limit = 500;
+    	$pad = '...';
+    	$break = '.';
+    	if (strlen($text) <= $limit){
+    		$teaser = $text;
+    	}else{
+    		if (false !== ($breakpoint = strpos($text, $break, $limit))){
+    			if($breakpoint < strlen($text) - 1) {
+    				$teaser = substr($text, 0, $breakpoint) . $pad;
+    			}
+    		}
+    	}
+    	$this->teaser = $teaser;
     	return TRUE;
     }
 
@@ -551,10 +595,12 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
     			'title' => $this->get_title(),
     			'teaser' => $this->get_teaser(),
     			'date' => $this->get_date(),
+    			'date_readable' => $this->get_date_readable(),
     			'body' => $this->get_body(),
     			'url' => $this->get_url(),
     			'linked_url' =>$this->get_linked_url(),
     			'linked_title' => $this->get_linked_title(),
+    			'source_linked' => $this->get_source_linked(),
     	);
     }
 

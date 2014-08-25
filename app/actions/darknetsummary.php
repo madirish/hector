@@ -11,6 +11,7 @@
  * Setup defaults.
  */
 $content = '';
+require_once($approot . 'lib/class.Collection.php');
 require_once($approot . 'lib/class.Darknet.php');
 
 $bound = " AND d.received_at > DATE_SUB(NOW(), INTERVAL 4 DAY) ";
@@ -66,8 +67,8 @@ $proto_total = array_sum($proto_frequencies);
 $proto_percent = round(($proto_frequency / $proto_total) * 100);
 
 
-$javascripts .= '<script type="text/javascript" charset="utf8" src="js/jquery.dataTables.js"></script>' . "\n";
-$javascripts .= '<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">' . "\n";
+$javascripts = '';
+$javascripts .= '<script type="text/javascript" charset="utf8" src="js/darknetsummary.js"></script>' . "\n";
 
 if (! isset($_GET['ajax']) && ! isset($ajax)) {
     include_once($templates. 'admin_headers.tpl.php');

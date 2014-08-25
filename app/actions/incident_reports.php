@@ -61,28 +61,28 @@ else {
     $agent_values = array_values($agents);
     $totalagent = array_sum($agents);
     $topagent = $agent_values[0];
-    $agentpercent = round(($topagent / $totalagent) * 100, 2);
+    $agentpercent = round(($topagent / $totalagent) * 100);
     
     arsort($actions); 
     $action_names = array_keys($actions);
     $action_values = array_values($actions);
     $actiontotal = array_sum($actions);
     $topaction = $action_values[0];
-    $actionpercent = round(($topaction / $actiontotal) * 100, 2);
+    $actionpercent = round(($topaction / $actiontotal) * 100);
     
     arsort($assets); 
     $asset_names = array_keys($assets);
     $asset_values = array_values($assets);
     $assettotal = array_sum($assets);
     $topasset = $asset_values[0];
-    $assetpercent = round(($topasset / $assettotal) * 100, 2);
+    $assetpercent = round(($topasset / $assettotal) * 100);
     
     arsort($discos); 
     $disco_names = array_keys($discos);
     $disco_values = array_values($discos);
     $discototal = array_sum($discos);
     $topdisco = $disco_values[0];
-    $discopercent = round(($topdisco / $discototal) * 100, 2);
+    $discopercent = round(($topdisco / $discototal) * 100);
     
 }
 
@@ -134,9 +134,8 @@ foreach($incidentYearMonthCount as $year=>$values) {
 }
 
 
-$javascripts .= "<script type='text/javascript' src='js/Chart.js'></script>\n";
-$javascripts .= '<script type="text/javascript" charset="utf8" src="js/jquery.dataTables.js"></script>' . "\n";
-$javascripts .= '<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">' . "\n";
+$javascripts .= "<script type='text/javascript' src='js/incident_reports.js'></script>\n";
+
 
 include_once($approot . 'templates/admin_headers.tpl.php');
 include_once($approot . 'templates/incident_reports.tpl.php');

@@ -1,28 +1,52 @@
 <h2>Darknet Summary</h2>
 <div class="row">
-	<div class="span3">
-			<div class="well">
-				<h4>Top Destination port</h4>
-				<p><?php echo $dst_percent . "% " . $dst_top;?></p>
-			</div>
+	<div class="span3 pagination-centered">
+			<div class="panel panel-default">
+	        	<div class="panel-heading">
+	        		<h4 class="panel-title">Top Destination Port</h4>
+	        	</div>
+        	<div class="panel-body">
+        		<canvas id="top-dst"></canvas>		
+        	</div>
+        	<div class="panel-footer"><h4><?php echo $dst_top; ?></h4></div>
+        	<div class="hidden" id="dstpercent"><?php echo $dst_percent;?></div>
+        	</div>
 	</div>
-	<div class="span3">
-		<div class="well">
-				<h4>Top Country</h4>
-				<p><?php echo $c_percent . "% " . $c_top;?></p>
-			</div>
+	<div class="span3 pagination-centered">
+		<div class="panel panel-default">
+	        	<div class="panel-heading">
+	        		<h4 class="panel-title">Top Country</h4>
+	        	</div>
+        	<div class="panel-body">
+        		<canvas id="top-country"></canvas>		
+        	</div>
+        	<div class="panel-footer"><h4><?php echo $c_top; ?></h4></div>
+        	<div class="hidden" id="countrypercent"><?php echo $c_percent;?></div>
+        </div>
 	</div>
-	<div class="span3">
-			<div class="well">
-				<h4>Top IP</h4>
-				<p><?php echo $ip_percent . "% " . long2ip($ip_top);?></p>
-			</div>
+	<div class="span3 pagination-centered">
+		<div class="panel panel-default">
+	        	<div class="panel-heading">
+	        		<h4 class="panel-title">Top IP</h4>
+	        	</div>
+        	<div class="panel-body">
+        		<canvas id="top-ip"></canvas>		
+        	</div>
+        	<div class="panel-footer"><h4><?php echo long2ip($ip_top); ?></h4></div>
+        	<div class="hidden" id="ippercent"><?php echo $ip_percent;?></div>
+        </div>
 	</div>
-	<div class="span3">
-			<div class="well">
-				<h4>Top Protocol</h4>
-				<p><?php echo $proto_percent . "% " . $proto_top;?></p>
-			</div>
+	<div class="span3 pagination-centered">
+		<div class="panel panel-default">
+	        	<div class="panel-heading">
+	        		<h4 class="panel-title">Top Protocol</h4>
+	        	</div>
+        	<div class="panel-body">
+        		<canvas id="top-proto"></canvas>		
+        	</div>
+        	<div class="panel-footer"><h4><?php echo $proto_top; ?></h4></div>
+        	<div class="hidden" id="protopercent"><?php echo $proto_percent;?></div>
+        </div>
 		</div>
 		
 </div>
@@ -32,21 +56,17 @@
     <tr><th>Source IP</th><th>Protocol</th><th>Destination Port</th><th>Source Port</th><th>Country</th><th>Time</th></tr>
     </thead>
     <tbody>
-    <?php
-    $x=1;
-    foreach ($darknets as $probe) {
-        echo "<tr";
-        if ($x%2) echo " class='odd'";
-        $ip = long2ip($probe->get_src_ip());
-        $x++;
-        echo "><td><a href='?action=attackerip&ip=" . $ip . "'>" . $ip . "</a></td><td>" . 
-                $probe->get_proto() . "</td><td>" .
-                $probe->get_dst_port() . "</td><td>" .
-                $probe->get_src_port() . "</td><td>" .
-                $probe->get_country_code() . "</td><td>" .
-                $probe->get_received_at() . "</td></tr>";
-    }
-    ?>
+    <?php foreach ($darknets as $probe): ?>
+    	<?php $ip = long2ip($probe->get_src_ip()); ?>
+    	<tr>
+    		<td><a href="?action=attackerip&ip=<?php echo $ip ?>"><?php echo $ip?></a>
+    		<td><?php echo $probe->get_proto()?></td>
+    		<td><?php echo $probe->get_dst_port()?></td>
+    		<td><?php echo $probe->get_src_port() ?></td>
+    		<td><?php echo $probe->get_country_code()?></td>
+    		<td><?php echo $probe->get_received_at()?></td>
+    	</tr>
+    <?php endforeach;?>
     </tbody>
 </table>
 

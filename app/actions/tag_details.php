@@ -16,11 +16,9 @@ include_once($approot . 'lib/class.Host.php');
 
 // screenshots.css
 $css = '';
-$css .= "<link href='css/jquery.dataTables.css' rel='stylesheet'>\n";
 
 // javascripts
 $javascripts = '';
-$javascripts .= "<script type='text/javascript' src='js/jquery.dataTables.min.js'></script>\n";
 $javascripts .= "<script type='text/javascript' src='js/tag_details.js'></script>\n";
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
@@ -78,6 +76,7 @@ $tag_weights['Articles'] = count($article_ids);
 $tag_weights['Vulnerabilities'] = count($vuln_ids);
 $tag_weights['Hosts'] = count($host_ids);
 arsort($tag_weights);
+
 
 
 

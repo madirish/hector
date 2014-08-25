@@ -412,7 +412,7 @@ class HoneyPotConnect extends Maleable_Object {
 		$result = $this->db->fetch_object_array($sql);
 		if (isset($result[0])){
 			foreach ($result as $row){
-				$retval[$row->$field] = $row->frequency;
+				$retval[htmlspecialchars($row->$field)] = $row->frequency;
 			}
 		}
 		return $retval;

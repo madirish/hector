@@ -1,12 +1,54 @@
 <h2><?php echo isset($tag_name) ? $tag_name: "";?></h2>
 <div class="row">
 <!-- Analytics wells -->
-<div class="span3">
-	<div class="well">
-		<h4>Most Relevant To: <?php echo key($tag_weights)?></h4>
-		<p></p>
-	</div>
-</div>
+<div class="span3 pagination-centered">
+        <div class="panel panel-default">
+        	<div class="panel-heading">
+        		<h4 class="panel-title">Incidents with tag</h4>
+        	</div>
+        	<div class="panel-body">
+        		<canvas id="tag-incidents"></canvas>		
+        	</div>
+        	<div class="panel-footer"><h4><?php echo 'Of all Incidents' ?></h4></div>
+        	<div class="hidden" id="incidentpercent"><?php echo $incidentpercent;?></div>
+        </div>
+    </div>
+<div class="span3 pagination-centered">
+        <div class="panel panel-default">
+        	<div class="panel-heading">
+        		<h4 class="panel-title">Articles with tag</h4>
+        	</div>
+        	<div class="panel-body">
+        		<canvas id="tag-articles"></canvas>		
+        	</div>
+        	<div class="panel-footer"><h4><?php echo 'Of all Articles' ?></h4></div>
+        	<div class="hidden" id="articlepercent"><?php echo $articlepercent;?></div>
+        </div>
+    </div>
+<div class="span3 pagination-centered">
+        <div class="panel panel-default">
+        	<div class="panel-heading">
+        		<h4 class="panel-title">Vulnerabilities with tag</h4>
+        	</div>
+        	<div class="panel-body">
+        		<canvas id="tag-vulns"></canvas>		
+        	</div>
+        	<div class="panel-footer"><h4><?php echo 'Of all Vulnerabilities' ?></h4></div>
+        	<div class="hidden" id="vulnpercent"><?php echo $vulnpercent;?></div>
+        </div>
+    </div>
+<div class="span3 pagination-centered">
+        <div class="panel panel-default">
+        	<div class="panel-heading">
+        		<h4 class="panel-title">Hosts with tag</h4>
+        	</div>
+        	<div class="panel-body">
+        		<canvas id="tag-hosts"></canvas>		
+        	</div>
+        	<div class="panel-footer"><h4><?php echo 'Of all Hosts' ?></h4></div>
+        	<div class="hidden" id="hostpercent"><?php echo $hostpercent;?></div>
+        </div>
+    </div>
 </div>
 
 <h3><?php echo "Related Incidents"?></h3>

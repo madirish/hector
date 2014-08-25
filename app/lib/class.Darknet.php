@@ -176,7 +176,7 @@ class Darknet extends Maleable_Object {
     public function get_collection_definition($filter = '', $orderby = '') {
         $sql = 'SELECT d.id as darknet_id ' .
                 'FROM darknet d ' .
-                'WHERE d.dst_port > 0 ' .
+                'WHERE d.dst_port >= 0 ' .
                 'AND d.id > 0';
         if ($filter != '' && is_array($filter))  {
             $sql .= ' ' . array_shift($filter);

@@ -1,4 +1,32 @@
 <h2>Darknet Summary</h2>
+<div class="row">
+	<div class="span3">
+			<div class="well">
+				<h4>Top Destination port</h4>
+				<p><?php echo $dst_percent . "% " . $dst_top;?></p>
+			</div>
+	</div>
+	<div class="span3">
+		<div class="well">
+				<h4>Top Country</h4>
+				<p><?php echo $c_percent . "% " . $c_top;?></p>
+			</div>
+	</div>
+	<div class="span3">
+			<div class="well">
+				<h4>Top IP</h4>
+				<p><?php echo $ip_percent . "% " . long2ip($ip_top);?></p>
+			</div>
+	</div>
+	<div class="span3">
+			<div class="well">
+				<h4>Top Protocol</h4>
+				<p><?php echo $proto_percent . "% " . $proto_top;?></p>
+			</div>
+		</div>
+		
+</div>
+
 <table class="table table-striped table-condensed" id="darknet-probes-summary" name="darknet-probes-summary">
     <thead>
     <tr><th>Source IP</th><th>Protocol</th><th>Destination Port</th><th>Source Port</th><th>Country</th><th>Time</th></tr>

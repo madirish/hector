@@ -3,6 +3,7 @@ Search malicious IP database: <input type="text" name="ip"/> <input type="submit
 <input type="hidden" name="token" value="<?php echo $token;?>"/>
 <input type="hidden" name="form_name" value="<?php echo $formname;?>"/>
 </form>
+<h2>Honeypot Summary</h2>
 <ul class="nav nav-tabs" id="honeypotTabs">	
 	<li class="active"><a href="#logins"data-toggle="tab">Login Attempts</a></li>
 	<li><a href="#sessions"data-toggle="tab">Sessions</a></li>
@@ -13,28 +14,52 @@ Search malicious IP database: <input type="text" name="ip"/> <input type="submit
 	<div class="tab-pane active" id="logins">
 		<p class="lead"> Recent Login Attempts</p>
 		<div class="row">
-		<div class="span3">
-			<div class="well">
-				<h4>Top Country</h4>
-				<p><?php echo $c_percent . "% " . $c_top;?></p>
+		<div class="span3 pagination-centered">
+			<div class="panel panel-default">
+	        	<div class="panel-heading">
+	        		<h4 class="panel-title">Top Country</h4>
+	        	</div>
+        	<div class="panel-body">
+        		<canvas id="top-country"></canvas>		
+        	</div>
+        	<div class="panel-footer"><h4><?php echo $c_top; ?></h4></div>
+        	<div class="hidden" id="countrypercent"><?php echo $c_percent;?></div>
+        	</div>
+		</div>
+		<div class="span3 pagination-centered">
+			<div class="panel panel-default">
+	        	<div class="panel-heading">
+	        		<h4 class="panel-title">Top IP</h4>
+	        	</div>
+        	<div class="panel-body">
+        		<canvas id="top-ip"></canvas>		
+        	</div>
+        	<div class="panel-footer"><h4><?php echo $ip_top; ?></h4></div>
+        	<div class="hidden" id="ippercent"><?php echo $ip_percent;?></div>
 			</div>
 		</div>
-		<div class="span3">
-			<div class="well">
-				<h4>Top IP</h4>
-				<p><?php echo $ip_percent . "% " . $ip_top;?></p>
+		<div class="span3 pagination-centered">
+			<div class="panel panel-default">
+	        	<div class="panel-heading">
+	        		<h4 class="panel-title">Top Username</h4>
+	        	</div>
+        	<div class="panel-body">
+        		<canvas id="top-user"></canvas>		
+        	</div>
+        	<div class="panel-footer"><h4><?php echo $u_top; ?></h4></div>
+        	<div class="hidden" id="userpercent"><?php echo $u_percent;?></div>
 			</div>
 		</div>
-		<div class="span3">
-			<div class="well">
-				<h4>Top Username</h4>
-				<p><?php echo $u_percent . "% " . $u_top;?></p>
-			</div>
-		</div>
-		<div class="span3">
-			<div class="well">
-				<h4>Top Passwords</h4>
-				<p><?php echo $pass_percent . "% " . $pass_top;?></p>
+		<div class="span3 pagination-centered">
+			<div class="panel panel-default">
+	        	<div class="panel-heading">
+	        		<h4 class="panel-title">Top Password</h4>
+	        	</div>
+        	<div class="panel-body">
+        		<canvas id="top-pass"></canvas>		
+        	</div>
+        	<div class="panel-footer"><h4><?php echo $pass_top; ?></h4></div>
+        	<div class="hidden" id="passpercent"><?php echo $pass_percent;?></div>
 			</div>
 		</div>
 		</div>
@@ -57,6 +82,65 @@ Search malicious IP database: <input type="text" name="ip"/> <input type="submit
 	
 	<div class="tab-pane" id="sessions">
 		<p class="lead">Recent Sessions</p>
+		<div class="row">
+			<div class="span3 pagination-centered">
+				<div class="panel panel-default">
+	        		<div class="panel-heading">
+	        			<h4 class="panel-title">Top IP</h4>
+	        		</div>
+	        	<div class="panel-body">
+	        		<canvas id="sess-ip"></canvas>		
+	        	</div>
+        	<div class="panel-footer"><h4><?php echo $sess_ip_top; ?></h4></div>
+        	<div class="hidden" id="sess-ippercent"><?php echo $sess_ip_percent;?></div>
+			</div>
+			</div>
+			<div class="span3 pagination-centered">
+			<div class="panel panel-default">
+	        	<div class="panel-heading">
+	        		<h4 class="panel-title">Top Country</h4>
+	        	</div>
+        	<div class="panel-body">
+        		<canvas id="sess-country"></canvas>		
+        	</div>
+        	<div class="panel-footer"><h4><?php echo $sess_c_top; ?></h4></div>
+        	<div class="hidden" id="sess-cpercent"><?php echo $sess_c_percent;?></div>
+        	</div>
+		</div>
+		<div class="span6 pagination-centered">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title"> Top Commands</h4>
+				</div>
+				<div class="panel-body">
+					<canvas id="top-commands" width="500" height="260"></canvas>
+				</div>
+				<script>
+			        $(document).ready(function(){
+			            var data = {labels: <?php echo $labels;?>,
+			                        datasets: [
+			                            {
+			                                label: "My First dataset",
+			                                fillColor: "#05EDFF",
+			                                strokeColor: "#05EDFF",
+			                                pointColor: "#05EDFF",
+			                                pointStrokeColor: "#fff",
+			                                pointHighlightFill: "#fff",
+			                                pointHighlightStroke: "rgba(220,220,220,1)",
+			                                data: <?php echo $data ?>
+			                            }
+			                        ]
+			            };
+			            var options = {
+			                multiTooltipTemplate: "<%= datasetLabel%> - <%= value %>",
+			                
+			            };
+			            var myNewChart = new Chart(document.getElementById("top-commands").getContext("2d")).Bar(data, options);    
+			        });
+				</script>
+			</div>
+		</div>
+		</div>
 		<div id="connections" class="hidden"> <?php echo htmlentities($commands_json);?></div>
 		<div class="dataTables_wrapper form-inline no-footer">
 			<table id="commands-table" class="table table-striped table-bordered table-responsive">

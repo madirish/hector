@@ -1,7 +1,10 @@
+/**
+ * Requires hector.analytics.js
+ */
+
 $(function(){
 	var raw = $('#login-attempts').text();
 	var data = JSON.parse(raw);
-	console.log(data);
 	columns = [
 	           {data: 'id'},
 	           {data: 'ip_linked'},
@@ -30,4 +33,11 @@ $(function(){
 		"sDom": '<"top"lf>rt<"bottom"ip>',
 		
 	})
+	
+	hectorDrawDoughnutChart("top-country","countrypercent");
+	hectorDrawDoughnutChart("top-ip","ippercent");
+	hectorDrawDoughnutChart("top-user","userpercent");
+	hectorDrawDoughnutChart("top-pass","passpercent");
+	hectorDrawDoughnutChart("sess-ip","sess-ippercent");
+	hectorDrawDoughnutChart("sess-country","sess-cpercent");
 })

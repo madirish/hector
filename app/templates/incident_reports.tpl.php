@@ -1,44 +1,75 @@
 <h2>Incident Reports</h2>
 <div class="row-fluid">
-    <div class="span3">
-        <div class="well">
-        <h4>Top Threat Agent</h4>
-        <p><?php echo $agentpercent . "% ". $agent_names[0]; ?></p>
+    <div class="span3 pagination-centered">
+        <div class="panel panel-default">
+        	<div class="panel-heading">
+        		<h4 class="panel-title">Top Threat Agent</h4>
+        	</div>
+        	<div class="panel-body">
+        		<canvas id="threat-agent"></canvas>		
+        	</div>
+        	<div class="panel-footer"><h4><?php echo $agent_names[0]; ?></h4></div>
+        	<div class="hidden" id="agentpercent"><?php echo $agentpercent;?></div>
         </div>
     </div>
-    <div class="span3">
-        <div class="well">
-        <h4>Top Threat Actions</h4>
-        <p><?php echo $actionpercent . "% ". $action_names[0]; ?></p>
+    <div class="span3 pagination-centered">
+    	<div class="panel panel-default">
+        	<div class="panel-heading">
+        		<h4 class="panel-title">Top Threat Actions</h4>
+        	</div>
+        	<div class="panel-body">
+        		<canvas id="threat-action"></canvas>		
+        	</div>
+        	<div class="panel-footer"><h4><?php echo $action_names[0]; ?></h4></div>
+        	<div class="hidden" id="actionpercent"><?php echo $actionpercent;?></div>
+        </div>
+    </div>  
+    <div class="span3 pagination-centered">
+    	<div class="panel panel-default">
+        	<div class="panel-heading">
+        		<h4 class="panel-title">Top Assets Affected</h4>
+        	</div>
+        	<div class="panel-body">
+        		<canvas id="threat-asset"></canvas>		
+        	</div>
+        	<div class="panel-footer"><h4><?php echo $asset_names[0]; ?></h4></div>
+        	<div class="hidden" id="assetpercent"><?php echo $assetpercent;?></div>
         </div>
     </div>
-    <div class="span3">
-        <div class="well">
-        <h4>Top Assets Affected</h4>
-        <p><?php echo $assetpercent . "% ". $asset_names[0]; ?></p>
-        </div>
-    </div>
-    <div class="span3">
-        <div class="well">
-        <h4>Top Discovery Method</h4>
-        <p><?php echo $discopercent . "% ". $disco_names[0]; ?></p>
+    <div class="span3 pagination-centered">
+    	<div class="panel panel-default">
+        	<div class="panel-heading">
+        		<h4 class="panel-title">Top Discovery Method</h4>
+        	</div>
+        	<div class="panel-body">
+        		<canvas id="disco-method"></canvas>		
+        	</div>
+        	<div class="panel-footer"><h4><?php echo $disco_names[0]; ?></h4></div>
+        	<div class="hidden" id="discopercent"><?php echo $discopercent;?></div>
         </div>
     </div>
 </div>
 
 <div class="row-fluid">
 <div class="span12 pagination-centered">
-<h3>Timeline of Incident Reports</h3>
-        <canvas id="incidentCountChart" height="300" width="600"></canvas>
-        <script>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">Timeline of Incident Reports</h3>
+		
+	</div>
+	<div class="panel-body">
+		<canvas id="incidentCountChart" height="300" width="600"></canvas>
+	</div>
+</div>
+<script>
         $(document).ready(function(){
             var data = {labels: [<?php echo join(',', $chartlabels);?>],
                         datasets: [
                             {
                                 label: "My First dataset",
                                 fillColor: "rgba(255,255,255,0.1)",
-                                strokeColor: "rgba(220,220,220,1)",
-                                pointColor: "rgba(220,220,220,1)",
+                                strokeColor: "#05EDFF",
+                                pointColor: "#05EDFF",
                                 pointStrokeColor: "#fff",
                                 pointHighlightFill: "#fff",
                                 pointHighlightStroke: "rgba(220,220,220,1)",
@@ -56,7 +87,7 @@
                 console.log(activeBars);
             });        
         });
-        </script>
+</script>
 </div>
 </div>
 

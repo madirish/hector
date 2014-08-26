@@ -13,14 +13,13 @@ include_once($approot . 'lib/class.Incident.php');
 include_once($approot . 'lib/class.Article.php');
 include_once($approot . 'lib/class.Vuln.php');
 include_once($approot . 'lib/class.Host.php');
+include_once($approot . 'lib/class.Collection.php');
 
 // screenshots.css
 $css = '';
-$css .= "<link href='css/jquery.dataTables.css' rel='stylesheet'>\n";
 
 // javascripts
 $javascripts = '';
-$javascripts .= "<script type='text/javascript' src='js/jquery.dataTables.min.js'></script>\n";
 $javascripts .= "<script type='text/javascript' src='js/tag_details.js'></script>\n";
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
@@ -79,7 +78,47 @@ $tag_weights['Vulnerabilities'] = count($vuln_ids);
 $tag_weights['Hosts'] = count($host_ids);
 arsort($tag_weights);
 
+$all_incidents = new Collection('Incident');
 
+if (is_array($all_incidents->members) && isset($all_incidents->members[0])){
+	$total_incidents = count($all_incidents->members);
+	$tagged_incidents = count($incidents);
+	$incidentpercent = round(($tagged_incidents / $total_incidents) * 100);
+}else{
+	$incidentpercent = 0;
+}
+
+$all_articles = new Collection('Article');
+
+if (is_array($all_articles->members) && isset($all_articles->members[0])){
+	$total_articles = count($all_articles->members);
+	$tagged_articles = count($articles);
+	$articlepercent = round(($tagged_articles/$total_articles) * 100);
+}else{
+	$articlepercent = 0;
+}
+
+
+$all_vulns = new Collection('Vuln');
+
+if (is_array($all_vulns->members) && isset($all_vulns->members[0])){
+	$total_vulns = count($all_vulns->members);
+	$tagged_vulns = count($vulns);
+	$vulnpercent = round(($tagged_vulns/$total_vulns) * 100);
+}else{
+	$vulnpercent = 0;
+}
+
+
+$all_hosts = new Host();
+$total_hosts = $all_hosts->get_field_frequencies('host_id');
+
+if (!empty($total_hosts)){
+	$tagged_hosts = count($hosts);
+	$hostpercent = round(($tagged_hosts/count($total_hosts)) * 100);
+}else{
+	$hostpercent = 0;
+}
 
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates . 'tag_details.tpl.php');

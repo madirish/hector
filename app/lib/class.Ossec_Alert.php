@@ -379,7 +379,7 @@ class Ossec_Alert extends Maleable_Object {
 	 *  @return String SQL select string
 	 */
 	public function get_collection_definition($filter = '', $orderby = ''){
-		$sql = 'SELECT o.alert_id as ossec_alert_id FROM ossec_alert o WHERE o.alert_id > 0';
+		$sql = 'SELECT o.alert_id as ossec_alert_id FROM ossec_alert o, ossec_rule r WHERE o.alert_id > 0 and o.rule_id = r.rule_id and r.rule_level > 7';
 		if ($filter != '' && is_array($filter))  {
 			$sql .= ' ' . array_shift($filter);
 			$sql = $this->db->parse_query(array($sql, $filter));
@@ -464,6 +464,32 @@ class Ossec_Alert extends Maleable_Object {
 	public function get_ossec_rule_message(){
 		$rule = $this->get_ossec_rule();
 		return $rule->get_rule_message();
+	}
+	
+	/**
+	 * Returns the frequencies of entries for a field in the data layer
+	 *
+	 * @param String $field The field from the data layer to count
+	 * @param string $bound The bound for the data
+	 * @return Array The frequenies of entries for the field
+	 */
+	public function get_field_frequencies($field,$bound=''){
+		$retval = array();
+		$sql = 'SELECT ?s, count(?s) as frequency FROM ossec_alert WHERE id > 0 ';
+		if ($bound != ''){
+			$sql .= ' AND alert_date > DATE_SUB(NOW(), INTERVAL ?i DAY)';
+			$sql .= ' GROUP BY ?s ORDER BY frequency DESC';
+			$result = $this->db->fetch_object_array(array($sql,$field,$field,intval($bound),$field));
+		}else{
+			$sql .= ' GROUP BY ?s order by frequency desc';
+			$result = $this->db->fetch_object_array(array($sql,$field,$field,$field));
+		}
+		if (isset($result[0])){
+			foreach ($result as $row){
+				$retval[$row->$field] = $row->frequency;
+			}
+		}
+		return $retval;
 	}
 	
 }

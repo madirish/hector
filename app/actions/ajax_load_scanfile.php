@@ -7,6 +7,8 @@
  */
  
 if (isset($_GET['scan'])) {
+	global $generic;
+	if (! isset($generic)) $generic = '';
 	$fpath = $approot . 'scripts/' .  basename($_GET['scan']) . '/form.php';
 	if (file_exists($fpath)) {
         /**

@@ -3,3 +3,5 @@
 *.pyc
 .DS_Store
 *.mwb.bak
+version-tcp-ips.txt
+version-udp-ips.txt

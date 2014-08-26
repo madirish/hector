@@ -313,7 +313,7 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
     	$result = $this->db->fetch_object_array($sql);
     	// Found an existing Tag
     	if (isset($result[0])){
-    		$this->__construct($result[0]);
+    		$this->__construct($result[0]->tag_id);
     	}
     	// Create a new Tag
     	else {

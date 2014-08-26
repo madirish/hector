@@ -89,6 +89,7 @@ for feedurl in results:
       if DEBUG: print "[+] Attempting to insert item "
       if DEBUG: print feeditem
       cursor.execute(sql,(mysqldate, feeditem["title"], feeditem["link"], feeditem["summary"], feeditem["description"], feeditem["link"]))
+      cursor.commit()
       if DEBUG: print "[+] Inserted " + str(conn.insert_id())
     except MySQLdb.OperationalError, e:
       print "Error importing feeditem " + feeditem["title"]
@@ -109,11 +110,13 @@ for feedurl in results:
       if feeditem["title"].find(tag_name) > -1 :
           sql = "insert into article_x_tag set article_id = %s, tag_id = %s"
           cursor.execute(sql, (conn.insert_id(), tag_id))
+          cursor.commit()
           tagged = 1
           if DEBUG: print "[+] Found tag_id " + str(tag_id) + " named " + tag_name + " in: " + feeditem["title"]
       if feeditem["summary"].find(tag_name) > -1 and tagged == 0 :
           sql = "insert into article_x_tag set article_id = %s, tag_id = %s"
           cursor.execute(sql, (conn.insert_id(), tag_id))
+          cursor.commit()
           if DEBUG: print "[+] Found tag_id " + str(tag_id) + " named " + tag_name + " in: " + feeditem["title"]
     
 

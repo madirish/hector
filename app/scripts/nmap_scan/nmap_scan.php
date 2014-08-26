@@ -203,7 +203,11 @@ else {
 	$xmloutput = $approot . 'scripts/results-' . time() . '.xml';  // Avoid namespace collissions!
 	$portspec = ($ports != '') ? '-p ' . $ports : '';
 	if ($version) $portspec .= ' -sV ';
-	$command = $nmap . ' -sT -sU -PN -oX ' . $xmloutput . ' ' . $portspec .
+	$command = $nmap;
+	if (strpos($ports, 'U:')) $command .= ' -sU '; // UDP port scan
+	elseif (strpos($ports, 'T:')) $command .= ' -sT '; // TCP port scan
+	else $command .= ' -sT '; // Default to TCP port scan
+	$command .= ' -PN -oX ' . $xmloutput . ' ' . $portspec .
 		' -T4 -iL ' . $ipfilename;
 	loggit("nmap_scan.php process", "Executing the command: " . $command);
 	shell_exec($command);

@@ -92,7 +92,7 @@ if (isset($scans->members) && is_array($scans->members)) {
 		log_scan_cron('Scan ' . $scan->get_name() . ' finished successfully!', $log, $dblog);
 	}
  }
-log_scan_cron('scan_cron.php scans complete.');
+log_scan_cron('scan_cron.php scans complete.', $log, $dblog);
 mail_alerts();
 
 // Shut down nicely

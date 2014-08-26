@@ -28,6 +28,7 @@ if(php_sapi_name() == 'cli') {
 	require_once($approot . 'lib/class.Config.php');
 	require_once($approot . 'lib/class.Dblog.php');
 	require_once($approot . 'lib/class.Host.php');
+	require_once($approot . 'lib/class.Tag.php');
 	require_once($approot . 'lib/class.Log.php');
 	require_once($approot . 'lib/class.Nmap_result.php');
 		
@@ -114,10 +115,36 @@ if(php_sapi_name() == 'cli') {
 				case 'open|filtered' : $result->set_state_id(4); break;
 				default: $result->set_state_id(5); break;
 			}
+			$savehost = false;
 			$version_info = $port->service['product'] . " " . $port->service['version'];
-			if (isset($port->service['devicetype']))  $version_info .= ' ' . $port->service['devicetype'];
-			if (isset($port->service['extrainfo']))  $version_info .= ' ' . $port->service['extrainfo'];
-			if (isset($port->service['servicefp']))  $version_info .= ' ' . $port->service['servicefp'];
+			if ($version_info != ' ') {
+				$version_tag = new Tag();
+				$version_tag->lookup_by_name($version_info);
+				$host->add_tag_id($version_tag->get_id());
+				$savehost = true;
+			}
+			if (isset($port->service['devicetype']))  {
+				$version_info .= ' ' . $port->service['devicetype'];
+				$devicetype_tag = new Tag();
+				$devicetype_tag->lookup_by_name($port->service['devicetype']);
+				$host->add_tag_id($devicetype_tag->get_id());
+				$savehost = true;
+			}
+			if (isset($port->service['extrainfo'])) {
+				$version_info .= ' ' . $port->service['extrainfo'];
+				$extrainfo_tag = new Tag();
+				$extrainfo_tag->lookup_by_name($port->service['extrainfo']);
+				$host->add_tag_id($extrainfo_tag->get_id());
+				$savehost = true;
+			}
+			if (isset($port->service['servicefp'])) {
+				$version_info .= ' ' . $port->service['servicefp'];
+				$servicefp_tag = new Tag();
+				$servicefp_tag->lookup_by_name($port->service['servicefp']);
+				$host->add_tag_id($servicefp_tag->get_id());
+				$savehost = true;
+			}
+			if ($savehost) $host->save();
 			if ($version_info != ' ') $result->set_service_version($version_info);
 			$result->set_service_name($port->service['name']);
 			$nmap_scans[] = $result;

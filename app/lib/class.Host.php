@@ -382,6 +382,22 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 			$this->host_group_ids[] = $id;
 		}
 	}
+
+	/**
+	 * Tag this host
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @param Int The unique id fo the Tag
+	 * @return void
+	 */
+	public function add_tag_id($id) {
+		$id = intval($id);
+		// prevent dupes
+		if (! in_array($id, $this->tag_ids) && $id > 0){
+			$this->tag_ids[] = $id;
+		}
+	}
 	
 	/**
 	 * If this host is being excluded from portscans, make
@@ -781,6 +797,58 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 					'x.user_id = ' . $appuser->get_id() . ' AND ';
 		}
 		$sql .= 'n.nmap_result_port_number = ' . $portnum .' and n.state_id=1';
+		return $sql; 
+	}
+	
+    /**
+     * This function directly supports the Collection class.
+     * Gets a collection based on a TCP port filter.
+	 *
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @param Int Port to filter resulting hosts on (say get all hosts with port 80) TCP & UDP
+	 * @param String The optional SQL ORDER BY clause arguments
+	 * @return String SQL select string
+	 */
+	public function get_collection_by_tcp_port($port, $orderby='') {
+		global $appuser;
+		$portnum = intval($port);
+		$sql = 'select h.host_id from host h, nmap_result n ';
+		if (isset($appuser) && ! $appuser->get_is_admin()) {
+			$sql .= ', user_x_supportgroup x ';
+		}
+		$sql .= 'where n.host_id = h.host_id and ';
+		if (isset($appuser) && ! $appuser->get_is_admin()) {
+			$sql .= 'h.supportgroup_id = x.supportgroup_id AND' .
+					'x.user_id = ' . $appuser->get_id() . ' AND ';
+		}
+		$sql .= 'n.nmap_result_port_number = ' . $portnum .' and n.nmap_result_protocol = "tcp" AND n.state_id=1';
+		return $sql; 
+	}
+	
+    /**
+     * This function directly supports the Collection class.
+     * Gets a collection based on a UDP port filter.
+	 *
+	 * @access public
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @param Int Port to filter resulting hosts on (say get all hosts with port 80) TCP & UDP
+	 * @param String The optional SQL ORDER BY clause arguments
+	 * @return String SQL select string
+	 */
+	public function get_collection_by_udp_port($port, $orderby='') {
+		global $appuser;
+		$portnum = intval($port);
+		$sql = 'select h.host_id from host h, nmap_result n ';
+		if (isset($appuser) && ! $appuser->get_is_admin()) {
+			$sql .= ', user_x_supportgroup x ';
+		}
+		$sql .= 'where n.host_id = h.host_id and ';
+		if (isset($appuser) && ! $appuser->get_is_admin()) {
+			$sql .= 'h.supportgroup_id = x.supportgroup_id AND' .
+					'x.user_id = ' . $appuser->get_id() . ' AND ';
+		}
+		$sql .= 'n.nmap_result_port_number = ' . $portnum .' and n.nmap_result_protocol = "udp" AND n.state_id=1';
 		return $sql; 
 	}
 	

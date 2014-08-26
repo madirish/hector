@@ -51,11 +51,11 @@ class Article_x_Tag extends Maleable_Object {
 	 * @param string $bound The bound for the data
 	 * @return Array The frequenies of entries for the field
 	 */
-	public function get_field_frequencies($field,$bound=''){
+	public function get_field_frequencies($field){
 		$retval = array();
-		$sql = array('SELECT ?s , count(?s) as frequency FROM article_x_tag'
-				. ' WHERE article_id > 0 AND tag_id > 0 ' . $bound . ' GROUP BY ?s order by frequency desc', $field, $field, $field);
-		$result = $this->db->fetch_object_array($sql);
+		$sql = 'SELECT ?s, count(?s) as frequency FROM article_x_tag WHERE article_id > 0 AND tag_id > 0 ';
+		$sql .= ' GROUP BY ?s order by frequency desc';
+		$result = $this->db->fetch_object_array(array($sql,$field,$field,$field));
 		if (isset($result[0])){
 			foreach ($result as $row){
 				$retval[$row->$field] = $row->frequency;

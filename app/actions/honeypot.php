@@ -49,7 +49,7 @@ $commands_json = json_encode($commands);
 //  Username frequencies
 $hpconnect = new HoneyPotConnect();
 
-$username_frequencies = $hpconnect->get_field_frequencies($field='username',$bound);
+$username_frequencies = $hpconnect->get_field_frequencies($field='username',$bound=7);
 
 $u_top = key($username_frequencies);
 $u_frequency = $username_frequencies[$u_top];
@@ -57,7 +57,7 @@ $u_total = array_sum($username_frequencies);
 $u_percent = round(($u_frequency / $u_total) * 100);
 
 // Password frequencies
-$password_frequencies = $hpconnect->get_field_frequencies($field='password',$bound);
+$password_frequencies = $hpconnect->get_field_frequencies($field='password',$bound=7);
 $pass_top = key($password_frequencies);
 $pass_frequency = $password_frequencies[$pass_top];
 $pass_total = array_sum($password_frequencies);
@@ -65,14 +65,14 @@ $pass_percent = round(($pass_frequency / $pass_total) * 100);
 
 
 // Country frequencies
-$country_frequencies = $hpconnect->get_field_frequencies($field='country_code',$bound);
+$country_frequencies = $hpconnect->get_field_frequencies($field='country_code',$bound=7);
 $c_top = key($country_frequencies);
 $c_frequency = $country_frequencies[$c_top];
 $c_total = array_sum($country_frequencies);
 $c_percent = round(($c_frequency / $c_total) * 100);
 
 // IP frequencies 
-$ip_frequencies = $hpconnect->get_field_frequencies($field='ip',$bound);
+$ip_frequencies = $hpconnect->get_field_frequencies($field='ip',$bound=7);
 $ip_top = key($ip_frequencies);
 $ip_frequency = $ip_frequencies[$ip_top];
 $ip_total = array_sum($ip_frequencies);
@@ -80,21 +80,21 @@ $ip_percent = round(($ip_frequency / $ip_total) * 100);
 
 $hpsession = new HoneyPotSession();
 // IP frequencies
-$sess_ips = $hpsession->get_field_frequencies($field='ip',$bound);
+$sess_ips = $hpsession->get_field_frequencies($field='ip',$bound=7);
 $sess_ip_top = key($sess_ips);
 $sess_ip_frequency = $sess_ips[$sess_ip_top];
 $sess_ip_total = array_sum($sess_ips);
 $sess_ip_percent = round(($sess_ip_frequency / $sess_ip_total) * 100);
 
 // Country frequencies
-$sess_c_frequencies = $hpsession->get_field_frequencies($field='country_code',$bound);
+$sess_c_frequencies = $hpsession->get_field_frequencies($field='country_code',$bound=7);
 $sess_c_top = key($sess_c_frequencies);
 $sess_c_frequency = $sess_c_frequencies[$sess_c_top];
 $sess_c_total = array_sum($sess_c_frequencies);
 $sess_c_percent = round(($sess_c_frequency / $sess_c_total) * 100);
 
 // Command frequencies
-$command_freqs = $hpsession->get_field_frequencies($field='command',$bound);
+$command_freqs = $hpsession->get_field_frequencies($field='command',$bound=7);
 $top_command_keys = array_slice(array_keys($command_freqs),0,9);
 $top_command_vals = array_slice(array_values($command_freqs),0,9);
 $labels = json_encode($top_command_keys);

@@ -37,7 +37,8 @@ $labels = json_encode(array_slice($tag_names,0,10));
 $data = json_encode(array_slice($tag_counts,0,10));
 
 
-$tag_top = key($tag_frequencies);
+$maxs = array_keys($tag_frequencies, max($tag_frequencies));
+$tag_top = $maxs[0];
 $tag_frequency = $tag_frequencies[$tag_top];
 $tag_percent = round(($tag_frequency/$tag_total) * 100);
 $tag = new Tag($tag_top);

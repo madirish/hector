@@ -463,7 +463,7 @@ class Darknet extends Maleable_Object {
     }
     
     /**
-     * Returns the frequencies of entires for a field in the data layer
+     * Returns the frequencies of entries for a field in the data layer
      *
      * @param String $field The field from the data layer to count
      * @param string $bound The bound for the data
@@ -471,9 +471,15 @@ class Darknet extends Maleable_Object {
      */
     public function get_field_frequencies($field,$bound=''){
     	$retval = array();
-    	$sql = array('SELECT ?s , count(?s) as frequency FROM darknet d'
-    			. ' WHERE id > 0 ' . mysql_real_escape_string($bound) . ' GROUP BY ?s order by frequency desc', $field, $field, $field);
-    	$result = $this->db->fetch_object_array($sql);
+    	$sql = 'SELECT ?s, count(?s) as frequency FROM darknet WHERE id > 0 ';
+    	if ($bound != ''){
+    		$sql .= ' AND received_at > DATE_SUB(NOW(), INTERVAL ?i DAY)';
+    		$sql .= ' GROUP BY ?s ORDER BY frequency DESC';
+    		$result = $this->db->fetch_object_array(array($sql,$field,$field,intval($bound),$field));
+    	}else{
+    		$sql .= ' GROUP BY ?s order by frequency desc';
+    		$result = $this->db->fetch_object_array(array($sql,$field,$field,$field));
+    	}
     	if (isset($result[0])){
     		foreach ($result as $row){
     			$retval[$row->$field] = $row->frequency;

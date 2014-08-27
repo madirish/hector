@@ -46,8 +46,7 @@ if ($ip_addr != $ip_name) {
 	$ip_rpt_display .= ' - ' . $ip_name;
 }
 
-$javascripts .= '<script type="text/javascript" charset="utf8" src="js/jquery.dataTables.js"></script>' . "\n";
-$javascripts .= '<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">' . "\n";
+
 
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates . 'attackerip.tpl.php');

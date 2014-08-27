@@ -91,8 +91,8 @@ Search malicious IP database: <input type="text" name="ip"/> <input type="submit
 	        	<div class="panel-body">
 	        		<canvas id="sess-ip"></canvas>		
 	        	</div>
-        	<div class="panel-footer"><h4><?php echo $sess_ip_top; ?></h4></div>
-        	<div class="hidden" id="sess-ippercent"><?php echo $sess_ip_percent;?></div>
+        	<div class="panel-footer"><h4><?php echo $sip_top; ?></h4></div>
+        	<div class="hidden" id="sess-ippercent"><?php echo $sip_percent;?></div>
 			</div>
 			</div>
 			<div class="span3 pagination-centered">
@@ -103,8 +103,8 @@ Search malicious IP database: <input type="text" name="ip"/> <input type="submit
         	<div class="panel-body">
         		<canvas id="sess-country"></canvas>		
         	</div>
-        	<div class="panel-footer"><h4><?php echo $sess_c_top; ?></h4></div>
-        	<div class="hidden" id="sess-cpercent"><?php echo $sess_c_percent;?></div>
+        	<div class="panel-footer"><h4><?php echo $scount_top; ?></h4></div>
+        	<div class="hidden" id="sess-cpercent"><?php echo $scount_percent;?></div>
         	</div>
 		</div>
 		<div class="span6 pagination-centered">

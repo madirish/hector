@@ -145,173 +145,6 @@ class HoneyPotSession extends Maleable_Object {
 	}
 	
 	/**
-	 *  Set the id attribute.
-	 *
-	 *  @access protected
-	 *  @param Int The unique ID from the data layer
-	 */
-	protected function set_id($id){
-		$this->id = intval($id);
-	}
-	
-	/**
-	 *  Get the unique ID for the object
-	 *
-	 *  @access public
-	 *  @return Int The unique ID of the object
-	 */
-	public function get_id(){
-		return intval($this->id);
-	}
-	
-	/**
-	 * Set the time attribute.
-	 *
-	 * @access public
-	 * @param Datetime The timestamp of session
-	 */
-	public function set_time($datetime){
-		$this->time = date("Y-m-d H:i:s", strtotime($datetime));
-	}
-	
-	/**
-	 * Get the timestamp of the login attempt
-	 *
-	 * @access public
-	 * @return Timestamp The timestamp of the session
-	 */
-	public function get_time(){
-		return $this->time;
-	}
-	
-	/**
-	 * Set the dot-decimal ip address of the attacker.
-	 *
-	 * @access public
-	 * @param String The dot-decimal IP address of the attacker
-	 */
-	public function set_ip($ip){
-		$retval = False;
-		if ($ip = filter_var($ip,FILTER_VALIDATE_IP)){
-			$this->ip = $ip;
-			$retval = True;
-		}
-		return $retval;
-	}
-	
-	/**
-	 * Get the dot-decimal ip address of the attacker.
-	 *
-	 * @access public
-	 * @return String The dot-decimal IP address of the attacker
-	 */
-	public function get_ip(){
-		return htmlspecialchars($this->ip);
-	}
-	
-	/**
-	 * Get a link to the malicious ip database page for the ip address
-	 *
-	 * @access public
-	 * @return String The link to the malicious ip database page for the ip address
-	 */
-	public function get_ip_linked(){
-		$ip = $this->get_ip();
-		$retval = "<a href='?action=attackerip&ip=$ip'>$ip</a>";
-		return $retval;
-	}
-	
-	/**
-	 * Set the ip_numeric attribute.
-	 *
-	 * @access public
-	 * @param Int The decimal representation of the ip address.
-	 */
-	public function set_ip_numeric($ip_numeric){
-		$this->ip_numeric = intval($ip_numeric);
-	}
-	
-	/**
-	 * Get the decimal representation of the ip address.
-	 *
-	 * @access public
-	 * @return Int The decimal representation of the ip address
-	 */
-	public function get_ip_numeric(){
-		return intval($this->ip_numeric);
-	}
-	
-	/**
-	 * Set the sensor_id attribute.
-	 *
-	 * @access public
-	 * @param Int The sensor id of the honey pot.
-	 */
-	public function set_sensor_id($sensor_id){
-		$this->sensor_id = intval($sensor_id);
-	}
-	
-	/**
-	 * Get the sensor id of the honey pot
-	 *
-	 * @access public
-	 * @return Int the sensor id of the honey pot.
-	 */
-	public function get_sensor_id(){
-		return intval($this->sensor_id);
-	}
-	
-	/**
-	 * Set the session_id attribute.
-	 *
-	 * @access public
-	 * @param Int The session id of the honey pot.
-	 */
-	public function set_session_id($session_id){
-		$this->session_id = intval($session_id);
-	}
-	
-	/**
-	 * Get the session id of the honey pot
-	 *
-	 * @access public
-	 * @return Int the session id of the honey pot.
-	 */
-	public function get_session_id(){
-		return intval($this->session_id);
-	}
-	
-	/**
-	 * Set the command attribute
-	 * 
-	 * @access public
-	 * @param String the command executed by the attacker
-	 */
-	public function set_command($command){
-		$this->command = $command;
-	}
-	
-	/**
-	 * Get the command executed by the attacker
-	 * 
-	 * @access public
-	 * @param String the html safe command executed by the attacker
-	 */
-	public function get_command(){
-		return htmlspecialchars($this->command);
-	}
-	
-	/**
-	 * Return the pritable string used for the object in interfaces
-	 *
-	 * @access public
-	 * @return String The printable string of the object name
-	 */
-	public function get_label(){
-		return 'Kojoney Executed Command';
-	}
-	
-	/**
 	 *  This function directly supports the Collection class.
 	 *
 	 *  @return String SQL select string
@@ -335,24 +168,14 @@ class HoneyPotSession extends Maleable_Object {
 	}
 	
 	/**
-	 * This function returns the attributes of the object in an associative array
-	 * 
-	 * @return Array an associative array of the object's attributes
+	 * Get the command executed by the attacker
+	 *
+	 * @access public
+	 * @param String the html safe command executed by the attacker
 	 */
-	public function get_object_as_array(){
-		return array(
-				'id' => $this->get_id(),
-				'time' => $this->get_time(),
-				'ip' => $this->get_ip(),
-				'ip_numeric' => $this->get_ip_numeric(),
-				'sensor_id' => $this->get_sensor_id(),
-				'session_id' => $this->get_session_id(),
-				'command' => $this->get_command(),
-				'ip_linked' => $this->get_ip_linked(),
-				
-		);
+	public function get_command(){
+		return htmlspecialchars($this->command);
 	}
-	
 	
 	/**
 	 * Returns the frequencies of entires for a field in the data layer
@@ -378,6 +201,209 @@ class HoneyPotSession extends Maleable_Object {
 			}
 		}
 		return $retval;
+	}
+	
+	/**
+	 *  Get the unique ID for the object
+	 *
+	 *  @access public
+	 *  @return Int The unique ID of the object
+	 */
+	public function get_id(){
+		return intval($this->id);
+	}
+	
+	/**
+	 * Get the dot-decimal ip address of the attacker.
+	 *
+	 * @access public
+	 * @return String The dot-decimal IP address of the attacker
+	 */
+	public function get_ip(){
+		return htmlspecialchars($this->ip);
+	}
+	
+	/**
+	 * Get a link to the malicious ip database page for the ip address
+	 *
+	 * @access public
+	 * @return String The link to the malicious ip database page for the ip address
+	 */
+	public function get_ip_linked(){
+		$ip = $this->get_ip();
+		$retval = "<a href='?action=attackerip&ip=$ip'>$ip</a>";
+		return $retval;
+	}
+	
+	/**
+	 * Get the decimal representation of the ip address.
+	 *
+	 * @access public
+	 * @return Int The decimal representation of the ip address
+	 */
+	public function get_ip_numeric(){
+		return intval($this->ip_numeric);
+	}
+	
+
+	/**
+	 * Return the pritable string used for the object in interfaces
+	 *
+	 * @access public
+	 * @return String The printable string of the object name
+	 */
+	public function get_label(){
+		return 'Kojoney Executed Command';
+	}
+
+	/**
+	 * This function returns the attributes of the object in an associative array
+	 *
+	 * @return Array an associative array of the object's attributes
+	 */
+	public function get_object_as_array(){
+		return array(
+				'id' => $this->get_id(),
+				'time' => $this->get_time(),
+				'ip' => $this->get_ip(),
+				'ip_numeric' => $this->get_ip_numeric(),
+				'sensor_id' => $this->get_sensor_id(),
+				'session_id' => $this->get_session_id(),
+				'command' => $this->get_command(),
+				'ip_linked' => $this->get_ip_linked(),
+	
+		);
+	}
+	
+	/**
+	 * Get the sensor id of the honey pot
+	 *
+	 * @access public
+	 * @return Int the sensor id of the honey pot.
+	 */
+	public function get_sensor_id(){
+		return intval($this->sensor_id);
+	}
+	
+	/**
+	 * Get the session id of the honey pot
+	 *
+	 * @access public
+	 * @return Int the session id of the honey pot.
+	 */
+	public function get_session_id(){
+		return intval($this->session_id);
+	}
+	
+	
+	
+	/**
+	 * Get the timestamp of the login attempt
+	 *
+	 * @access public
+	 * @return Timestamp The timestamp of the session
+	 */
+	public function get_time(){
+		return $this->time;
+	}
+	
+	/**
+	 *  Get the percentage value of the top field's frequency
+	 *
+	 *  @access public
+	 *  @return array an associative array with the top field name and percentage
+	 */
+	public function get_top_field_percent($field,$bound){
+		$retval = array();
+		if ($field !=''){
+			$field_frequencies = $this->get_field_frequencies($field,$bound);
+			if (!empty($field_frequencies)){
+				$maxs = array_keys($field_frequencies, max($field_frequencies));
+				$top_field = $maxs[0];
+				$top_val = $field_frequencies[$top_field];
+				$total = array_sum($field_frequencies);
+				$percent = round(($top_val / $total) * 100);
+				$retval[$top_field] = $percent;
+			}
+		}
+		return $retval;
+	}
+	
+	/**
+	 * Set the command attribute
+	 *
+	 * @access public
+	 * @param String the command executed by the attacker
+	 */
+	public function set_command($command){
+		$this->command = $command;
+	}
+	
+	
+	/**
+	 *  Set the id attribute.
+	 *
+	 *  @access protected
+	 *  @param Int The unique ID from the data layer
+	 */
+	protected function set_id($id){
+		$this->id = intval($id);
+	}
+	
+	/**
+	 * Set the dot-decimal ip address of the attacker.
+	 *
+	 * @access public
+	 * @param String The dot-decimal IP address of the attacker
+	 */
+	public function set_ip($ip){
+		$retval = False;
+		if ($ip = filter_var($ip,FILTER_VALIDATE_IP)){
+			$this->ip = $ip;
+			$retval = True;
+		}
+		return $retval;
+	}
+	
+
+	/**
+	 * Set the ip_numeric attribute.
+	 *
+	 * @access public
+	 * @param Int The decimal representation of the ip address.
+	 */
+	public function set_ip_numeric($ip_numeric){
+		$this->ip_numeric = intval($ip_numeric);
+	}
+	
+	/**
+	 * Set the sensor_id attribute.
+	 *
+	 * @access public
+	 * @param Int The sensor id of the honey pot.
+	 */
+	public function set_sensor_id($sensor_id){
+		$this->sensor_id = intval($sensor_id);
+	}
+	
+	/**
+	 * Set the session_id attribute.
+	 *
+	 * @access public
+	 * @param Int The session id of the honey pot.
+	 */
+	public function set_session_id($session_id){
+		$this->session_id = intval($session_id);
+	}
+	
+	/**
+	 * Set the time attribute.
+	 *
+	 * @access public
+	 * @param Datetime The timestamp of session
+	 */
+	public function set_time($datetime){
+		$this->time = date("Y-m-d H:i:s", strtotime($datetime));
 	}
 	
 }

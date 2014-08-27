@@ -5,7 +5,6 @@
  * @author Ubani Anthony Balogun <ubani@sas.upenn.edu>
  * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
  * @package HECTOR
- * @todo Merge get_*_freqeuncies into a get_field_frequencies function
  * 
  */
 
@@ -154,210 +153,10 @@ class HoneyPotConnect extends Maleable_Object {
 		}
 	}
 	
-	/**
-	 *  Set the id attribute.
-	 *  
-	 *  @access protected
-	 *  @param Int The unique ID from the data layer
-	 */
-	protected function set_id($id){
-		$this->id = intval($id);
-	}
-	
-	/**
-	 *  Get the unique ID for the object
-	 *  
-	 *  @access public
-	 *  @return Int The unique ID of the object
-	 */
-	public function get_id(){
-		return intval($this->id);
-	}
-	
-	/**
-	 * Set the time attribute.
-	 * 
-	 * @access public
-	 * @param Datetime The timestamp of the login attempt
-	 */
-	public function set_time($datetime){
-		$this->time = date("Y-m-d H:i:s", strtotime($datetime));
-	}
-	
-	/**
-	 * Get the timestamp of the login attempt
-	 * 
-	 * @access public
-	 * @return Timestamp The timestamp of the login attempt
-	 */
-	public function get_time(){
-		return $this->time;
-	}
-	
-	/**
-	 * Set the dot-decimal ip address of the login attempt.
-	 * 
-	 * @access public
-	 * @param String The dot-decimal IP address of the login attempt
-	 */
-	public function set_ip($ip){
-		$retval = False;
-		if ($ip == filter_var($ip,FILTER_VALIDATE_IP)){
-			$this->ip = $ip;
-			$retval = True;
-		}
-		return $retval;
-	}
-	
-	/**
-	 * Get the dot-decimal ip address of the login attempt.
-	 * 
-	 * @access public
-	 * @return String The dot-decimal IP address of the login attempt
-	 */
-	public function get_ip(){
-		return htmlspecialchars($this->ip);
-	}
-	
-	/**
-	 * Get a link to the malicious ip database page for the ip address
-	 * 
-	 * @access public
-	 * @return String The link to the malicious ip database page for the ip address
-	 */
-	public function get_ip_linked(){
-		$ip = $this->get_ip();
-		$retval = "<a href='?action=attackerip&ip=$ip'>$ip</a>";
-		return $retval;
-	}
-	
-	/**
-	 * Get the hostname of the ip address used in the login attempt
-	 * 
-	 * @access public
-	 * @return String the hostname of the ip address
-	 */
-	public function get_hostname(){
-		return gethostbyaddr($this->get_ip());
-	}
-	
-	
-	/**
-	 * Set the username attribute.
-	 * 
-	 * @access public
-	 * @param String The username used in the login attempt
-	 */
-	public function set_username($username){
-		$this->username = $username;
-	}
-	
-	/**
-	 * Get the html safe username used in login attempt
-	 * 
-	 * @access public
-	 * @return String The username used in the login attempt
-	 */
-	public function get_username(){
-		return htmlspecialchars($this->username);
-	}
-	
-	/**
-	 * Set the password attribute.
-	 * 
-	 * @access public
-	 * @param String The password used in the login attempt
-	 */
-	public function set_password($password){
-		$this->password = utf8_encode($password);
-	}
-	
-	/**
-	 * Get the HTML safe password used in the login attempt
-	 * 
-	 * @access public
-	 * @return String The password used in the login attempt
-	 */
-	public function get_password(){
-		return htmlspecialchars($this->password);
-	}
-	
-	/**
-	 * Set the ip_numeric attribute.
-	 * 
-	 * @access public
-	 * @param Int The decimal representation of the ip address.
-	 */
-	public function set_ip_numeric($ip_numeric){
-		$this->ip_numeric = intval($ip_numeric);
-	}
-	
-	/**
-	 * Get the decimal representation of the ip address.
-	 * 
-	 * @access public
-	 * @return Int The decimal representation of the ip address
-	 */
-	public function get_ip_numeric(){
-		return intval($this->ip_numeric);
-	}
-	
-	/**
-	 * Set the sensor_id attribute. 
-	 * 
-	 * @access public
-	 * @param Int The sensor id of the honey pot.
-	 */
-	public function set_sensor_id($sensor_id){
-		$this->sensor_id = intval($sensor_id);
-	}
-	
-	/**
-	 * Get the sensor id of the honey pot
-	 * 
-	 * @access public
-	 * @return Int the sensor id of the honey pot.
-	 */
-	public function get_sensor_id(){
-		return intval($this->sensor_id);	
-	}
-	
-	/**
-	 * Set the country_code attribute.
-	 * 
-	 * @access public
-	 * @param String The two letter country code associated with the login attempt.
-	 */
-	public function set_country_code($code){
-		$code = substr(strtoupper($code),0,2);
-		$code = preg_replace('/[^A-Z]/', '', $code);
-		$this->country_code = $code;
-	}
-	
-	/**
-	 * Get the country code associated with the login attempt
-	 * 
-	 * @access public
-	 * @return String The HTML safe country code associated with the login attempt.
-	 */
-	public function get_country_code(){
-		return htmlspecialchars($this->country_code);
-	}
-	
-	
-	/**
-	 * Return the pritable string used for the object in interfaces
-	 * 
-	 * @access public
-	 * @return String The printable string of the object name
-	 */
-	public function get_label(){
-		return 'Kojoney Login Attempt';
-	}
-	
+
 	/**
 	 *  This function directly supports the Collection class.
-	 *  
+	 *
 	 *  @return String SQL select string
 	 */
 	public function get_collection_definition($filter = '', $orderby = ''){
@@ -378,26 +177,15 @@ class HoneyPotConnect extends Maleable_Object {
 		return $sql;
 	}
 	
-	
 	/**
-	 *  This function returns the attributes of the object in an associative array
-	 *  
-	 *  @return Array An associative array of the object's attributes
+	 * Get the country code associated with the login attempt
+	 *
+	 * @access public
+	 * @return String The HTML safe country code associated with the login attempt.
 	 */
-	public function get_object_as_array(){
-		return array(
-				'id' => $this->get_id(),
-				'time' => $this->get_time(),
-				'ip' => $this->get_ip(),
-				'username' => $this->get_username(),
-				'password' => $this->get_password(),
-				'ip_numeric' => $this->get_ip_numeric(),
-				'sensor_id' => $this->get_sensor_id(),
-				'country_code' => $this->get_country_code(),
-				'ip_linked' => $this->get_ip_linked(),
-		);
+	public function get_country_code(){
+		return htmlspecialchars($this->country_code);
 	}
-	
 	
 	/**
 	 * Returns the frequencies of entires for a field in the data layer
@@ -423,6 +211,246 @@ class HoneyPotConnect extends Maleable_Object {
 			}
 		}
 		return $retval;
+	}
+	
+	/**
+	 * Get the hostname of the ip address used in the login attempt
+	 *
+	 * @access public
+	 * @return String the hostname of the ip address
+	 */
+	public function get_hostname(){
+		return gethostbyaddr($this->get_ip());
+	}
+	
+	/**
+	 *  Get the unique ID for the object
+	 *
+	 *  @access public
+	 *  @return Int The unique ID of the object
+	 */
+	public function get_id(){
+		return intval($this->id);
+	}
+	
+
+	/**
+	 * Get the dot-decimal ip address of the login attempt.
+	 *
+	 * @access public
+	 * @return String The dot-decimal IP address of the login attempt
+	 */
+	public function get_ip(){
+		return htmlspecialchars($this->ip);
+	}
+	
+	/**
+	 * Get a link to the malicious ip database page for the ip address
+	 *
+	 * @access public
+	 * @return String The link to the malicious ip database page for the ip address
+	 */
+	public function get_ip_linked(){
+		$ip = $this->get_ip();
+		$retval = "<a href='?action=attackerip&ip=$ip'>$ip</a>";
+		return $retval;
+	}
+	
+
+	/**
+	 * Get the decimal representation of the ip address.
+	 *
+	 * @access public
+	 * @return Int The decimal representation of the ip address
+	 */
+	public function get_ip_numeric(){
+		return intval($this->ip_numeric);
+	}
+	
+	/**
+	 * Return the pritable string used for the object in interfaces
+	 *
+	 * @access public
+	 * @return String The printable string of the object name
+	 */
+	public function get_label(){
+		return 'Kojoney Login Attempt';
+	}
+	
+	/**
+	 *  This function returns the attributes of the object in an associative array
+	 *
+	 *  @return Array An associative array of the object's attributes
+	 */
+	public function get_object_as_array(){
+		return array(
+				'id' => $this->get_id(),
+				'time' => $this->get_time(),
+				'ip' => $this->get_ip(),
+				'username' => $this->get_username(),
+				'password' => $this->get_password(),
+				'ip_numeric' => $this->get_ip_numeric(),
+				'sensor_id' => $this->get_sensor_id(),
+				'country_code' => $this->get_country_code(),
+				'ip_linked' => $this->get_ip_linked(),
+		);
+	}
+	
+	
+	/**
+	 * Get the HTML safe password used in the login attempt
+	 *
+	 * @access public
+	 * @return String The password used in the login attempt
+	 */
+	public function get_password(){
+		return htmlspecialchars($this->password);
+	}
+	
+
+	/**
+	 * Get the sensor id of the honey pot
+	 *
+	 * @access public
+	 * @return Int the sensor id of the honey pot.
+	 */
+	public function get_sensor_id(){
+		return intval($this->sensor_id);
+	}
+	
+	
+	/**
+	 * Get the timestamp of the login attempt
+	 *
+	 * @access public
+	 * @return Timestamp The timestamp of the login attempt
+	 */
+	public function get_time(){
+		return $this->time;
+	}
+	
+	/**
+	 *  Get the percentage value of the top field's frequency
+	 *  
+	 *  @access public
+	 *  @return array an associative array with the top field name and percentage
+	 */
+	public function get_top_field_percent($field,$bound){
+		$retval = array();
+		if ($field !=''){
+			$field_frequencies = $this->get_field_frequencies($field,$bound);
+			if (!empty($field_frequencies)){
+				$maxs = array_keys($field_frequencies, max($field_frequencies));
+				$top_field = $maxs[0];
+				$top_val = $field_frequencies[$top_field];
+				$total = array_sum($field_frequencies);
+				$percent = round(($top_val / $total) * 100);
+				$retval[$top_field] = $percent;
+			}	
+		}
+		return $retval;
+	}
+	
+	/**
+	 * Get the html safe username used in login attempt
+	 *
+	 * @access public
+	 * @return String The username used in the login attempt
+	 */
+	public function get_username(){
+		return htmlspecialchars($this->username);
+	}
+	
+
+	/**
+	 * Set the country_code attribute.
+	 *
+	 * @access public
+	 * @param String The two letter country code associated with the login attempt.
+	 */
+	public function set_country_code($code){
+		$code = substr(strtoupper($code),0,2);
+		$code = preg_replace('/[^A-Z]/', '', $code);
+		$this->country_code = $code;
+	}
+	
+	
+	/**
+	 *  Set the id attribute.
+	 *  
+	 *  @access protected
+	 *  @param Int The unique ID from the data layer
+	 */
+	protected function set_id($id){
+		$this->id = intval($id);
+	}
+	
+	/**
+	 * Set the dot-decimal ip address of the login attempt.
+	 *
+	 * @access public
+	 * @param String The dot-decimal IP address of the login attempt
+	 */
+	public function set_ip($ip){
+		$retval = False;
+		if ($ip == filter_var($ip,FILTER_VALIDATE_IP)){
+			$this->ip = $ip;
+			$retval = True;
+		}
+		return $retval;
+	}
+	
+	/**
+	 * Set the ip_numeric attribute.
+	 *
+	 * @access public
+	 * @param Int The decimal representation of the ip address.
+	 */
+	public function set_ip_numeric($ip_numeric){
+		$this->ip_numeric = intval($ip_numeric);
+	}
+	
+	/**
+	 * Set the password attribute.
+	 *
+	 * @access public
+	 * @param String The password used in the login attempt
+	 */
+	public function set_password($password){
+		$this->password = utf8_encode($password);
+	}
+	
+
+	/**
+	 * Set the sensor_id attribute.
+	 *
+	 * @access public
+	 * @param Int The sensor id of the honey pot.
+	 */
+	public function set_sensor_id($sensor_id){
+		$this->sensor_id = intval($sensor_id);
+	}
+	
+	
+	/**
+	 * Set the time attribute.
+	 * 
+	 * @access public
+	 * @param Datetime The timestamp of the login attempt
+	 */
+	public function set_time($datetime){
+		$this->time = date("Y-m-d H:i:s", strtotime($datetime));
+	}
+	
+	
+	/**
+	 * Set the username attribute.
+	 * 
+	 * @access public
+	 * @param String The username used in the login attempt
+	 */
+	public function set_username($username){
+		$this->username = $username;
 	}
 }
 

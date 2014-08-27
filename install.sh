@@ -54,11 +54,9 @@ echo "use mysql; " >> /tmp/hector.sql
 echo "CREATE DATABASE IF NOT EXISTS hector; GRANT ALL PRIVILEGES ON hector.* to 'hector'@localhost identified by '${HECTORPASS}';" >> /tmp/hector.sql
 cat app/sql/db.sql >> /tmp/hector.sql
 
-echo "Please enter your MySQL root user password:"
-mysql -u root -p < /tmp/hector.sql
 
 echo 
-echo "Step 4 of 7 - Moving HECTOR files to /opt"
+echo "Step 3 of 7 - Moving HECTOR files to /opt"
 echo 
 
 umask 022
@@ -92,6 +90,12 @@ echo " [+] Customizing config at /etc/ossec2mysql.conf"
 cp ${HECTOR_PATH}/app/scripts/ossec2mysql.conf.blank /etc/ossec2mysql.conf
 sed -i "s/hectorpass/${HECTORPASS}/g" /etc/ossec2mysql.conf
 
+echo 
+echo "Step 4 of 7 - Operational configuration info"
+echo 
+
+echo "Please enter your MySQL root user password:"
+mysql -u root -p < /tmp/hector.sql
 
 echo "    Please enter your HECTOR server name or IP:"
 read SERVERNAME

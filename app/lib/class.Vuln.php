@@ -515,15 +515,8 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
     			$tag_name = trim($each);
     			if ($tag_name){
     				$tag = new Tag();
-    				$is_tag = $tag->get_tag_by_name($tag_name);
-    				if (!$is_tag){
-    					$tag->set_name($tag_name);
-    					$tag->save();
-    					$tag_id = $tag->get_id();
-    				}else{
-    					$tag_id = $is_tag;
-    				}
-    				$tag_ids[] = $tag_id;
+    				$tag->lookup_by_name($tag_name);
+    				$tag_ids[] = $tag->get_id();
     			}
     		}
     	}

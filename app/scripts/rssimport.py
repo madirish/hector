@@ -39,7 +39,7 @@ conn = MySQLdb.connect(host=HOST,
       passwd=PASSWORD,
       db=DB,
       port=PORT)
-conn.autocommit()
+conn.autocommit(True)
 cursor = conn.cursor()
 conn.set_character_set('utf8')
 

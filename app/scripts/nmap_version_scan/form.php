@@ -6,7 +6,9 @@ $(document).ready(function () {
 	$('#add_scan_type_form #script').val('namp_version_scan.php');
 	
 	// User input validation 
-	
+	$('#saveScan').bind('click', function() {
+		$('#add_scan_type_form').submit();
+	});
     <?php
         // This is JavaScript for the edit form
         if(is_object($generic)) {

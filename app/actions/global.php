@@ -41,4 +41,6 @@ if (isset($result[0])) {
 }
 
 $reports = ($vuln_count > 0) ? 'Reports <span class="badge badge-important">!</span>' : 'Reports';
+
+require_once($approot . 'actions/functions.php');
 ?>

@@ -20,7 +20,9 @@ $css = '';
 
 // javascripts
 $javascripts = '';
-$javascripts .= "<script type='text/javascript' src='js/tag_details.js'></script>\n";
+hector_add_js('tag_details.js');
+
+//$javascripts .= "<script type='text/javascript' src='js/tag_details.js'></script>\n";
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $tag = new Tag($id);

@@ -48,14 +48,8 @@ if (is_array($ossec_rule_collection->members)){
 	}
 }
 
-// css
-$css = '';
-$css .= "<link href='css/jquery.dataTables.css' rel='stylesheet'>\n";
 
-// javascripts
-$javascripts = '';
-$javascripts .= "<script type='text/javascript' src='js/jquery.dataTables.min.js'></script>\n";
-$javascripts .= "<script type='text/javascript' src='js/Chart.js'></script>\n";
+
 $javascripts .= "<script type='text/javascript' src='js/ossecalerts.js'></script>\n";
 
 

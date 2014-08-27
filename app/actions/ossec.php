@@ -12,13 +12,7 @@
  */
 require_once($approot . 'lib/class.Host.php');
 
-// screenshots.css
-$css = '';
-$css .= "<link href='css/jquery.dataTables.css' rel='stylesheet'>\n";
 
-// javascripts
-$javascripts = '';
-$javascripts .= "<script type='text/javascript' src='js/jquery.dataTables.min.js'></script>\n";
 $javascripts .= "<script type='text/javascript' src='js/ossec.js'></script>\n";
 
 

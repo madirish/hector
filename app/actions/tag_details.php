@@ -15,11 +15,6 @@ include_once($approot . 'lib/class.Vuln.php');
 include_once($approot . 'lib/class.Host.php');
 include_once($approot . 'lib/class.Collection.php');
 
-// screenshots.css
-$css = '';
-
-// javascripts
-$javascripts = '';
 $javascripts .= "<script type='text/javascript' src='js/tag_details.js'></script>\n";
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;

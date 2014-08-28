@@ -208,6 +208,65 @@ class Darknet extends Maleable_Object {
     	$filter = ' AND d.country_code = \'' . mysql_real_escape_string($country) . '\' ';
         return $this->get_collection_definition($filter, $orderby);
     }
+    
+
+    /**
+     * The country code of the probe
+     *
+     * @access public
+     * @return String The country code of the source IP
+     */
+    public function get_country_code() {
+    	return htmlspecialchars($this->country_code);
+    }
+    
+    /**
+     * The destination IP of the probe
+     *
+     * @access public
+     * @return Int The destination IP of the probe
+     */
+    public function get_dst_ip() {
+    	return intval($this->dst_ip);
+    }
+    
+    /**
+     * The destination port of the probe
+     *
+     * @access public
+     * @return Int The destination port of the probe
+     */
+    public function get_dst_port() {
+    	return intval($this->dst_port);
+    }
+    
+    
+    /**
+     * Returns the frequencies of entries for a field in the data layer
+     *
+     * @param String $field The field from the data layer to count
+     * @param string $bound The bound for the data
+     * @return Array The frequenies of entries for the field
+     */
+    public function get_field_frequencies($field,$bound=''){
+    	$retval = array();
+    	$sql = 'SELECT ?s, count(?s) as frequency FROM darknet WHERE id > 0 ';
+    	if ($bound != ''){
+    		$sql .= ' AND received_at > DATE_SUB(NOW(), INTERVAL ?i DAY)';
+    		$sql .= ' GROUP BY ?s ORDER BY frequency DESC';
+    		$result = $this->db->fetch_object_array(array($sql,$field,$field,intval($bound),$field));
+    	}else{
+    		$sql .= ' GROUP BY ?s order by frequency desc';
+    		$result = $this->db->fetch_object_array(array($sql,$field,$field,$field));
+    	}
+    	if (isset($result[0])){
+    		foreach ($result as $row){
+    			$retval[$row->$field] = $row->frequency;
+    		}
+    	}
+    	return $retval;
+    }
+    
 
     /**
      * Get the unique ID for the object
@@ -230,7 +289,41 @@ class Darknet extends Maleable_Object {
     public function get_label() {
         return 'Darknet';
     } 
-
+    
+    /**
+     * The IP protocol of the probe
+     *
+     * @access public
+     * @return String The IP protocol of the probe
+     */
+    public function get_proto() {
+    	$retval = false;
+    	switch ($this->proto) {
+    		case 'tcp':
+    			$retval = 'tcp';
+    			break;
+    		case 'udp':
+    			$retval = 'udp';
+    			break;
+    		case 'icpm':
+    			$retval = 'icmp';
+    			break;
+    		default:
+    			$retval = false;
+    	}
+    	return $retval;
+    }
+    
+    /**
+     * The timestamp of the probe
+     *
+     * @access public
+     * @return Timestamp The timestamp of the probe
+     */
+    public function get_received_at() {
+    	return $this->received_at;
+    }
+    
     /**
      * The source IP of the probe
      * 
@@ -242,77 +335,35 @@ class Darknet extends Maleable_Object {
     }
     
     /**
-     * The country code of the probe
-     * 
-     * @access public
-     * @return String The country code of the source IP
-     */
-    public function get_country_code() {
-        return htmlspecialchars($this->country_code);
-    }
-    
-    /**
-     * The destination IP of the probe
-     * 
-     * @access public
-     * @return Int The destination IP of the probe
-     */
-    public function get_dst_ip() {
-        return intval($this->dst_ip);
-    }
-    
-    /**
-     * The IP protocol of the probe
-     * 
-     * @access public
-     * @return String The IP protocol of the probe
-     */
-    public function get_proto() {
-        $retval = false;
-        switch ($this->proto) {
-        	case 'tcp': 
-                $retval = 'tcp';
-                break;
-            case 'udp':
-                $retval = 'udp';
-                break;
-            case 'icpm':
-                $retval = 'icmp';
-                break;
-            default:
-                $retval = false;
-        }
-        return $retval;
-    }
-    
-    /**
-     * The timestamp of the probe
-     * 
-     * @access public
-     * @return Timestamp The timestamp of the probe
-     */
-    public function get_received_at() {
-        return $this->received_at;
-    }
-    
-    /**
-     * The destination port of the probe
-     * 
-     * @access public
-     * @return Int The destination port of the probe
-     */
-    public function get_dst_port() {
-        return intval($this->dst_port);
-    }
-    
-    /**
      * The source port of the probe
-     * 
+     *
      * @access public
      * @return Int The source port of the probe
      */
     public function get_src_port() {
-        return intval($this->src_port);
+    	return intval($this->src_port);
+    }
+    
+    /**
+     *  Get the percentage value of the top field's frequency
+     *
+     *  @access public
+     *  @return array an associative array with the top field name and percentage
+     */
+    public function get_top_field_percent($field,$bound){
+    	$retval = array();
+    	if ($field !=''){
+    		$field_frequencies = $this->get_field_frequencies($field,$bound);
+    		if (!empty($field_frequencies)){
+    			$maxs = array_keys($field_frequencies, max($field_frequencies));
+    			$top_field = $maxs[0];
+    			$top_val = $field_frequencies[$top_field];
+    			$total = array_sum($field_frequencies);
+    			$percent = round(($top_val / $total) * 100);
+    			$retval[$top_field] = $percent;
+    		}
+    	}
+    	return $retval;
     }
 
     /**
@@ -390,15 +441,6 @@ class Darknet extends Maleable_Object {
         $this->id = intval($id);
     }
 
-    /**
-     * Set the source IP of the probe
-     * 
-     * @access public
-     * @param Int The source IP of the probe
-     */
-    public function set_src_ip($ip) {
-        $this->src_ip = intval($ip);
-    }
     
     /**
      * Set the destination IP of the probe
@@ -408,6 +450,16 @@ class Darknet extends Maleable_Object {
      */
     public function set_dst_ip($ip) {
         $this->dst_ip = intval($ip);
+    }
+    
+    /**
+     * Set the destination port of the probe
+     *
+     * @access public
+     * @param Int The destination port of the probe
+     */
+    public function set_dst_port($port) {
+    	$this->dst_port = intval($port);
     }
     
     /**
@@ -442,14 +494,15 @@ class Darknet extends Maleable_Object {
         $this->received_at = date("Y-m-d H:i:s", strtotime($datetime));
     }
     
+    
     /**
-     * Set the destination port of the probe
-     * 
+     * Set the source IP of the probe
+     *
      * @access public
-     * @param Int The destination port of the probe
+     * @param Int The source IP of the probe
      */
-    public function set_dst_port($port) {
-        $this->dst_port = intval($port);
+    public function set_src_ip($ip) {
+    	$this->src_ip = intval($ip);
     }
     
     /**
@@ -462,31 +515,6 @@ class Darknet extends Maleable_Object {
         $this->src_port = intval($port);
     }
     
-    /**
-     * Returns the frequencies of entries for a field in the data layer
-     *
-     * @param String $field The field from the data layer to count
-     * @param string $bound The bound for the data
-     * @return Array The frequenies of entries for the field
-     */
-    public function get_field_frequencies($field,$bound=''){
-    	$retval = array();
-    	$sql = 'SELECT ?s, count(?s) as frequency FROM darknet WHERE id > 0 ';
-    	if ($bound != ''){
-    		$sql .= ' AND received_at > DATE_SUB(NOW(), INTERVAL ?i DAY)';
-    		$sql .= ' GROUP BY ?s ORDER BY frequency DESC';
-    		$result = $this->db->fetch_object_array(array($sql,$field,$field,intval($bound),$field));
-    	}else{
-    		$sql .= ' GROUP BY ?s order by frequency desc';
-    		$result = $this->db->fetch_object_array(array($sql,$field,$field,$field));
-    	}
-    	if (isset($result[0])){
-    		foreach ($result as $row){
-    			$retval[$row->$field] = $row->frequency;
-    		}
-    	}
-    	return $retval;
-    }
 
 } /* end of class Darknet */
 

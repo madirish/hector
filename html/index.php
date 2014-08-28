@@ -12,7 +12,9 @@ session_start();
 // Global variables
 $approot = getcwd() . '/../app/';
 $templates = $approot . 'templates/';
+$jsroot = getcwd() . '/js';
 $javascripts = '';
+$testscripts = array();
 
 /**
  * Include the Configs

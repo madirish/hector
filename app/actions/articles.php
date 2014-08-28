@@ -24,35 +24,23 @@ if (is_array($article_collection->members)){
 $a_x_tag = new Article_x_Tag();
 
 $tag_frequencies = $a_x_tag->get_field_frequencies($field='tag_id');
-$tag_names = array();
-$tag_counts = array();
-$tag_total = array_sum($tag_frequencies);
-foreach ($tag_frequencies as $name=>$count){
-	$tag_counts[] = round(($count/$tag_total) * 100);
-	$tag = new Tag($name);
-	$tag_names[] = $tag->get_name();
+if (!empty($tag_frequencies)){
+	$tag_names = array();
+	$tag_counts = array();
+	$tag_total = array_sum($tag_frequencies);
+	foreach ($tag_frequencies as $name=>$count){
+		$tag_counts[] = round(($count/$tag_total) * 100);
+		$tag = new Tag($name);
+		$tag_names[] = $tag->get_name();
+	}
+	
+	$labels = json_encode(array_slice($tag_names,0,10));
+	$data = json_encode(array_slice($tag_counts,0,10));
+}else{
+	$labels = $data = '[]';
 }
 
-$labels = json_encode(array_slice($tag_names,0,10));
-$data = json_encode(array_slice($tag_counts,0,10));
 
-
-$maxs = array_keys($tag_frequencies, max($tag_frequencies));
-$tag_top = $maxs[0];
-$tag_frequency = $tag_frequencies[$tag_top];
-$tag_percent = round(($tag_frequency/$tag_total) * 100);
-$tag = new Tag($tag_top);
-$tag_name = $tag->get_name();
-
-
-// Include CSS files;
-$css = '';
-$css .= "<link href='css/jquery.dataTables.css' rel='stylesheet'>\n";
-
-// Include Javascripts;
-$javascripts = '';
-$javascripts .= "<script type='text/javascript' src='js/jquery.dataTables.min.js'></script>\n";
-$javascripts .= "<script type='text/javascript' src='js/Chart.js'></script>\n";
 $javascripts .= "<script type='text/javascript' src='js/articles.js'></script>\n";
 
 include_once($templates. 'admin_headers.tpl.php');

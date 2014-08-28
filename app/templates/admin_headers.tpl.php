@@ -26,6 +26,11 @@
 	<link href="css/chart-legend.css" rel="stylesheet">
 	<link href="css/jquery.dataTables.css" rel="stylesheet">
 	<?php if (isset($css)) echo $css;?>
+	<?php if (!empty($testcss)): ?>
+		<?php foreach($testcss as $link):?>
+			<?php echo $link;?>
+		<?php endforeach;?>
+	<?php endif;?>
 </head>
 <body>
 <!-- 

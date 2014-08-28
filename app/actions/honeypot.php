@@ -108,8 +108,7 @@ $form->set_name($formname);
 $token = $form->get_token();
 $form->save();
 
-// Include CSS files;
-$css = '';
+
 
 // Include JS files;
 hector_add_js('honeypot.js');

@@ -49,56 +49,44 @@ $commands_json = json_encode($commands);
 //  Username frequencies
 $hpconnect = new HoneyPotConnect();
 
-$username_frequencies = $hpconnect->get_field_frequencies($field='username',$bound=7);
+$username_top = $hpconnect->get_top_field_percent($field='username',$bound=7);
+$u_top = (!empty($username_top)) ? key($username_top) : '';
+$u_percent = (isset($username_top[$u_top])) ? $username_top[$u_top] : 0;
 
-$u_top = key($username_frequencies);
-$u_frequency = $username_frequencies[$u_top];
-$u_total = array_sum($username_frequencies);
-$u_percent = round(($u_frequency / $u_total) * 100);
+$pass_top_percent = $hpconnect->get_top_field_percent($field='password',$bound=7);
+$pass_top = (!empty($pass_top_percent)) ? key($pass_top_percent) : '';
+$pass_percent = (isset($pass_top_percent[$pass_top])) ? $pass_top_percent[$pass_top] : 0;
 
-// Password frequencies
-$password_frequencies = $hpconnect->get_field_frequencies($field='password',$bound=7);
-$pass_top = key($password_frequencies);
-$pass_frequency = $password_frequencies[$pass_top];
-$pass_total = array_sum($password_frequencies);
-$pass_percent = round(($pass_frequency / $pass_total) * 100);
+$country_code_top = $hpconnect->get_top_field_percent($field='country_code',$bound=7);
+$c_top = (!empty($country_code_top)) ? key($country_code_top) : '';
+$c_percent = (isset($country_code_top[$c_top])) ? $country_code_top[$c_top] : 0;
 
-
-// Country frequencies
-$country_frequencies = $hpconnect->get_field_frequencies($field='country_code',$bound=7);
-$c_top = key($country_frequencies);
-$c_frequency = $country_frequencies[$c_top];
-$c_total = array_sum($country_frequencies);
-$c_percent = round(($c_frequency / $c_total) * 100);
-
-// IP frequencies 
-$ip_frequencies = $hpconnect->get_field_frequencies($field='ip',$bound=7);
-$ip_top = key($ip_frequencies);
-$ip_frequency = $ip_frequencies[$ip_top];
-$ip_total = array_sum($ip_frequencies);
-$ip_percent = round(($ip_frequency / $ip_total) * 100);
+$ip_top_percent = $hpconnect->get_top_field_percent($field='ip',$bound=7);
+$ip_top = (!empty($ip_top_percent)) ? key($ip_top_percent) : '';
+$ip_percent = (isset($ip_top_percent[$ip_top])) ? $ip_top_percent[$ip_top] : 0;
 
 $hpsession = new HoneyPotSession();
 // IP frequencies
-$sess_ips = $hpsession->get_field_frequencies($field='ip',$bound=7);
-$sess_ip_top = key($sess_ips);
-$sess_ip_frequency = $sess_ips[$sess_ip_top];
-$sess_ip_total = array_sum($sess_ips);
-$sess_ip_percent = round(($sess_ip_frequency / $sess_ip_total) * 100);
+$sip_top_percent = $hpsession->get_top_field_percent($field='ip',$bound=7);
+$sip_top = (!empty($sip_top_percent)) ? key($sip_top_percent) : '';
+$sip_percent = (isset($sip_top_percent[$sip_top])) ? $sip_top_percent[$sip_top] : 0;
+
 
 // Country frequencies
-$sess_c_frequencies = $hpsession->get_field_frequencies($field='country_code',$bound=7);
-$sess_c_top = key($sess_c_frequencies);
-$sess_c_frequency = $sess_c_frequencies[$sess_c_top];
-$sess_c_total = array_sum($sess_c_frequencies);
-$sess_c_percent = round(($sess_c_frequency / $sess_c_total) * 100);
+$scount_top_percent = $hpsession->get_top_field_percent($field='country_code',$bound=7);
+$scount_top = (!empty($scount_top_percent)) ? key($scount_top_percent) : '';
+$scount_percent = (isset($scount_top_percent[$scount_top])) ? $scount_top_percent[$scount_top] : 0; 
 
 // Command frequencies
 $command_freqs = $hpsession->get_field_frequencies($field='command',$bound=7);
-$top_command_keys = array_slice(array_keys($command_freqs),0,9);
-$top_command_vals = array_slice(array_values($command_freqs),0,9);
-$labels = json_encode($top_command_keys);
-$data = json_encode($top_command_vals);
+if (!empty($command_freqs)){
+	$top_command_keys = array_slice(array_keys($command_freqs),0,9);
+	$top_command_vals = array_slice(array_values($command_freqs),0,9);
+	$labels = json_encode($top_command_keys);
+	$data = json_encode($top_command_vals);
+}else{
+	$labels =  $data = '[]';
+}
 
 
 require_once($approot . 'lib/class.Form.php');
@@ -108,11 +96,8 @@ $form->set_name($formname);
 $token = $form->get_token();
 $form->save();
 
-
-
 // Include JS files;
 hector_add_js('honeypot.js');
-
 
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates . 'honeypot.tpl.php');

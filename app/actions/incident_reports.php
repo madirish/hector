@@ -133,9 +133,7 @@ foreach($incidentYearMonthCount as $year=>$values) {
 	}
 }
 
-
 $javascripts .= "<script type='text/javascript' src='js/incident_reports.js'></script>\n";
-
 
 include_once($approot . 'templates/admin_headers.tpl.php');
 include_once($approot . 'templates/incident_reports.tpl.php');

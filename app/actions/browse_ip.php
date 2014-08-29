@@ -37,8 +37,7 @@ else {
     $class_Bs = $report->getClassBs();
 }
 
-$javascripts .= '<script type="text/javascript" charset="utf8" src="js/jquery.dataTables.js"></script>' . "\n";
-$javascripts .= '<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">' . "\n";
+
 
 include_once($templates. 'admin_headers.tpl.php');
 if (isset($_GET['classC'])) include_once($templates . 'browse_classC.tpl.php');

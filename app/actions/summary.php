@@ -41,8 +41,6 @@ elseif ($scans == 0 && $appuser->get_is_admin()) {
 	$javascripts .= '<script type="text/javascript">$(document).ready( function(){jQuery.noConflict();$("#addScanModal").modal("show");} )</script>' . "\n";
 }
 // Put jQuery after modal declarations or there is a conflict
-$javascripts .= "<script type='text/javascript' src='js/jquery.js'></script>\n";
-$javascripts .= "<script type='text/javascript' src='js/Chart.js'></script>\n";
 $javascripts .= "<script type='text/javascript' src='js/portSummaryChart.js'></script>\n";
 $javascripts .= "<script type='text/javascript' src='js/darknetSummaryChart.js'></script>\n";
 

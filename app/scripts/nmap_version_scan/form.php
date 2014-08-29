@@ -3,7 +3,7 @@
 <script type="text/javascript">
 $(document).ready(function () {
 	// Set the scan name in the form from parent template
-	$('#add_scan_type_form #script').val('namp_version_scan.php');
+	$('#add_scan_type_form #script').val('nmap_version_scan.php');
 	
 	// User input validation 
 	$('#saveScan').bind('click', function() {

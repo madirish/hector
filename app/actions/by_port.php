@@ -359,8 +359,7 @@ if ($tempTablePopulated > 0) {
     if (is_array($hgcollection->members)) {
     	foreach ($hgcollection->members as $group) $hostgroups[] = $group;
     }
-    $javascripts .= '<script src="js/jquery.dataTables.js" charset="utf8" type="text/javascript"></script>'. "\n";
-    $javascripts .= '<link href="css/jquery.dataTables.css" type="text/css" rel="stylesheet">' . "\n";
+
     require_once($approot . 'lib/class.Form.php');
     $form = new Form();
     $formname = 'searchResultsToHostGroup';

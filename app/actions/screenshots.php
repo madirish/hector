@@ -11,12 +11,9 @@ include_once($approot . 'lib/class.Collection.php');
 
 // screenshots.css
 $css = '';
-$css .= "<link href='css/jquery.dataTables.css' rel='stylesheet'>\n";
 $css .= "<link href='css/screenshots.css' rel='stylesheet'>\n";
 
-// javascripts 
-$javascripts = '';
-$javascripts .= "<script type='text/javascript' src='js/jquery.dataTables.min.js'></script>\n";
+
 $javascripts .= "<script type='text/javascript' src='js/screenshots.js'></script>\n";
 
 $screenshot_collection = new Collection('Url');

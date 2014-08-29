@@ -41,7 +41,7 @@ if (!empty($tag_frequencies)){
 }
 
 
-$javascripts .= "<script type='text/javascript' src='js/articles.js'></script>\n";
+hector_add_js('articles.js');
 
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates . 'articles.tpl.php');

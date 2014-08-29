@@ -9,27 +9,14 @@
 </tr>
 </thead>
 <tbody>
-<?php
-	if (isset($alerts) && is_array($alerts)) {
-		foreach ($alerts as $alert) {
-			echo '<tr><td>' . $alert->get_timestamp() . 
-				'</td><td>' . $alert->get_string();
-			echo '</td><td>';
-			echo $alert->get_host_linked(); 
-			echo '</td></tr>'. "\n";
-		}
-	}
-?>
+<?php if (isset($alerts) && is_array($alerts)):?>
+	<?php foreach ($alerts as $alert):?>
+		<tr>
+			<td><?php echo $alert->get_timestamp();?></td>
+			<td><?php echo $alert->get_string();?></td>
+			<td><?php echo $alert->get_host_linked();?></td>
+		</tr>
+	<?php endforeach;?>
+<?php endif;?>
 </tbody>
 </table>
-
-
-<script type="text/javascript" >
-$(document).ready( function () {
-    var table = $('#tablealerts').DataTable({
-    	"ordering": true
-    });
-    table.column('0:visible').order('desc');
-    table.draw();
-} );
-</script>

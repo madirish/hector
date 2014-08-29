@@ -50,7 +50,7 @@ if (is_array($ossec_rule_collection->members)){
 
 
 
-$javascripts .= "<script type='text/javascript' src='js/ossecalerts.js'></script>\n";
+hector_add_js('ossecalerts.js');
 
 
 include_once($templates. 'admin_headers.tpl.php');

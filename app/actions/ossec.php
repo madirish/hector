@@ -12,11 +12,6 @@
  */
 require_once($approot . 'lib/class.Host.php');
 
-
-$javascripts .= "<script type='text/javascript' src='js/ossec.js'></script>\n";
-
-
-
 $ossec = new Host();
 $host_ids = $ossec->get_ossec_host_ids(); 
 $hosts = array();
@@ -24,6 +19,8 @@ foreach($host_ids as $host_id) {
 	$host = new Host($host_id);
 	$hosts[] = $host->get_object_as_array();
 }
+
+hector_add_js('ossec.js');
 
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates . 'ossec.tpl.php');

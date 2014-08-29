@@ -128,12 +128,12 @@ $monthnames = array("[huh?]","January","February","March","April","May","June","
 
 foreach($incidentYearMonthCount as $year=>$values) {
 	foreach ($incidentYearMonthCount[$year] as $month=>$val) {
-		$chartlabels[] = '"' . $monthnames[$month] . " " . $year . '"';
+		$chartlabels[] = $monthnames[$month] . " " . $year;
 		$chartvalues[] = $val;
 	}
 }
 
-$javascripts .= "<script type='text/javascript' src='js/incident_reports.js'></script>\n";
+hector_add_js('incident_reports.js');
 
 include_once($approot . 'templates/admin_headers.tpl.php');
 include_once($approot . 'templates/incident_reports.tpl.php');

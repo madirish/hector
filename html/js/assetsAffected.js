@@ -25,7 +25,6 @@ $(document).ready(function(){
 		var assets_chart = new Chart(ctx).Pie(data);
 		legend(document.getElementById("incident-assets-legend"),data);
 		
-		console.log(assets_count);
 		var i = 0;
 		$("#incident-assets-legend .title").each(function(index){
 			$(this).attr('onclick','location.href="' + assets_count[labels[i]]['href'] + '"');

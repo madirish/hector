@@ -17,7 +17,6 @@
  */
 function hector_add_js($filename){
 	global $testscripts;
-	$testscripts = array();
 	if ($filename != '' && in_hector_jsroot($filename)){
 		$script = "<script type='text/javascript' src='js/$filename'></script>";
 		if (!in_array($script, $testscripts)){
@@ -80,7 +79,6 @@ function in_hector_cssroot($filename){
  */
 function hector_add_css($filename){
 	global $testcss;
-	$testcss = array();
 	if ($filename != '' && in_hector_cssroot($filename)){
 		$link = "<link href='css/$filename' rel='stylesheet'>";
 		if (!in_array($link, $testcss)){

@@ -39,7 +39,7 @@ $filter_form->set_name('alert_filter_form');
 $filter_form_token = $filter_form->get_token();
 $filter_form->save();
 
-
+hector_add_js('alerts.js');
 
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates . 'alerts.tpl.php');

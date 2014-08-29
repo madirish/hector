@@ -21,7 +21,7 @@ if (is_array($vuln_detailcoll->members)) {
 }
 
 
-
+hector_add_js('vuln.js');
 include_once($templates . 'admin_headers.tpl.php');
 include_once($templates . 'vuln.tpl.php');
 ?>

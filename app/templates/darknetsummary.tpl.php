@@ -69,13 +69,3 @@
     <?php endforeach;?>
     </tbody>
 </table>
-
-
-<script type="text/javascript" >
-$(document).ready( function () {
-    var table = $('#darknet-probes-summary').DataTable({
-        "ordering": true
-    });
-    table.draw();
-} );
-</script>

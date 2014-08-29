@@ -59,35 +59,11 @@
 	</div>
 	<div class="panel-body">
 		<canvas id="incidentCountChart" height="300" width="600"></canvas>
+		<div class="hidden" id="incident-chart-labels"><?php echo json_encode($chartlabels);?></div>
+		<div class="hidden" id="incident-chart-data"><?php echo json_encode($chartvalues);?></div>
 	</div>
 </div>
-<script>
-        $(document).ready(function(){
-            var data = {labels: [<?php echo join(',', $chartlabels);?>],
-                        datasets: [
-                            {
-                                label: "My First dataset",
-                                fillColor: "rgba(255,255,255,0.1)",
-                                strokeColor: "#05EDFF",
-                                pointColor: "#05EDFF",
-                                pointStrokeColor: "#fff",
-                                pointHighlightFill: "#fff",
-                                pointHighlightStroke: "rgba(220,220,220,1)",
-                                data: [<?php echo join(',', $chartvalues); ?>]
-                            }
-                        ]
-            };
-            var options = {
-                bezierCurve: false,
-                multiTooltipTemplate: "<%= datasetLabel%> - <%= value %>",
-            };
-            var myNewChart = new Chart(document.getElementById("incidentCountChart").getContext("2d")).Line(data, options);
-            $("#incidentCountChart").hover(function (evt) {
-                var activeBars = myNewChart.getPointsAtEvent(evt);
-                console.log(activeBars);
-            });        
-        });
-</script>
+
 </div>
 </div>
 

@@ -52,8 +52,6 @@ $(document).ready(function(){
 	
 	var timeline_keys = $.parseJSON($('#timeline-keys').text());
 	var timeline_values = $.parseJSON($('#timeline-values').text());
-	console.log(timeline_keys);
-	console.log(timeline_values);
 	
 	var data = {
 			labels: timeline_keys,

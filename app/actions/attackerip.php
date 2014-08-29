@@ -46,7 +46,7 @@ if ($ip_addr != $ip_name) {
 	$ip_rpt_display .= ' - ' . $ip_name;
 }
 
-
+hector_add_js('attackerip.js');
 
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates . 'attackerip.tpl.php');

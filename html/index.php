@@ -15,6 +15,7 @@ $templates = $approot . 'templates/';
 $jsroot = getcwd() . '/js';
 $javascripts = '';
 $testscripts = array();
+$testcss = array();
 
 /**
  * Include the Configs

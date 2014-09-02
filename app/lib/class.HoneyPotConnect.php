@@ -335,7 +335,7 @@ class HoneyPotConnect extends Maleable_Object {
 	 *  @access public
 	 *  @return array an associative array with the top field name and percentage
 	 */
-	public function get_top_field_percent($field,$bound){
+	public function get_top_field_percent($field,$bound=''){
 		$retval = array();
 		if ($field !=''){
 			$field_frequencies = $this->get_field_frequencies($field,$bound);

@@ -16,6 +16,7 @@ import datetime
 import MySQLdb
 import logging
 import sys, os
+import socket
 # appPath - for example /opt/hector/app
 appPath = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + "/../../app")
 sys.path.append(appPath + "/lib/pylib")
@@ -23,9 +24,9 @@ sys.path.append(appPath + "/software/feedparser")
 
 from pull_config import Configurator
 import feedparser
+socket.setdefaulttimeout(1) # Otherwise timeouts in FeedParser will hang forever!
 
-
-DEBUG = False
+DEBUG = True
 
 # Credentials used for the database connection
 configr = Configurator()
@@ -61,7 +62,6 @@ tags = cursor.fetchall()
 cursor.execute('select rss_url from rss')
 results = cursor.fetchall()
 
-
 for feedurl in results: 
   feed = feedparser.parse(feedurl[0])
   for feeditem in feed["items"]:
@@ -95,14 +95,18 @@ for feedurl in results:
       print "Error importing feeditem " + feeditem["title"]
       raise e
     
+    if DEBUG: print "[+] Verifying article_id"
+    
     # Insure we got an article id
     article_id = conn.insert_id()
     if (article_id < 1):
       sql = "SELECT article_id FROM article WHERE article_title = %s AND article_url = %s"
       cursor.execute(sql,(feeditem["title"], feeditem["link"]))
       row = cursor.fetchone()
-      while row is not None:
+      if row is not None:
         article_id = row[0]
+    
+    if DEBUG: print "[+] Proceeding to tag article"
     
     # Autotag articles
     for (tag_id, tag_name) in tags:

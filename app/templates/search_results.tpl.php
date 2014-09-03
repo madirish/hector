@@ -13,28 +13,18 @@ Your search returned <span class="badge"><?php echo count($hosts);?></span> resu
     </tr>
 </thead>
 <tbody>
-<?php 
-if (is_array($hosts)) {
-    foreach ($hosts as $host) {
-        echo '<tr><td>' . $host->get_name_linked() . '</td>';
-        echo '<td>' . $host->get_ip() . '</td>';
-        echo '<td>' . $host->get_sponsor() . '</td>';
-        echo '<td>' . $host->get_technical() . '</td>';
-        echo '<td>' . $host->get_note() . '</td>';
-        echo '</tr>' . "\n";
-    }
-}
-?>
-</tbody></table>
-<script type="text/javascript" >
-$(document).ready( function () {
-    var table = $('#tableSearchResults').DataTable({
-        "ordering": true
-    });
-    table.draw();
-} );
-</script>
-
-
+<?php if (is_array($hosts)):?>
+	<?php foreach ($hosts as $host):?>
+		<tr>
+			<td><?php echo $host->get_name_linked();?></td>
+			<td><?php echo $host->get_ip();?></td>
+			<td><?php echo $host->get_sponsor();?></td>
+			<td><?php echo $host->get_technical();?></td>
+			<td><?php echo $host->get_note();?></td>
+		</tr>
+	<?php endforeach;?>
+<?php endif;?>
+</tbody>
+</table>
 </div>
 <br/></br>

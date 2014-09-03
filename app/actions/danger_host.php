@@ -29,6 +29,7 @@ foreach ($host_results as $ret) {
 	$fourporthosts[] = new Host($ret->host_id);
 }
 
+hector_add_js('danger_host.js');
 $template = $templates . 'dangerhost.tpl.php';
 
 ?>

@@ -48,7 +48,7 @@ $form->set_name($formname);
 $token = $form->get_token();
 $form->save();
 
-
+hector_add_js('search_results.js');
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates . 'search_form.tpl.php');
 

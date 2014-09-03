@@ -32,6 +32,7 @@ elseif (isset($_GET['classC'])) {
     if (isset($host_collection->members) && is_array($host_collection->members)) {
     	$hosts = $host_collection->members;
     }
+    hector_add_js('browse_classC.js');
 }
 else {
     $class_Bs = $report->getClassBs();

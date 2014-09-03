@@ -43,6 +43,7 @@ else {
     }
 }
 
+hector_add_js('host_groups.js');
 
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates . 'host_groups.tpl.php');

@@ -35,4 +35,14 @@ $(document).ready(function () {
 		var activeBars = myNewChart.getPointsAtEvent(evt);
 		});
 	
+	 var table = $('#incidenttable').dataTable({
+	        "ordering": true,
+	        "order": [[0,"desc"]],
+	        'autoWidth': false,
+	        "columnDefs":[
+	                      {"width": "10%", "targets": 0},
+	                      {"width": "20%", "targets": 1},
+	                      {"targets": -1, "orderable": false, "searchable": false, "width": "10%"}],
+	    });
+	    
 });

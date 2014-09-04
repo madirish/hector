@@ -26,7 +26,7 @@ from pull_config import Configurator
 import feedparser
 socket.setdefaulttimeout(1) # Otherwise timeouts in FeedParser will hang forever!
 
-DEBUG = True
+DEBUG = False
 
 # Credentials used for the database connection
 configr = Configurator()
@@ -105,6 +105,7 @@ for feedurl in results:
       row = cursor.fetchone()
       if row is not None:
         article_id = row[0]
+        if DEBUG: print "[+] Setting article_id to " + article_id
     
     if DEBUG: print "[+] Proceeding to tag article"
     

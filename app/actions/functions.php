@@ -12,7 +12,7 @@
  * Add a js file to the header of a page (admin_headers.tpl.php)
  * 
  * @author Ubani Balogun <ubani@sas.upenn.edu>
- * @param String $filename The name of the js file to add (with or without .js file extension)
+ * @param String $filename The valid js file with .js extension
  * @return Boolean true on success, false on failure
  */
 function hector_add_js($filename){
@@ -32,7 +32,7 @@ function hector_add_js($filename){
  * Checks if a javascript file is in HECTOR's javascript directory
  * 
  * @author Ubani Balogun <ubani@sas.upenn.edu>
- * @param String $filename The javascript file to check for (with or without .js file extension)
+ * @param String $filename The javascript file to check for (with .js extension)
  * @return Boolean true if file exists in HECTOR's js root. false otherwise
  */
 
@@ -53,7 +53,7 @@ function in_hector_jsroot($filename){
  * Checks if a css file is in HECTOR's css directory
  * 
  * @author Ubani Balogun <ubani@sas.upenn.edu>
- * @param String $filename The css file to check (with or without .css file extension)
+ * @param String $filename The css file to check (with .css file extension)
  * @return Boolean true if file exsts in HECTOR's css directory. false otherwise
  */
 function in_hector_cssroot($filename){
@@ -74,7 +74,7 @@ function in_hector_cssroot($filename){
  * Add a css file to the header of a page 
  * 
  * @author Ubani Balogun <ubani@sas.upenn.edu>
- * @param String $filename The name of the css file to add (with or without .css file extension)
+ * @param String $filename The name of the css file to add (with .css file extension)
  * @return Boolean true on success, false on failure
  */
 function hector_add_css($filename){

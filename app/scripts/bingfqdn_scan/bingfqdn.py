@@ -17,9 +17,10 @@
 import MySQLdb
 import urllib2
 import base64
-import sys, os
+import sys, os, socket
 sys.path.append(os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + "/../../lib/pylib"))
 from pull_config import Configurator
+from urlparse import urlparse
 
 configr = Configurator()
 DB = configr.get_var('db')
@@ -40,12 +41,15 @@ try:
                       db=DB)
 except Exception as err:
   print "Error connecting to the database" , err
+  
+if DEBUG : print "[!] Starting BingFQDN\n"
 
 #look up IP's for web servers
 cursor = conn.cursor()
 sql = """SELECT DISTINCT(host_id) 
     FROM nmap_result
-    WHERE nmap_result_port_number IN (80,443,8000,8080) 
+    WHERE nmap_result_port_number IN (80,443,8000,8080)
+      AND nmap_result_protocol = 'tcp' 
       AND state_id = 1 """
 cursor.execute(sql)
 host_ids = cursor.fetchall()
@@ -61,15 +65,18 @@ for host_id in host_ids:
   cursor.execute(sql, (host_id[0]))
   ip = cursor.fetchone()[0]
   hostmapip[host_id[0]] = ip
+  if DEBUG : print "Adding host_id " + str(host_id[0]) + " IP " + ip + " to hostmapip"
 
 # Poll Bing
 for host_id, host_ip in hostmapip.iteritems():
+  if DEBUG : print "[?] Polling Bing for IP " + host_ip
   url = BINGURL + str(host_ip) + '%27'
   request = urllib2.Request(url)
   request.add_header("Authorization", "Basic %s" % BASE64STRING)   
   try:
     result = urllib2.urlopen(request)
     retval = result.read()
+    if DEBUG : print "  Got Bing response: " + retval
   except Exception as err:
     print "Error polling Bing ", err
   
@@ -83,7 +90,16 @@ for host_id, host_ip in hostmapip.iteritems():
       urlandtag = displayurl.split('</d:Url')[0]
       cursor = conn.cursor()
       sql = 'INSERT INTO url (host_id, url_url) VALUES (%s,%s) ON DUPLICATE KEY UPDATE host_id = %s'
-      if DEBUG : print "Inserting %s : %s" % (host_id, urlandtag)
-      cursor.execute(sql, (host_id, urlandtag, host_id))
+      parsedURL = urlparse(urlandtag)
+      if DEBUG : print "    parsedURL is " + parsedURL.netloc
+      lookupIP = socket.gethostbyname(parsedURL.netloc)
+      if DEBUG : print "    lookupIP is " + lookupIP
+      if (lookupIP == hostmapip[host_id]):
+      	# Reverse lookup OK
+      	if DEBUG : print "[+] Inserting %s : %s" % (host_id, urlandtag)
+      	cursor.execute(sql, (host_id, urlandtag, host_id))
+      else:
+      	if DEBUG : print "[-] Not inserting because " + lookupIP + " doesn't match " + hostmapip[host_id] + " for " + urlandtag
       conn.commit()
       cursor.close()
+

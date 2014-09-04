@@ -105,6 +105,7 @@ for feedurl in results:
       row = cursor.fetchone()
       if row is not None:
         article_id = row[0]
+        if DEBUG: print "[+] Setting article_id to " + article_id
     
     if DEBUG: print "[+] Proceeding to tag article"
     

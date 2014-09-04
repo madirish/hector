@@ -26,7 +26,7 @@ from pull_config import Configurator
 import feedparser
 socket.setdefaulttimeout(1) # Otherwise timeouts in FeedParser will hang forever!
 
-DEBUG = True
+DEBUG = False
 
 # Credentials used for the database connection
 configr = Configurator()

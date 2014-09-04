@@ -39,7 +39,7 @@ function hector_add_js($filename){
 function in_hector_jsroot($filename){
 	$jsroot = $_SESSION['approot'] . 'html/js';
 	if ($filename !=''){
-		$filepath = $jsroot . '/' . $filename;
+		$filepath = $jsroot . '/' . basename($filename,".js") . '.js';
 		$exists = file_exists($filepath);
 		$in_root = ($jsroot == dirname($filepath));
 		if ($exists && $in_root){
@@ -59,7 +59,7 @@ function in_hector_jsroot($filename){
 function in_hector_cssroot($filename){
 	$cssroot = $_SESSION['approot'] . 'html/css';
 	if ($filename !=''){
-		$filepath = $cssroot . "/$filename";
+		$filepath = $cssroot . "/" . basename($filename,".css") . ".css";
 		$exists = file_exists($filepath);
 		$in_root = ($cssroot == dirname($filepath));
 		if ($exists && $in_root){

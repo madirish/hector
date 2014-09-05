@@ -43,7 +43,7 @@
 -->
 <div id="headerbar" class="headergrey">
 <div id="sas_header" class="sasgrey"> 
-	<a href="http://www.sas.upenn.edu"><img src="http://www.sas.upenn.edu/home/assets/img/global/sas_header_logo_grey.jpg"></a> 
+	<a href="http://www.sas.upenn.edu"><img src="https://www.sas.upenn.edu/home/assets/img/global/sas_header_logo_grey.jpg"></a> 
 	<a class="links" href="http://www.sas.upenn.edu">School of Arts and Sciences</a> 
 	<a class="links" href="http://www.upenn.edu">University of Pennsylvania</a>
 </div>

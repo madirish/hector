@@ -1,6 +1,3 @@
-<script src="js/jquery.js" type="text/javascript"></script>
-<script src="js/bootstrap-datepicker.js" type="text/javascript"></script>
-<link href="css/datepicker.css" rel="stylesheet">
 <h3>Edit Vunerability Details</h3>
 <form name="<?php echo $form_name;?>" id="<?php echo $form_name;?>" method="POST" action="?action=edit_vuln_details&id=<?php echo $vuln_detail->get_id();?>">
 <fieldset>
@@ -65,7 +62,7 @@
 <input type="hidden" name="form_name" value="<?php echo $form_name;?>"/>
 </form>
 <script>
-	var ddatetime = new Date(<?php echo strtotime($vuln_detail->get_datetime());?>*1000);
+	var ddatetime = new Date(<?php echo strtotime($vuln_detail->get_datetime());?> *1000);
 	var defaulttime = '<?php echo date(' H:i:s');?>';
     $('#dp').datepicker().on('changeDate', function(ev){
     	if (ev.date.valueOf() > ddatetime) {

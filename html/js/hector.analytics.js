@@ -6,7 +6,7 @@
  */
 
 /**
- * Draw a Doughnut chart that shows the top data value in the center as a percent of the remaining data
+ * Draw a Chart.js Doughnut chart that shows the top data value in the center as a percent of the remaining data
  * 
  * @param canvasId the id of the canvas element used for the chart
  * @param dataId The id of the hidden div that contains the data element
@@ -51,4 +51,52 @@ function hectorDrawDoughnutChart(canvasId,dataId){
 	    });
 	}
     
+}
+
+/**
+ * Draw a Chart.js Bar chart with the given labels and values
+ * @param canvasId the id of the canvas element used for the chart
+ * @param labelsId The id of a hidden div that contains the json encoded labels for the Chart 
+ * @param valuesId The id of a hidden div that contains the json encoded values for the Chart
+ * @param datasetProperties An optional javascript object for modifying the chart appearance (See Chart.js Bar chart Datasets properties)
+ */
+function hectorDrawBarChart(canvasId,labelsId,valuesId,datasetProperties){
+	if (canvasId == null || labelsId == null || valuesId == null){
+		return;
+	}
+	
+	if (document.getElementById(labelsId) != null && document.getElementById(valuesId) != null && document.getElementById(canvasId) != null){
+		var lId = "#" + labelsId;
+		var vId = "#" + valuesId;
+		var labels = $.parseJSON($(lId).text());
+		var values = $.parseJSON($(vId).text());
+		var datasets;
+		
+		if (datasetProperties && typeof datasetProperties == 'object'){
+			datasetProperties['data'] = values;
+			datasets = [datasetProperties];
+		}else{
+			datasets = [{
+				fillColor: "#05EDFF",
+				strokeColor: "#05EDFF",
+	        	pointColor: "#05EDFF",
+	        	pointStrokeColor: "#fff",
+	        	pointHighlightFill: "#fff",
+	        	pointHighlightStroke: "rgba(220,220,220,1)",
+	        	data: values,
+			}]
+		}
+			
+		data = {
+				labels: labels,
+				datasets: datasets, 
+		};
+		var options = {
+				multiTooltipTemplate: "<%= datasetLabel%> - <%= value %>",
+		};
+		
+		var chart = new Chart(document.getElementById(canvasId).getContext("2d")).Bar(data,options);
+		
+	}
+	
 }

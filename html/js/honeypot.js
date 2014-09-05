@@ -3,6 +3,14 @@
  */
 
 $(function(){
+	
+	hectorDrawDoughnutChart("top-country","countrypercent");
+	hectorDrawDoughnutChart("top-ip","ippercent");
+	hectorDrawDoughnutChart("top-user","userpercent");
+	hectorDrawDoughnutChart("top-pass","passpercent");
+	hectorDrawDoughnutChart("sess-ip","sess-ippercent");
+	hectorDrawDoughnutChart("sess-country","sess-cpercent");
+	
 	var raw = $('#login-attempts').text();
 	var data = JSON.parse(raw);
 	columns = [
@@ -31,13 +39,8 @@ $(function(){
 		data:commands,
 		columns:commandsColumns,
 		"sDom": '<"top"lf>rt<"bottom"ip>',
-		
-	})
+	});
 	
-	hectorDrawDoughnutChart("top-country","countrypercent");
-	hectorDrawDoughnutChart("top-ip","ippercent");
-	hectorDrawDoughnutChart("top-user","userpercent");
-	hectorDrawDoughnutChart("top-pass","passpercent");
-	hectorDrawDoughnutChart("sess-ip","sess-ippercent");
-	hectorDrawDoughnutChart("sess-country","sess-cpercent");
-})
+	hectorDrawBarChart('top-commands','top-commands-labels','top-commands-values');
+	
+});

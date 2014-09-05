@@ -1,5 +1,4 @@
 <p class="lead"><?php echo $count;?> Hosts Tracked</p>
-
 <div id="addHostsModal" class="modal hide fade" aria-hidden="true">
 <div class="modal-header">
 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -47,31 +46,31 @@ to perform automated scans of hosts.</p>
 <div class="row">
   <div class="span6">
   	<h3>Scanner:  Top Ports Detected</h3>
-  	<?php if ($portSummaryLabels !== '' && $portSummaryCounts !== '') { ?>
+  	<?php if ($portSummaryLabels !== '' && $portSummaryCounts !== ''): ?>
   	<div id="portSummaryChartLabels" class="hidden"><?php echo $portSummaryLabels;?></div>
   	<div id="portSummaryChartData" class="hidden"><?php echo $portSummaryCounts;?></div>
 	<canvas id="topPortsChart" height="300" width="550"></canvas>
-	<?php } else { ?>
+	<?php else: ?>
 		No ports detected.
-	<?php } ?>
+	<?php endif; ?>
   </div>
   
   <div class="span6">
 	<h3>Darknet:  Top Port Probes in Last 4 Days</h3>
-  	<?php if ($darknetSummaryLabels !== '' && $darknetSummaryCounts !== '') { ?>
+  	<?php if ($darknetSummaryLabels !== '' && $darknetSummaryCounts !== ''): ?>
 	<canvas id="darknetChart"  height="300" width="550"></canvas>
 	<div id="darknetSummaryChartLabels" class="hidden"><?php echo $darknetSummaryLabels;?></div>
   	<div id="darknetSummaryChartData" class="hidden"><?php echo $darknetSummaryCounts;?></div>
-	<?php } else { ?>
+	<?php else: ?>
 		No port probes detected.
-	<?php } ?>
+	<?php endif; ?>
 	</div>
 </div>
 
 <div class="row">
     <!-- Incident Pie Chart -->
     <div class="span6"> 
-  		<?php if ($incidentchart_labels !== '[]' && $incidentchart_counts !== '[]') { ?>
+  		<?php if ($incidentchart_labels !== '[]' && $incidentchart_counts !== '[]'): ?>
         <div id="incident-div" class="chart-container">
             <div id="incidentReportHeader" class="hidden"><?php echo $incident_report_header?></div>
             <div id="incidentChartLabels" class="hidden"><?php echo $incidentchart_labels?></div>
@@ -80,14 +79,14 @@ to perform automated scans of hosts.</p>
             <div id="incidentChartLegend"></div>
             <canvas id="incidentChart"></canvas>
         </div>
-		<?php } else { ?>
+		<?php else: ?>
 			No incidents reported.
-		<?php } ?>
+		<?php endif; ?>
     </div>
     
     <!-- Incident Assets Pie chart -->
 	<div class="span6">
-  		<?php if ($asset_count_json !== '[]' && $asset_labels_json !== '[]') { ?>
+  		<?php if ($asset_count_json !== '[]' && $asset_labels_json !== '[]'): ?>
 		<div id="asset-chart-div" class="chart-container">
 			<h3 id="incident-assets-header"><?php echo $asset_count_header?></h3>
 			<div id="incident-assets-counts" class="hidden"><?php echo $asset_count_json?></div>
@@ -95,9 +94,9 @@ to perform automated scans of hosts.</p>
 			<div id="incident-assets-legend"></div>
 			<canvas id="incident-assets-chart"></canvas>
 		</div>
-		<?php } else { ?>
+		<?php else: ?>
 			No incidents reported.
-		<?php } ?>
+		<?php endif; ?>
 	</div>
 
 
@@ -117,13 +116,9 @@ to perform automated scans of hosts.</p>
 	    <h3>Darknet:  Probes in Last 7 Days by Country</h3>
 	    <div id="world-map-gdp" style="height:300px;"></div>
 	    <script>
-	    <?php
-	    foreach ($darknetmapcounts as $key=>$val) {
-	    	?>
+	    <?php foreach ($darknetmapcounts as $key=>$val): ?>
 	        countryData['<?php echo $key;?>']=<?php echo $val;?>;
-	        <?php
-	    }
-	    ?>
+	        <?php endforeach;?>
 	    //@code_start
 	    $(function(){
 	    $('#world-map-gdp').vectorMap({
@@ -160,7 +155,7 @@ to perform automated scans of hosts.</p>
     <div class="span6">
     	<!-- Timeline of Probes -->
         <h3>Timeline of Probes</h3>
-  		<?php if (count($countrycountdates) > 0) { ?>
+  		<?php if (count($countrycountdates) > 0):?>
         <canvas id="darknetCountryChart" height="300" width="550"></canvas>
         <script type="text/javascript">
         $(document).ready(function(){
@@ -208,9 +203,9 @@ to perform automated scans of hosts.</p>
             });        
         });
         </script>
-		<?php } else { ?>
+		<?php else:?>
 			No probes tracked.
-		<?php } ?>
+		<?php endif; ?>
     </div>
     <div class="span6">
     <!-- Tag Cloud -->

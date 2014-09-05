@@ -58,6 +58,8 @@ if (isset($_GET['id']) && ($_GET['id'] != '')) {
 		$edit_vuln_template = $templates . 'edit_vuln_details.tpl.php';
 	}
 }
+hector_add_js('bootstrap-datepicker.js');
+hector_add_css('datepicker.css');
 include_once($templates. 'admin_headers.tpl.php');
 include_once($edit_vuln_template);
 ?>

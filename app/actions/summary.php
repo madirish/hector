@@ -41,28 +41,30 @@ elseif ($scans == 0 && $appuser->get_is_admin()) {
 	$javascripts .= '<script type="text/javascript">$(document).ready( function(){jQuery.noConflict();$("#addScanModal").modal("show");} )</script>' . "\n";
 }
 // Put jQuery after modal declarations or there is a conflict
-$javascripts .= "<script type='text/javascript' src='js/portSummaryChart.js'></script>\n";
-$javascripts .= "<script type='text/javascript' src='js/darknetSummaryChart.js'></script>\n";
+hector_add_js('portSummaryChart.js');
+hector_add_js('darknetSummaryChart.js');
+
+
+hector_add_js('incidentChart.js');
+hector_add_js('legend.js');
 
 // jQuery jvectormap
-$javascripts .= "<link href='css/jquery-jvectormap-1.2.2.css' rel='stylesheet'>\n";
-$javascripts .= "<link href='css/jquery-ui-1.8.22.custom.css' rel='stylesheet'>\n";
-$javascripts .= "<script type='text/javascript' src='js/jquery-jvectormap-1.2.2.min.js'></script>\n";
-$javascripts .= "<script type='text/javascript' src='js/jquery-jvectormap-1.2.2-map.js'></script>\n";
+hector_add_js('jquery-jvectormap-1.2.2.min.js');
+hector_add_js('jquery-jvectormap-1.2.2-map.js');
+hector_add_css('jquery-jvectormap-1.2.2.css');
+hector_add_css('jquery-ui-1.8.22.custom.css');
 
-//Include incidentChart script
-$javascripts .= "<script type='text/javascript' src='js/incidentChart.js'></script>\n";
-$javascripts .= "<script type='text/javascript' src='js/legend.js'></script>\n";
 
 // Include kojoneymap Script
-$javascripts .= "<script type='text/javascript' src='js/kojoneymap.js'></script>\n";
+hector_add_js('kojoneymap.js');
+
 
 // Include Incident Assets Script
-$javascripts .= "<script type='text/javascript' src='js/assetsAffected.js'></script>\n";
+hector_add_js('assetsAffected.js');
 
 // Include Tag cloud Scripts
-$javascripts .= "<script type='text/javascript' src='js/jquery.tagcloud.js'></script>\n";
-$javascripts .= "<script type='text/javascript' src='js/tagcloud.js'></script>\n";
+hector_add_js('jquery.tagcloud.js');
+hector_add_js('tagcloud.js');
 
 $portSummaryLabels = "";
 $portSummaryCounts = "";

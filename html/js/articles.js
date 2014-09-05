@@ -6,5 +6,7 @@ $(document).ready(function(){
 		               {"width": "10%", "targets": 0},
 		               {"width": "40%", "targets": 3},
 		               {"width": "13%", "targets": 4}]
-	})
+	});
+	
+	hectorDrawBarChart('top-topic','topic-labels','topic-data');
 })

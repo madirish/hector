@@ -16,13 +16,10 @@ require_once($approot . 'lib/class.IRDiscovery.php');
 require_once($approot . 'lib/class.Tag.php');
 
 // Javascripts
-$javascripts = '';
-$javascripts .= "<script type='text/javascript' src='js/jquery-ui.js'></script>\n";
-$javascripts .= "<script type='text/javascript' src='js/new_ir.js'></script>\n";
+hector_add_js('jquery-ui.js');
+hector_add_js('new_ir.js');
 
-// CSS
-$css = '';
-$css .= "<link href='css/jquery-ui.min.css' rel='stylesheet'>\n";
+hector_add_css('jquery-ui.min.css');
 
 $ir_form = new Form();
 $ir_form_name = 'incident_report_form';

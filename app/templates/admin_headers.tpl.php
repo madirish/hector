@@ -14,6 +14,11 @@
 	<script type="text/javascript" src="js/jquery.dataTables.js"></script>
 	<script type="text/javascript" src="js/hector.analytics.js"></script>
 	<?php if (isset($javascripts)) echo $javascripts;?>
+	<?php if (!empty($testscripts)): ?>
+		<?php foreach($testscripts as $script): ?>
+			<?php echo $script;?>
+		<?php endforeach?>
+	<?php endif;?>
 	
 	<link href="css/bootstrap.css" rel="stylesheet">
 	<link href="css/bootstrap-responsive.css" rel="stylesheet">
@@ -21,6 +26,11 @@
 	<link href="css/chart-legend.css" rel="stylesheet">
 	<link href="css/jquery.dataTables.css" rel="stylesheet">
 	<?php if (isset($css)) echo $css;?>
+	<?php if (!empty($testcss)): ?>
+		<?php foreach($testcss as $link):?>
+			<?php echo $link;?>
+		<?php endforeach;?>
+	<?php endif;?>
 </head>
 <body>
 <!-- 

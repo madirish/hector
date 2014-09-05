@@ -3,26 +3,17 @@
 <thead>
     <tr><th>Hostname</th><th>IP</th><th>Open Ports</th><th>OS</th></tr>
 </thead>
-<?php
-if (isset($hosts) && is_array($hosts)) {
-    foreach ($hosts as $host) {
-        $name = ($host->get_name() !== '') ? $host->get_name() : $host->get_ip();
-        print "<tr><td><a href='?action=host_details&id=" . $host->get_id();
-        print "'>".htmlspecialchars($name)."</a></td><td>".htmlspecialchars($host->get_ip())."</td>";
-        print "<td>" . $host->get_open_ports() . "</td>";
-        print "<td>" . htmlspecialchars($host->get_os()) . "</td>";
-        print "</tr>";
-    }
-}
-?>
+<tbody>
+	<?php if (isset($hosts) && is_array($hosts)):?>
+		<?php foreach ($hosts as $host):?>
+			<?php $name = ($host->get_name() !== '') ? $host->get_name() : $host->get_ip(); ?>
+			<tr>
+				<td><a href='?action=host_details&id=<?php echo $host->get_id();?>'><?php echo htmlspecialchars($name);?></a></td>
+				<td><?php echo htmlspecialchars($host->get_ip());?></td>
+				<td><?php echo $host->get_open_ports();?></td>
+				<td><?php echo htmlspecialchars($host->get_os());?></td>
+			</tr>
+		<?php endforeach;?>
+	<?php endif;?>
+</tbody>
 </table>
-
-<script type="text/javascript" >
-$(document).ready( function () {
-    var table = $('#tableClassC').DataTable({
-        "ordering": true
-    });
-    table.column('0:visible').order('desc');
-    table.draw();
-} );
-</script>

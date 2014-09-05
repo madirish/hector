@@ -1,6 +1,6 @@
 <div id="content">
 <h3>Dangerous Hosts</h3>
-<?php if (count($sevenporthosts) > 0) { ?>
+<?php if (count($sevenporthosts) > 0) : ?>
 <h4>Hosts with more than 7 open ports</h4>
 <table id="dhost7" class="table table-striped table-bordered">
 <thead>
@@ -12,29 +12,19 @@
 	</tr>
 </thead>
 <tbody>
-	<?php foreach ($sevenporthosts as $host) { ?>
+	<?php foreach ($sevenporthosts as $host): ?>
 	<tr>
 		<td><?php echo $host->get_name_linked();?></td>
 		<td><?php echo $host->get_ip();?></td>
 		<td><?php echo $host->get_supportgroup_name();?></td>
 		<td><?php echo join(',', $host->get_open_ports_array());?></td>
 	</tr>
-	<?php } ?>
+	<?php endforeach; ?>
 </tbody>
 </table>
 
-<script type="text/javascript" >
-$(document).ready( function () {
-    var table = $('#dhost7').DataTable({
-        "ordering": true,
-    });
-    table.column('0:visible').order('asc');
-    table.draw();
-} );
-</script>
-
-<?php } ?>
-<?php if (count($fourporthosts) > 0) { ?>
+<?php endif; ?>
+<?php if (count($fourporthosts) > 0): ?>
 <h4>Hosts with more than 4 <a href="#dangerModal" data-toggle="modal" title="About server ports">server</a> ports open:</h4>
 <div id="dangerModal" class="modal hide fade" role="dialog" aria-labelledby="dangerModal" aria-hidden="true">
 	<div class="modal-header">
@@ -59,30 +49,19 @@ $(document).ready( function () {
 	</tr>
 </thead>
 <tbody>
-	<?php foreach ($fourporthosts as $host) { ?>
+	<?php foreach ($fourporthosts as $host): ?>
 		<tr>
 		<td><?php echo $host->get_name_linked();?></td>
 		<td><?php echo $host->get_ip();?></td>
 		<td><?php echo $host->get_supportgroup_name();?></td>
 		<td><?php echo join(',', $host->get_open_ports_array());?></td>
 	</tr>
-	<?php } ?>
+	<?php endforeach; ?>
 </tbody>
 </table>
 
-
-
-<script type="text/javascript" >
-$(document).ready( function () {
-    var table = $('#dhost4').DataTable({
-        "ordering": true,
-    });
-    table.column('0:visible').order('asc');
-    table.draw();
-} );
-</script>
-<?php } ?>
-<?php if (count($sevenporthosts) < 1 && count($fourporthosts) < 1) {?>
+<?php endif; ?>
+<?php if (count($sevenporthosts) < 1 && count($fourporthosts) < 1):?>
 No <a href="#dangerModal" data-toggle="modal" title="About dangerous hosts">dangerous hosts</a> detected by port scans.
 <div id="dangerModal" class="modal hide fade" role="dialog" aria-labelledby="dangerModal" aria-hidden="true">
 	<div class="modal-header">
@@ -96,5 +75,5 @@ No <a href="#dangerModal" data-toggle="modal" title="About dangerous hosts">dang
 	<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
 	</div>
 </div>
-<?php } ?>
+<?php endif; ?>
 </div>

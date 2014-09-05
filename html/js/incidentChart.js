@@ -9,7 +9,6 @@
 $(document).ready(function(){
 	if (document.getElementById('incidentReportHeader') !== null) {
 		var chartHeader = JSON.parse(document.getElementById('incidentReportHeader').textContent);
-		console.log(chartHeader);
 		var chartLabels = JSON.parse(document.getElementById('incidentChartLabels').textContent);
 		var chartData = JSON.parse(document.getElementById('incidentChartCounts').textContent);
 		var colors = ["#F8FF01","#FF0F00","#69D2E7","#FF6600","#b0de09","#DDDDDD","#FFCC99","#D97041","#C7604C","#CCCFFF"];
@@ -28,9 +27,6 @@ $(document).ready(function(){
 		var incidentChart = new Chart(ctx).Pie(data);
 		legend(document.getElementById("incidentChartLegend"),data);
 		
-		for (i = 0; i < chartLabels.length; i++){
-			console.log($("#incidentChartLegend .title")[i]);
-		}
 		
 		var i = 0;
 		$("#incidentChartLegend .title").each(function(index){

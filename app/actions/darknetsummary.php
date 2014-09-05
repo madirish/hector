@@ -58,8 +58,7 @@ $proto_top_percent = $darknet->get_top_field_percent($field='proto',$bound=7);
 $proto_top = (!empty($proto_top_percent)) ? key($proto_top_percent) : '';
 $proto_percent = (isset($proto_top_percent[$proto_top])) ? $proto_top_percent[$proto_top] : 0;
 
-$javascripts = '';
-$javascripts .= '<script type="text/javascript" charset="utf8" src="js/darknetsummary.js"></script>' . "\n";
+hector_add_js('darknetsummary.js');
 
 if (! isset($_GET['ajax']) && ! isset($ajax)) {
     include_once($templates. 'admin_headers.tpl.php');

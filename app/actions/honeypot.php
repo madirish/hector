@@ -96,11 +96,8 @@ $form->set_name($formname);
 $token = $form->get_token();
 $form->save();
 
-
-
-// Include Javascripts;
-$javascripts .= "<script type='text/javascript' src='js/honeypot.js'></script>\n";
-
+// Include JS files;
+hector_add_js('honeypot.js');
 
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates . 'honeypot.tpl.php');

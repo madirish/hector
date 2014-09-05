@@ -9,33 +9,10 @@
         		<h4 class="panel-title">Top Topics</h4>
         	</div>
         	<div class="panel-body">
-        		<canvas id="top-topic" width="900" height="500"></canvas>		
+        		<canvas id="top-topic" width="900" height="500"></canvas>
+        		<div class="hidden" id="topic-labels"><?php echo $labels;?></div>
+        		<div class="hidden" id="topic-data"><?php echo $data;?></div>		
         	</div>
-        	<script>
-			        $(document).ready(function(){
-			            var data = {labels: <?php echo $labels;?>,
-			                        datasets: [
-			                            {
-			                                label: "My First dataset",
-			                                fillColor: "#05EDFF",
-			                                strokeColor: "#05EDFF",
-			                                pointColor: "#05EDFF",
-			                                pointStrokeColor: "#fff",
-			                                pointHighlightFill: "#fff",
-			                                pointHighlightStroke: "rgba(220,220,220,1)",
-			                                data: <?php echo $data ?>
-			                            }
-			                        ]
-			            };
-			            var options = {
-			                multiTooltipTemplate: "<%= datasetLabel%> - <%= value %>",
-			                responsive: true,
-			                scaleFontColor: "#000",
-			                
-			            };
-			            var myNewChart = new Chart(document.getElementById("top-topic").getContext("2d")).Bar(data, options);    
-			        });
-				</script>
         </div>
 	</div>
 </div>

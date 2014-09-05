@@ -114,30 +114,9 @@ Search malicious IP database: <input type="text" name="ip"/> <input type="submit
 				</div>
 				<div class="panel-body">
 					<canvas id="top-commands" width="500" height="260"></canvas>
+					<div id="top-commands-labels" class="hidden"><?php echo $labels;?></div>
+					<div id="top-commands-values" class="hidden"><?php echo $data;?></div>
 				</div>
-				<script>
-			        $(document).ready(function(){
-			            var data = {labels: <?php echo $labels;?>,
-			                        datasets: [
-			                            {
-			                                label: "My First dataset",
-			                                fillColor: "#05EDFF",
-			                                strokeColor: "#05EDFF",
-			                                pointColor: "#05EDFF",
-			                                pointStrokeColor: "#fff",
-			                                pointHighlightFill: "#fff",
-			                                pointHighlightStroke: "rgba(220,220,220,1)",
-			                                data: <?php echo $data ?>
-			                            }
-			                        ]
-			            };
-			            var options = {
-			                multiTooltipTemplate: "<%= datasetLabel%> - <%= value %>",
-			                
-			            };
-			            var myNewChart = new Chart(document.getElementById("top-commands").getContext("2d")).Bar(data, options);    
-			        });
-				</script>
 			</div>
 		</div>
 		</div>

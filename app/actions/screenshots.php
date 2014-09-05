@@ -9,12 +9,6 @@
 require_once($approot . 'lib/class.Db.php');
 include_once($approot . 'lib/class.Collection.php');
 
-// screenshots.css
-$css = '';
-$css .= "<link href='css/screenshots.css' rel='stylesheet'>\n";
-
-
-$javascripts .= "<script type='text/javascript' src='js/screenshots.js'></script>\n";
 
 $screenshot_collection = new Collection('Url');
 $screenshots = array();
@@ -33,6 +27,9 @@ if (is_array($screenshot_collection->members)){
 	}
 	
 }
+
+hector_add_css('screenshots.css');
+hector_add_js('screenshots.js');
 
 include_once($templates. 'admin_headers.tpl.php');
 include_once($templates. 'screenshots.tpl.php');

@@ -15,7 +15,9 @@ include_once($approot . 'lib/class.Vuln.php');
 include_once($approot . 'lib/class.Host.php');
 include_once($approot . 'lib/class.Collection.php');
 
-$javascripts .= "<script type='text/javascript' src='js/tag_details.js'></script>\n";
+
+hector_add_js('tag_details.js');
+
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $tag = new Tag($id);

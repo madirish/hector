@@ -16,7 +16,6 @@ $db = Db::get_instance();
 
 
 
-$javascripts .= "<script type='text/javascript' src='js/detection.js'></script>\n";
 	
 // Query ports probed on the darknet
 $sql = 'select count(id) as cid, dst_port, proto from darknet ' .
@@ -38,6 +37,9 @@ $sql = 'select distinct(a.rule_src_ip) as evilip ' .
 		'AND a.host_id = h.host_id and a.alert_date > date_sub(curdate(), interval 2 day) ' .
 		'order by a.alert_date limit 30';
 $ossec_attackers = $db->fetch_object_array($sql);
+
+
+hector_add_js('detection.js');
 
 require_once($approot . 'lib/class.Form.php');
 $form = new Form();

@@ -110,6 +110,7 @@ else {
 
 
 if (! isset($_GET['ajax']) && ! isset($ajax)) {
+	hector_add_js('details.js');
 	include_once($templates. 'admin_headers.tpl.php');
 }
 include_once($templates . $template . '.tpl.php');

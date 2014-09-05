@@ -59,93 +59,49 @@
 	</div>
 	<div class="panel-body">
 		<canvas id="incidentCountChart" height="300" width="600"></canvas>
+		<div class="hidden" id="incident-chart-labels"><?php echo json_encode($chartlabels);?></div>
+		<div class="hidden" id="incident-chart-data"><?php echo json_encode($chartvalues);?></div>
 	</div>
 </div>
-<script>
-        $(document).ready(function(){
-            var data = {labels: [<?php echo join(',', $chartlabels);?>],
-                        datasets: [
-                            {
-                                label: "My First dataset",
-                                fillColor: "rgba(255,255,255,0.1)",
-                                strokeColor: "#05EDFF",
-                                pointColor: "#05EDFF",
-                                pointStrokeColor: "#fff",
-                                pointHighlightFill: "#fff",
-                                pointHighlightStroke: "rgba(220,220,220,1)",
-                                data: [<?php echo join(',', $chartvalues); ?>]
-                            }
-                        ]
-            };
-            var options = {
-                bezierCurve: false,
-                multiTooltipTemplate: "<%= datasetLabel%> - <%= value %>",
-            };
-            var myNewChart = new Chart(document.getElementById("incidentCountChart").getContext("2d")).Line(data, options);
-            $("#incidentCountChart").hover(function (evt) {
-                var activeBars = myNewChart.getPointsAtEvent(evt);
-                console.log(activeBars);
-            });        
-        });
-</script>
+
 </div>
 </div>
 
-<table id="incidenttable" name="incidenttable" class="table table-striped table-bordered">
-<thead>
-<tr>
-    <th>Number</th>
-    <th>Year - Month</th>
-    <th>Title</th>
-    <th>Agent</th>
-    <th>Threat action</th>
-    <th>Asset affected</th>
-    <th>Overall impact</th>
-    <th>&nbsp;</th>
-</tr>
-</thead>
-<tbody>
-
-<?php 
-$i = 1;
-$deletemodaldivs = '';
-foreach ($incidents as $incident) {
-	echo "\t<tr><td>";
-    echo $i;
-    $i++;
-    echo "</td><td>";
-    echo $incident->get_year();
-    echo " - ";
-    echo $incident->get_month_friendly() . "</td>";
-    echo '<td><a href="?action=incident_report_summary&id=' . $incident->get_id() . '">';
-    echo $incident->get_title();
-    echo "</a></td>";
-    echo '<td>' . $incident->get_agent()->get_name() . '</td>';
-    echo '<td>' . $incident->get_action()->get_action() . '</td>';
-    echo '<td>' . $incident->get_asset()->get_name() . '</td>';
-    echo '<td>' . $incident->get_impact_magnitude_friendly() . '</td>';
-    echo "<td><a href='#deleteModal" . $incident->get_id() . "' role='button' class='btn' data-toggle='modal'>Delete</a></td></tr>\n";
-    $deletemodaldivs .= "<div id='deleteModal" . $incident->get_id() . "' class='modal hide fade' tabindex='-1' role='dialog' aria-labelledby='deletemodal" . $incident->get_id() ."' aria-hidden='true'>";
-    $deletemodaldivs .= "<div class='modal-header'><h3>Are you sure?</h3></div>";
-    $deletemodaldivs .= "<div class='modal-body'><p>Are you sure you want to <em>permanently</em> delete this report?</p></div>";
-    $deletemodaldivs .= "<div class='modal-footer'><button class='btn' data-dismiss='modal' aria-hidden='true'>No, return to view</button>";
-    $deletemodaldivs .= "<a href='?action=incident_report_delete&id=" . $incident->get_id() . "' class='btn btn-primary'>Yes, delete!</a></div>";
-    $deletemodaldivs .= "</div>\n";
-}
-?>
-</tbody>
-</table>
-<script type="text/javascript" >
-$(document).ready( function () {
-    var table = $('#incidenttable').DataTable({
-        "ordering": true,
-        aoColumnDefs: [{
-            bSortable: false,
-            aTargets: [ -1 ]
-        }]
-    });
-    table.column('0:visible').order('asc');
-    table.draw();
-} );
-</script>
-<?php echo $deletemodaldivs;?>
+<div class="row-fluid">
+	<div class="span12">
+		<table id="incidenttable" name="incidenttable" class="table table-striped table-bordered">
+		<thead>
+			<tr>
+				<th>Date</th>
+				<th>Title</th>
+				<th>Agent</th>
+				<th>Threat action</th>
+				<th>Asset affected</th>
+				<th>Overall impact</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach( $incidents as $incident):?>
+				<tr>
+					<td><?php echo $incident->get_year() . " - " . $incident->get_month_friendly();?></td>
+					<td><a href="?action=incident_report_summary&id=<?php echo $incident->get_id()?>"><?php echo $incident->get_title();?></a></td>
+					<td><?php echo $incident->get_agent()->get_name()?></td>
+					<td><?php echo $incident->get_action()->get_action();?></td>
+					<td><?php echo $incident->get_asset()->get_name();?></td>
+					<td><?php echo $incident->get_impact_magnitude_friendly();?></td>
+					<td><a href='<?php echo "#deleteModal" . $incident->get_id()?>' role='button' class='btn' data-toggle='modal'>Delete</a></td>
+				</tr>
+				<div id='<?php echo "deleteModal" . $incident->get_id();?>' role='button' class='modal hide fade' tabindex='-1' role='dialog' aria-labelledby='<?php echo "deletemodal" . $incident->get_id();?>' aria-hidden='true'>
+					<div class='modal-header'><h3>Are you sure?</h3></div>
+					<div class='modal-body'><p>Are you sure you want to <em>permanently</em> delete this report?</p></div>
+					<div class='modal-footer'>
+						<button class='btn' data-dismiss='modal' aria-hidden='true'>No, return to view</button>
+						<a href='?action=incident_report_delete&id=<?php echo $incident->get_id()?>' class='btn btn-primary'>Yes, delete!</a>
+					</div>
+				</div>
+			<?php endforeach;?>
+		</tbody>
+		</table>
+	</div>
+</div>

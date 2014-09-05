@@ -12,13 +12,12 @@
 require_once($approot . 'lib/class.Form.php');
 require_once($approot . 'lib/class.Collection.php');
 // Javascripts
-$javascripts = '';
-$javascripts .= "<script type='text/javascript' src='js/jquery-ui.js'></script>\n";
-$javascripts .= "<script type='text/javascript' src='js/add_edit.js'></script>\n";
+hector_add_js('jquery-ui.js');
+hector_add_js('add_edit.js');
 
 // CSS
-$css = '';
-$css .= "<link href='css/jquery-ui.min.css' rel='stylesheet'>\n";
+hector_add_css('jquery-ui.min.css');
+
 
 $add_edit = 1;
 if (! isset($_GET['object'])) {
@@ -89,8 +88,8 @@ else {
 						}
 						break;
 					case 'date':
-						$javascripts .= '<link href="css/datepicker.css" rel="stylesheet">';
-						$javascripts .= '<script type="text/javascript" src="js/bootstrap-datepicker.js"></script>';
+						hector_add_js('bootstrap-datepicker.js');
+						hector_add_css('datepicker.css');
 						$row['form'] = '';
 						$row['form'] .= '<input type="text" class="span2" name="' . 
 									$display['name'] . '" id="dp-' . $display['name'] . '" value="' . $value . '"/>';

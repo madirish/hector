@@ -115,7 +115,8 @@ to perform automated scans of hosts.</p>
     	<!-- Darknet Probes Map -->
 	    <h3>Darknet:  Probes in Last 7 Days by Country</h3>
 	    <div id="world-map-gdp" style="height:300px;"></div>
-	    <script>
+	    <script type="text/javascript">
+            var countryData;
 	    <?php foreach ($darknetmapcounts as $key=>$val): ?>
 	        countryData['<?php echo $key;?>']=<?php echo $val;?>;
 	        <?php endforeach;?>

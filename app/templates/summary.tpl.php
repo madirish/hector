@@ -116,12 +116,12 @@ to perform automated scans of hosts.</p>
 	    <h3>Darknet:  Probes in Last 7 Days by Country</h3>
 	    <div id="world-map-gdp" style="height:300px;"></div>
 	    <script type="text/javascript">
-            var countryData;
-	    <?php foreach ($darknetmapcounts as $key=>$val): ?>
-	        countryData['<?php echo $key;?>']=<?php echo $val;?>;
-	        <?php endforeach;?>
 	    //@code_start
 	    $(function(){
+            var countryData;
+	       <?php foreach ($darknetmapcounts as $key=>$val): ?>
+	        countryData['<?php echo $key;?>']=<?php echo $val;?>;
+	        <?php endforeach;?>
 	    $('#world-map-gdp').vectorMap({
 	        map: 'world_mill_en',
 	        series: {

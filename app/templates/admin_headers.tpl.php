@@ -50,12 +50,15 @@
 </div>
 
 <div class="container">
-<h1>HECTOR</h1>
+<div class="row">
+    <div class="span11"><h1>HECTOR</h1></div>
+    <div class="span1"><i class="icon-info-sign"></i><a href="?action=about" title="About HECTOR">About</a></div>
+</div>
 <div class="navbar"><div class="navbar-inner">
   <ul class="nav">
     <li><a href="?action=summary" title="Summary screen with overview statistics">Home</a></li>
     <li class="dropdown">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-hdd"></i> Assets <b class="caret"></b></a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Browse, search, and review assets"><i class="icon-hdd"></i> Assets <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li><a href="?action=browse_ip">Browse</a></li>
         <li><a href="?action=host_groups">Host groups</a></li>
@@ -73,7 +76,7 @@
       </ul>
     </li>
     <li class="dropdown">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Security Incidents."><i class="icon-warning-sign"></i> Incidents <b class="caret"></b></a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Create, review, and manage security incidents."><i class="icon-warning-sign"></i> Incidents <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li><a href="?action=incident_reports">Incident reports</a></li>
         <li><a href="?action=new_ir">New incident report</a></li>
@@ -87,7 +90,7 @@
       </ul>
     </li>
     <li class="dropdown">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> Reports <b class="caret"></b></a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Comprehensive reports from HECTOR"><i class="icon-list-alt"></i> Reports <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li><a href="?action=reports&report=by_port">Ports detected</a></li>
         <li><a href="?action=reports&report=danger_host">Dangerous hosts</a></li>
@@ -114,7 +117,7 @@
       </ul>
     </li>
     <li class="dropdown">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench"></i> Config <b class="caret"></b></a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Configure HECTOR components and scans."><i class="icon-wrench"></i> Config <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <!-- <li><a href="?action=config">Overview</a></li> -->
         <li class="nav-header">Scans</li>
@@ -136,7 +139,7 @@
         <li><a href="?action=config&object=api_key">API key</a></li>
       </ul>
     </li>
-    <li><a href="?action=logout">Log Out</a></li>
+    <li><a href="?action=logout" title="Log out of HECTOR">Log Out</a></li>
   </ul>
     
     <form class="navbar-search pull-right" method="post" name="<?php echo $ip_search_name;?>" id="<?php echo $ip_search_name;?>" action="?action=assets&object=search">

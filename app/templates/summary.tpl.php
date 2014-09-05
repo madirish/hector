@@ -117,34 +117,34 @@ to perform automated scans of hosts.</p>
 	    <div id="world-map-gdp" style="height:300px;"></div>
 	    <script type="text/javascript">
 	    //@code_start
-	    $(function(){
+	    $(document).ready(function(){
             var countryData = new Array();
 	       <?php foreach ($darknetmapcounts as $key=>$val): ?>
 	        countryData['<?php echo $key;?>']=<?php echo $val;?>;
 	        <?php endforeach;?>
-	    $('#world-map-gdp').vectorMap({
-	        map: 'world_mill_en',
-	        series: {
-	            regions: [{
-	                values: countryData,
-	                scale: ['#C8EEFF', '#0071A4'],
-	                normalizeFunction: 'polynomial'
-	            }]
-	        },
-	        onRegionLabelShow: function(event, label, code){
-	            label.html(
-	                '<b>'+label.html()+'</b></br>'+countryData[code]+ ' probes'
-	            );
-	        },
-	        onRegionClick: function (event, code) {
-	            location.href = "?action=darknetsummary&country="+code;
-	        },
-	        onRegionOver: function(event,label){
-				 $(this).css('cursor','pointer');
-			 },
-			 onRegionOut: function(event,label){
-				 $(this).css('cursor','default');
-			 }
+	       $('#world-map-gdp').vectorMap({
+	           map: 'world_mill_en',
+    	        series: {
+    	            regions: [{
+    	                values: countryData,
+    	                scale: ['#C8EEFF', '#0071A4'],
+    	                normalizeFunction: 'polynomial'
+    	            }]
+    	        },
+    	        onRegionLabelShow: function(event, label, code){
+    	            label.html(
+    	                '<b>'+label.html()+'</b></br>'+countryData[code]+ ' probes'
+    	            );
+    	        },
+    	        onRegionClick: function (event, code) {
+    	            location.href = "?action=darknetsummary&country="+code;
+    	        },
+    	        onRegionOver: function(event,label){
+    				 $(this).css('cursor','pointer');
+    			 },
+    			 onRegionOut: function(event,label){
+    				 $(this).css('cursor','default');
+    			 }
 	        });
 	      });
 	      //@code_end

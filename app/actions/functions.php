@@ -29,7 +29,9 @@ function hector_add_js($filename){
 
 
 /**
- * Checks if a javascript file is in HECTOR's javascript directory
+ * Checks if a javascript file is in HECTOR's javascript directory.
+ * Note that the check will enforce a .js extension, which if not 
+ * present will cause a False return value.
  * 
  * @author Ubani Balogun <ubani@sas.upenn.edu>
  * @param String $filename The javascript file to check for (with .js extension)
@@ -50,7 +52,9 @@ function in_hector_jsroot($filename){
 }
 
 /**
- * Checks if a css file is in HECTOR's css directory
+ * Checks if a css file is in HECTOR's css directory.  Note that the check 
+ * will enforce a .css file extension and return false if the file does 
+ * not use that convention (i.e. file.css3 will fail)
  * 
  * @author Ubani Balogun <ubani@sas.upenn.edu>
  * @param String $filename The css file to check (with .css file extension)

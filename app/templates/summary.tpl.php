@@ -118,7 +118,7 @@ to perform automated scans of hosts.</p>
 	    <script type="text/javascript">
 	    //@code_start
 	    $(function(){
-            var countryData;
+            var countryData = new Array();
 	       <?php foreach ($darknetmapcounts as $key=>$val): ?>
 	        countryData['<?php echo $key;?>']=<?php echo $val;?>;
 	        <?php endforeach;?>

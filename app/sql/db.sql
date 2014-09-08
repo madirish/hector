@@ -528,7 +528,7 @@ CREATE TABLE IF NOT EXISTS `vuln` (
   `vuln_cve` varchar(45),
   `vuln_osvdb` varchar(45),
   PRIMARY KEY (`vuln_id`)
-) ENGINE = INNODB;
+) ENGINE = INNODB; 
 
 -- Add URL for website with info on vuln
 CREATE TABLE IF NOT EXISTS `vuln_url` (

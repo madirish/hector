@@ -105,7 +105,7 @@ for feedurl in results:
       row = cursor.fetchone()
       if row is not None:
         article_id = row[0]
-        if DEBUG: print "[+] Setting article_id to " + article_id
+        if DEBUG: print "[+] Setting article_id to " + str(article_id)
     
     if DEBUG: print "[+] Proceeding to tag article"
     
@@ -114,11 +114,11 @@ for feedurl in results:
       tagged = 0
       if feeditem["title"].find(tag_name) > -1 :
           sql = "insert into article_x_tag set article_id = %s, tag_id = %s"
-          cursor.execute(sql, (conn.insert_id(), tag_id))
+          cursor.execute(sql, (article_id, tag_id))
           tagged = 1
           if DEBUG: print "[+] Found tag_id " + str(tag_id) + " named " + tag_name + " in: " + feeditem["title"]
       if feeditem["summary"].find(tag_name) > -1 and tagged == 0 :
           sql = "insert into article_x_tag set article_id = %s, tag_id = %s"
-          cursor.execute(sql, (conn.insert_id(), tag_id))
+          cursor.execute(sql, (article_id, tag_id))
           if DEBUG: print "[+] Found tag_id " + str(tag_id) + " named " + tag_name + " in: " + feeditem["title"]
 conn.close()

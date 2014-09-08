@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `alert` (
 	`alert_string` VARCHAR(255),
 	`host_id` INT NOT NULL,
 	PRIMARY KEY  (`alert_id`),
-	KEY (`host_id`)
+	INDEX (`host_id`)
 ) ENGINE = INNODB;
 
 -- API keys 
@@ -41,14 +41,16 @@ CREATE TABLE IF NOT EXISTS `article` (
 CREATE TABLE IF NOT EXISTS `article_x_tag` (
   `article_id` INT NOT NULL,
   `tag_id` INT NOT NULL,
-  KEY (`article_id`,`tag_id`)
+  INDEX (`article_id`),
+  INDEX (`tag_id`),
 ) ENGINE = INNODB;
 
 -- If the article describes a vulnerability pair them
 CREATE TABLE IF NOT EXISTS `article_x_vuln` (
   `article_id` INT NOT NULL,
   `vuln_id` INT NOT NULL,
-  KEY (`article_id`,`vuln_id`)
+  INDEX (`article_id`),
+  INDEX (`vuln_id`)
 );
 
 -- Darknet sensor
@@ -62,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `darknet` (
 	`country_code` VARCHAR(2),
 	`received_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`),
-	INDEX USING HASH (src_ip)
+	INDEX USING HASH (`src_ip`)
 ) ENGINE = INNODB;
 
 -- Form table is used for anti XSRF tokens
@@ -83,7 +85,8 @@ CREATE TABLE IF NOT EXISTS `geoip` (
   `end_ip_long` INT UNSIGNED,
   `country_code` VARCHAR(2),
   `country_name` VARCHAR(255),
-  INDEX USING HASH (start_ip_long, end_ip_long)
+  INDEX USING HASH (`start_ip_long`),
+  INDEX USING HASH (`end_ip_long`)
 ) ENGINE = INNODB;
 DELETE FROM geoip;
 LOAD DATA INFILE '/opt/hector/app/sql/GeoIPCountryWhois.csv' INTO TABLE geoip FIELDS TERMINATED BY "," ENCLOSED BY '"';
@@ -110,7 +113,10 @@ CREATE TABLE IF NOT EXISTS `host` (
   `host_ignored_timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `host_ignored_note` TEXT DEFAULT NULL,
   PRIMARY KEY  (`host_id`),
-  KEY (`location_id`, `host_ip`, `host_ip_numeric`, `supportgroup_id`)
+  INDEX (`location_id`),
+  INDEX (`host_ip`),
+  INDEX (`host_ip_numeric`),
+  INDEX (`supportgroup_id`)
 ) ENGINE = INNODB;
 
 -- Track alternative IP addresses and domain names
@@ -133,14 +139,16 @@ CREATE TABLE IF NOT EXISTS `host_group` (
 CREATE TABLE IF NOT EXISTS `host_x_host_group` (
 	`host_group_id` INT NOT NULL,
 	`host_id` INT NOT NULL,
-  KEY (`host_group_id`, `host_id`)
+  INDEX USING BTREE (`host_group_id`),
+  INDEX USING BTREE (`host_id`)
 ) ENGINE = INNODB;
 
 -- Free tagging of hosts
 CREATE TABLE IF NOT EXISTS `host_x_tag` (
 	`host_id` INT NOT NULL,
 	`tag_id` INT NOT NULL,
-  KEY (`host_id`,`tag_id`)
+  INDEX (`host_id`),
+  INDEX (`tag_id`)
 ) ENGINE = INNODB;
 
 -- Master incident table
@@ -168,18 +176,18 @@ CREATE TABLE IF NOT EXISTS `incident` (
   `disruption_magnitude_id` INT NOT NULL,
   `response_cost_magnitude_id` INT NOT NULL,
   `impact_magnitude_id` INT NOT NULL,
-  KEY (`agent_id`), 
-  KEY (`action_id`), 
-  KEY (`asset_id`), 
-  KEY (`impact_magnitude_id`),
-  KEY (`availability_loss_timeframe_id`),
-  KEY (`action_to_discovery_timeframe_id`),
-  KEY (`discovery_to_containment_timeframe_id`),
-  KEY (`discovery_id`),
-  KEY (`asset_loss_magnitude_id`),
-  KEY (`disruption_magnitude_id`),
-  KEY (`response_cost_magnitude_id`),
-  KEY (`impact_magnitude_id`),
+  INDEX (`agent_id`), 
+  INDEX (`action_id`), 
+  INDEX (`asset_id`), 
+  INDEX (`impact_magnitude_id`),
+  INDEX (`availability_loss_timeframe_id`),
+  INDEX (`action_to_discovery_timeframe_id`),
+  INDEX (`discovery_to_containment_timeframe_id`),
+  INDEX (`discovery_id`),
+  INDEX (`asset_loss_magnitude_id`),
+  INDEX (`disruption_magnitude_id`),
+  INDEX (`response_cost_magnitude_id`),
+  INDEX (`impact_magnitude_id`),
   PRIMARY KEY (`incident_id`)
 ) ENGINE = INNODB;  
 
@@ -277,7 +285,8 @@ INSERT INTO `incident_timeframe` SET `timeframe_id` = 9, `timeframe_duration` = 
 CREATE TABLE IF NOT EXISTS `incident_x_tag` (
   `incident_id` INT NOT NULL,
   `tag_id` INT NOT NULL,
-  KEY (`incident_id`,`tag_id`)
+  INDEX (`incident_id`),
+  INDEX (`tag_id`)
 ) ENGINE = INNODB;
 
 CREATE TABLE IF NOT EXISTS `koj_executed_command` (
@@ -333,14 +342,16 @@ CREATE TABLE IF NOT EXISTS `malware` (
   `sensor_id` INT(10) UNSIGNED,
   `file` LONGBLOB,
   PRIMARY KEY (`id`),
-  KEY (`source_ip_numeric`, `md5sum`)
+  INDEX (`source_ip_numeric`), 
+  INDEX (`md5sum`)
 ) ENGINE = InnoDB;
 
 -- Add ability to free tag malware
 CREATE TABLE IF NOT EXISTS `malware_x_tag` (
   `malware_id` INT UNSIGNED NOT NULL,
   `tag_id` INT UNSIGNED NOT NULL,
-  KEY (`malware_id`, `tag_id`)
+  INDEX (`malware_id`), 
+  INDEX (`tag_id`)
 ) ENGINE = INNODB;
 
 -- Results of NMAP scans
@@ -356,7 +367,9 @@ CREATE TABLE IF NOT EXISTS `nmap_result` (
 	`nmap_result_is_new` INT NOT NULL DEFAULT 1,
 	`nmap_result_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`nmap_result_id`),
-  KEY (`host_id`,`nmap_result_port_number`,`scan_id`)
+  INDEX (`host_id`),
+  INDEX (``nmap_result_port_number`),
+  INDEX (``scan_id`)
 ) ENGINE = INNODB;
 
 -- OSSEC alerts from clients
@@ -372,7 +385,8 @@ CREATE TABLE IF NOT EXISTS `ossec_alert` (
 	`rule_log` TEXT DEFAULT NULL,
 	`alert_ossec_id` VARCHAR(50) NOT NULL,
 	PRIMARY KEY (`alert_id`),
-	KEY (`host_id`, `rule_id`),
+	INDEX (`host_id`), 
+	INDEX (`rule_id`),
 	INDEX USING HASH (rule_src_ip_numeric),
   INDEX USING HASH (rule_id),
   INDEX USING HASH (host_id),
@@ -386,7 +400,8 @@ CREATE TABLE IF NOT EXISTS `ossec_rule` (
 	`rule_level` INT NOT NULL,
 	`rule_message` VARCHAR(255) NOT NULL,
 	PRIMARY KEY (`rule_id`),
-	KEY (`rule_number`,`rule_level`),
+	INDEX (`rule_number`),
+	INDEX (`rule_level`),
   INDEX USING BTREE (rule_level)
 );
 
@@ -439,7 +454,8 @@ INSERT INTO `scan_type`
 CREATE TABLE IF NOT EXISTS `scan_x_host_group` (
 	`host_group_id` INT NOT NULL,
 	`scan_id` INT NOT NULL,
-  KEY (`host_group_id`, `scan_id`)
+  INDEX (`host_group_id`),
+  INDEX (`scan_id`)
 ) ENGINE = INNODB;
 
 -- Port states (1=open, 2=closed, 3=filtered) but room for more
@@ -500,7 +516,8 @@ INSERT INTO `user` set `user_id`=1,
 CREATE TABLE IF NOT EXISTS `user_x_supportgroup` (
   `user_id` INT NOT NULL,
   `supportgroup_id` INT NOT NULL,	
-  KEY (`user_id`, `supportgroup_id`)
+  INDEX (`user_id`), 
+  INDEX (`supportgroup_id`)
 ) ENGINE = INNODB;
 
 -- Vulnerability classes
@@ -518,7 +535,7 @@ CREATE TABLE IF NOT EXISTS `vuln_url` (
   `vuln_url_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `vuln_id` INT UNSIGNED NOT NULL,
   `url` VARCHAR(255) NOT NULL,
-  KEY `vuln_detail_id` (`vuln_id`),
+  INDEX (`vuln_id`),
   PRIMARY KEY (`vuln_url_id`)
 ) ENGINE = INNODB;
 
@@ -526,7 +543,8 @@ CREATE TABLE IF NOT EXISTS `vuln_url` (
 CREATE TABLE IF NOT EXISTS `vuln_x_tag` (
   `vuln_id` INT UNSIGNED NOT NULL,
   `tag_id` INT UNSIGNED NOT NULL,
-  KEY (`vuln_id`, `tag_id`)
+  INDEX (`vuln_id`), 
+  INDEX (`tag_id`)
 ) ENGINE = INNODB;
 
 -- Vulnerablities details
@@ -544,6 +562,7 @@ CREATE TABLE IF NOT EXISTS `vuln_detail` (
   `vuln_detail_ticket` VARCHAR(255),
   `host_id` INT UNSIGNED NOT NULL,  
   `vuln_id` INT UNSIGNED NOT NULL,
-  KEY (`vuln_id`, `host_id`),
+  INDEX (`vuln_id`), 
+  INDEX (`host_id`),
   PRIMARY KEY (`vuln_detail_id`)
 ) ENGINE = INNODB;

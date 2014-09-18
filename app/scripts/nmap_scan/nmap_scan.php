@@ -205,7 +205,7 @@ else {
 	if ($version) $portspec .= ' -sV ';
 	$command = $nmap;
 	if (strpos($ports, 'U:') !== false) $command .= ' -sU '; // UDP port scan
-	if (strpos($ports, 'T:') !== false) $command .= ' -sT '; // TCP port scan
+	elseif (strpos($ports, 'T:') !== false) $command .= ' -sT '; // TCP port scan
 	else $command .= ' -sT '; // Default to TCP port scan
 	$command .= ' -PN -oX ' . $xmloutput . ' ' . $portspec .
 		' -T4 -iL ' . $ipfilename;

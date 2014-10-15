@@ -73,7 +73,7 @@ if (isset($_SESSION['user_id']) && $_SESSION['user_id'] != null) {
 		$action = $_GET['action'];
 		// require admin roles for some actions
 		$obj = isset($_GET['object']) ? $_GET['object'] : '';
-		if (in_array($obj, array('host_group','user','scan','scan_type')) && ! $appuser->get_is_admin()) {
+		if (in_array($obj, array('host_group','users','scan','scan_type')) && ! $appuser->get_is_admin()) {
 			$action = 'admin_only';
 		}
 	}

@@ -240,7 +240,7 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
      * @return String The HTML display safe body of the Article.
      */
     public function get_body() {
-        return $this->body;
+        return htmlspecialchars($this->body);
     }
 
     /**
@@ -374,7 +374,7 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
      * @return String The HTML display safe teaser of the Article.
      */
     public function get_teaser() {
-        return $this->teaser;
+        return htmlspecialchars($this->teaser);
     }
 
     /**

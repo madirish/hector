@@ -285,7 +285,7 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 	 * @return String The HTML display safe user name
 	 */
 	public function get_name() {
-	    return $this->name;
+	    return htmlspecialchars($this->name);
 	}
 	
 	/**

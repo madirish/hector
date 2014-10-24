@@ -84,22 +84,24 @@
 		<tbody>
 			<?php foreach( $incidents as $incident):?>
 				<tr>
-					<td><?php echo $incident->get_year() . " - " . $incident->get_month_friendly();?></td>
+					<td><div class="hidden"><?php echo ($incident->get_year()*100) + $incident->get_month();?></div><?php echo $incident->get_year() . " - " . $incident->get_month_friendly();?></td>
 					<td><a href="?action=incident_report_summary&id=<?php echo $incident->get_id()?>"><?php echo $incident->get_title();?></a></td>
 					<td><?php echo $incident->get_agent()->get_name()?></td>
 					<td><?php echo $incident->get_action()->get_action();?></td>
 					<td><?php echo $incident->get_asset()->get_name();?></td>
 					<td><?php echo $incident->get_impact_magnitude_friendly();?></td>
-					<td><a href='<?php echo "#deleteModal" . $incident->get_id()?>' role='button' class='btn' data-toggle='modal'>Delete</a></td>
+					<td><a href='<?php echo "#deleteModal" . $incident->get_id()?>' role='button' class='btn' data-toggle='modal'>Delete</a>
+						<div id='<?php echo "deleteModal" . $incident->get_id();?>' role='button' class='modal hide fade' tabindex='-1' role='dialog' aria-labelledby='<?php echo "deletemodal" . $incident->get_id();?>' aria-hidden='true'>
+							<div class='modal-header'><h3>Are you sure?</h3></div>
+							<div class='modal-body'><p>Are you sure you want to <em>permanently</em> delete this report?</p></div>
+							<div class='modal-footer'>
+								<button class='btn' data-dismiss='modal' aria-hidden='true'>No, return to view</button>
+								<a href='?action=incident_report_delete&id=<?php echo $incident->get_id()?>' class='btn btn-primary'>Yes, delete!</a>
+							</div>
+						</div>
+					</td>
 				</tr>
-				<div id='<?php echo "deleteModal" . $incident->get_id();?>' role='button' class='modal hide fade' tabindex='-1' role='dialog' aria-labelledby='<?php echo "deletemodal" . $incident->get_id();?>' aria-hidden='true'>
-					<div class='modal-header'><h3>Are you sure?</h3></div>
-					<div class='modal-body'><p>Are you sure you want to <em>permanently</em> delete this report?</p></div>
-					<div class='modal-footer'>
-						<button class='btn' data-dismiss='modal' aria-hidden='true'>No, return to view</button>
-						<a href='?action=incident_report_delete&id=<?php echo $incident->get_id()?>' class='btn btn-primary'>Yes, delete!</a>
-					</div>
-				</div>
+				
 			<?php endforeach;?>
 		</tbody>
 		</table>

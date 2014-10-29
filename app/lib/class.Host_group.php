@@ -215,7 +215,7 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
                         'type'=>'text',
                         'name'=>'detail',
                         'value_function'=>'get_detail',
-                        'process_callback'=>'set_name'),
+                        'process_callback'=>'set_detail'),
 				array('label'=>'Apply to all hosts?',
 						'type'=>'select',
 						'name'=>'applytoall',
@@ -252,7 +252,7 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
 	 * @access private
 	 * @return Int Zero
 	 */
-	private function get_applytoall() {
+	public function get_applytoall() {
 		return 0;
 	}
 

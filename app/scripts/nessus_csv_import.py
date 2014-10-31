@@ -62,17 +62,13 @@ def main(argv):
     ###############################
     cur = db.cursor()
     with open(inputfile, 'rb') as f:
-        dialect = csv.Sniffer().sniff(f.read(1024))
-        f.seek(0)
-        reader = csv.reader(f, dialect, quotechar='"')
+        reader = csv.reader(f)
         for row in reader:
-            #try:
-            #print reader.line_num
-            #print row
-            process_row(row, cur)
-            #except csv.Error as e:
-                #print 'WARNING: Invalid record at line %d: %s' \
-                        #% (reader.line_num, str(e))
+            try:
+                process_row(row, cur)
+            except csv.Error as e:
+                print 'WARNING: Invalid record at line %d: %s' \
+                        % (reader.line_num, str(e))
     print "All good records inserted! Check output messages for errors."
 """
 
@@ -89,7 +85,7 @@ successful insertInstance().
 def process_row(row, cur):
     if row[3] == "None" or row[3] == "Risk": #not a vuln
         return
-    print row
+    #print row
     cve = row[1]
     hostName = row[4]
     vulnName = row[7]
@@ -157,13 +153,13 @@ No return value.
 
 """
 def insertInstance(hostID, vulnID, url):
-    #if timestamp == '':
-    cur.execute("INSERT INTO vuln_detail ( \
+    if timestamp == '':
+        cur.execute("INSERT INTO vuln_detail ( \
             host_id, vuln_id, vuln_detail_text) VALUES (%s, %s, %s)", (hostID, vulnID, "Derp derp derp"))
-    #else:
-     #   cur.execute("INSERT INTO vuln_detail ( \
-    #        host_id, vuln_id, vuln_detail_datetime) VALUES (%s, %s, %s)", 
-    #        hostID, vulnID, timestamp)
+    else:
+        cur.execute("INSERT INTO vuln_detail ( \
+                host_id, vuln_id, vuln_detail_datetime) VALUES (%s, %s, %s)", 
+                hostID, vulnID, timestamp)
     if url == '':
         cur.execute("INSERT INTO vuln_url (\
             vuln_id, vuln_url) VALUES (%s, %s)", int(vuln_id), url)

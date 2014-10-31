@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #  nessus_csv_import.py
 #  Part of the HECTOR project, powered by UPENN SAS
-#  Copyleft 2014 Colleen Blaho <cblaho@sas.upenn.edu>
+#  @author Colleen Blaho <cblaho@sas.upenn.edu>
 #  30.10.2014
 #  
 
@@ -23,6 +23,7 @@ timestamp = ''
 cur = '' 
 db = ''
 def main(argv):
+    #defined as globals so we don't have to pass them through multiple functions
     global cur
     global db
     global timestamp
@@ -31,7 +32,7 @@ def main(argv):
     
     # Parsing arguments
     try:
-        opts, args = getopt.getopt(argv,"i:t:h",["ifile=","timestamp="])
+        opts, args = getopt.getopt(argv,"i:t:h",["inputfile=","timestamp="])
     except getopt.GetoptError:
         print 'Hector Importer -i <inputfile> -t <timestamp>'
         sys.exit(2)
@@ -40,9 +41,9 @@ def main(argv):
             print 'Hector Importer -i <inputfile> -t <timestamp>'
             print ' Time Format: "YYYY-MM-DD_HR:MIN:SEC" '
             sys.exit()
-        elif opt in ("-i", "--ifile"):
+        elif opt in ("-i", "--inputfile"):
             inputfile = arg
-        elif opt in ("-t", "--time"):
+        elif opt in ("-t", "--timestamp"):
             timestamp = arg
     if inputfile == '':
         print "FATAL! CSV file mandatory. -i <inputfile>"
@@ -52,6 +53,9 @@ def main(argv):
     else:
         try:
             time.strptime(timestamp, "%Y-%m-%d_%I:%M:%S")
+            #time will fill in missing information automatically.
+            timestamp = time.strftime("%Y-%m-%d_%I:%M:%S", timestamp)
+            #time will be okay with an incomplete timestamp but SQL won't.
         except ValueError as e:
             print "Invalid timestamp. \"%Y-%m-%d_%I:%M:%S\""
             print "Mind the underscore between the date and time."
@@ -139,17 +143,17 @@ def process_row(row, cur):
         except IndexError:
             print "Host '%s' Lookup Error: %s" % (hostName, str(e))
             return
-    # TODO: SQLi protection? Although I hope the people dealing with HECTOR are smart and Nessus is nice.
+    # Already SQLi hardened courtesy of .execute()
     try:
         cur.execute("SELECT vuln_id FROM vuln WHERE vuln_name = %s", vulnName)
         vulnID = cur.fetchone()
         if vulnID == None:
-            vulnID = insertVuln(vulnName, cve, descString)
+            vulnID = insertVuln(vulnName, cve, descString, url)
             db.commit()
         else:
             vulnID = vulnID[0]
         try:
-            insertInstance(hostID, vulnID, url, textString)
+            insertInstance(hostID, vulnID, textString)
             db.commit()
         except MySQLdb.Error, e:
             try:
@@ -173,7 +177,7 @@ Inserts vuln entries into the database.
 Returns the ID for the vuln inserted.
 
 """
-def insertVuln(vulnName, cve, descString):
+def insertVuln(vulnName, cve, descString, url):
     if cve == '':
         cur.execute("INSERT INTO vuln ( \
             vuln_name, vuln_description) \
@@ -183,15 +187,17 @@ def insertVuln(vulnName, cve, descString):
             vuln_name, vuln_description, vuln_cve) \
             VALUES (%s, %s, %s)", (vulnName, descString, cve))
     cur.execute("SELECT vuln_id FROM vuln WHERE vuln_name = %s", vulnName)
-    vulnID = cur.fetchone()
-    return vulnID[0]
-
+    vulnID = cur.fetchone()[0]
+    if url != '':
+        cur.execute("INSERT INTO vuln_url (\
+            vuln_id, url) VALUES (%s, %s)", (vulnID, url))
+    return vulnID
 """
 Inserts specific instances of the vulns. 
 No return value.
 
 """
-def insertInstance(hostID, vulnID, url,textString):
+def insertInstance(hostID, vulnID, textString):
     if timestamp == '':
         cur.execute("INSERT INTO vuln_detail ( \
             host_id, vuln_id, vuln_detail_text) VALUES (%s, %s, %s)", (hostID, vulnID, textString))
@@ -199,9 +205,7 @@ def insertInstance(hostID, vulnID, url,textString):
         cur.execute("INSERT INTO vuln_detail ( \
                 host_id, vuln_id, vuln_detail_datetime, vuln_detail_text) VALUES (%s, %s, %s, %s)", 
                 (hostID, vulnID, timestamp, textString))
-    if url != '':
-        cur.execute("INSERT INTO vuln_url (\
-            vuln_id, url) VALUES (%s, %s)", (vulnID, url))
+
     
 if __name__ == "__main__":
     main(sys.argv[1:])

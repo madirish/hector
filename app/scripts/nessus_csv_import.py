@@ -69,7 +69,10 @@ def main(argv):
             except csv.Error as e:
                 print 'WARNING: Invalid record at line %d: %s' \
                         % (reader.line_num, str(e))
+    cur.close()
+    db.close()
     print "All good records inserted! Check output messages for errors."
+    
 """
 
 process_row handles the tuples produced by the csv reader, and 
@@ -85,7 +88,6 @@ successful insertInstance().
 def process_row(row, cur):
     if row[3] == "None" or row[3] == "Risk": #not a vuln
         return
-    #print row
     cve = row[1]
     hostName = row[4]
     vulnName = row[7]
@@ -94,9 +96,12 @@ def process_row(row, cur):
     if not all([hostName, vulnName, vulnDescription]):
         raise csv.Error
     try:
-        hostID = cur.execute("SELECT host_id FROM host WHERE host_name = %s", hostName)
-        if hostID == 0:
+        cur.execute("SELECT host_id FROM host WHERE host_name = %s", hostName)
+        hostID = cur.fetchone()
+        if hostID == None:
             raise MySQLdb.Error
+        else:
+            hostID = hostID[0]
     except MySQLdb.Error, e:
         try:
             print "Host '%s' Lookup Error [%d]: %s" % (hostName, e.args[0], e.args[1])
@@ -106,19 +111,22 @@ def process_row(row, cur):
             return
     # TODO: SQLi protection? Although I hope the people dealing with HECTOR are smart and Nessus is nice.
     try:
-        vulnID = cur.execute("SELECT vuln_id FROM vuln WHERE vuln_name = %s", vulnName)
-        if vulnID == 0:
+        cur.execute("SELECT vuln_id FROM vuln WHERE vuln_name = %s", vulnName)
+        vulnID = cur.fetchone()
+        if vulnID == None:
             vulnID = insertVuln(vulnName, cve, vulnDescription)
             db.commit()
+        else:
+            vulnID = vulnID[0]
         try:
             insertInstance(hostID, vulnID, url)
             db.commit()
         except MySQLdb.Error, e:
             try:
-                print "Vuln '%s' Detail Error [%d]: %s" % (str(vuln_id), e.args[0], e.args[1])
+                print "Vuln '%s' Detail Error [%d]: %s" % (str(vulnID), e.args[0], e.args[1])
                 return
             except IndexError:
-                print "Vuln '%s' Detail Error: %s" % (str(vuln_id), str(e))
+                print "Vuln '%s' Detail Error: %s" % (str(vulnID), str(e))
                 return 
     except MySQLdb.Error, e:
         try:
@@ -144,8 +152,9 @@ def insertVuln(vulnName, cve, vulnDescription):
         cur.execute("INSERT INTO vuln ( \
             vuln_name, vuln_description, vuln_cve) \
             VALUES (%s, %s, %s)", (vulnName, vulnDescription, cve))
-    vulnID = cur.execute("SELECT vuln_id FROM vuln WHERE vuln_name = %s", vulnName)
-    return vulnID
+    cur.execute("SELECT vuln_id FROM vuln WHERE vuln_name = %s", vulnName)
+    vulnID = cur.fetchone()
+    return vulnID[0]
 
 """
 Inserts specific instances of the vulns. 
@@ -155,7 +164,7 @@ No return value.
 def insertInstance(hostID, vulnID, url):
     if timestamp == '':
         cur.execute("INSERT INTO vuln_detail ( \
-            host_id, vuln_id, vuln_detail_text) VALUES (%s, %s, %s)", (hostID, vulnID, "Derp derp derp"))
+            host_id, vuln_id, vuln_detail_text) VALUES (%s, %s, %s)", (hostID, vulnID, "TEST"))
     else:
         cur.execute("INSERT INTO vuln_detail ( \
                 host_id, vuln_id, vuln_detail_datetime) VALUES (%s, %s, %s)", 

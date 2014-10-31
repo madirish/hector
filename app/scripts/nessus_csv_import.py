@@ -129,7 +129,7 @@ def process_row(row, cur):
         cur.execute("SELECT host_id FROM host WHERE host_name = %s", hostName)
         hostID = cur.fetchone()
         if hostID == None:
-            raise MySQLdb.Error
+            raise MySQLdb.Error('Host not found!')
         else:
             hostID = hostID[0]
     except MySQLdb.Error, e:

@@ -62,7 +62,7 @@ def main(argv):
             exit(2)
             
     #!!!CHANGE ME IN PRODUCTION!!!#
-    db = MySQLdb.connect(host='localhost', user='root', db='hector')
+    db = MySQLdb.connect(host='192.168.1.3', user='root', db='hector')
     ###############################
     cur = db.cursor()
     with open(inputfile, 'rb') as f:

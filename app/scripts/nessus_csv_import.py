@@ -31,14 +31,14 @@ def main(argv):
     
     # Parsing arguments
     try:
-        opts, args = getopt.getopt(argv,"i:t:",["ifile=","timestamp="])
+        opts, args = getopt.getopt(argv,"i:t:h",["ifile=","timestamp="])
     except getopt.GetoptError:
         print 'Hector Importer -i <inputfile> -t <timestamp>'
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
             print 'Hector Importer -i <inputfile> -t <timestamp>'
-            print ' Time Format: %a %b %d %H:%M:%S %Y '
+            print ' Time Format: "YYYY-MM-DD_HR:MIN:SEC" '
             sys.exit()
         elif opt in ("-i", "--ifile"):
             inputfile = arg
@@ -51,10 +51,10 @@ def main(argv):
         print "WARNING! Timestamp will be autofilled by MySQL."
     else:
         try:
-            timestamp = time.strptime(timestamp)
-            timestamp = time.strftime( "%Y-%b-%d %H:%M:%s", timestamp)
-        except ValueError:
-            print "Invalid timestamp."
+            time.strptime(timestamp, "%Y-%m-%d_%I:%M:%S")
+        except ValueError as e:
+            print "Invalid timestamp. \"%Y-%m-%d_%I:%M:%S\""
+            print "Mind the underscore between the date and time."
             exit(2)
             
     #!!!CHANGE ME IN PRODUCTION!!!#
@@ -65,7 +65,10 @@ def main(argv):
         reader = csv.reader(f)
         for row in reader:
             try:
-                process_row(row, cur)
+                if len(row) == 13: #sanity check the line in file
+                    process_row(row, cur)
+                else:
+                    raise csv.Error('Incomplete record')
             except csv.Error as e:
                 print 'WARNING: Invalid record at line %d: %s' \
                         % (reader.line_num, str(e))
@@ -88,13 +91,40 @@ successful insertInstance().
 def process_row(row, cur):
     if row[3] == "None" or row[3] == "Risk": #not a vuln
         return
+    pluginID = row[0]
     cve = row[1]
+    cvss = row[2]
+    risk = row[3]
     hostName = row[4]
+    protocol = row[5]
+    port = row[6]
     vulnName = row[7]
     vulnDescription = row[8]
-    url = row[12]
+    longDescription = row[9]
+    solution = row[10]
+    url = row[11]
+    pluginOutput = row[12]
+    
+    #textString = "<div id=\"cvss-score\">CVSS: " + cvss + "</div> \
+                #<div id=\"risk\">Risk: " + risk + "</div> \
+                #<div id=\"protocol\">Protocol: " + protocol + "</div> \
+                #<div id=\"port\">Port: " + port + "</div> \
+                #<div id=\"solution\">Solution: " + solution + "</div> \
+                #<div id=\"detailed-explanation\">More Details: " + longDescription + "</div> \
+                #<div id=\"plugin-output\">Plugin Output: " + pluginOutput + "</div>"
+                
+                
+    textString = "PROTOCOL: " + protocol + " \
+                 PORT: " + port + " \
+                 MORE DETAILS: " + longDescription + " \
+                 PLUGIN OUTPUT: " + pluginOutput
+    descString = "DESCRIPTION: " + vulnDescription + "\
+                 CVSS: " + cvss + " \
+                 RISK: " + risk + " \
+                 SOLUTION: " + solution 
+    
     if not all([hostName, vulnName, vulnDescription]):
-        raise csv.Error
+        raise csv.Error('Incomplete Record.')
     try:
         cur.execute("SELECT host_id FROM host WHERE host_name = %s", hostName)
         hostID = cur.fetchone()
@@ -114,12 +144,12 @@ def process_row(row, cur):
         cur.execute("SELECT vuln_id FROM vuln WHERE vuln_name = %s", vulnName)
         vulnID = cur.fetchone()
         if vulnID == None:
-            vulnID = insertVuln(vulnName, cve, vulnDescription)
+            vulnID = insertVuln(vulnName, cve, descString)
             db.commit()
         else:
             vulnID = vulnID[0]
         try:
-            insertInstance(hostID, vulnID, url)
+            insertInstance(hostID, vulnID, url, textString)
             db.commit()
         except MySQLdb.Error, e:
             try:
@@ -143,15 +173,15 @@ Inserts vuln entries into the database.
 Returns the ID for the vuln inserted.
 
 """
-def insertVuln(vulnName, cve, vulnDescription):
+def insertVuln(vulnName, cve, descString):
     if cve == '':
         cur.execute("INSERT INTO vuln ( \
             vuln_name, vuln_description) \
-            VALUES (%s, %s)", (vulnName, vulnDescription))
+            VALUES (%s, %s)", (vulnName, descString))
     else:
         cur.execute("INSERT INTO vuln ( \
             vuln_name, vuln_description, vuln_cve) \
-            VALUES (%s, %s, %s)", (vulnName, vulnDescription, cve))
+            VALUES (%s, %s, %s)", (vulnName, descString, cve))
     cur.execute("SELECT vuln_id FROM vuln WHERE vuln_name = %s", vulnName)
     vulnID = cur.fetchone()
     return vulnID[0]
@@ -161,17 +191,17 @@ Inserts specific instances of the vulns.
 No return value.
 
 """
-def insertInstance(hostID, vulnID, url):
+def insertInstance(hostID, vulnID, url,textString):
     if timestamp == '':
         cur.execute("INSERT INTO vuln_detail ( \
-            host_id, vuln_id, vuln_detail_text) VALUES (%s, %s, %s)", (hostID, vulnID, "TEST"))
+            host_id, vuln_id, vuln_detail_text) VALUES (%s, %s, %s)", (hostID, vulnID, textString))
     else:
         cur.execute("INSERT INTO vuln_detail ( \
-                host_id, vuln_id, vuln_detail_datetime) VALUES (%s, %s, %s)", 
-                hostID, vulnID, timestamp)
-    if url == '':
+                host_id, vuln_id, vuln_detail_datetime, vuln_detail_text) VALUES (%s, %s, %s, %s)", 
+                (hostID, vulnID, timestamp, textString))
+    if url != '':
         cur.execute("INSERT INTO vuln_url (\
-            vuln_id, vuln_url) VALUES (%s, %s)", int(vuln_id), url)
+            vuln_id, url) VALUES (%s, %s)", (vulnID, url))
     
 if __name__ == "__main__":
     main(sys.argv[1:])

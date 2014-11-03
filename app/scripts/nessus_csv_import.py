@@ -11,6 +11,7 @@ import sys
 import getopt
 import time
 import ConfigParser
+import socket
 
 #Not a builtin!
 try:
@@ -106,7 +107,7 @@ def process_row(row, cur):
     recover from broken records. The goal is to insert as many good vulns
     and/or records as possible, and alert the user to the malformed records.
     
-    db.commit() happens after every successful insertVuln(), and every 
+    db.commit() happens after every successful insertVuln()/insertHost(), and every 
     successful insertInstance().
 
     """
@@ -138,7 +139,7 @@ def process_row(row, cur):
         cur.execute("SELECT host_id FROM host WHERE host_name = %s", hostName)
         hostID = cur.fetchone()
         if hostID == None:
-            raise MySQLdb.Error('Host not found!')
+            hostID = insertHost(hostName)
         else:
             hostID = hostID[0]
     except MySQLdb.Error, e:
@@ -213,6 +214,24 @@ def insertInstance(hostID, vulnID, textString):
                 host_id, vuln_id, vuln_detail_datetime, vuln_detail_text) VALUES (%s, %s, %s, %s)", 
                 (hostID, vulnID, timestamp, textString))
 
+def insertHost(hostName):
+    """ 
     
+    Inserts a skeleton record for a new host.
+    Returns the ID for the host inserted.
+    
+    """
+    try:
+        hostIP = socket.gethostbyname(hostName)
+        cur.execute("INSERT INTO host (host_name, host_ip, host_ip_numeric) \
+        VALUES (%s, %s, INET_ATON(%s))", (hostName, hostIP, hostIP))       
+    except socket.gaierror as err:
+        #ignore column restraints
+        cur.execute("INSERT INTO host (host_name) VALUES (%s)", hostName)
+    
+    cur.execute("SELECT host_id FROM host WHERE host_name = %s", hostName)
+    hostID = cur.fetchone()[0]
+    return hostID
+
 if __name__ == "__main__":
     main(sys.argv[1:])

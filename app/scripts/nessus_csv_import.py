@@ -10,6 +10,7 @@ import csv
 import sys
 import getopt
 import time
+import ConfigParser
 
 #Not a builtin!
 try:
@@ -70,10 +71,15 @@ def main(argv):
             print "Invalid timestamp. \"%Y-%m-%d_%I:%M:%S\""
             print "Mind the underscore between the date and time."
             exit(2)
-            
-    #!!!CHANGE ME IN PRODUCTION!!!#
-    db = MySQLdb.connect(host='192.168.1.3', user='root', db='hector')
-    ###############################
+    #Parse out 
+    config = ConfigParser.ConfigParser()
+    config.read('/opt/hector/app/conf/config.ini')
+    db_database = config.get('hector', 'db')
+    db_host = config.get('hector', 'db_host')
+    db_user = config.get('hector', 'db_user')
+    db_pass = config.get('hector', 'db_pass')
+    db = MySQLdb.connect(host=db_host, user=db_user, passwd=db_pass, db=db_database)
+    
     cur = db.cursor()
     with open(inputfile, 'rb') as f:
         reader = csv.reader(f)
@@ -106,7 +112,7 @@ def process_row(row, cur):
     """
     if row[3] == "None" or row[3] == "Risk": #not a vuln
         return
-    pluginID,cve,cvss,risk,hostName,protocol,port,vulnName,vulnDesc,longDesc,solution,url, pluginOutput = row
+    pluginID,cve,cvss,risk,hostName,protocol,port,vulnName,vulnDescription,longDescription,solution,url, pluginOutput = row
     
     #textString = "<div id=\"cvss-score\">CVSS: " + cvss + "</div> \
                 #<div id=\"risk\">Risk: " + risk + "</div> \

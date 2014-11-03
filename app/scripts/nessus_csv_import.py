@@ -106,19 +106,7 @@ def process_row(row, cur):
     """
     if row[3] == "None" or row[3] == "Risk": #not a vuln
         return
-    pluginID = row[0]
-    cve = row[1]
-    cvss = row[2]
-    risk = row[3]
-    hostName = row[4]
-    protocol = row[5]
-    port = row[6]
-    vulnName = row[7]
-    vulnDescription = row[8]
-    longDescription = row[9]
-    solution = row[10]
-    url = row[11]
-    pluginOutput = row[12]
+    pluginID,cve,cvss,risk,hostName,protocol,port,vulnName,vulnDesc,longDesc,solution,url, pluginOutput = row
     
     #textString = "<div id=\"cvss-score\">CVSS: " + cvss + "</div> \
                 #<div id=\"risk\">Risk: " + risk + "</div> \

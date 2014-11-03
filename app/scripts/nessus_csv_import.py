@@ -23,6 +23,16 @@ timestamp = ''
 cur = '' 
 db = ''
 def main(argv):
+    """
+    
+    The backbone of the program. Does the following:
+    1. Parses and sanity checks args.
+    2. Connects to the database.
+    3. Reads lines with the csv reader and passes them to the processor.
+    4. Handles errors in the above.
+    5. Program cleanup. 
+    
+    """
     #defined as globals so we don't have to pass them through multiple functions
     global cur
     global db
@@ -54,7 +64,7 @@ def main(argv):
         try:
             time.strptime(timestamp, "%Y-%m-%d_%I:%M:%S")
             #time will fill in missing information automatically.
-            timestamp = time.strftime("%Y-%m-%d_%I:%M:%S", timestamp)
+            timestamp = time.strftime("%Y-%m-%d %I:%M:%S", timestamp)
             #time will be okay with an incomplete timestamp but SQL won't.
         except ValueError as e:
             print "Invalid timestamp. \"%Y-%m-%d_%I:%M:%S\""
@@ -80,19 +90,20 @@ def main(argv):
     db.close()
     print "All good records inserted! Check output messages for errors."
     
-"""
 
-process_row handles the tuples produced by the csv reader, and 
-handles all errors from the actual database functions. 
-Error handling is print messages and return to the for loop, so that we can 
-recover from broken records. The goal is to insert as many good vulns
-and/or records as possible, and alert the user to the malformed records.
-
-db.commit() happens after every successful insertVuln(), and every 
-successful insertInstance().
-
-"""
 def process_row(row, cur):
+    """
+
+    process_row handles the tuples produced by the csv reader, and 
+    handles all errors from the actual database functions. 
+    Error handling is print messages and return to the for loop, so that we can 
+    recover from broken records. The goal is to insert as many good vulns
+    and/or records as possible, and alert the user to the malformed records.
+    
+    db.commit() happens after every successful insertVuln(), and every 
+    successful insertInstance().
+
+    """
     if row[3] == "None" or row[3] == "Risk": #not a vuln
         return
     pluginID = row[0]
@@ -172,12 +183,13 @@ def process_row(row, cur):
     
     
             
-"""
-Inserts vuln entries into the database. 
-Returns the ID for the vuln inserted.
 
-"""
 def insertVuln(vulnName, cve, descString, url):
+    """
+    Inserts vuln entries into the database. 
+    Returns the ID for the vuln inserted.
+
+    """
     if cve == '':
         cur.execute("INSERT INTO vuln ( \
             vuln_name, vuln_description) \
@@ -192,12 +204,13 @@ def insertVuln(vulnName, cve, descString, url):
         cur.execute("INSERT INTO vuln_url (\
             vuln_id, url) VALUES (%s, %s)", (vulnID, url))
     return vulnID
-"""
-Inserts specific instances of the vulns. 
-No return value.
 
-"""
 def insertInstance(hostID, vulnID, textString):
+    """
+    Inserts specific instances of the vulns. 
+    No return value.
+
+    """
     if timestamp == '':
         cur.execute("INSERT INTO vuln_detail ( \
             host_id, vuln_id, vuln_detail_text) VALUES (%s, %s, %s)", (hostID, vulnID, textString))

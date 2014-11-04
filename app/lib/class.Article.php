@@ -240,7 +240,10 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
      * @return String The HTML display safe body of the Article.
      */
     public function get_body() {
-        return htmlspecialchars($this->body);
+        global $approot;
+        require_once($approot . 'software/htmlpurifier/library/HTMLPurifier.auto.php');
+        $purifier = new HTMLPurifier();
+        return $purifier->purify($this->body);
     }
 
     /**
@@ -374,7 +377,7 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
      * @return String The HTML display safe teaser of the Article.
      */
     public function get_teaser() {
-        return htmlspecialchars($this->teaser);
+        return strip_tags($this->teaser);
     }
 
     /**
@@ -384,7 +387,7 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
      * @return String The HTML display safe title of the Article.
      */
     public function get_title() {
-        return htmlentities($this->title);
+        return strip_tags($this->title);
     }
 
     /**
@@ -531,6 +534,7 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
      * Set the article teaser
      * 
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+     * @author Ubani A Balogun <ubani@sas.upenn.edu>
      * @param String The text of the teaser
      * @return Boolean True just to return something
      */
@@ -538,15 +542,20 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
     	$limit = 500;
     	$pad = '...';
     	$break = '.';
-    	if (strlen($text) <= $limit){
+        $teaser = substr($text, 0, $limit);
+    	/**
+        // This logic is breaking the assignment in some cases.
+        if (strlen($text) <= $limit){
     		$teaser = $text;
-    	}else{
+    	}
+        else {
     		if (false !== ($breakpoint = strpos($text, $break, $limit))){
     			if($breakpoint < strlen($text) - 1) {
     				$teaser = substr($text, 0, $breakpoint) . $pad;
     			}
     		}
     	}
+        **/
     	$this->teaser = $teaser;
     	return TRUE;
     }

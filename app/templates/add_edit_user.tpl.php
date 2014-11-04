@@ -4,7 +4,7 @@
 <table id="add-edit-table">
 <?php
 	foreach ($form_data as $row) {
-		if ($row['label']=='User password' && $_SERVER['COSIGN_SERVICE']) {
+		if ($row['label']=='User password' && isset($_SERVER['COSIGN_SERVICE'])) {
 				// Hide the password row if using CoSign
 				$row['form'] = str_ireplace('type="password"', 'type="hidden"', $row['form']);
 				// Set a default when adding

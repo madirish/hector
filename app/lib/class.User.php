@@ -305,7 +305,8 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 	 * @param Boolean Whether or not the person is an admin
 	 */
 	public function set_is_admin($val) {
-		$this->is_admin = (bool) $val;
+        global $appuser;
+        if (isset($appuser) && $appuser->get_is_admin()) $this->is_admin = (bool) $val;
 	}
 	
 	/**

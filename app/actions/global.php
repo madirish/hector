@@ -35,6 +35,7 @@ if (isset($appuser) && ! $appuser->get_is_admin()) {
 }
 
 $result = $db->fetch_object_array($sql);
+$vuln_count = 0;
 if (isset($result[0])) {
 	$vuln_count = $result[0]->vulncount;
 	$vuln_badge = ($vuln_count > 0) ? '<span class="badge badge-important">' . $vuln_count . '</span>' : '';

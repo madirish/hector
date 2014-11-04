@@ -120,25 +120,15 @@ def process_row(row, cur):
     """
     if row[3] == "None" or row[3] == "Risk": #not a vuln
         return
-    pluginID,cve,cvss,risk,hostName,protocol,port,vulnName,vulnDescription,longDescription,solution,url, pluginOutput = row
-    
-    #textString = "<div id=\"cvss-score\">CVSS: " + cvss + "</div> \
-                #<div id=\"risk\">Risk: " + risk + "</div> \
-                #<div id=\"protocol\">Protocol: " + protocol + "</div> \
-                #<div id=\"port\">Port: " + port + "</div> \
-                #<div id=\"solution\">Solution: " + solution + "</div> \
-                #<div id=\"detailed-explanation\">More Details: " + longDescription + "</div> \
-                #<div id=\"plugin-output\">Plugin Output: " + pluginOutput + "</div>"
-                
-                
-    textString = "PROTOCOL: " + protocol + " \
-                 PORT: " + port + " \
-                 MORE DETAILS: " + longDescription + " \
-                 PLUGIN OUTPUT: " + pluginOutput
-    descString = "DESCRIPTION: " + vulnDescription + "\
-                 CVSS: " + cvss + " \
-                 RISK: " + risk + " \
-                 SOLUTION: " + solution 
+    pluginID,cve,cvss,risk,hostName,protocol,port,vulnName,vulnDescription,longDescription,solution,url,pluginOutput = row
+    textString = "<div id=\"protocol\">Protocol: " + protocol + "</div> \
+                 <div id=\"port\">Port: " + port + "</div> \
+                 <div id=\"detailed-explanation\">More Details: " + longDescription + "</div> \
+                 <div id=\"plugin-output\">Plugin Output: " + pluginOutput + "</div>"
+    descString = "<div id=\"description\">DESCRIPTION: " + vulnDescription + "</div>\
+                 <div id=\"cvss-score\">CVSS: " + cvss + "</div> \
+                 <div id=\"risk\">Risk: " + risk + "</div> \
+                 <div id=\"solution\">Solution: " + solution + "</div>" 
     
     if not all([hostName, vulnName, vulnDescription]):
         raise csv.Error('Incomplete Record.')

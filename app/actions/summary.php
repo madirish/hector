@@ -15,6 +15,7 @@
 require_once($approot . 'lib/class.Db.php');
 include_once($approot . 'lib/class.Collection.php');
 include_once($approot . 'lib/class.Report.php');
+include_once($approot . 'actions/functions.php');
 global $appuser;
 if (! isset($appuser)) {
 	if (! isset($_SESSION['user_id'])) die("<h2>Fatal error!<?h2>User not initialized.");

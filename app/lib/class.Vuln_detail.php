@@ -494,7 +494,10 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
      * @return String The HTML display safe description for this vulnerability detail.
      */
     public function get_text() {
-		return htmlspecialchars($this->text);
+        global $approot;
+        require_once($approot . 'software/htmlpurifier/library/HTMLPurifier.auto.php');
+        $purifier = new HTMLPurifier();
+		return $purifier->purify($this->text);
     }
     
     /**

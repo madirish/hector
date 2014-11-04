@@ -96,6 +96,8 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
 				$id
 			);
 			$result = $this->db->fetch_object_array($sql);
+            // if we don't get a valid tag bail out
+            if (count($result) < 1) return;
 			$this->set_id($result[0]->tag_id);
 			$this->set_name($result[0]->tag_name);
 			$sql = array(

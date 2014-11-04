@@ -251,7 +251,10 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
      * @return String The vulnerability description
      */
     public function get_description() {
-		return htmlspecialchars($this->description);
+        global $approot;
+        require_once($approot . 'software/htmlpurifier/library/HTMLPurifier.auto.php');
+        $purifier = new HTMLPurifier();
+		return $purifier->purify($this->description);
     }
     
     /**

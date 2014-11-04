@@ -109,6 +109,13 @@ def process_row(row, cur):
     
     db.commit() happens after every successful insertVuln()/insertHost(), and every 
     successful insertInstance().
+    Row Header:Plugin ID,CVE,CVSS,Risk,Host,Protocol,Port,Name,Synopsis,Description,Solution,See Also,Plugin Output
+    Sample Row: 
+    
+        10881,,,None,192.168.1.5,tcp,22,SSH Protocol Versions Supported,A SSH server is running on the remote host.,
+        "This plugin determines the versions of the SSH protocol supported by 
+        the remote SSH daemon.",n/a,,"The remote SSH daemon supports the following versions of the
+        SSH protocol :-X.XX- X.X SSHv2 host key fingerprint : XX:02:XX:07:54:05:b0:XX:4b:dd:88:XX:43:ae:XX:0a"
 
     """
     if row[3] == "None" or row[3] == "Risk": #not a vuln

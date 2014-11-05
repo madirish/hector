@@ -1,11 +1,10 @@
-<span id="editspan">
-<a class="btn btn-primary" title="Edit this item" href="?action=edit_vuln_details&id=<?php echo $vuln_detail->get_id();?>">Edit</a>
-</span><h3>Vunerability Details</h3>
+<h3>Vunerability Details</h3>
+<h4><a href="?action=host_details&id=<?php echo $vuln_detail->get_host_id();?>"><?php echo $vuln_detail->get_host_name();?></a></h4>
 <table class="table" id="vuln_details">
 	<tbody>
 	<tr>
-		<td>Type</td>
-		<td><?php echo $vuln_detail->get_vuln()->get_name();?></td>
+		<td class="span2">Type</td>
+		<td class="span10"><?php echo $vuln_detail->get_vuln()->get_name();?></td>
 	</tr><tr>
 		<td>Description</td>
 		<td><?php echo $vuln_detail->get_vuln()->get_description();?></td>
@@ -23,7 +22,7 @@
 		<td><?php echo $vuln_detail->get_text();?></td>
 	</tr><tr>
 		<td>Host</td>
-		<td><a href=?action=host_details&id=<?php echo $vuln_detail->get_host_id();?>><?php echo $vuln_detail->get_host_name();?></a></td>
+		<td><a href="?action=host_details&id=<?php echo $vuln_detail->get_host_id();?>"><?php echo $vuln_detail->get_host_name();?></a></td>
 	</tr><tr>
 		<td>Discovered</td>
 		<td><?php echo $vuln_detail->get_datetime();?></td>
@@ -48,3 +47,20 @@
 	</tr>
 	</tbody>
 </table>
+<span id="editspan">
+<a class="btn btn-primary" title="Edit this item" href="?action=edit_vuln_details&id=<?php echo $vuln_detail->get_id();?>">Edit</a>
+</span>
+<script type="text/javascript">
+if ($("#risk").html() == 'Risk: High') {
+    $("#risk").addClass('btn btn-small btn-danger');
+}
+if ($("#risk").html() == 'Risk: Medium') {
+	$("#risk").addClass('btn btn-small btn-warning');
+}
+if ($("#risk").html() == 'Risk: Low') {
+    $("#risk").addClass('btn btn-small btn-info');
+}
+// Replace line breaks with br tags in plugin-output
+var prettyString = $("#plugin-output").html().replace(/\n/g,"<br/>");
+$("#plugin-output").html(prettyString);
+</script>

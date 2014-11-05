@@ -496,7 +496,9 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
     public function get_text() {
         global $approot;
         require_once($approot . 'software/htmlpurifier/library/HTMLPurifier.auto.php');
-        $purifier = new HTMLPurifier();
+        $config = HTMLPurifier_Config::createDefault();
+        $config->set('Attr.EnableID', true);
+        $purifier = new HTMLPurifier($config);
 		return $purifier->purify($this->text);
     }
     

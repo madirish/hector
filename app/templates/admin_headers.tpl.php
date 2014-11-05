@@ -105,6 +105,7 @@
         <li><a href="?action=honeypot">Honeypot data</a></li>
         <li><a href="?action=attackerip">Malicious IP database</a></li>
         <li><a href="?action=ossecalerts">OSSEC alerts</a></li>
+        <li><a href="?action=upload_nessus_csv">Upload Nessus report</a></li>
         <li><a href="?action=nessus_scans">Nessus scans</a></li>
         <li><a href="?action=screenshots">Website Screenshots</a>
       </ul>

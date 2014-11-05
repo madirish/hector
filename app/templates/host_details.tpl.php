@@ -138,20 +138,19 @@ foreach($host->get_urls() as $url) {
 <table id="vulntable" class="table table-striped table-bordered">
 <thead>
 	<tr>
-		<th>Vulnerability Type</th>
-		<th>Text</th>
-		<th>Dicovered</th>
-		<th>Fixed</th>
-		<th>Ignore</th>
+		<th class="span2">Vulnerability</th>
+		<th class="span2">Description</th>
+		<th class="span1">Dicovered</th>
+		<th class="span1">Status</th>
 	</tr>
 </thead>
 <tbody>
 <?php foreach($vulns as $vuln) { ?>
 	<tr><td><a href=?action=vuln_details&id=<?php echo $vuln->vuln_detail_id;?>><?php echo $vuln->vuln_name;?></a></td>
-	<td><?php echo $vuln->vuln_detail_text;?></td>
+	<td><?php echo substr($vuln->vuln_detail_text,0,200);?></td>
 	<td><?php echo $vuln->vuln_detail_datetime;?></td>
-	<td><?php echo ($vuln->vuln_detail_fixed==1 ? '<i class="icon-ok"></i>':'');?></td>
-	<td><?php echo ($vuln->vuln_detail_ignore==1 ? '<i class="icon-ok"></i>':'');?></td></tr>
+	<td><?php echo ($vuln->vuln_detail_fixed==1 ? 'Fixed <i class="icon-ok"></i>':'');?>
+	    <?php echo ($vuln->vuln_detail_ignore==1 ? 'Ignored <i class="icon-ok"></i>':'');?></td></tr>
 <?php } ?> 
 </tbody>
 </table>

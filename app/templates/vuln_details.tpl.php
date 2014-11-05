@@ -15,6 +15,9 @@
 		<td>OSVDB</td>
 		<td><?php echo $vuln_detail->get_vuln()->get_osvdb();?></td>
 	</tr><tr>
+		<td>Risk</td>
+		<td><span id="risk-level" class="label"><?php echo $risk->get_name();?></div></td>
+	</tr><tr>
 		<td>Tags</td>
 		<td></td>
 	</tr><tr>
@@ -51,14 +54,14 @@
 <a class="btn btn-primary" title="Edit this item" href="?action=edit_vuln_details&id=<?php echo $vuln_detail->get_id();?>">Edit</a>
 </span>
 <script type="text/javascript">
-if ($("#risk").html() == 'Risk: High') {
-    $("#risk").addClass('btn btn-small btn-danger');
+if ($("#risk-level").html().toLowerCase() == 'high') {
+    $("#risk-level").addClass('label-important');
 }
-if ($("#risk").html() == 'Risk: Medium') {
-	$("#risk").addClass('btn btn-small btn-warning');
+if ($("#risk-level").html().toLowerCase() == 'medium') {
+	$("#risk-level").addClass('label-warning');
 }
-if ($("#risk").html() == 'Risk: Low') {
-    $("#risk").addClass('btn btn-small btn-info');
+if ($("#risk-level").html().toLowerCase() == 'low') {
+    $("#risk-level").addClass('label-info');
 }
 // Replace line breaks with br tags in plugin-output
 var prettyString = $("#plugin-output").html().replace(/\n/g,"<br/>");

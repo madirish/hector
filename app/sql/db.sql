@@ -407,8 +407,8 @@ CREATE TABLE IF NOT EXISTS `ossec_rule` (
 
 -- Risk rating, for vulnerabilities
 CREATE TABLE IF NOT EXISTS `risk` (
-  `risk_id` INT UNSIGNED NOT NULL,
-  `risk_name` INT UNSIGNED NOT NULL,
+  `risk_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `risk_name` varchar(25) NOT NULL,
   `risk_weight` INT UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (`risk_id`)
 ) ENGINE = INNODB;

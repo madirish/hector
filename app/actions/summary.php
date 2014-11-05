@@ -44,8 +44,7 @@ elseif ($scans == 0 && $appuser->get_is_admin()) {
 // Put jQuery after modal declarations or there is a conflict
 hector_add_js('portSummaryChart.js');
 hector_add_js('darknetSummaryChart.js');
-
-
+hector_add_js('vulnSummaryChart.js');
 hector_add_js('incidentChart.js');
 hector_add_js('legend.js');
 
@@ -110,6 +109,11 @@ $cy = date('Y');
 $ly = $cy - 1;
 $timespan =    $month . ' ' . $ly . ' - ' . $cy ;
 
+/**
+ * Vulnerability Pie Chart
+ */
+ 
+$vuln_detects = new Collection('Vuln_detail');
 
 /**
  * Incidents Pie Chart

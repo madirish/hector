@@ -362,7 +362,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 				}
 			}
 			else {
-				$this->log->write_error("Unable to fetch array for Host object id $id.  Corrupt MySQL?");
+				$this->log->write_error("Unable to fetch array for Host object id $id.  Corrupt MySQL or problem with [0]=>'$sql[0]',[1]=>'$sql[1]' ?");
 			}
 		}
 	}

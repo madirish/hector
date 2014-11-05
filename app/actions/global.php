@@ -29,9 +29,11 @@ $sql = 'SELECT COUNT(d.vuln_detail_id) AS vulncount ' .
 			'd.vuln_detail_ignore = 0 AND ' .
 			'd.vuln_detail_fixed = 0';
 if (isset($appuser) && ! $appuser->get_is_admin()) {
-			// Limit reports to hosts the user is responsible for
-			$sql .= ' AND d.host_id = h.host_id ' .
-					' AND h.supportgroup_id IN (' . implode(',', $appuser->get_supportgroup_ids()) . ')';
+	$supportgroups = $appuser->get_supportgroup_ids();
+	$inhostgroups =  (count($supportgroups) > 0) ? implode(',', $supportgroups) : 0;
+	// Limit reports to hosts the user is responsible for
+	$sql .= ' AND d.host_id = h.host_id ' .
+			' AND h.supportgroup_id IN (' .$inhostgroups . ')';
 }
 
 $result = $db->fetch_object_array($sql);

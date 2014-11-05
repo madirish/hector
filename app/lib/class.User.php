@@ -305,8 +305,20 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 	 * @param Boolean Whether or not the person is an admin
 	 */
 	public function set_is_admin($val) {
+		// Is the caller an admin? Can they do this?
         global $appuser;
-        if (isset($appuser) && $appuser->get_is_admin()) $this->is_admin = (bool) $val;
+        if (! isset($appuser)) {
+        	// $appuser isn't bootstrapped, this is likely an internal call (trust it)
+        	$this->is_admin = (bool) $val;
+        }
+        elseif (isset($appuser) && $appuser->get_is_admin()) {
+        	// Reset another user via the interface (done by an admin)
+        	$this->is_admin = (bool) $val;
+        }
+        else {
+        	// Attempt to reset a user account when not admin?
+        	$this->log->write_error("Error in User::set_is_admin() by non-admin user (" . $appuser->get_id() . ")");
+        }
 	}
 	
 	/**

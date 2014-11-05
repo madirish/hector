@@ -405,6 +405,18 @@ CREATE TABLE IF NOT EXISTS `ossec_rule` (
   INDEX USING BTREE (rule_level)
 );
 
+-- Risk rating, for vulnerabilities
+CREATE TABLE IF NOT EXISTS `risk` (
+  `risk_id` INT UNSIGNED NOT NULL,
+  `risk_name` INT UNSIGNED NOT NULL,
+  `risk_weight` INT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (`risk_id`)
+) ENGINE = INNODB;
+INSERT INTO `risk` SET `risk_id`=1, `risk_name`='none', `risk_weight`= 0 ON DUPLICATE KEY UPDATE `risk_id` = 1;
+INSERT INTO `risk` SET `risk_id`=2, `risk_name`='low', `risk_weight`= 5 ON DUPLICATE KEY UPDATE `risk_id` = 2;
+INSERT INTO `risk` SET `risk_id`=3, `risk_name`='medium', `risk_weight`= 10 ON DUPLICATE KEY UPDATE `risk_id` = 3;
+INSERT INTO `risk` SET `risk_id`=4, `risk_name`='high', `risk_weight`= 15 ON DUPLICATE KEY UPDATE `risk_id` = 4;
+
 -- Table for regularly generated reports
 CREATE TABLE IF NOT EXISTS `report` (
 	`report_id` INT NOT NULL AUTO_INCREMENT,
@@ -560,9 +572,11 @@ CREATE TABLE IF NOT EXISTS `vuln_detail` (
   `vuln_detail_fixedby_user_id` INT,
   `vuln_detail_fixed_notes` text,
   `vuln_detail_ticket` VARCHAR(255),
+  `risk_id` INT UNSIGNED NOT NULL DEFAULT 1,
   `host_id` INT UNSIGNED NOT NULL,  
   `vuln_id` INT UNSIGNED NOT NULL,
   INDEX (`vuln_id`), 
   INDEX (`host_id`),
+  INDEX (`risk_id`),
   PRIMARY KEY (`vuln_detail_id`)
 ) ENGINE = INNODB;

@@ -1,3 +1,8 @@
+<?php if (isset($threat_action)) {?>
+<h2><?php echo $threat_action->get_action(); ?> Incidents</h2>
+<?php } else if (isset($asset)) { ?>
+<h2><?php echo $asset->get_name(); ?> Incidents</h2>
+<?php } else { ?>
 <h2>Incident Reports</h2>
 <div class="row-fluid">
     <div class="span3 pagination-centered">
@@ -49,6 +54,8 @@
         </div>
     </div>
 </div>
+
+<?php } ?>
 
 <div class="row-fluid">
 <div class="span12 pagination-centered">

@@ -42,7 +42,7 @@ def main(argv):
     global timestamp
     
     inputfile = ''
-    
+    print time.strftime("%Y-%m-%d %I:%M:%S") + " NESSUS IMPORTER FOR HECTOR "
     # Parsing arguments
     try:
         opts, args = getopt.getopt(argv,"i:t:h",["inputfile=","timestamp="])
@@ -102,7 +102,7 @@ def main(argv):
                 exitCode = 2
     cur.close()
     db.close()
-    print "All good records inserted! Check output messages for errors."
+    print time.strftime("%Y-%m-%d %I:%M:%S") + " All good records inserted! Check output messages for errors."
     exit(exitCode)
     
 

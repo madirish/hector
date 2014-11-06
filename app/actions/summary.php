@@ -15,6 +15,9 @@
 require_once($approot . 'lib/class.Db.php');
 include_once($approot . 'lib/class.Collection.php');
 include_once($approot . 'lib/class.Report.php');
+include_once($approot . 'lib/class.Vuln_detail.php');
+include_once($approot . 'lib/class.Vuln.php');
+include_once($approot . 'lib/class.Risk.php');
 include_once($approot . 'actions/functions.php');
 global $appuser;
 if (! isset($appuser)) {
@@ -44,8 +47,9 @@ elseif ($scans == 0 && $appuser->get_is_admin()) {
 // Put jQuery after modal declarations or there is a conflict
 hector_add_js('portSummaryChart.js');
 hector_add_js('darknetSummaryChart.js');
-hector_add_js('vulnSummaryChart.js');
-hector_add_js('incidentChart.js');
+
+
+hector_add_js('summaryCharts.js');
 hector_add_js('legend.js');
 
 // jQuery jvectormap
@@ -57,10 +61,6 @@ hector_add_css('jquery-ui-1.8.22.custom.css');
 
 // Include kojoneymap Script
 hector_add_js('kojoneymap.js');
-
-
-// Include Incident Assets Script
-hector_add_js('assetsAffected.js');
 
 // Include Tag cloud Scripts
 hector_add_js('jquery.tagcloud.js');
@@ -110,10 +110,21 @@ $ly = $cy - 1;
 $timespan =    $month . ' ' . $ly . ' - ' . $cy ;
 
 /**
- * Vulnerability Pie Chart
+ * Vulnerability Pie Charts
  */
- 
-$vuln_detects = new Collection('Vuln_detail');
+
+// Breakdown of Vuln_detail by Risk
+$risk_nums = array();
+$risk_coll = new Collection('Risk');
+if (is_array($risk_coll->members)) {
+	foreach ($risk_coll->members as $risk) {
+		$risk_nums[$risk->get_name()]['count'] = count($risk->get_vuln_detail_ids());
+		$risk_nums[$risk->get_name()]['href'] = '?action=risk_rating&risk_id=' . $risk->get_id();
+	}
+}
+$vuln_num_report_header = 'Vulnerability Risk Counts';
+$vuln_num_chart_labels = json_encode(array_keys($risk_nums));
+$vuln_num_chart_counts = json_encode($risk_nums);
 
 /**
  * Incidents Pie Chart
@@ -155,12 +166,11 @@ if (is_array($incident_reports->members)) {
 
 
 $incidentchart_counts = json_encode($action_count);
-$IRAction_labels = array_keys($action_count);
-$incidentchart_labels = json_encode($IRAction_labels);
+$incidentchart_labels = json_encode(array_keys($action_count));
 $asset_count_json = json_encode($asset_count);
 
 
-$incident_report_header = json_encode("Incident Reports " . $timespan);
+$incident_report_header = "Incident Reports " . $timespan;
 $asset_count_header = "Assets Affected $timespan";
 $asset_labels_json = json_encode(array_keys($asset_count));
 

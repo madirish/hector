@@ -16,6 +16,18 @@
 		<td>OSVDB</td>
 		<td><?php echo $vuln_detail->get_vuln()->get_osvdb();?></td>
 	</tr><tr>
+		<td>Risk</td>
+		<td><select name="risk">
+			<?php foreach ($risks as $risk) {
+				echo '<option value="' . $risk->get_id() . '" ';
+				if ($vuln_detail->get_risk_id() == $risk->get_id()) {
+					echo ' selected="selected" ';
+				}
+				echo '>' . $risk->get_name() . '</option>' . "\n";
+			}
+			?>
+		</select></td>
+	</tr><tr>
 		<td>Tags</td>
 		<td></td>
 	</tr><tr>

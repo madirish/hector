@@ -140,7 +140,7 @@ foreach($host->get_urls() as $url) {
 	<tr>
 		<th class="span2">Vulnerability</th>
 		<th class="span2">Description</th>
-		<th class="span1">Dicovered</th>
+		<th class="span1">Risk</th>
 		<th class="span1">Status</th>
 	</tr>
 </thead>
@@ -148,7 +148,13 @@ foreach($host->get_urls() as $url) {
 <?php foreach($vulns as $vuln) { ?>
 	<tr><td><a href=?action=vuln_details&id=<?php echo $vuln->vuln_detail_id;?>><?php echo $vuln->vuln_name;?></a></td>
 	<td><?php echo substr($vuln->vuln_detail_text,0,200);?></td>
-	<td><?php echo $vuln->vuln_detail_datetime;?></td>
+	<td><span id="risk-level" class="label <?php
+			switch ($vuln->risk_name) {
+				case 'high': echo "label-important"; break;
+				case 'medium': echo "label-warning"; break;
+				case 'low': echo "label-info"; break;
+			}
+	?>"><?php echo $vuln->risk_name;?></label></td>
 	<td><?php echo ($vuln->vuln_detail_fixed==1 ? 'Fixed <i class="icon-ok"></i>':'');?>
 	    <?php echo ($vuln->vuln_detail_ignore==1 ? 'Ignored <i class="icon-ok"></i>':'');?></td></tr>
 <?php } ?> 

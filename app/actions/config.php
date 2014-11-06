@@ -98,9 +98,16 @@ elseif ($object == 'api_key') {
 			'within HECTOR such as the CIF format Kojoney2 activity report.';
 	include_once($approot . 'actions/details.php');
 }
+elseif ($object == 'risk') {
+	$_GET['object'] = 'risk';
+	$object_readable = 'Risk levels';
+	$explaination = 'Risk levels are associated with vulnerability details for ' .
+			'the purposes of classification and reporting.';
+	include_once($approot . 'actions/details.php');
+}
 elseif ($object == 'vuln') {
 	$_GET['object'] = 'vuln';
-	$object_readable = 'Vulnerability Class';
+	$object_readable = 'Vulnerability class';
 	$explaination = 'Vulnerability classes are super categories of the types of ' .
 			'problems that might face a system or can be detected by a scan.  The ' .
 			'specific instance of a vulnerability is a <a href="?action=vuln">' .

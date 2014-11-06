@@ -176,6 +176,14 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
      */
     private $host_id = null;
     
+    /**
+     * The risk id of the associated Risk for rating
+     * 
+     * @access private
+     * @var Int The database id of the associated risk
+     */
+    private $risk_id = 0;
+    
     // --- OPERATIONS ---
 
     /**
@@ -212,6 +220,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 				$this->set_fixed_notes($r->vuln_detail_fixed_notes);
 				$this->set_fixed_user_id($r->vuln_detail_fixedby_user_id);
 				$this->set_vuln_id($r->vuln_id);
+				$this->set_risk_id($r->risk_id);
 				$this->set_host_id($r->host_id);
 			}
 		}
@@ -486,6 +495,10 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
     	return null;
     }
     
+    public function get_risk_id() {
+    	return intval($this->risk_id);
+    }
+    
     /**
      * The text description of this vulnerability detail.
      * 
@@ -528,17 +541,19 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
     public function get_vuln_details_by_host($host_id, $db='') {
         if ($db == '') $db = $this->db;
         $host_id = intval($host_id);
-    	$sql = array('SELECT v.vuln_name, ' .
+    	$sql = array('SELECT distinct(v.vuln_name), ' .
                     'd.vuln_detail_id, ' .
                     'd.vuln_detail_text, ' .
-                    'd.vuln_detail_datetime, ' .
                     'd.vuln_detail_ignore, ' .
-                    'd.vuln_detail_fixed ' .
+                    'd.vuln_detail_fixed, ' .
+                    'r.risk_name ' .
                 'FROM vuln_detail d, ' .
-                    'vuln v ' .
+                    'vuln v, ' .
+                    'risk r ' .
                 'WHERE d.vuln_id = v.vuln_id AND ' .
                     'd.host_id = ?i ' .
-                'ORDER BY d.vuln_detail_datetime DESC', 
+                    'AND r.risk_id = d.risk_id '.
+                'ORDER BY r.risk_weight DESC', 
                 $host_id);
         return $db->fetch_object_array($sql);
     }
@@ -590,6 +605,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 	    			'vuln_detail_fixed_datetime = \'?s\', ' .
 	    			'vuln_detail_fixed_notes =\'?s\',' .
 	    			'vuln_detail_ticket =\'?s\',' .
+	    			'risk_id = ?i, ' .
 	    			'host_id = ?i, ' .
 	    			'vuln_id = ?i ' .
 	    		'WHERE vuln_detail_id = ?i',
@@ -603,6 +619,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 	    		$this->get_fixed_datetime(),
 	    		$this->get_fixed_notes(),
 	    		$this->get_ticket(),
+	    		$this->get_risk_id(),
 	    		$this->get_host_id(),
 	    		$this->get_vuln_id(),
 	    		$this->get_id()
@@ -625,6 +642,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 	    			'vuln_detail_fixed_notes =\'?s\',' .
 	    			'vuln_detail_ticket =\'?s\',' .
 	    			'host_id = ?i, ' .
+	    			'risk_id = ?i, ' .
 	    			'vuln_id = ?i',
 				$this->get_text(),
 				$this->get_datetime(),
@@ -637,6 +655,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 	    		$this->get_fixed_notes(),
 	    		$this->get_ticket(),
 	    		$this->get_host_id(),
+	    		$this->get_risk_id(),
 	    		$this->get_vuln_id()
 	    	);
 	    	$retval = $this->db->iud_sql($sql);
@@ -764,6 +783,10 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
      */
     public function set_ignore_user_id($user_id) {
     	$this->ignore_user_id = intval($user_id);
+    }
+    
+    public function set_risk_id($id) {
+    	$this->risk_id = intval($id);
     }
     
     /**

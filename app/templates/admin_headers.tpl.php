@@ -81,20 +81,20 @@
         <li><a href="?action=incident_reports">Incident reports</a></li>
         <li><a href="?action=new_ir">New incident report</a></li>
         <li class="nav-header">Configuration</li>
-        <li><a href="?action=details&object=IRAction">Threat actions</a></li>
-        <li><a href="?action=details&object=IRAgent">Incident agents</a></li>
         <li><a href="?action=details&object=IRAsset">Assets</a></li>
         <li><a href="?action=details&object=IRDiscovery">Discovery methods</a></li>
+        <li><a href="?action=details&object=IRAgent">Incident agents</a></li>
         <li><a href="?action=details&object=IRMagnitude">Magnitudes</a></li>
+        <li><a href="?action=details&object=IRAction">Threat actions</a></li>
         <li><a href="?action=details&object=IRTimeframe">Timeframes</a></li>
       </ul>
     </li>
     <li class="dropdown">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Comprehensive reports from HECTOR"><i class="icon-list-alt"></i> Reports <b class="caret"></b></a>
       <ul class="dropdown-menu">
-        <li><a href="?action=reports&report=by_port">Ports detected</a></li>
         <li><a href="?action=reports&report=danger_host">Dangerous hosts</a></li>
         <li><a href="?action=reports&report=nonisuswebservers">Non ISUS Server Report</a></li>
+        <li><a href="?action=reports&report=by_port">Ports detected</a></li>
         <li><a href="?action=vuln">Vulnerabilities <?php if (isset($vuln_badge)) echo $vuln_badge ;?></a></li>
       </ul>
     </li>
@@ -104,9 +104,9 @@
         <li><a href="?action=detection">Detection summary</a></li>
         <li><a href="?action=honeypot">Honeypot data</a></li>
         <li><a href="?action=attackerip">Malicious IP database</a></li>
+        <li><a href="?action=nessus_scans">Nessus scans</a></li>
         <li><a href="?action=ossecalerts">OSSEC alerts</a></li>
         <li><a href="?action=upload_nessus_csv">Upload Nessus report</a></li>
-        <li><a href="?action=nessus_scans">Nessus scans</a></li>
         <li><a href="?action=screenshots">Website Screenshots</a>
       </ul>
     </li>
@@ -126,18 +126,19 @@
         <li><a href="?action=config&object=scan_type">Script configuration</a></li>
         <li class="divider"></li>
         <li class="nav-header">Designations</li>
+        <li><a href="?action=config&object=tags">Free tags</a></li>
         <li><a href="?action=config&object=host_group">Host groups</a></li>
         <li><a href="?action=config&object=location">Locations</a></li>
+        <li><a href="?action=config&object=risk">Risk levels</a></li>
         <li><a href="?action=config&object=supportgroup">Support groups</a></li>
-        <li><a href="?action=config&object=tags">Free tags</a></li>
         <li><a href="?action=config&object=vuln">Vulnerabilities</a></li>
         <li class="divider"></li>
         <li class="nav-header">Data sources</li>
         <li><a href="?action=config&object=feeds">RSS feeds</a></li>
         <li class="divider"></li>
         <li class="nav-header">Authorizations</li>
-        <li><a href="?action=config&object=users">User accounts</a></li>
         <li><a href="?action=config&object=api_key">API key</a></li>
+        <li><a href="?action=config&object=users">User accounts</a></li>
       </ul>
     </li>
     <li><a href="?action=logout" title="Log out of HECTOR">Log Out</a></li>

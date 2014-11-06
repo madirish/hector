@@ -127,7 +127,6 @@ def process_row(row, cur):
                  <div id=\"plugin-output\">Plugin Output: " + pluginOutput + "</div>"
     descString = "<div id=\"description\">DESCRIPTION: " + vulnDescription + "</div>\
                  <div id=\"cvss-score\">CVSS: " + cvss + "</div> \
-                 <div id=\"risk\">Risk: " + risk + "</div> \
                  <div id=\"solution\">Solution: " + solution + "</div>" 
     
     if not all([hostName, vulnName, vulnDescription]):
@@ -156,7 +155,7 @@ def process_row(row, cur):
         else:
             vulnID = vulnID[0]
         try:
-            insertInstance(hostID, vulnID, textString)
+            insertInstance(hostID, vulnID, textString, risk)
             db.commit()
         except MySQLdb.Error, e:
             try:
@@ -182,6 +181,7 @@ def insertVuln(vulnName, cve, descString, url):
     Returns the ID for the vuln inserted.
 
     """
+        
     if cve == '':
         cur.execute("INSERT INTO vuln ( \
             vuln_name, vuln_description) \
@@ -197,19 +197,27 @@ def insertVuln(vulnName, cve, descString, url):
             vuln_id, url) VALUES (%s, %s)", (vulnID, url))
     return vulnID
 
-def insertInstance(hostID, vulnID, textString):
+def insertInstance(hostID, vulnID, textString, risk):
     """
     Inserts specific instances of the vulns. 
     No return value.
 
     """
+    cur.execute("SELECT risk_id FROM risk WHERE risk_name = %s", risk.lower())
+    riskID = cur.fetchone()
+    if riskID == None:
+        cur.execute("INSERT INTO risk (risk_name) VALUES (%s)", risk.lower())
+        cur.execute("SELECT risk_id FROM risk WHERE risk_name = %s", risk.lower())
+        riskID = cur.fetchone()[0]
+    else:
+        riskID = riskID[0]
     if timestamp == '':
         cur.execute("INSERT INTO vuln_detail ( \
-            host_id, vuln_id, vuln_detail_text) VALUES (%s, %s, %s)", (hostID, vulnID, textString))
+            host_id, vuln_id, vuln_detail_text, risk_id) VALUES (%s, %s, %s, %s)", (hostID, vulnID, textString, riskID))
     else:
         cur.execute("INSERT INTO vuln_detail ( \
-                host_id, vuln_id, vuln_detail_datetime, vuln_detail_text) VALUES (%s, %s, %s, %s)", 
-                (hostID, vulnID, timestamp, textString))
+                host_id, vuln_id, vuln_detail_datetime, vuln_detail_text, risk_id) VALUES (%s, %s, %s, %s, %s)", 
+                (hostID, vulnID, timestamp, textString, riskID))
 
 def insertHost(hostName):
     """ 

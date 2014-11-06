@@ -416,6 +416,7 @@ INSERT INTO `risk` SET `risk_id`=1, `risk_name`='none', `risk_weight`= 0 ON DUPL
 INSERT INTO `risk` SET `risk_id`=2, `risk_name`='low', `risk_weight`= 5 ON DUPLICATE KEY UPDATE `risk_id` = 2;
 INSERT INTO `risk` SET `risk_id`=3, `risk_name`='medium', `risk_weight`= 10 ON DUPLICATE KEY UPDATE `risk_id` = 3;
 INSERT INTO `risk` SET `risk_id`=4, `risk_name`='high', `risk_weight`= 15 ON DUPLICATE KEY UPDATE `risk_id` = 4;
+INSERT INTO `risk` SET `risk_id`=5, `risk_name`='critical', `risk_weight`= 20 ON DUPLICATE KEY UPDATE `risk_id` = 5;
 
 -- Table for regularly generated reports
 CREATE TABLE IF NOT EXISTS `report` (

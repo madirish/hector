@@ -67,15 +67,38 @@ to perform automated scans of hosts.</p>
 	</div>
 </div>
 
+
+<div class="row">
+    <!-- Vulnerbility Breakdown Chart -->
+    <div class="span6"> 
+  		<?php if ($vuln_num_chart_labels !== '[]' && $vuln_num_chart_counts !== '[]'): ?>
+        <div id="vuln-numbers-div" class="chart-container">
+            <div id="vulnNumbersChartLabels" class="hidden"><?php echo $vuln_num_chart_labels?></div>
+            <div id="vulnNumbersChartCounts" class="hidden"><?php echo $vuln_num_chart_counts?></div>
+            <h3 id="vulnNumbersChartHeader"><?php echo $vuln_num_report_header?></h3>
+            <div id="vulnNumbersChartLegend"></div>
+            <canvas id="vulnNumbersChart"></canvas>
+        </div>
+		<?php else: ?>
+			No incidents reported.
+		<?php endif; ?>
+    </div>
+    
+    <!-- Top Vuln types -->
+	<div class="span6">
+  		Coming soon...
+	</div>
+</div>
+
+
 <div class="row">
     <!-- Incident Pie Chart -->
     <div class="span6"> 
   		<?php if ($incidentchart_labels !== '[]' && $incidentchart_counts !== '[]'): ?>
         <div id="incident-div" class="chart-container">
-            <div id="incidentReportHeader" class="hidden"><?php echo $incident_report_header?></div>
             <div id="incidentChartLabels" class="hidden"><?php echo $incidentchart_labels?></div>
             <div id="incidentChartCounts" class="hidden"><?php echo $incidentchart_counts?></div>
-            <h3 id="incidentChartHeader"></h3>
+            <h3 id="incidentChartHeader"><?php echo $incident_report_header?></h3>
             <div id="incidentChartLegend"></div>
             <canvas id="incidentChart"></canvas>
         </div>
@@ -88,19 +111,18 @@ to perform automated scans of hosts.</p>
 	<div class="span6">
   		<?php if ($asset_count_json !== '[]' && $asset_labels_json !== '[]'): ?>
 		<div id="asset-chart-div" class="chart-container">
-			<h3 id="incident-assets-header"><?php echo $asset_count_header?></h3>
-			<div id="incident-assets-counts" class="hidden"><?php echo $asset_count_json?></div>
-			<div id="incident-assets-labels" class="hidden"><?php echo $asset_labels_json?></div>
-			<div id="incident-assets-legend"></div>
-			<canvas id="incident-assets-chart"></canvas>
+			<div id="incidentAssetCounts" class="hidden"><?php echo $asset_count_json?></div>
+			<div id="incidentAssetLabels" class="hidden"><?php echo $asset_labels_json?></div>
+			<h3 id="incidentAssetChartHeader"><?php echo $asset_count_header?></h3>
+			<div id="incidentAssetLegend"></div>
+			<canvas id="incidentAssetChart"></canvas>
 		</div>
 		<?php else: ?>
 			No incidents reported.
 		<?php endif; ?>
 	</div>
-
-
 </div>
+
 
 <div class="row">
     <div class="span6">

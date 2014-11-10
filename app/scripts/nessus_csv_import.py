@@ -66,10 +66,10 @@ def main(argv):
         try:
             time.strptime(timestamp, "%Y-%m-%d_%H:%M:%S")
             #time will fill in missing information automatically.
-            timestamp = time.strftime("%Y-%m-%d %I:%M:%S", timestamp)
+            timestamp = time.strftime("%Y-%m-%d %H:%M:%S", timestamp)
             #time will be okay with an incomplete timestamp but SQL won't.
         except ValueError as e:
-            print "Invalid timestamp. \"%Y-%m-%d_%I:%M:%S\""
+            print "Invalid timestamp. \"%Y-%m-%d_%H:%M:%S\""
             print "Mind the underscore between the date and time."
             exit(2)
     #Parse out 

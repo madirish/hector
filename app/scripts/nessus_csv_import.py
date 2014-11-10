@@ -24,6 +24,7 @@ except ImportError:
 timestamp = ''
 cur = '' 
 db = ''
+exitCode = 0 # we assume everything will be just fine
 def main(argv):
     """
     
@@ -41,7 +42,7 @@ def main(argv):
     global timestamp
     
     inputfile = ''
-    
+    print time.strftime("%Y-%m-%d %I:%M:%S") + " NESSUS IMPORTER FOR HECTOR "
     # Parsing arguments
     try:
         opts, args = getopt.getopt(argv,"i:t:h",["inputfile=","timestamp="])
@@ -71,16 +72,20 @@ def main(argv):
         except ValueError as e:
             print "Invalid timestamp. \"%Y-%m-%d_%I:%M:%S\""
             print "Mind the underscore between the date and time."
-            exit(2)
+            exit(1)
     #Parse out 
     config = ConfigParser.ConfigParser()
-    config.read('/opt/hector/app/conf/config.ini')
-    db_database = config.get('hector', 'db')
-    db_host = config.get('hector', 'db_host')
-    db_user = config.get('hector', 'db_user')
-    db_pass = config.get('hector', 'db_pass')
-    db = MySQLdb.connect(host=db_host, user=db_user, passwd=db_pass, db=db_database)
     
+    try:
+        config.read('/opt/hector/app/conf/config.ini')
+        db_database = config.get('hector', 'db')
+        db_host = config.get('hector', 'db_host')
+        db_user = config.get('hector', 'db_user')
+        db_pass = config.get('hector', 'db_pass')
+        db = MySQLdb.connect(host=db_host, user=db_user, passwd=db_pass, db=db_database)
+    except:
+        print "FATAL! Database connection failed."
+        exit(1)
     cur = db.cursor()
     with open(inputfile, 'rb') as f:
         reader = csv.reader(f)
@@ -90,12 +95,15 @@ def main(argv):
                     process_row(row, cur)
                 else:
                     raise csv.Error('Incomplete record')
+                    exitCode = 2
             except csv.Error as e:
                 print 'WARNING: Invalid record at line %d: %s' \
                         % (reader.line_num, str(e))
+                exitCode = 2
     cur.close()
     db.close()
-    print "All good records inserted! Check output messages for errors."
+    print time.strftime("%Y-%m-%d %I:%M:%S") + " All good records inserted! Check output messages for errors."
+    exit(exitCode)
     
 
 def process_row(row, cur):
@@ -127,11 +135,11 @@ def process_row(row, cur):
                  <div id=\"plugin-output\">Plugin Output: " + pluginOutput + "</div>"
     descString = "<div id=\"description\">DESCRIPTION: " + vulnDescription + "</div>\
                  <div id=\"cvss-score\">CVSS: " + cvss + "</div> \
-                 <div id=\"risk\">Risk: " + risk + "</div> \
                  <div id=\"solution\">Solution: " + solution + "</div>" 
     
     if not all([hostName, vulnName, vulnDescription]):
         raise csv.Error('Incomplete Record.')
+        exitCode = 2
     try:
         cur.execute("SELECT host_id FROM host WHERE host_name = %s", hostName)
         hostID = cur.fetchone()
@@ -142,9 +150,11 @@ def process_row(row, cur):
     except MySQLdb.Error, e:
         try:
             print "Host '%s' Lookup Error [%d]: %s" % (hostName, e.args[0], e.args[1])
+            exitCode = 2
             return
         except IndexError:
             print "Host '%s' Lookup Error: %s" % (hostName, str(e))
+            exitCode = 2
             return
     # Already SQLi hardened courtesy of .execute()
     try:
@@ -156,21 +166,25 @@ def process_row(row, cur):
         else:
             vulnID = vulnID[0]
         try:
-            insertInstance(hostID, vulnID, textString)
+            insertInstance(hostID, vulnID, textString, risk)
             db.commit()
         except MySQLdb.Error, e:
             try:
                 print "Vuln '%s' Detail Error [%d]: %s" % (str(vulnID), e.args[0], e.args[1])
+                exitCode = 2
                 return
             except IndexError:
                 print "Vuln '%s' Detail Error: %s" % (str(vulnID), str(e))
+                exitCode = 2
                 return 
     except MySQLdb.Error, e:
         try:
             print "Vuln '%s' Error [%d]: %s" % (vulnName, e.args[0], e.args[1])
+            exitCode = 2
             return
         except IndexError:
             print "Vuln '%s' Error: %s" % (vulnName, str(e))
+            exitCode = 2
             return
     
     
@@ -182,6 +196,7 @@ def insertVuln(vulnName, cve, descString, url):
     Returns the ID for the vuln inserted.
 
     """
+        
     if cve == '':
         cur.execute("INSERT INTO vuln ( \
             vuln_name, vuln_description) \
@@ -197,19 +212,27 @@ def insertVuln(vulnName, cve, descString, url):
             vuln_id, url) VALUES (%s, %s)", (vulnID, url))
     return vulnID
 
-def insertInstance(hostID, vulnID, textString):
+def insertInstance(hostID, vulnID, textString, risk):
     """
     Inserts specific instances of the vulns. 
     No return value.
 
     """
+    cur.execute("SELECT risk_id FROM risk WHERE risk_name = %s", risk.lower())
+    riskID = cur.fetchone()
+    if riskID == None:
+        cur.execute("INSERT INTO risk (risk_name) VALUES (%s)", risk.lower())
+        cur.execute("SELECT risk_id FROM risk WHERE risk_name = %s", risk.lower())
+        riskID = cur.fetchone()[0]
+    else:
+        riskID = riskID[0]
     if timestamp == '':
         cur.execute("INSERT INTO vuln_detail ( \
-            host_id, vuln_id, vuln_detail_text) VALUES (%s, %s, %s)", (hostID, vulnID, textString))
+            host_id, vuln_id, vuln_detail_text, risk_id) VALUES (%s, %s, %s, %s)", (hostID, vulnID, textString, riskID))
     else:
         cur.execute("INSERT INTO vuln_detail ( \
-                host_id, vuln_id, vuln_detail_datetime, vuln_detail_text) VALUES (%s, %s, %s, %s)", 
-                (hostID, vulnID, timestamp, textString))
+                host_id, vuln_id, vuln_detail_datetime, vuln_detail_text, risk_id) VALUES (%s, %s, %s, %s, %s)", 
+                (hostID, vulnID, timestamp, textString, riskID))
 
 def insertHost(hostName):
     """ 

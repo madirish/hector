@@ -4,15 +4,17 @@
  * 
  * @author Justin Klein Keane <jukeane@sas.upenn.edu>
  * @package HECTOR
- * @todo Add timestamp field
+ * @todo Add exact time (currently midnight is set)
  */
 
 // Handle the CSV upload
 if (isset($_FILES['nessus_csv'])) {
     if ($_FILES['nessus_csv']['error'] == 0) {
         $nessus_file = $_FILES['nessus_csv']['tmp_name'];
-        shell_exec('python /opt/hector/app/scripts/nessus_csv_import.py -i ' . $nessus_file);
-        $message = 'File successfully imported.';
+        $scan_date = escapeshellarg($_POST['scan-date'] . '_00:00:00');
+        $cmd = 'python /opt/hector/app/scripts/nessus_csv_import.py -i ' . $nessus_file . ' -t ' . $scan_date;
+        $output = shell_exec($cmd);
+        $message = ($output == '') ? 'File successfully imported.' : htmlspecialchars($output);
     }
     else {
     	$errors = array(

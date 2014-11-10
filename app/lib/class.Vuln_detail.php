@@ -552,7 +552,8 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
                     'risk r ' .
                 'WHERE d.vuln_id = v.vuln_id AND ' .
                     'd.host_id = ?i ' .
-                    'AND r.risk_id = d.risk_id '.
+                    'AND r.risk_id = d.risk_id '. 
+                'GROUP BY v.vuln_name ' . 
                 'ORDER BY r.risk_weight DESC', 
                 $host_id);
         return $db->fetch_object_array($sql);

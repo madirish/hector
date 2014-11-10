@@ -141,7 +141,7 @@ if (is_array($incident_reports->members)) {
     foreach ($incident_reports->members as $irreport){
     	// Get incident action count
     	$action = $irreport->get_action()->get_action();
-        $action_count[$action]['href'] = '?action=incident_summaries&threat_action=' . $irreport->get_action_id();
+        $action_count[$action]['href'] = '?action=incident_reports&threat_action=' . $irreport->get_action_id();
     	if (isset($action_count[$action]['count'])){
     		$action_count[$action]['count'] += 1;
     	}

@@ -18,13 +18,13 @@ try:
 	import MySQLdb
 except ImportError:
 	print "FATAL! MySQL connector not found."
-	exit(1)
+	sys.exit(1)
 ###############
 
 timestamp = ''
 cur = '' 
 db = ''
-exitCode = 0 # we assume everything will be just fine
+
 def main(argv):
     """
     
@@ -40,6 +40,7 @@ def main(argv):
     global cur
     global db
     global timestamp
+    exitCode = 0 # we assume everything will be just fine
     
     inputfile = ''
     print time.strftime("%Y-%m-%d %I:%M:%S") + " NESSUS IMPORTER FOR HECTOR "
@@ -48,7 +49,7 @@ def main(argv):
         opts, args = getopt.getopt(argv,"i:t:h",["inputfile=","timestamp="])
     except getopt.GetoptError:
         print 'Hector Importer -i <inputfile> -t <timestamp>'
-        sys.exit(2)
+        sys.exit(1)
     for opt, arg in opts:
         if opt == '-h':
             print 'Hector Importer -i <inputfile> -t <timestamp>'
@@ -60,7 +61,7 @@ def main(argv):
             timestamp = arg
     if inputfile == '':
         print "FATAL! CSV file mandatory. -i <inputfile>"
-        exit(1)
+        sys.exit(1)
     if timestamp == '':
         print "WARNING! Timestamp will be autofilled by MySQL."
     else:
@@ -69,10 +70,10 @@ def main(argv):
             #time will fill in missing information automatically.
             timestamp = time.strftime("%Y-%m-%d %H:%M:%S", timestamp)
             #time will be okay with an incomplete timestamp but SQL won't.
-        except ValueError as e:
+        except ValueError, e:
             print "Invalid timestamp. \"%Y-%m-%d_%H:%M:%S\""
             print "Mind the underscore between the date and time."
-            exit(1)
+            sys.exit(1)
     #Parse out 
     config = ConfigParser.ConfigParser()
     
@@ -85,25 +86,26 @@ def main(argv):
         db = MySQLdb.connect(host=db_host, user=db_user, passwd=db_pass, db=db_database)
     except:
         print "FATAL! Database connection failed."
-        exit(1)
+        sys.exit(1)
     cur = db.cursor()
-    with open(inputfile, 'rb') as f:
-        reader = csv.reader(f)
-        for row in reader:
-            try:
-                if len(row) == 13: #sanity check the line in file
-                    process_row(row, cur)
-                else:
-                    raise csv.Error('Incomplete record')
-                    exitCode = 2
-            except csv.Error as e:
-                print 'WARNING: Invalid record at line %d: %s' \
-                        % (reader.line_num, str(e))
+    f = open(inputfile, 'rb')
+    reader = csv.reader(f)
+    for row in reader:
+        try:
+            if len(row) == 13: #sanity check the line in file
+                process_row(row, cur)
+            else:
+                raise csv.Error('Incomplete record')
                 exitCode = 2
+        except csv.Error, e:
+            print 'WARNING: Invalid record at line %d: %s' \
+                    % (reader.line_num, str(e))
+            exitCode = 2
+    f.close()
     cur.close()
     db.close()
     print time.strftime("%Y-%m-%d %I:%M:%S") + " All good records inserted! Check output messages for errors."
-    exit(exitCode)
+    sys.exit(exitCode)
     
 
 def process_row(row, cur):
@@ -137,7 +139,7 @@ def process_row(row, cur):
                  <div id=\"cvss-score\">CVSS: " + cvss + "</div> \
                  <div id=\"solution\">Solution: " + solution + "</div>" 
     
-    if not all([hostName, vulnName, vulnDescription]):
+    if (hostName == '' or vulnName== '' or  vulnDescription == ''):
         raise csv.Error('Incomplete Record.')
         exitCode = 2
     try:
@@ -186,9 +188,6 @@ def process_row(row, cur):
             print "Vuln '%s' Error: %s" % (vulnName, str(e))
             exitCode = 2
             return
-    
-    
-            
 
 def insertVuln(vulnName, cve, descString, url):
     """
@@ -245,7 +244,7 @@ def insertHost(hostName):
         hostIP = socket.gethostbyname(hostName)
         cur.execute("INSERT INTO host (host_name, host_ip, host_ip_numeric) \
         VALUES (%s, %s, INET_ATON(%s))", (hostName, hostIP, hostIP))       
-    except socket.gaierror as err:
+    except socket.gaierror:
         #ignore column restraints
         cur.execute("INSERT INTO host (host_name) VALUES (%s)", hostName)
     
@@ -255,3 +254,4 @@ def insertHost(hostName):
 
 if __name__ == "__main__":
     main(sys.argv[1:])
+

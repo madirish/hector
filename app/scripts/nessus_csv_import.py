@@ -9,7 +9,6 @@
 import csv
 import sys
 import getopt
-import datetime
 import time
 import ConfigParser
 import socket
@@ -44,7 +43,7 @@ def main(argv):
     exitCode = 0 # we assume everything will be just fine
     
     inputfile = ''
-    print time.strftime("%Y-%m-%d %I:%M:%S") + " NESSUS IMPORTER FOR HECTOR "
+    print time.strftime("%Y-%m-%d %H:%M:%S") + " NESSUS IMPORTER FOR HECTOR "
     # Parsing arguments
     try:
         opts, args = getopt.getopt(argv,"i:t:h",["inputfile=","timestamp="])
@@ -67,9 +66,9 @@ def main(argv):
         print "WARNING! Timestamp will be autofilled by MySQL."
     else:
         try:
-            date_object = datetime.datetime.strptime(timestamp, "%Y-%m-%d_%H:%M:%S")
-            #time will fill in missing information automatically.
-            timestamp = date_object.strftime("%Y-%m-%d %H:%M:%S")
+            time_tuple = time.strptime(timestamp, "%Y-%m-%d_%H:%M:%S")
+            #time will fill in the missing information
+            timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time_tuple)
             #time will be okay with an incomplete timestamp but SQL won't.
         except ValueError, e:
             print "Invalid timestamp. \"%Y-%m-%d_%H:%M:%S\""
@@ -105,7 +104,7 @@ def main(argv):
     f.close()
     cur.close()
     db.close()
-    print time.strftime("%Y-%m-%d %I:%M:%S") + " All good records inserted! Check output messages for errors."
+    print time.strftime("%Y-%m-%d %H:%M:%S") + " All good records inserted! Check output messages for errors."
     sys.exit(exitCode)
     
 

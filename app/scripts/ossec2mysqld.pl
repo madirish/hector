@@ -442,6 +442,8 @@ sub insert_ossec {
     my $session_id = $sshservice[1];
     my $remote_ip = $sshservice[2];
     my $command = substr($message, index($message, 'COMMAND IS :') + 13);
+    # Trim the command so it will fit in the database
+    $command = substr($command,0,255);
     my $koj_exec_sql = "INSERT INTO koj_executed_command c SET c.time = ?, c.ip = ?,
         c.command = ?, c.ip_numeric = inet_aton(?), c.session_id = ?,
         c.sensor_id = ?, c.country_code = 

@@ -9,6 +9,7 @@
 import csv
 import sys
 import getopt
+import datetime
 import time
 import ConfigParser
 import socket
@@ -66,9 +67,9 @@ def main(argv):
         print "WARNING! Timestamp will be autofilled by MySQL."
     else:
         try:
-            time.strptime(timestamp, "%Y-%m-%d_%H:%M:%S")
+            date_object = datetime.datetime.strptime(timestamp, "%Y-%m-%d_%H:%M:%S")
             #time will fill in missing information automatically.
-            timestamp = time.strftime("%Y-%m-%d %H:%M:%S", timestamp)
+            timestamp = date_object.strftime("%Y-%m-%d %H:%M:%S")
             #time will be okay with an incomplete timestamp but SQL won't.
         except ValueError, e:
             print "Invalid timestamp. \"%Y-%m-%d_%H:%M:%S\""
@@ -229,6 +230,7 @@ def insertInstance(hostID, vulnID, textString, risk):
         cur.execute("INSERT INTO vuln_detail ( \
             host_id, vuln_id, vuln_detail_text, risk_id) VALUES (%s, %s, %s, %s)", (hostID, vulnID, textString, riskID))
     else:
+        print "Good timestamp"
         cur.execute("INSERT INTO vuln_detail ( \
                 host_id, vuln_id, vuln_detail_datetime, vuln_detail_text, risk_id) VALUES (%s, %s, %s, %s, %s)", 
                 (hostID, vulnID, timestamp, textString, riskID))

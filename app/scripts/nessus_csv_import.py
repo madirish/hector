@@ -230,7 +230,6 @@ def insertInstance(hostID, vulnID, textString, risk):
         cur.execute("INSERT INTO vuln_detail ( \
             host_id, vuln_id, vuln_detail_text, risk_id) VALUES (%s, %s, %s, %s)", (hostID, vulnID, textString, riskID))
     else:
-        print "Good timestamp"
         cur.execute("INSERT INTO vuln_detail ( \
                 host_id, vuln_id, vuln_detail_datetime, vuln_detail_text, risk_id) VALUES (%s, %s, %s, %s, %s)", 
                 (hostID, vulnID, timestamp, textString, riskID))

@@ -18,13 +18,12 @@ try:
 	import MySQLdb
 except ImportError:
 	print "FATAL! MySQL connector not found."
-	sys.exit(1)
+	exit(1)
 ###############
 
 timestamp = ''
 cur = '' 
 db = ''
-
 def main(argv):
     """
     
@@ -40,20 +39,21 @@ def main(argv):
     global cur
     global db
     global timestamp
-    exitCode = 0 # we assume everything will be just fine
+    exitcode = 0
+    
     
     inputfile = ''
-    print time.strftime("%Y-%m-%d %I:%M:%S") + " NESSUS IMPORTER FOR HECTOR "
+    
     # Parsing arguments
     try:
         opts, args = getopt.getopt(argv,"i:t:h",["inputfile=","timestamp="])
     except getopt.GetoptError:
         print 'Hector Importer -i <inputfile> -t <timestamp>'
-        sys.exit(1)
+        sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
             print 'Hector Importer -i <inputfile> -t <timestamp>'
-            print ' Time Format: "YYYY-MM-DD_24HR:MIN:SEC" '
+            print ' Time Format: "YYYY-MM-DD_HR:MIN:SEC" '
             sys.exit()
         elif opt in ("-i", "--inputfile"):
             inputfile = arg
@@ -61,32 +61,28 @@ def main(argv):
             timestamp = arg
     if inputfile == '':
         print "FATAL! CSV file mandatory. -i <inputfile>"
-        sys.exit(1)
+        exit(1)
     if timestamp == '':
         print "WARNING! Timestamp will be autofilled by MySQL."
     else:
         try:
-            time.strptime(timestamp, "%Y-%m-%d_%H:%M:%S")
+            time.strptime(timestamp, "%Y-%m-%d_%I:%M:%S")
             #time will fill in missing information automatically.
-            timestamp = time.strftime("%Y-%m-%d %H:%M:%S", timestamp)
+            timestamp = time.strftime("%Y-%m-%d %I:%M:%S", timestamp)
             #time will be okay with an incomplete timestamp but SQL won't.
         except ValueError, e:
-            print "Invalid timestamp. \"%Y-%m-%d_%H:%M:%S\""
+            print "Invalid timestamp. \"%Y-%m-%d_%I:%M:%S\""
             print "Mind the underscore between the date and time."
-            sys.exit(1)
+            exit(2)
     #Parse out 
     config = ConfigParser.ConfigParser()
+    config.read('/opt/hector/app/conf/config.ini')
+    db_database = config.get('hector', 'db')
+    db_host = config.get('hector', 'db_host')
+    db_user = config.get('hector', 'db_user')
+    db_pass = config.get('hector', 'db_pass')
+    db = MySQLdb.connect(host=db_host, user=db_user, passwd=db_pass, db=db_database)
     
-    try:
-        config.read('/opt/hector/app/conf/config.ini')
-        db_database = config.get('hector', 'db')
-        db_host = config.get('hector', 'db_host')
-        db_user = config.get('hector', 'db_user')
-        db_pass = config.get('hector', 'db_pass')
-        db = MySQLdb.connect(host=db_host, user=db_user, passwd=db_pass, db=db_database)
-    except:
-        print "FATAL! Database connection failed."
-        sys.exit(1)
     cur = db.cursor()
     f = open(inputfile, 'rb')
     reader = csv.reader(f)
@@ -96,16 +92,13 @@ def main(argv):
                 process_row(row, cur)
             else:
                 raise csv.Error('Incomplete record')
-                exitCode = 2
         except csv.Error, e:
             print 'WARNING: Invalid record at line %d: %s' \
                     % (reader.line_num, str(e))
-            exitCode = 2
     f.close()
     cur.close()
     db.close()
-    print time.strftime("%Y-%m-%d %I:%M:%S") + " All good records inserted! Check output messages for errors."
-    sys.exit(exitCode)
+    print "All good records inserted! Check output messages for errors."
     
 
 def process_row(row, cur):
@@ -137,11 +130,11 @@ def process_row(row, cur):
                  <div id=\"plugin-output\">Plugin Output: " + pluginOutput + "</div>"
     descString = "<div id=\"description\">DESCRIPTION: " + vulnDescription + "</div>\
                  <div id=\"cvss-score\">CVSS: " + cvss + "</div> \
+                 <div id=\"risk\">Risk: " + risk + "</div> \
                  <div id=\"solution\">Solution: " + solution + "</div>" 
     
-    if (hostName == '' or vulnName== '' or  vulnDescription == ''):
+    if (hostName == '' or vulnName == '' or vulnDescription == ''):
         raise csv.Error('Incomplete Record.')
-        exitCode = 2
     try:
         cur.execute("SELECT host_id FROM host WHERE host_name = %s", hostName)
         hostID = cur.fetchone()
@@ -152,11 +145,9 @@ def process_row(row, cur):
     except MySQLdb.Error, e:
         try:
             print "Host '%s' Lookup Error [%d]: %s" % (hostName, e.args[0], e.args[1])
-            exitCode = 2
             return
         except IndexError:
             print "Host '%s' Lookup Error: %s" % (hostName, str(e))
-            exitCode = 2
             return
     # Already SQLi hardened courtesy of .execute()
     try:
@@ -168,26 +159,25 @@ def process_row(row, cur):
         else:
             vulnID = vulnID[0]
         try:
-            insertInstance(hostID, vulnID, textString, risk)
+            insertInstance(hostID, vulnID, textString)
             db.commit()
         except MySQLdb.Error, e:
             try:
                 print "Vuln '%s' Detail Error [%d]: %s" % (str(vulnID), e.args[0], e.args[1])
-                exitCode = 2
                 return
             except IndexError:
                 print "Vuln '%s' Detail Error: %s" % (str(vulnID), str(e))
-                exitCode = 2
                 return 
     except MySQLdb.Error, e:
         try:
             print "Vuln '%s' Error [%d]: %s" % (vulnName, e.args[0], e.args[1])
-            exitCode = 2
             return
         except IndexError:
             print "Vuln '%s' Error: %s" % (vulnName, str(e))
-            exitCode = 2
             return
+    
+    
+            
 
 def insertVuln(vulnName, cve, descString, url):
     """
@@ -195,7 +185,6 @@ def insertVuln(vulnName, cve, descString, url):
     Returns the ID for the vuln inserted.
 
     """
-        
     if cve == '':
         cur.execute("INSERT INTO vuln ( \
             vuln_name, vuln_description) \
@@ -211,27 +200,19 @@ def insertVuln(vulnName, cve, descString, url):
             vuln_id, url) VALUES (%s, %s)", (vulnID, url))
     return vulnID
 
-def insertInstance(hostID, vulnID, textString, risk):
+def insertInstance(hostID, vulnID, textString):
     """
     Inserts specific instances of the vulns. 
     No return value.
 
     """
-    cur.execute("SELECT risk_id FROM risk WHERE risk_name = %s", risk.lower())
-    riskID = cur.fetchone()
-    if riskID == None:
-        cur.execute("INSERT INTO risk (risk_name) VALUES (%s)", risk.lower())
-        cur.execute("SELECT risk_id FROM risk WHERE risk_name = %s", risk.lower())
-        riskID = cur.fetchone()[0]
-    else:
-        riskID = riskID[0]
     if timestamp == '':
         cur.execute("INSERT INTO vuln_detail ( \
-            host_id, vuln_id, vuln_detail_text, risk_id) VALUES (%s, %s, %s, %s)", (hostID, vulnID, textString, riskID))
+            host_id, vuln_id, vuln_detail_text) VALUES (%s, %s, %s)", (hostID, vulnID, textString))
     else:
         cur.execute("INSERT INTO vuln_detail ( \
-                host_id, vuln_id, vuln_detail_datetime, vuln_detail_text, risk_id) VALUES (%s, %s, %s, %s, %s)", 
-                (hostID, vulnID, timestamp, textString, riskID))
+                host_id, vuln_id, vuln_detail_datetime, vuln_detail_text) VALUES (%s, %s, %s, %s)", 
+                (hostID, vulnID, timestamp, textString))
 
 def insertHost(hostName):
     """ 
@@ -254,4 +235,3 @@ def insertHost(hostName):
 
 if __name__ == "__main__":
     main(sys.argv[1:])
-

@@ -164,7 +164,6 @@ def process_row(row, cur):
     try:
         cur.execute("SELECT vuln_id, vuln_cve FROM vuln WHERE vuln_name = %s AND vuln_cve = %s", (vulnName, cve))
         vulnID = cur.fetchone()
-        print vulnID
         if vulnID == None :
             vulnID = insertVuln(vulnName, cve, descString, url)
             db.commit()

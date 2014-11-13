@@ -35,6 +35,8 @@ def main(argv):
     4. Handles errors in the above.
     5. Program cleanup. 
     
+    To decide if a vulnerability is a duplicate, we compare the name and 
+    the CVE number. If both of these match, then it is assumed to be a duplicate.
     """
     #defined as globals so we don't have to pass them through multiple functions
     global cur
@@ -160,9 +162,9 @@ def process_row(row, cur):
             return
     # Already SQLi hardened courtesy of .execute()
     try:
-        cur.execute("SELECT vuln_id FROM vuln WHERE vuln_name = %s", vulnName)
+        cur.execute("SELECT vuln_id, vuln_cve FROM vuln WHERE vuln_name = %s AND vuln_cve = %s", (vulnName, cve))
         vulnID = cur.fetchone()
-        if vulnID == None:
+        if vulnID == None :
             vulnID = insertVuln(vulnName, cve, descString, url)
             db.commit()
         else:

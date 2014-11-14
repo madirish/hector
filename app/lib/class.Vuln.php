@@ -319,6 +319,18 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
         }       
     }
     
+    public function lookup_by_name_cve($name, $cve) {
+        $sql = array('select * from vuln where vuln_name = \'?s\' and vuln_cve = \'?s\'', $name, $cve);
+        $result = $this->db->fetch_object_array($sql);
+        if (isset($result[0])) {
+            $this->id = $result[0]->vuln_id;
+            $this->name = $result[0]->vuln_name;
+            $this->description = $result[0]->vuln_description;
+            $this->cve = $result[0]->vuln_cve;
+            $this->osvdb = $result[0]->vuln_osvdb;
+        }       
+    }
+    
     /**
      * Persist the object back to the data layer.
      * 

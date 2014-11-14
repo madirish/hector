@@ -483,7 +483,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 			foreach ($result as $record) {
 				if (intval($record->host_id) > 0) {
 					$this->error = 'Duplicate name exists.';
-					$this->log->write_error('Duplicate IP (' . $this->get_ip . 
+					$this->log->write_error('Duplicate IP (' . $this->get_ip() . 
 						') exists from host id ' . $this->get_id());
 					$retval = FALSE;
 				}

@@ -583,6 +583,19 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
     	return $vuln->get_name();
     }
     
+    public function lookup_by_vuln_id_host_id_date($vuln_id,$host_id,$date) {
+    	$sql = array('SELECT * FROM vuln_detail ' .
+                'WHERE vuln_id = ?i ' .
+                'AND host_id = ?i ' .
+                'AND vuln_detail_datetime = \'?d\'',
+                $vuln_id,  
+                $host_id,
+                $date);
+        $result = $this->db->fetch_object_array($sql);
+        if (is_array($result) && count($result) > 0 && is_object($result[0])) {           
+            $this->__construct($result[0]->host_id);
+        }
+    }
     /**
      * Persist the object back to the database.
      * 

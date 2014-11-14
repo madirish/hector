@@ -246,7 +246,7 @@ class Risk extends Maleable_Object implements Maleable_Object_Interface {
     	}
     	// Create a new Risk
     	else {
-    		$this->set_name($name);
+    		$this->set_name(strtolower($name));
     		$this->save();
     	}
     	return $this->get_id();

@@ -23,8 +23,8 @@ if (isset($_FILES['nessus_csv'])) {
             return $retval;
         }
         $nessus_file = $_FILES['nessus_csv']['tmp_name'];
-        $scan_date = escapeshellarg($_POST['scan-date'] . '_00:00:00');
-        
+        //$scan_date = escapeshellarg($_POST['scan-date'] . '_00:00:00');
+        $scan_date = $_POST['scan-date'];
         if (($handle = fopen($nessus_file, "rb")) !== FALSE) {
         while (($line = fgetcsv($handle, 1000, ",")) !== FALSE) {
             // Plugin ID,CVE,CVSS,Risk,Host,Protocol,Port,Name,Synopsis,Description,Solution,See Also,Plugin Output

@@ -17,13 +17,15 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 }
 
 /* user defined includes */
-require_once('class.Vuln.php');
-require_once('class.Db.php');
-require_once('class.Log.php');
 require_once('class.Collection.php');
-require_once('class.User.php');
-require_once('interface.Maleable_Object_Interface.php');
+require_once('class.Db.php');
+require_once('class.Host.php');
+require_once('class.Log.php');
 require_once('class.Maleable_Object.php');
+require_once('class.Risk.php');
+require_once('class.User.php');
+require_once('class.Vuln.php');
+require_once('interface.Maleable_Object_Interface.php');
 
 /**
  * Occurances of Vulnerabilities.
@@ -222,6 +224,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 				$this->set_vuln_id($r->vuln_id);
 				$this->set_risk_id($r->risk_id);
 				$this->set_host_id($r->host_id);
+				$this->set_ticket($r->vuln_detail_ticket);
 			}
 		}
     }
@@ -256,7 +259,55 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 	 * @deprecated
 	 */
 	public function get_add_alter_form() {
-		return array ();
+		$vulns = array();
+		$collection = new Collection('Vuln');
+		if (is_array($collection->members)) {
+			foreach ($collection->members as $element) {
+				$vulns[$element->get_id()]=$element->get_name();
+			}
+		}
+		$risks = array();
+		$collection = new Collection('Risk');
+		if (is_array($collection->members)) {
+			foreach ($collection->members as $element) {
+				$risks[$element->get_id()]=$element->get_name();
+			}
+		}
+
+		return array (
+			array('label'=>'Description',
+					'type'=>'textarea',
+					'name'=>'name',
+					'value_function'=>'get_text',
+					'process_callback'=>'set_text'),
+			array('label'=>'Host IP',
+					'type'=>'text',
+					'name'=>'description',
+					'value_function'=>'get_host_ip',
+					'process_callback'=>'set_host_by_ip'),
+			array('label'=>'Observed on date',
+					'type'=>'date',
+					'name'=>'date',
+					'value_function'=>'get_datetime',
+					'process_callback'=>'set_datetime'),
+			array('label'=>'Vulnerability',
+					'name'=>'vulnerability[]',
+					'type'=>'select',
+					'options'=>$vulns,
+					'value_function'=>'get_vuln_id',
+					'process_callback'=>'set_vuln_id'),
+			array('label'=>'Risk',
+					'name'=>'risk[]',
+					'type'=>'select',
+					'options'=>$risks,
+					'value_function'=>'get_risk_id',
+					'process_callback'=>'set_risk_id'),
+			array('label'=>'Ticket URL',
+					'type'=>'text',
+					'name'=>'ticket',
+					'process_callback' =>'set_ticket',
+					'value_function' => 'get_ticket')
+		);
 	}
 
     /**
@@ -310,13 +361,13 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
      * @return Array Array of details for this record for generic template.
 	 */
 	public function get_displays() {
-		return array('Text'=>'get_text',
+		return array('Text'=>'get_text_short',
 					'Vulnerability' => 'get_vuln_name',
 					'Fixed' => 'get_fixed',
 					'Fixed on:' => 'get_fixed_datetime',
 					'Fixed by:' => 'get_fixed_user_name',
 					'Notes on fix:' => 'get_fixed_notes',
-					'Ignored on:' => 'get_ignored_datetime',
+					'Ignored on:' => 'get_ignore_datetime',
 					'Ignored by:' => 'get_ignored_user_name',
 					'Ticket:' => 'get_ticket',
 			);
@@ -382,6 +433,11 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
     public function get_fixed_user_name() {
     	$user = new User($this->fixed_user_id);
     	return $user->get_name();
+    }
+    
+    public function get_host_ip() {
+    	$host = new Host($this->host_id);
+    	return $host->get_ip();
     }
     
     /**
@@ -492,7 +548,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
     	if (filter_var($this->ticket, FILTER_VALIDATE_URL)) {
 			return $this->ticket;
     	}	
-    	return null;
+    	else return null;
     }
     
     public function get_risk_id() {
@@ -515,6 +571,9 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 		return $purifier->purify($this->text);
     }
     
+    public function get_text_short($limit=100) {
+    	return substr($this->get_text(), 0, $limit);
+    }
     /**
      * The associated Vuln object for this detail record.
      * 
@@ -746,6 +805,13 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
      */
     public function set_fixed_user_id($user_id) {
     	$this->fixed_user_id = intval($user_id);
+    }
+    
+    public function set_host_by_ip($ip) {
+    	$host = new Host();
+    	$host->set_ip($ip);
+    	$host->lookup_by_ip();
+    	$this->set_host_id($host->get_id());
     }
     
     /**

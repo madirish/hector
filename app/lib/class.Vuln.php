@@ -164,7 +164,7 @@ class Vuln extends Maleable_Object implements Maleable_Object_Interface {
 					'value_function'=>'get_name',
 					'process_callback'=>'set_name'),
 			array('label'=>'Description',
-					'type'=>'text',
+					'type'=>'textarea',
 					'name'=>'description',
 					'value_function'=>'get_description',
 					'process_callback'=>'set_description'),

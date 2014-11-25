@@ -104,10 +104,13 @@
         <li><a href="?action=detection">Detection summary</a></li>
         <li><a href="?action=honeypot">Honeypot data</a></li>
         <li><a href="?action=attackerip">Malicious IP database</a></li>
-        <li><a href="?action=nessus_scans">Nessus scans</a></li>
         <li><a href="?action=ossecalerts">OSSEC alerts</a></li>
-        <li><a href="?action=upload_nessus_csv">Upload Nessus report</a></li>
         <li><a href="?action=screenshots">Website Screenshots</a>
+        <li class="nav-header">Vulnerabilities</li>
+        <li><a href="?action=add_edit&object=Vuln">Add vulnerability </a></li>
+        <li><a href="?action=nessus_scans">Nessus scans</a></li>
+        <li><a href="?action=add_edit&object=Vuln_detail">Report vulnerability</a></li>
+        <li><a href="?action=upload_nessus_csv">Upload Nessus report</a></li>
       </ul>
     </li>
     <li class="dropdown">

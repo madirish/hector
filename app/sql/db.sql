@@ -368,8 +368,8 @@ CREATE TABLE IF NOT EXISTS `nmap_result` (
 	`nmap_result_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`nmap_result_id`),
   INDEX (`host_id`),
-  INDEX (``nmap_result_port_number`),
-  INDEX (``scan_id`)
+  INDEX (`nmap_result_port_number`),
+  INDEX (`scan_id`)
 ) ENGINE = INNODB;
 
 -- OSSEC alerts from clients
@@ -387,10 +387,10 @@ CREATE TABLE IF NOT EXISTS `ossec_alert` (
 	PRIMARY KEY (`alert_id`),
 	INDEX (`host_id`), 
 	INDEX (`rule_id`),
-	INDEX USING HASH (rule_src_ip_numeric),
-  INDEX USING HASH (rule_id),
-  INDEX USING HASH (host_id),
-	INDEX USING BTREE (alert_date)
+	INDEX USING HASH (`rule_src_ip_numeric`),
+  INDEX USING HASH (`rule_id`),
+  INDEX USING HASH (`host_id`),
+	INDEX USING BTREE (`alert_date`)
 ) ENGINE = INNODB;
 
 -- OSSEC rules (defined in the server)

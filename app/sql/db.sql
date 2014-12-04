@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS `article_x_tag` (
   `article_id` INT NOT NULL,
   `tag_id` INT NOT NULL,
   INDEX (`article_id`),
-  INDEX (`tag_id`),
+  INDEX (`tag_id`)
 ) ENGINE = INNODB;
 
 -- If the article describes a vulnerability pair them

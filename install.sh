@@ -108,6 +108,7 @@ echo " [+] Config at ${HECTOR_PATH}/app/conf/config.ini complete."
 touch $HECTOR_PATH/app/logs/error_log
 touch $HECTOR_PATH/app/logs/message_log
 chmod 0700 $HECTOR_PATH/app/logs/*_log
+chown -R apache $HECTOR_PATH/app/logs
 
 echo 
 echo "Step 5 of 7 - Configuring Apache"
@@ -208,6 +209,13 @@ if [ $configiptables == "y" ] ; then
     echo " [+] Committing firewall updates"
     service iptables restart
   fi  
+fi
+
+echo " [+] SELinux "
+if [ -e /selinux/enforce ]; then
+  echo "      It looks like SELinux is enabled.  I'm going to disable it temporarily."
+  echo "      You should make this change permanent by editing /etc/selinux/conf "
+  echo 0 > /selinux/enforce
 fi
 echo 
 echo "Congratulations, installation complete!"

@@ -252,11 +252,16 @@ $(function(){
 	var markers = [];
 	var markerValues = [];
 	for (iso in data){
-		loc = [latlong[iso]["latitude"],latlong[iso]["longitude"]];
-		val = data[iso]
-		country = latlong[iso]["name"];
-		markers.push({latLng:loc,value:val,name:country,code:iso});
-		markerValues.push(val);
+		if (latlong.hasOwnProperty(iso)) {
+			loc = [latlong[iso]["latitude"],latlong[iso]["longitude"]];
+			val = data[iso]
+			country = latlong[iso]["name"];
+			markers.push({latLng:loc,value:val,name:country,code:iso});
+			markerValues.push(val);
+		}
+		else {
+			console.log("Odd, no entry for country " + iso);
+		}
 	}
 	
 	$('#kojoney-worldmap').vectorMap({

@@ -61,7 +61,7 @@
     </div>
     </form>
     <?php endif; ?>
-<?php endif; ?>
+
 </div>
 <a href="#ipDataModal" role="button" class="btn" data-toggle="modal">Show IP's</a>
 <div id="ipDataModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -81,3 +81,4 @@ $(document).ready(function(){
     });
 });
 </script>
+<?php endif; ?>

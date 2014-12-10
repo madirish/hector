@@ -66,7 +66,7 @@ Class Dblog {
      * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @return Dblog An instance of the Dblog object.
 	 */
-	public function get_instance() {
+	public static function get_instance() {
 		if (self::$instance == NULL) self::$instance = new Dblog();
 		return self::$instance;
 	}

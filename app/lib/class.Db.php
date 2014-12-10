@@ -259,7 +259,7 @@ Class DB {
 	 * @access public
 	 * @return DB An reference to the singleton instance of the DB object.
 	 */
-	public function get_instance() {
+	public static function get_instance() {
 		if (self::$instance == NULL)
 			self::$instance = new DB();
 

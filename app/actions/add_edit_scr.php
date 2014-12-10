@@ -26,15 +26,15 @@ else {
 		$generic = new $object($id);
 		$post_values = $generic->get_add_alter_form();
 		foreach ($post_values as $val) {
-			//strip off any post array demarkers 
-			if (substr($val['name'],-2)=='[]') $val['name'] = substr($val['name'], 0, -2);
-			if (isset($_POST[$val['name']])) {// Empty checkboxes won't pass back
-				// Single select items will submit as arrays with one value, flatten them
-				if (is_array($_POST[$val['name']]) && count ($_POST[$val['name']]) == 1) {
-					$_POST[$val['name']] = $_POST[$val['name']][0];
-				}
-				$generic->process_form($val['process_callback'], $_POST[$val['name']]);
-			}
+            //strip off any post array demarkers 
+            if (substr($val['name'],-2)=='[]') $val['name'] = substr($val['name'], 0, -2);
+            // Empty checkboxes won't pass back
+            if (! isset($_POST[$val['name']])) $_POST[$val['name']] = '';
+            // Single select items will submit as arrays with one value, flatten them
+            if (is_array($_POST[$val['name']]) && count ($_POST[$val['name']]) == 1) {
+                $_POST[$val['name']] = $_POST[$val['name']][0];
+            }
+            $generic->process_form($val['process_callback'], $_POST[$val['name']]);
 		}
 		$generic->save();
 		$object_readable = method_exists($generic, 'get_label') ? $generic->get_label() : str_ireplace("_"," ", $object);

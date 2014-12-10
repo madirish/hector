@@ -665,15 +665,19 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
      */
     public function set_group_ids($ids) {
         $retval = true;
-    	$groupids = array();
-    	if (is_array($ids)) {
-    		foreach ($ids as $id) {
-    			$id = (int) $id;
-    			if ($id > 0) $groupids[] = $id;
+        $groupids = array();
+        if (is_array($ids)) {
+            foreach ($ids as $id) {
+                $id = (int) $id;
+                if ($id > 0) $groupids[] = $id;
                 else $retval = false;
-    		}
-    	}
-    	$this->group_ids = $groupids;
+            }
+        }
+        // If only one choice was made we don't get an array
+        elseif (intval($ids) > 0) {
+            $groupids[] = intval($ids);
+        }
+        $this->group_ids = $groupids;
         return $retval;
     }
     

@@ -366,6 +366,18 @@ if ($tempTablePopulated > 0) {
     $form->set_name($formname);
     $token = $form->get_token();
     $form->save();
+    
+    $json_results = array();
+    foreach ($search_results as $host) {
+    	$temp_host = new stdClass();
+        $temp_host->linkedName = $host->get_name_linked() ;
+        $temp_host->supportGroup = $host->get_supportgroup_name() ;
+        $temp_host->ip = $host->get_ip() ;
+        $temp_host->lastSeen = $host->maxtime ;
+        $json_results[] = $temp_host;
+    }
+    $json_hosts = json_encode($json_results);
+    
 }
 else {
 	

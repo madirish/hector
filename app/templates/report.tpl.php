@@ -63,3 +63,21 @@
     <?php endif; ?>
 <?php endif; ?>
 </div>
+<a href="#ipDataModal" role="button" class="btn" data-toggle="modal">Show IP's</a>
+<div id="ipDataModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 id="myModalLabel">IP Addresses from Search</h3>
+</div>
+<div class="modal-body" id="ipDataModalBody">
+
+</div>
+</div>
+<script type="text/javascript">
+var jsondata = <?php if(isset($json_hosts)) print_r($json_hosts); ?>;
+$(document).ready(function(){
+    $.each(jsondata, function(index, item) {
+    	$("#ipDataModalBody").append("<p>" + item.ip + "</p>");
+    });
+});
+</script>

@@ -104,7 +104,7 @@ Class Log {
 	 * @access public
 	 * @return Log Returns a reference to the signleton instance of the Log object
 	 */
-	public function get_instance() {
+	public static function get_instance() {
 		if (self::$instance == NULL)
 			self::$instance = new Log();
 		return self::$instance;

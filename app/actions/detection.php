@@ -20,7 +20,7 @@ $db = Db::get_instance();
 // Query ports probed on the darknet
 $sql = 'select count(id) as cid, dst_port, proto from darknet ' .
 	'where received_at > date_sub(curdate(), interval 1 day) ' .
-	'group by dst_port order by cid desc';
+	'group by dst_port order by cid desc limit 30';
 $port_result = $db->fetch_object_array($sql);
 
 // Query attacker IP's detected by the darknet sensors

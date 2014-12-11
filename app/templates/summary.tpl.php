@@ -86,7 +86,15 @@ to perform automated scans of hosts.</p>
     
     <!-- Top Vuln types -->
 	<div class="span6">
-  		Coming soon...
+  		<div class="well">
+        <h4>Snapshot of Last 24 Hours</h4>
+        <ul>
+            <li><a href="?action=articles"><?php print_r( $article_count); ?> articles collected via RSS</a></li>
+            <li><a href="?action=ossecalerts"><?php echo $ossec_count; ?> OSSEC alerts</a></li>
+            <li><a href="?action=honeypot"><?php echo $honeypot_count; ?> honeypot logins</a></li>
+            <li><a href="?action=detection"><?php echo $probe_count; ?> port probes</a></li>
+        </ul>
+        </div>
 	</div>
 </div>
 
@@ -127,7 +135,7 @@ to perform automated scans of hosts.</p>
 <div class="row">
     <div class="span6">
    		<!-- Kojoney Login Attempts Map -->
-    	<h3>Kojoney2: Login Attempts in Last 7 Days</h3>
+    	<h3>SSH Honeypot Login Attempts in Last 7 Days</h3>
 		<div id="kojoney-map-counts" class="hidden"><?php echo $kojoneymapcounts ?></div>
 		<div id="kojoney-worldmap" style="height:300px;"></div>
     </div>

@@ -224,7 +224,17 @@ if (is_array($tag_collection->members)){
 	array_multisort($tag_sorter,SORT_DESC,$tag_weights);
 }
 
-
+/**
+ * Count summary
+ */
+$article_count = new Collection('Article','AND a.article_date > DATE_SUB(NOW(),INTERVAL 1 DAY)');
+$article_count = isset($article_count->members) ? count($article_count->members) : 0;
+$ossec_count = new Collection('Ossec_Alert', 'AND o.alert_date > DATE_SUB(NOW(),INTERVAL 1 DAY)');
+$ossec_count = isset($ossec_count->members) ? count($ossec_count->members) : 0;
+$honeypot_count = new Collection('HoneyPotConnect', 'AND k.time > DATE_SUB(NOW(),INTERVAL 1 DAY)');
+$honeypot_count = isset($honeypot_count->members) ? count($honeypot_count->members) : 0;
+$probe_count = new Collection('Darknet', 'AND d.received_at > DATE_SUB(NOW(),INTERVAL 1 DAY)');
+$probe_count = isset($probe_count->members) ? count($probe_count->members) : 0;
 
 
 include_once($templates. 'admin_headers.tpl.php');

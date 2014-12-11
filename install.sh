@@ -64,8 +64,10 @@ umask 022
 if [ ! -d $HECTOR_PATH ] ; then
   mkdir $HECTOR_PATH
 fi
-cp -rf app $HECTOR_PATH
-cp -rf html $HECTOR_PATH
+cp -rf * $HECTOR_PATH
+cp -rf .git $HECTOR_PATH
+cp -rf .gitignore $HECTOR_PATH
+
 if [ ! -d $HECTOR_PATH/app/screenshots ] ; then
   mkdir ${HECTOR_PATH}/app/screenshots
 fi
@@ -222,6 +224,11 @@ echo "Congratulations, installation complete!"
 echo "Note that http access is GLOBALLY available."
 echo "Update your iptables rules if you wish to "
 echo "restrict access."
+echo
+echo "You can upgrade HECTOR from /opt/hector using"
+echo "the command: "
+echo 
+echo "# git pull"
 echo
 echo "You can log in to the admin panel at:"
 echo "http://$SERVERNAME/hector"

@@ -290,7 +290,7 @@ $(function(){
 		 onMarkerLabelShow: function(event,label,index){
 			 label.html(
 					 "<b>" + markers[index]['name'] + "</b><br/>"
-					 + 'Login attempts: ' + markers[index]['value']
+					 + 'Distinct IPs attempting login': ' + markers[index]['value']
 					 );
 		 },
 		 onMarkerClick: function(event,index){

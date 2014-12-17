@@ -14,8 +14,8 @@ include_once($approot . 'lib/class.HoneyPotConnect.php');
 include_once($approot . 'lib/class.HoneyPotSession.php');
 
 //Honey Pot Login Attempts
-
-$bound = ' AND time > DATE_SUB(NOW(), INTERVAL 7 DAY)';
+$bounddays = 4;
+$bound = ' AND time > DATE_SUB(NOW(), INTERVAL ' . $bounddays . ' DAY)';
 
 if (isset($_GET['country'])){
 	$country = substr($_GET['country'], 0, 2);
@@ -49,36 +49,36 @@ $commands_json = json_encode($commands);
 //  Username frequencies
 $hpconnect = new HoneyPotConnect();
 
-$username_top = $hpconnect->get_top_field_percent($field='username',$bound=7);
+$username_top = $hpconnect->get_top_field_percent($field='username',$bounddays);
 $u_top = (!empty($username_top)) ? key($username_top) : '';
 $u_percent = (isset($username_top[$u_top])) ? $username_top[$u_top] : 0;
 
-$pass_top_percent = $hpconnect->get_top_field_percent($field='password',$bound=7);
+$pass_top_percent = $hpconnect->get_top_field_percent($field='password',$bounddays);
 $pass_top = (!empty($pass_top_percent)) ? key($pass_top_percent) : '';
 $pass_percent = (isset($pass_top_percent[$pass_top])) ? $pass_top_percent[$pass_top] : 0;
 
-$country_code_top = $hpconnect->get_top_field_percent($field='country_code',$bound=7);
+$country_code_top = $hpconnect->get_top_field_percent($field='country_code',$bounddays);
 $c_top = (!empty($country_code_top)) ? key($country_code_top) : '';
 $c_percent = (isset($country_code_top[$c_top])) ? $country_code_top[$c_top] : 0;
 
-$ip_top_percent = $hpconnect->get_top_field_percent($field='ip',$bound=7);
+$ip_top_percent = $hpconnect->get_top_field_percent($field='ip',$bounddays);
 $ip_top = (!empty($ip_top_percent)) ? key($ip_top_percent) : '';
 $ip_percent = (isset($ip_top_percent[$ip_top])) ? $ip_top_percent[$ip_top] : 0;
 
 $hpsession = new HoneyPotSession();
 // IP frequencies
-$sip_top_percent = $hpsession->get_top_field_percent($field='ip',$bound=7);
+$sip_top_percent = $hpsession->get_top_field_percent($field='ip',$bounddays);
 $sip_top = (!empty($sip_top_percent)) ? key($sip_top_percent) : '';
 $sip_percent = (isset($sip_top_percent[$sip_top])) ? $sip_top_percent[$sip_top] : 0;
 
 
 // Country frequencies
-$scount_top_percent = $hpsession->get_top_field_percent($field='country_code',$bound=7);
+$scount_top_percent = $hpsession->get_top_field_percent($field='country_code',$bounddays);
 $scount_top = (!empty($scount_top_percent)) ? key($scount_top_percent) : '';
 $scount_percent = (isset($scount_top_percent[$scount_top])) ? $scount_top_percent[$scount_top] : 0; 
 
 // Command frequencies
-$command_freqs = $hpsession->get_field_frequencies($field='command',$bound=7);
+$command_freqs = $hpsession->get_field_frequencies($field='command',$bounddays);
 if (!empty($command_freqs)){
 	$top_command_keys = array_slice(array_keys($command_freqs),0,9);
 	$top_command_vals = array_slice(array_values($command_freqs),0,9);

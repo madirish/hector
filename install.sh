@@ -22,7 +22,7 @@ echo
 
 # Install the prerequisites
 if [ -e /etc/redhat-release ]; then
-    yum install mysql mysql-server git httpd php php-cli php-mysql php-xml MySQL-python MySQL-python nmap gcc make
+    yum install mysql mysql-server git httpd php php-cli php-mysql php-xml MySQL-python MySQL-python nmap gcc make perl-DBI
     /sbin/chkconfig --level 345 mysqld on 
     /sbin/chkconfig --level 345 httpd on 
     if ! /sbin/service mysqld status | grep running ; then

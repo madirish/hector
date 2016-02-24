@@ -8,8 +8,8 @@ echo "******************************************"
 echo " HECTOR Security Intelligence Platform "
 echo " Installer "
 echo "******************************************"
-echo "by Justin C. Klein Keane <jukeane@sas.upenn.edu>"
-echo 
+echo "by Justin C. Klein Keane <justin@madirish.net>"
+echo
 
 if [ "$(id -u)" != "0" ]; then
    echo "This script must be run as root, please use sudo"
@@ -22,24 +22,35 @@ echo
 
 # Install the prerequisites
 if [ -e /etc/redhat-release ]; then
-    yum install mysql mysql-server git httpd php php-cli php-mysql php-xml MySQL-python MySQL-python nmap gcc make perl-DBI
-    /sbin/chkconfig --level 345 mysqld on 
-    /sbin/chkconfig --level 345 httpd on 
-    if ! /sbin/service mysqld status | grep running ; then
-      /sbin/service mysqld start
+    yum install mysql mysql-server mariadb mariadb-server git httpd php php-cli php-mysql php-xml MySQL-python MySQL-python nmap gcc make perl-DBI
+    if [ -e /sbin/chkconfig ]; then
+      /sbin/chkconfig --level 345 mysqld on
+      /sbin/chkconfig --level 345 httpd on
     fi
-    if ! /sbin/service httpd status | grep running ; then
-      /sbin/service httpd start
+    if [ -e /usr/bin/systemctl ]; then
+      /usr/bin/systemctl enable mariadb
+      /usr/bin/systemctl enable httpd
+      /usr/bin/systemctl start mariadb
+      /usr/bin/systemctl start httpd
+    fi
+
+    if [ -e /sbin/service ]; then
+      if ! /sbin/service mysqld status | grep running ; then
+        /sbin/service mysqld start
+      fi
+      if ! /sbin/service httpd status | grep running ; then
+        /sbin/service httpd start
+      fi
     fi
 fi
 
 echo " [+] Pulling down Kojoney2 sources."
 # Pull in Kojoney2 for the database components
-git clone git://github.com/madirish/kojoney2 app/software/kojoney2
+git clone https://github.com/madirish/kojoney2.git
 
-echo 
+echo
 echo "Step 2 of 7 - Configuring MySQL"
-echo 
+echo
 
 # Create a new temporary file to perform all our SQL functions
 umask 077
@@ -55,9 +66,9 @@ echo "CREATE DATABASE IF NOT EXISTS hector; GRANT ALL PRIVILEGES ON hector.* to 
 cat app/sql/db.sql >> /tmp/hector.sql
 
 
-echo 
+echo
 echo "Step 3 of 7 - Moving HECTOR files to /opt"
-echo 
+echo
 
 umask 022
 
@@ -92,9 +103,9 @@ echo " [+] Customizing config at /etc/ossec2mysql.conf"
 cp ${HECTOR_PATH}/app/scripts/ossec2mysql.conf.blank /etc/ossec2mysql.conf
 sed -i "s/hectorpass/${HECTORPASS}/g" /etc/ossec2mysql.conf
 
-echo 
+echo
 echo "Step 4 of 7 - Operational configuration info"
-echo 
+echo
 
 echo "Please enter your MySQL root user password:"
 mysql -u root -p < /tmp/hector.sql
@@ -112,9 +123,9 @@ touch $HECTOR_PATH/app/logs/message_log
 chmod 0700 $HECTOR_PATH/app/logs/*_log
 chown -R apache $HECTOR_PATH/app/logs
 
-echo 
+echo
 echo "Step 5 of 7 - Configuring Apache"
-echo 
+echo
 if ! cat /etc/httpd/conf/httpd.conf | grep -q "HECTOR" ; then
   echo " [+] Creating virtual directory /hector at the web root"
   echo >> /etc/httpd/conf/httpd.conf
@@ -154,13 +165,13 @@ if ! cat /etc/httpd/conf/httpd.conf | grep -q "HECTOR" ; then
   service httpd restart
 else
   echo " [+] HECTOR Apache config seems to already exist"
-fi  
-  
+fi
+
 chown -R apache $HECTOR_PATH/app/logs
 
-echo 
+echo
 echo "Step 6 of 7 - Scheduling cron jobs"
-echo 
+echo
 if ! cat /etc/crontab | grep -q "HECTOR" ; then
   echo "#HECTOR scans" >> /etc/crontab
   echo "01 0 * * * root /usr/bin/php $HECTOR_PATH/app/scripts/scan_cron.php" >> /etc/crontab
@@ -170,9 +181,9 @@ else
   echo " [+] HECTOR crontab seems to already exist"
 fi
 
-echo 
+echo
 echo "Step 7 of 7 - Finishing"
-echo 
+echo
 if [ ! -d /var/ossec ] ; then
   echo " [+] OSSEC still needs to be installed"
   echo "     Press [Enter] to begin the OSSEC install process"
@@ -210,7 +221,7 @@ if [ $configiptables == "y" ] ; then
     sed -i "s/--dport 22 -j ACCEPT/--dport 22 -j ACCEPT\\n-A INPUT -m state --state NEW -m udp -p udp --dport 1514 -j ACCEPT/" /etc/sysconfig/iptables
     echo " [+] Committing firewall updates"
     service iptables restart
-  fi  
+  fi
 fi
 
 echo " [+] SELinux "
@@ -219,7 +230,7 @@ if [ -e /selinux/enforce ]; then
   echo "      You should make this change permanent by editing /etc/selinux/conf "
   echo 0 > /selinux/enforce
 fi
-echo 
+echo
 echo "Congratulations, installation complete!"
 echo "Note that http access is GLOBALLY available."
 echo "Update your iptables rules if you wish to "
@@ -227,7 +238,7 @@ echo "restrict access."
 echo
 echo "You can upgrade HECTOR from /opt/hector using"
 echo "the command: "
-echo 
+echo
 echo "# git pull"
 echo
 echo "You can log in to the admin panel at:"

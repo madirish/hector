@@ -207,7 +207,7 @@ else {
 	if (strpos($ports, 'U:') !== false) $command .= ' -sU '; // UDP port scan
 	elseif (strpos($ports, 'T:') !== false) $command .= ' -sT '; // TCP port scan
 	else $command .= ' -sT '; // Default to TCP port scan
-	$command .= ' -PN -oX ' . $xmloutput . ' ' . $portspec .
+	$command .= ' -oX ' . $xmloutput . ' ' . $portspec .
 		' -T4 -iL ' . $ipfilename;
 	loggit("nmap_scan.php process", "Executing the command: " . $command);
 	shell_exec($command);

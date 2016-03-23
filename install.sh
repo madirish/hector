@@ -55,7 +55,7 @@ echo
 # Create a new temporary file to perform all our SQL functions
 umask 077
 touch /tmp/hector.sql
-cat app/software/kojoney2/create_tables.sql > /tmp/hector.sql
+cat app/software/kojoney2/db/create_tables.sql > /tmp/hector.sql
 
 echo " [+] Setting up the MySQL databases for HECTOR."
 echo "     Please choose a password for the hector MySQL user:"

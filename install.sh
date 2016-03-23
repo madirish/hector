@@ -16,7 +16,7 @@ if [ "$(id -u)" != "0" ]; then
    exit 1
 fi
 
-echo Step 1 of 7 - Checking for prerequisite dependencies...
+echo "Step - Checking for prerequisite dependencies..."
 echo
 
 
@@ -49,7 +49,7 @@ echo " [+] Pulling down Kojoney2 sources."
 git clone https://github.com/madirish/kojoney2.git
 
 echo
-echo "Step 2 of 7 - Configuring MySQL"
+echo "Step - Configuring MySQL"
 echo
 
 # Create a new temporary file to perform all our SQL functions
@@ -67,7 +67,7 @@ cat app/sql/db.sql >> /tmp/hector.sql
 
 
 echo
-echo "Step 3 of 7 - Moving HECTOR files to /opt"
+echo "Step - Moving HECTOR files to /opt"
 echo
 
 umask 022
@@ -104,7 +104,7 @@ cp ${HECTOR_PATH}/app/scripts/ossec2mysql.conf.blank /etc/ossec2mysql.conf
 sed -i "s/hectorpass/${HECTORPASS}/g" /etc/ossec2mysql.conf
 
 echo
-echo "Step 4 of 7 - Operational configuration info"
+echo "Step - Operational configuration info"
 echo
 
 echo "Please enter your MySQL root user password:"
@@ -124,7 +124,7 @@ chmod 0700 $HECTOR_PATH/app/logs/*_log
 chown -R apache $HECTOR_PATH/app/logs
 
 echo
-echo "Step 5 of 7 - Configuring Apache"
+echo "Step - Configuring Apache"
 echo
 if ! cat /etc/httpd/conf/httpd.conf | grep -q "HECTOR" ; then
   echo " [+] Creating virtual directory /hector at the web root"
@@ -137,31 +137,7 @@ if ! cat /etc/httpd/conf/httpd.conf | grep -q "HECTOR" ; then
   echo '  Order allow,deny' >>  /etc/httpd/conf/httpd.conf
   echo '  Allow from all' >>  /etc/httpd/conf/httpd.conf
   echo '</Directory>' >>  /etc/httpd/conf/httpd.conf
-  # Check if iptables exists
-  if [ ! -e /etc/sysconfig/iptables ] ; then
-    echo '# Firewall configuration written by system-config-firewall' > /etc/sysconfig/iptables
-    echo '# Copied from CentOS 5.5 by HECTOR' >> /etc/sysconfig/iptables
-    echo '# Manual customization of this file is not recommended.' >> /etc/sysconfig/iptables
-    echo '*filter' >> /etc/sysconfig/iptables
-    echo ':INPUT ACCEPT [0:0]' >> /etc/sysconfig/iptables
-    echo ':FORWARD ACCEPT [0:0]' >> /etc/sysconfig/iptables
-    echo ':OUTPUT ACCEPT [0:0]' >> /etc/sysconfig/iptables
-    echo '-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT' >> /etc/sysconfig/iptables
-    echo '-A INPUT -p icmp -j ACCEPT' >> /etc/sysconfig/iptables
-    echo '-A INPUT -i lo -j ACCEPT' >> /etc/sysconfig/iptables
-    echo '-A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT' >> /etc/sysconfig/iptables
-    echo '-A INPUT -m state --state NEW -m udp -p udp --dport 1514 -j ACCEPT' >> /etc/sysconfig/iptables
-    echo '-A INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT' >> /etc/sysconfig/iptables
-    echo '-A INPUT -j REJECT --reject-with icmp-host-prohibited' >> /etc/sysconfig/iptables
-    echo '-A FORWARD -j REJECT --reject-with icmp-host-prohibited' >> /etc/sysconfig/iptables
-    echo 'COMMIT' >> /etc/sysconfig/iptables
-  fi
-  if ! cat /etc/sysconfig/iptables | grep -q "tcp \-\-dport 80 \-j ACCEPT" ; then
-    echo " [+] Modifyign iptables to allow port 80"
-    sed -i "s/--dport 22 -j ACCEPT/--dport 22 -j ACCEPT\\n-A INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT/" /etc/sysconfig/iptables
-    echo " [+] Committing firewall updates"
-    service iptables restart
-  fi
+  
   service httpd restart
 else
   echo " [+] HECTOR Apache config seems to already exist"
@@ -170,7 +146,7 @@ fi
 chown -R apache $HECTOR_PATH/app/logs
 
 echo
-echo "Step 6 of 7 - Scheduling cron jobs"
+echo "Step - Scheduling cron jobs"
 echo
 if ! cat /etc/crontab | grep -q "HECTOR" ; then
   echo "#HECTOR scans" >> /etc/crontab
@@ -182,10 +158,10 @@ else
 fi
 
 echo
-echo "Step 7 of 7 - Finishing"
+echo "Step - Installing OSSEC"
 echo
 if [ ! -d /var/ossec ] ; then
-  echo " [+] OSSEC still needs to be installed"
+  echo " [+] OSSEC needs to be installed"
   echo "     Press [Enter] to begin the OSSEC install process"
   read foo
   tar xvzf $HECTOR_PATH/app/software/ossec-hids-2.7.tar.gz --directory=$HECTOR_PATH/app/software/
@@ -223,6 +199,37 @@ if [ $configiptables == "y" ] ; then
     service iptables restart
   fi
 fi
+
+
+echo
+echo "Step - Configuring iptables"
+echo
+# Check if iptables exists
+if [ ! -e /etc/sysconfig/iptables ] ; then
+  echo '# Firewall configuration written by system-config-firewall' > /etc/sysconfig/iptables
+  echo '# Copied from CentOS 5.5 by HECTOR' >> /etc/sysconfig/iptables
+  echo '# Manual customization of this file is not recommended.' >> /etc/sysconfig/iptables
+  echo '*filter' >> /etc/sysconfig/iptables
+  echo ':INPUT ACCEPT [0:0]' >> /etc/sysconfig/iptables
+  echo ':FORWARD ACCEPT [0:0]' >> /etc/sysconfig/iptables
+  echo ':OUTPUT ACCEPT [0:0]' >> /etc/sysconfig/iptables
+  echo '-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT' >> /etc/sysconfig/iptables
+  echo '-A INPUT -p icmp -j ACCEPT' >> /etc/sysconfig/iptables
+  echo '-A INPUT -i lo -j ACCEPT' >> /etc/sysconfig/iptables
+  echo '-A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT' >> /etc/sysconfig/iptables
+  echo '-A INPUT -m state --state NEW -m udp -p udp --dport 1514 -j ACCEPT' >> /etc/sysconfig/iptables
+  echo '-A INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT' >> /etc/sysconfig/iptables
+  echo '-A INPUT -j REJECT --reject-with icmp-host-prohibited' >> /etc/sysconfig/iptables
+  echo '-A FORWARD -j REJECT --reject-with icmp-host-prohibited' >> /etc/sysconfig/iptables
+  echo 'COMMIT' >> /etc/sysconfig/iptables
+fi
+if ! cat /etc/sysconfig/iptables | grep -q "tcp \-\-dport 80 \-j ACCEPT" ; then
+  echo " [+] Modifyign iptables to allow port 80"
+  sed -i "s/--dport 22 -j ACCEPT/--dport 22 -j ACCEPT\\n-A INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT/" /etc/sysconfig/iptables
+  echo " [+] Committing firewall updates"
+  service iptables restart
+fi
+
 
 echo " [+] SELinux "
 if [ -e /selinux/enforce ]; then

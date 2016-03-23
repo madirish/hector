@@ -4,7 +4,8 @@
  * 
  * @package Hector
  * @author Ubani A Balogun
- * @version 2014.08.07
+ * @author Justin C. Klein Keane
+ * @version 2016.03.23
  */
 
 require_once($approot . 'lib/class.Db.php');
@@ -80,8 +81,9 @@ $all_incidents = new Collection('Incident');
 if (is_array($all_incidents->members) && isset($all_incidents->members[0])){
 	$total_incidents = count($all_incidents->members);
 	$tagged_incidents = count($incidents);
-	$incidentpercent = round(($tagged_incidents / $total_incidents) * 100);
-}else{
+	$incidentpercent = ceil(($tagged_incidents / $total_incidents) * 100);
+}
+else{
 	$incidentpercent = 0;
 }
 
@@ -90,8 +92,9 @@ $all_articles = new Collection('Article');
 if (is_array($all_articles->members) && isset($all_articles->members[0])){
 	$total_articles = count($all_articles->members);
 	$tagged_articles = count($articles);
-	$articlepercent = round(($tagged_articles/$total_articles) * 100);
-}else{
+	$articlepercent = ceil(($tagged_articles/$total_articles) * 100);
+}
+else{
 	$articlepercent = 0;
 }
 
@@ -101,8 +104,9 @@ $all_vulns = new Collection('Vuln');
 if (is_array($all_vulns->members) && isset($all_vulns->members[0])){
 	$total_vulns = count($all_vulns->members);
 	$tagged_vulns = count($vulns);
-	$vulnpercent = round(($tagged_vulns/$total_vulns) * 100);
-}else{
+	$vulnpercent = ceil(($tagged_vulns/$total_vulns) * 100);
+}
+else{
 	$vulnpercent = 0;
 }
 
@@ -112,8 +116,9 @@ $total_hosts = $all_hosts->get_field_frequencies('host_id');
 
 if (!empty($total_hosts)){
 	$tagged_hosts = count($hosts);
-	$hostpercent = round(($tagged_hosts/count($total_hosts)) * 100);
-}else{
+	$hostpercent = ceil(($tagged_hosts/count($total_hosts)) * 100);
+}
+else{
 	$hostpercent = 0;
 }
 

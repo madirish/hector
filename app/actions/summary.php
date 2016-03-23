@@ -218,8 +218,11 @@ if (is_array($tag_collection->members)){
 		$articles = count($tag->get_article_ids());
 		$hosts = count($tag->get_host_ids());
 		$weight = $incidents + $vulns + $articles + $hosts;
-		$tag_weights[] = array('name'=>$name,'id'=>$id,'weight'=>$weight);
-		$tag_sorter[$name] = $weight;
+		// Don't include empty tags or unique tags to clean up display
+		if ($weight > 1) {
+			$tag_weights[] = array('name'=>$name,'id'=>$id,'weight'=>$weight);
+			$tag_sorter[$name] = $weight;
+		}
 	}
 	array_multisort($tag_sorter,SORT_DESC,$tag_weights);
 }

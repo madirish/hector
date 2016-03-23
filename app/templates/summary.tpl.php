@@ -42,7 +42,6 @@ to perform automated scans of hosts.</p>
 </div>
 </div>
 
-
 <div class="row">
   <div class="span6">
   	<h3>Scanner:  Top Ports Detected</h3>

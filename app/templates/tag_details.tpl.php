@@ -51,6 +51,7 @@
     </div>
 </div>
 
+<?php if (count($incidents) > 0) {?>
 <h3><?php echo "Related Incidents"?></h3>
 <div class="row">
 <!-- Incidents Related to the tag -->
@@ -83,6 +84,7 @@
 	</table>
 </div>
 </div>
+<?php } if (count($articles) > 0) { ?>
 <h3><?php echo "Related Articles"?></h3>
 <div class="row">
 <!-- Articles Related to the tag -->
@@ -108,8 +110,8 @@
 		</tbody>
 	</table>
 </div>
-
 </div>
+<?php } if (count($vulns) > 0) { ?>
 <h3><?php echo "Related Vulnerabilities"?></h3>
 <div class="row">
 <!-- Vulnerabilities Related to tag -->
@@ -138,6 +140,7 @@
 	</table>
 </div>
 </div>
+<?php } if (count($hosts) > 0) { ?>
 <!-- Host with tag -->
 <h3>Hosts with this tag</h3>
 <div class="row">
@@ -164,3 +167,4 @@
 	</table>
 </div>
 </div>
+<?php } ?>

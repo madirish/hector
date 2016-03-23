@@ -85,6 +85,10 @@ else {
 	$hasudpport = null;
 	$alertchange = 0;
 	$version = FALSE;
+	$os = FALSE;
+	$dontping = FALSE;
+	$version = FALSE;
+	$fast = FALSE;
 	$nmap_debug = TRUE;
 	
 	/**
@@ -107,7 +111,7 @@ else {
 	foreach ($argv as $arg) {
 		if (substr($arg, -13) == 'nmap_scan.php') continue;
 		$flag = substr(strtolower($arg),0,2);
-		if (($flag != '-a' && $flag != '-v') && strpos($arg,'=') === FALSE) {
+		if (($flag != '-a' && $flag != '-v' && $flag != '-os') && strpos($arg,'=') === FALSE) {
 			show_help("Improper argument usage in arg [$arg]");
 		}
 		switch ($flag) {
@@ -128,6 +132,15 @@ else {
 				break;
 			case '-v':
 				$version = TRUE;
+				break;
+			case '-f':
+				$fast = TRUE;
+				break;
+			case '-os':
+				$os = TRUE;
+				break;
+			case '-pn':
+				$dontping = TRUE;
 				break;
 		}
 	}
@@ -203,6 +216,9 @@ else {
 	$xmloutput = $approot . 'scripts/results-' . time() . '.xml';  // Avoid namespace collissions!
 	$portspec = ($ports != '') ? '-p ' . $ports : '';
 	if ($version) $portspec .= ' -sV ';
+	if ($os) $portspec .= ' -O ';
+	if ($fast) $portspec .= ' -F ';
+	if ($dontping) $portspec .= ' -Pn ';
 	$command = $nmap;
 	if (strpos($ports, 'U:') !== false) $command .= ' -sU '; // UDP port scan
 	elseif (strpos($ports, 'T:') !== false) $command .= ' -sT '; // TCP port scan
@@ -230,6 +246,9 @@ function show_help($error) {
 	echo "-a\tAlert if ports have changed on the host\n";
 	echo "-e\tOnly scan hosts that already have specified port(s) open\n";
 	echo "-g\tHost groups id's to scan\n";
+	echo "-os\tOperating system detection\n";
+	echo "-pn\tDon't ping hosts before scanning (slower but more accurate)\n";
+	echo "-f\tFast scan with fewer default ports\n";
 	echo "-p\tLimit scan to specific ports per nmap specs\n";
 	echo "-v\tAttempt to determine version information\n";
 	echo "\n\nExample Usage:\n";

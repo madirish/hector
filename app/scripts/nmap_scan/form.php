@@ -32,6 +32,15 @@ $(document).ready(function () {
 		if ( $("#versionDetection").is(':checked') == true) {
 			flags += ' -v ';
 		}
+		if ( $("#versionDetection").is(':checked') == true) {
+			flags += ' -os ';
+		}
+		if ( $("#fast").is(':checked') == true) {
+			flags += ' -f ';
+		}
+		if ( $("#dontPing").is(':checked') == true) {
+			flags += ' -pn ';
+		}
 		if ( $("#openTcpPortList").val() !== '') {
 			flags += ' -e=' + $("#openTcpPortList").val() + ' ';
 		}
@@ -64,6 +73,15 @@ $(document).ready(function () {
     }
     if (flags.search('-v') > -1) {
         $('#versionDetection').attr('checked', true);
+    }
+    if (flags.search('-os') > -1) {
+        $('#osDetection').attr('checked', true);
+    }
+    if (flags.search('-f') > -1) {
+        $('#fast').attr('checked', true);
+    }
+    if (flags.search('-pn') > -1) {
+        $('#dontPing').attr('checked', true);
     }
     if (flags.search('-p') > -1) {
         var portString = flags.substring(flags.search('-p') + 3);
@@ -116,7 +134,10 @@ $form->save();
 		<tr><td style="vertical-align: text-top;"><strong>Specifications:<strong></td><td>
 			<div class="form-group">
 			<label>Alert on changes? <input type="checkbox" id="alertChanges" /></label>
-			<label>Attempt version detection? <input type="checkbox" id="versionDetection" /></label>
+			<label>Attempt service/port version detection? <input type="checkbox" id="versionDetection" /></label>
+			<label>Fast (fewer default ports)? <input type="checkbox" id="fast" /></label>
+			<label>Attempt OS detection? <input type="checkbox" id="osDetection" /></label>
+			<label>Don't ping before scan (faster, less accurate)? <input type="checkbox" id="dontPing" /></label>
 			<div class="control-group">
 				<label for="tcpPortList">TCP ports:</label>
 				<input name="TCP port list" type="text" id="tcpPortList" value="" class="input-block-level portnumber" placeholder="ex: 2,3,5-9,12"/>

@@ -1,6 +1,6 @@
 </div> <!-- end content div -->
 <br/><br/>
-<div class="well well-small"><strong>HECTOR</strong>, an Open Source Security Platform, by the <a href="http://www.sas.upenn.edu" title="Website for the University of Pennsylvania School of Arts & Sciences">University of Pennsylvania School of Arts &amp; Sciences</a></div>
+<div class="well well-small"><a href="https://github.com/madirish/hector"><strong>HECTOR</strong></a>, an Open Source Security Platform</div>
 
 </div> <!-- end container div -->
 <!-- Footer scripts -->

@@ -6,9 +6,9 @@
 	<title>HECTOR</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="shortcut icon" href="images/favicon.ico" />
-	
+
 	<script type="text/javascript" src="js/jquery.js"></script>
-	<script type="text/javascript" src="js/ajaxFunctions.js"></script> 
+	<script type="text/javascript" src="js/ajaxFunctions.js"></script>
 	<script type="text/javascript" src="js/bootstrap.js"></script>
 	<script type="text/javascript" src="js/Chart.js"></script>
 	<script type="text/javascript" src="js/jquery.dataTables.js"></script>
@@ -19,7 +19,7 @@
 			<?php echo $script;?>
 		<?php endforeach?>
 	<?php endif;?>
-	
+
 	<link href="css/bootstrap.css" rel="stylesheet">
 	<link href="css/bootstrap-responsive.css" rel="stylesheet">
 	<link href="css/penn.css" rel="stylesheet">
@@ -33,21 +33,13 @@
 	<?php endif;?>
 </head>
 <body>
-<!-- 
+<!--
 
 	HECTOR
-	
-	an open source security intelligence platform from the 
-	University of Pennsylvania's School of Arts & Sciences.
+
+	an open source security intelligence platform
 
 -->
-<div id="headerbar" class="headergrey">
-<div id="sas_header" class="sasgrey"> 
-	<a href="http://www.sas.upenn.edu"><img src="https://www.sas.upenn.edu/home/assets/img/global/sas_header_logo_grey.jpg"></a> 
-	<a class="links" href="http://www.sas.upenn.edu">School of Arts and Sciences</a> 
-	<a class="links" href="http://www.upenn.edu">University of Pennsylvania</a>
-</div>
-</div>
 
 <div class="container">
 <div class="row">
@@ -146,13 +138,13 @@
     </li>
     <li><a href="?action=logout" title="Log out of HECTOR">Log Out</a></li>
   </ul>
-    
+
     <form class="navbar-search pull-right" method="post" name="<?php echo $ip_search_name;?>" id="<?php echo $ip_search_name;?>" action="?action=assets&object=search">
     	<input type="text" class="search-query" placeholder="Search for IP" name="ip">
     	<input type="hidden" name="token" value="<?php echo $ip_search_token;?>"/>
 			<input type="hidden" name="form_name" value="<?php echo $ip_search_name;?>"/>
     </form>
-    
+
 </div></div>  <!-- End navbar -->
 
 <div id="content">

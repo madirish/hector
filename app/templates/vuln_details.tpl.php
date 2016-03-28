@@ -7,7 +7,7 @@
 		<td class="span10"><?php echo $vuln_detail->get_vuln()->get_name();?></td>
 	</tr><tr>
 		<td>Description</td>
-		<td><?php echo $vuln_detail->get_vuln()->get_description();?></td>
+		<td><?php echo str_replace("\n", '<br/>', $vuln_detail->get_vuln()->get_description());?></td>
 	</tr><tr>
 		<td>CVE</td>
 		<td><?php echo $vuln_detail->get_vuln()->get_cve();?></td>

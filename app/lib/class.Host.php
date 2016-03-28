@@ -456,7 +456,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 			$this->id
 		);
 		$result = $this->db->fetch_object_array($sql);
-		if (is_array($result)) {
+		if (is_array($result) && count($result) > 0) {
 			foreach ($result as $record) {
 				if (intval($record->host_id) > 0) {
 					$this->error = 'Duplicate IP exists.';
@@ -466,6 +466,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 				}
 			}
 		}
+		// Dupe names may break in cases where there's 
 		$sql = array(
 			'(SELECT host_id from host WHERE host_id != ?i AND host_name = \'?s\') ' .
 			'UNION' .
@@ -478,14 +479,16 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 			$this->name,
 			$this->id
 		);
-		$result = $this->db->fetch_object_array($sql);
-		if (is_array($result)) {
-			foreach ($result as $record) {
-				if (intval($record->host_id) > 0) {
-					$this->error = 'Duplicate name exists.';
-					$this->log->write_error('Duplicate IP (' . $this->get_ip() . 
-						') exists from host id ' . $this->get_id());
-					$retval = FALSE;
+		if ($this->name != '') {
+			$result2 = $this->db->fetch_object_array($sql);
+			if (is_array($result2) && count($result2) > 0) {
+				foreach ($result2 as $record2) {
+					if (intval($record2->host_id) > 0) {
+						$this->error = 'Duplicate name exists.';
+						$this->log->write_error('Duplicate name (' . $this->get_name() . 
+							') exists from host id ' . $this->get_id());
+						$retval = FALSE;
+					}
 				}
 			}
 		}
@@ -998,6 +1001,18 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 			}
 		}
 		return $retval;
+	}
+	
+	/**
+	 * Give back the numeric ID
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <justin@madirish.net>
+	 * @return integer The numeric id
+	 */
+	
+	public function get_id() {
+		return intval($this->id);
 	}
 	
 	/**

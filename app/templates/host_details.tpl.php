@@ -150,6 +150,7 @@ foreach($host->get_urls() as $url) {
 	<td><?php echo substr($vuln->vuln_detail_text,0,200);?></td>
 	<td><span id="risk-level" class="label <?php
 			switch ($vuln->risk_name) {
+				case 'critical': echo "label-important"; break;
 				case 'high': echo "label-important"; break;
 				case 'medium': echo "label-warning"; break;
 				case 'low': echo "label-info"; break;

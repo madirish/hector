@@ -110,8 +110,8 @@ else {
 	// Parse through the command line arguments
 	foreach ($argv as $arg) {
 		if (substr($arg, -13) == 'nmap_scan.php') continue;
-		$flag = substr(strtolower($arg),0,2);
-		if (($flag != '-a' && $flag != '-v' && $flag != '-os') && strpos($arg,'=') === FALSE) {
+		$flag = substr(strtolower($arg),0,2); // Flags must be one character
+		if (($flag != '-a' && $flag != '-v' && $flag != '-o' && $flag != '-f' && $flag != '-d') && strpos($arg,'=') === FALSE) {
 			show_help("Improper argument usage in arg [$arg]");
 		}
 		switch ($flag) {
@@ -136,10 +136,10 @@ else {
 			case '-f':
 				$fast = TRUE;
 				break;
-			case '-os':
+			case '-o':
 				$os = TRUE;
 				break;
-			case '-pn':
+			case '-d':
 				$dontping = TRUE;
 				break;
 		}

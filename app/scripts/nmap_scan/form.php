@@ -33,13 +33,13 @@ $(document).ready(function () {
 			flags += ' -v ';
 		}
 		if ( $("#versionDetection").is(':checked') == true) {
-			flags += ' -os ';
+			flags += ' -o ';
 		}
 		if ( $("#fast").is(':checked') == true) {
 			flags += ' -f ';
 		}
 		if ( $("#dontPing").is(':checked') == true) {
-			flags += ' -pn ';
+			flags += ' -d ';
 		}
 		if ( $("#openTcpPortList").val() !== '') {
 			flags += ' -e=' + $("#openTcpPortList").val() + ' ';
@@ -74,13 +74,13 @@ $(document).ready(function () {
     if (flags.search('-v') > -1) {
         $('#versionDetection').attr('checked', true);
     }
-    if (flags.search('-os') > -1) {
+    if (flags.search('-o') > -1) {
         $('#osDetection').attr('checked', true);
     }
     if (flags.search('-f') > -1) {
         $('#fast').attr('checked', true);
     }
-    if (flags.search('-pn') > -1) {
+    if (flags.search('-d') > -1) {
         $('#dontPing').attr('checked', true);
     }
     if (flags.search('-p') > -1) {

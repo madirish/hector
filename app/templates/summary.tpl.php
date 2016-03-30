@@ -53,21 +53,6 @@ to perform automated scans of hosts.</p>
 		No ports detected.
 	<?php endif; ?>
   </div>
-  
-  <div class="span6">
-	<h3>Darknet:  Top Port Probes in Last 4 Days</h3>
-  	<?php if ($darknetSummaryLabels !== '' && $darknetSummaryCounts !== ''): ?>
-	<canvas id="darknetChart"  height="300" width="550"></canvas>
-	<div id="darknetSummaryChartLabels" class="hidden"><?php echo $darknetSummaryLabels;?></div>
-  	<div id="darknetSummaryChartData" class="hidden"><?php echo $darknetSummaryCounts;?></div>
-	<?php else: ?>
-		No port probes detected.
-	<?php endif; ?>
-	</div>
-</div>
-
-
-<div class="row">
     <!-- Vulnerbility Breakdown Chart -->
     <div class="span6"> 
   		<?php if ($vuln_num_chart_labels !== '[]' && $vuln_num_chart_counts !== '[]'): ?>
@@ -82,20 +67,8 @@ to perform automated scans of hosts.</p>
 			No incidents reported.
 		<?php endif; ?>
     </div>
-    
-    <!-- Top Vuln types -->
-	<div class="span6">
-  		<div class="well">
-        <h4>Snapshot of Last 24 Hours</h4>
-        <ul>
-            <li><a href="?action=articles"><?php print_r( $article_count); ?> articles collected via RSS</a></li>
-            <li><a href="?action=ossecalerts"><?php echo $ossec_count; ?> OSSEC alerts</a></li>
-            <li><a href="?action=honeypot"><?php echo $honeypot_count; ?> honeypot logins</a></li>
-            <li><a href="?action=detection"><?php echo $probe_count; ?> port probes</a></li>
-        </ul>
-        </div>
-	</div>
 </div>
+
 
 
 <div class="row">
@@ -127,6 +100,33 @@ to perform automated scans of hosts.</p>
 		<?php else: ?>
 			No incidents reported.
 		<?php endif; ?>
+	</div>
+</div>
+
+<div class="row">
+  
+  <div class="span6">
+	<h3>Darknet:  Top Port Probes in Last 4 Days</h3>
+  	<?php if ($darknetSummaryLabels !== '' && $darknetSummaryCounts !== ''): ?>
+	<canvas id="darknetChart"  height="300" width="550"></canvas>
+	<div id="darknetSummaryChartLabels" class="hidden"><?php echo $darknetSummaryLabels;?></div>
+  	<div id="darknetSummaryChartData" class="hidden"><?php echo $darknetSummaryCounts;?></div>
+	<?php else: ?>
+		No port probes detected.
+	<?php endif; ?>
+	</div>
+    
+    <!-- Top Vuln types -->
+	<div class="span6">
+  		<div class="well">
+        <h4>Snapshot of Last 24 Hours</h4>
+        <ul>
+            <li><a href="?action=articles"><?php print_r( $article_count); ?> articles collected via RSS</a></li>
+            <li><a href="?action=ossecalerts"><?php echo $ossec_count; ?> OSSEC alerts</a></li>
+            <li><a href="?action=honeypot"><?php echo $honeypot_count; ?> honeypot logins</a></li>
+            <li><a href="?action=detection"><?php echo $probe_count; ?> port probes</a></li>
+        </ul>
+        </div>
 	</div>
 </div>
 

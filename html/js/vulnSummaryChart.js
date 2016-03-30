@@ -24,7 +24,7 @@ $(document).ready(function(){
 		var ctx = document.getElementById("vulnChart").getContext("2d");
 		ctx.canvas.width = 300;
 		ctx.canvas.height = 300;
-		var incidentChart = new Chart(ctx).Pie(data);
+		var incidentChart = new Chart(ctx).Pie(data,{percentageInnerCutout : 50});
 		legend(document.getElementById("vulnChartLegend"),data);
 		
 		

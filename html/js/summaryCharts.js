@@ -24,7 +24,11 @@ function prepPieChart(pieChartId, pieChartLegend, pieCharthartLabels, pieChartCo
 		var ctx = document.getElementById(pieChartId).getContext("2d");
 		ctx.canvas.width = 300;
 		ctx.canvas.height = 300;
-		var incidentChart = new Chart(ctx).Pie(data, {animation:false});
+		var incidentChart = new Chart(ctx).Pie(data, {
+				animation:false, 
+				percentageInnerCutout : 50,
+				segmentStrokeColor: "#999",
+				});
 		legend(document.getElementById(pieChartLegend),data);
 	
 		// Hyperlink the legend items

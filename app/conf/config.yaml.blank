@@ -1,0 +1,17 @@
+debug: 0
+
+db_user: hector_username
+db_pass: 
+db_name: hector_dbname
+db_host: localhost
+
+site_email:  user@example.com
+alert_email: user@example.com
+
+bing_api_key:  None
+
+darknet_dayfile: '/opt/hector/app/reports/data-darknet-20160228.csv'
+darknet_allfile: '/opt/hector/app/reports/data-darknet-daily.csv'
+darknet_start_date: '2016-02-01 00:00:00'
+darknet_stop_date:  '2016-03-31 23:59:59'
+

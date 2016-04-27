@@ -98,6 +98,9 @@ CREATE TABLE IF NOT EXISTS `host` (
   `host_ip_numeric` INT UNSIGNED NOT NULL,
   `host_name` TINYTEXT NOT NULL,
   `host_os` VARCHAR(100) DEFAULT NULL,
+  `host_os_family` VARCHAR(100) DEFAULT NULL,
+  `host_os_type` VARCHAR(100) DEFAULT NULL,
+  `host_os_vendor` VARCHAR(100) DEFAULT NULL,
   `host_link` VARCHAR(255) DEFAULT NULL,
   `host_note` TEXT DEFAULT NULL,
   `host_sponsor` VARCHAR(50) DEFAULT NULL, -- faculty/staff contact

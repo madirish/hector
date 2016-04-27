@@ -40,6 +40,14 @@ if (isset($_POST['version']) && $_POST['version'] != '') {
     foreach ($collection->members as $member) $hosts[] = $member;
     $show_results = TRUE;
 }
+if (isset($_GET['os']) && $_GET['os'] != '') {
+    require_once($approot . 'lib/class.Collection.php');
+    $os = mysql_real_escape_string($_GET['os']);
+    $collection = new Collection('Host', $os, 'get_collection_by_os', $order);
+
+    foreach ($collection->members as $member) $hosts[] = $member;
+    $show_results = TRUE;
+}
 
 
 $form = new Form();

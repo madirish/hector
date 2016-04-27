@@ -8,3 +8,13 @@ foreach($class_Bs as $row) {
 }
 ?>
 </ul>
+<h2>Hosts by OS (<?php echo count($hosts_by_os);?>)</h2>
+<ul class='nav nav-tabs nav-stacked'>
+<?php
+foreach($oses as $os=>$count) {
+	print "<!-- row -->";
+	print "<li><a href='?action=assets&object=search&os=". $os ."'>";
+	print $os . " <span class='badge badge-info'>" . $count . " hosts</span></a></li>";
+}
+?>
+</ul>

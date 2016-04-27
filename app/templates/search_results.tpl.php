@@ -6,7 +6,9 @@ Your search returned <span class="badge"><?php echo count($hosts);?></span> resu
 <thead>
     <tr>
         <th>Hostname</th>
-        <th>ip</th>
+        <th>IP</th>
+        <th>OS</th>
+        <th>OS Type</th>
         <th>Sponsor</th>
         <th>Technical</th>
         <th>Notes</th>
@@ -18,6 +20,8 @@ Your search returned <span class="badge"><?php echo count($hosts);?></span> resu
 		<tr>
 			<td><?php echo $host->get_name_linked();?></td>
 			<td><?php echo $host->get_ip();?></td>
+			<td><?php echo $host->get_os();?></td>
+			<td><?php echo $host->get_os_type();?></td>
 			<td><?php echo $host->get_sponsor();?></td>
 			<td><?php echo $host->get_technical();?></td>
 			<td><?php echo $host->get_note();?></td>

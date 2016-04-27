@@ -81,6 +81,10 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 */
 	private $os = null;
 	
+	private $os_type = null;
+	private $os_vendor = null;
+	private $os_family = null;
+	
 	/**
 	 * Ports that are detected on the host
 	 *
@@ -273,6 +277,9 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 				$this->set_name($result[0]->host_name);
 				if ($minimal == 'no') {
 					$this->set_os($result[0]->host_os);
+					$this->set_os_family($result[0]->host_os_family);
+					$this->set_os_type($result[0]->host_os_type);
+					$this->set_os_vendor($result[0]->host_os_vendor);
 					$this->set_sponsor($result[0]->host_sponsor);
 					$this->set_link($result[0]->host_link);
 					$this->set_note($result[0]->host_note);
@@ -609,11 +616,26 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 					'type'=>'text',
 					'value_function'=>'get_ip',
 					'process_callback'=>'set_ip'),
-			array('label'=>'Operating System',
+			array('label'=>'Operating System (OS)',
 					'name'=>'os',
 					'type'=>'text',
 					'value_function'=>'get_os',
 					'process_callback'=>'set_os'),
+			array('label'=>'OS Family',
+					'name'=>'os_family',
+					'type'=>'text',
+					'value_function'=>'get_os_family',
+					'process_callback'=>'set_os_family'),
+			array('label'=>'OS Type',
+					'name'=>'os_type',
+					'type'=>'text',
+					'value_function'=>'get_os_type',
+					'process_callback'=>'set_os_type'),
+			array('label'=>'OS Vendor',
+					'name'=>'os_vendor',
+					'type'=>'text',
+					'value_function'=>'get_os_vendor',
+					'process_callback'=>'set_os_vendor'),
 			array('label'=>'Host groups',
 					'name'=>'hostgroups[]',
 					'type'=>'checkbox',
@@ -775,6 +797,23 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
         }
         $sql = array($sql, $classC);
         return $sql; 
+    }
+    
+
+    public function get_collection_by_os($os, $orderby='') {
+    	global $appuser;
+    	$os = strtolower($os);
+    	$sql = 'select h.host_id from host h ';
+    	if (isset($appuser) && ! $appuser->get_is_admin()) {
+    		$sql .= ', user_x_supportgroup x ';
+    	}
+    	$sql .= 'where (lower(h.host_os) like "%' . $os . '%" OR 
+    			 lower(h.host_os_type) like "%' . $os . '%") ';
+    	if (isset($appuser) && ! $appuser->get_is_admin()) {
+    		$sql .= 'and h.supportgroup_id = x.supportgroup_id AND' .
+    				'x.user_id = ' . $appuser->get_id() . ' AND ';
+    	}
+    	return $sql;
     }
 	
     /**
@@ -1198,6 +1237,19 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	public function get_os() {
 		return htmlspecialchars($this->os);
 	}
+
+	public function get_os_family() {
+		return htmlspecialchars($this->os_family);
+	}
+
+	public function get_os_type() {
+		return htmlspecialchars($this->os_type);
+	}
+
+	public function get_os_vendor() {
+		return htmlspecialchars($this->os_vendor);
+	}
+	
 	/**
 	 * Is this host covered by policy?  Meaning does this
 	 * host have sensitive data.
@@ -1382,11 +1434,14 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		// Check for duplicate records
 		if (! $this->check_save()) return false;
 		if ($this->id > 0 ) {
-			// Update an existing user
+			// Update an existing host
 	    	$sql = array(
 	    		'UPDATE host SET host_ip = \'?s\', ' .
 	    		  'host_ip_numeric = inet_aton(host_ip), ' .
 	    			'host_os = \'?s\', ' .
+	    			'host_os_family = \'?s\', ' .
+	    			'host_os_type = \'?s\', ' .
+	    			'host_os_vendor = \'?s\', ' .
 	    			'host_name = \'?s\', ' .
 	    			'host_sponsor = \'?s\', ' .
 	    			'host_technical = \'?s\', ' .
@@ -1403,6 +1458,9 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	    		'WHERE host_id = \'?i\'',
 	    		$this->get_ip(),
 	    		$this->os,
+	    		$this->os_family,
+	    		$this->os_type,
+	    		$this->os_vendor,
 	    		$this->get_name(),
 	    		$this->get_sponsor(),
 	    		$this->get_technical(),
@@ -1434,6 +1492,9 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	    			'host_note = \'?s\', ' .
 	    			'host_policy = ?b, ' .
 	    			'host_os = \'?s\', ' .
+	    			'host_os_family = \'?s\', ' .
+	    			'host_os_type = \'?s\', ' .
+	    			'host_os_vendor = \'?s\', ' .
 	    			'host_sponsor = \'?s\', ' .
 	    			'host_technical = \'?s\', ' .
 	    			'location_id = \'?i\', ' .
@@ -1441,6 +1502,9 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	    		$this->get_ip(),
 	    		$this->get_name(),
 	    		$this->get_os(),
+	    		$this->get_os_family(),
+	    		$this->get_os_type(),
+	    		$this->get_os_vendor(),
 	    		$this->get_sponsor(),
 	    		$this->get_technical(),
 	    		$this->get_location_id(),
@@ -1828,6 +1892,15 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 */
     public function set_os($os) {
     	$this->os = $os;
+    }
+    public function set_os_family($str) {
+    	$this->os_family = $str;
+    }
+    public function set_os_type($str) {
+    	$this->os_type = $str;
+    }
+    public function set_os_vendor($str) {
+    	$this->os_vendor = $str;
     }
 
 	/**

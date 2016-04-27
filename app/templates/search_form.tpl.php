@@ -1,5 +1,5 @@
 <?php // Ensure that the collapse controls only show on results page ?>
-<?php if (isset($_POST['form_name']) && ($_POST['form_name']=='search_form' || $_POST['form_name']=='search_ip_form')) { ?>
+<?php if ((isset($_POST['form_name']) && ($_POST['form_name']=='search_form' || $_POST['form_name']=='search_ip_form')) || isset($_GET['os']) ) { ?>
 <div class="accordion" id="search-accordion" style="padding: 2px;">
 	<div class="accordion-group">
 		<div calss="accordion-heading">
@@ -26,7 +26,7 @@
 				<input type="hidden" name="form_name" value="<?php echo $formname;?>"/>
 				</form>
 				</fieldset>
-<?php if (isset($_POST['form_name']) && ($_POST['form_name']=='search_form' || $_POST['form_name']=='search_ip_form')) { ?>
+<?php if ((isset($_POST['form_name']) && ($_POST['form_name']=='search_form' || $_POST['form_name']=='search_ip_form'))  || isset($_GET['os'])) { ?>
 			</div>
 		</div>
 	</div>

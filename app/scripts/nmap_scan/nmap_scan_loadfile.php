@@ -88,18 +88,29 @@ if(php_sapi_name() == 'cli') {
 		loggit("nmap_scan_loadfile.php process", "There was a problem parsing the XML file $xmloutput!");
 	}
 	// just grab all the hosts
-	$allhosts = new Collection('Host');
+	/* $allhosts = new Collection('Host');
 	if (isset($allhosts->members) && is_array($allhosts->members)) {
 		foreach ($allhosts->members as $newhost) {
 			$hosts[$newhost->get_ip()] = $newhost;
 		}
-	}
+	} */
 			
 	foreach($nmaprun->host as $nmaphost) {
 		// Sometimes scans take more than 8 hours and the MySQL connection closes
 		$db = Db::get_instance();
 		// look up the host
-		$host = $hosts[(string)$nmaphost->address['addr']]; 
+		$hostip = (string)$nmaphost->address['addr'];
+		$host = new Host();
+		$host->set_ip($hostip);
+		$host->lookup_by_ip();
+		// Update the host information
+		if (isset ($nmaphost->os)) {
+			if (isset($nmaphost->os->osclass['type'])) $host->set_os_type((string)$nmaphost->os->osclass['type']);
+			if (isset($nmaphost->os->osclass['vendor'])) $host->set_os_type((string)$nmaphost->os->osclass['vendor']);
+			if (isset($nmaphost->os->osclass['osfamily'])) $host->set_os_type((string)$nmaphost->os->osclass['osfamily']);
+			if (isset($nmaphost->os->osmatch['name'])) $host->set_os((string)$nmaphost->os->osmatch['name']);
+		}
+		
 		// Track new results via variables
 		$nmap_scans = array();
 	

@@ -115,7 +115,7 @@ $timespan =    $month . ' ' . $ly . ' - ' . $cy ;
 
 // Breakdown of Vuln_detail by Risk
 $risk_nums = array();
-$risk_coll = new Collection('Risk');
+$risk_coll = new Collection('Risk', ' AND t.risk_name != "none" ');
 if (is_array($risk_coll->members)) {
 	foreach ($risk_coll->members as $risk) {
 		$risk_nums[$risk->get_name()]['count'] = count($risk->get_vuln_detail_ids());

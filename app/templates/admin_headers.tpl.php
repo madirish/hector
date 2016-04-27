@@ -85,7 +85,7 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Comprehensive reports from HECTOR"><i class="icon-list-alt"></i> Reports <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li><a href="?action=reports&report=danger_host">Dangerous hosts</a></li>
-        <li><a href="?action=reports&report=nonisuswebservers">Non ISUS Server Report</a></li>
+        <li><a href="?action=reports&report=oses">Operating systems</a></li>
         <li><a href="?action=reports&report=by_port">Ports detected</a></li>
         <li><a href="?action=vuln">Vulnerabilities <?php if (isset($vuln_badge)) echo $vuln_badge ;?></a></li>
       </ul>

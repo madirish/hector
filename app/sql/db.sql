@@ -514,6 +514,7 @@ CREATE TABLE IF NOT EXISTS `url` (
 CREATE TABLE IF NOT EXISTS `user` (
 	`user_id` INT NOT NULL AUTO_INCREMENT,
 	`user_name` VARCHAR(255) NOT NULL,
+	`user_email` VARCHAR(255) NOT NULL,
 	`user_pass` VARCHAR(255) NOT NULL,
 	`user_is_admin` INT(1) DEFAULT 0,
   PRIMARY KEY  (`user_id`),

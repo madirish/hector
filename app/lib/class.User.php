@@ -62,6 +62,17 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
      */
     private $name = null;
     
+    private $password = null;
+
+    /**
+     * The email address for communications and
+     * password resets
+     *
+     * @access private
+     * @var String The user's email address
+     */
+    private $email = null;
+    
     /**
      * Unique id for the persistence layer.
      * 
@@ -107,6 +118,7 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 				$result = $this->db->fetch_object_array($sql);
 				$this->set_id($result[0]->user_id);
 				$this->set_name($result[0]->user_name);
+				$this->set_email($result[0]->user_email);
 				$this->set_is_admin($result[0]->user_is_admin);
 				// Set up support groups
 				$sql = array(
@@ -145,6 +157,8 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
     	}
     	return $retval;
     }
+    
+    public function do_nothing() {}
 	
 	/**
 	 * Return the Array for CRUD template
@@ -162,7 +176,7 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 				$supportgroups[$element->get_id()]=$element->get_name();
 			}
 		}
-		return array (
+		$formarray = array (
 			array('label'=>'User name', 
 					'type'=>'text', 
 					'name'=>'username', 
@@ -172,6 +186,11 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 					'name'=>'password', 
 					'type'=>'password',
 					'process_callback'=>'set_password'),
+			array('label'=>'E-mail address', 
+					'name'=>'email', 
+					'type'=>'text',
+					'value_function'=>'get_email',
+					'process_callback'=>'set_email'),
 			array('label'=>'Admin user?', 
 					'name'=>'is_admin_user', 
 					'type'=>'select', 
@@ -185,6 +204,17 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 					'value_function'=>'get_supportgroup_ids',
 					'process_callback'=>'set_supportgroup_ids'),
 		);
+		
+		if ($this->id == null) {
+			$confirm = array(array('label'=>'Confirm password', 
+					'name'=>'password_confirm', 
+					'type'=>'password',
+					'process_callback'=>'do_nothing'
+			));
+			array_splice($formarray,2,0,$confirm);
+		}
+		
+		return $formarray;
 	}
 	
 	/**
@@ -242,6 +272,17 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 	 */
 	public function get_displays() {
 		return array('User name'=>'get_name', 'Is Admin?'=>'get_is_admin_readable');
+	}
+		
+	/**
+	 * Return the user's e-mail
+	 * 
+	 * @access public
+     * @author Justin C. Klein Keane, <justin@madirish.net>
+     * @return String The e-mail address for the user
+	 */
+	public function get_email() {
+		return filter_var($this->email, FILTER_SANITIZE_EMAIL);
 	}
 	
 	/**
@@ -352,6 +393,32 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 		}
 		return $retval;
 	}
+    
+	/**
+	 * Validate and set the User e-mail
+	 * 
+	 * @access public
+     * @author Justin C. Klein Keane, <justin@madirish.net>
+     * @param String The e-mail address of the User
+     * @return Boolean False if the address doesn't validate
+	 */
+    public function set_email($email) {
+    	if ($email == NULL) {
+    		$this->email = NULL;
+    		return FALSE;
+    	}
+    	$retval = FALSE;
+		if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			$this->email = $email;
+			$retval = TRUE;
+		}
+		else {
+  			// Invalid e-mail address
+  			$this->log->write_error('Illegal e-mail address specified, class.User.php');
+  			$this->email = '';
+		}
+    	return $retval;
+    }
      
 	/**
 	 * Reset the support group id array
@@ -378,8 +445,12 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 	 * @return void
 	 */
 	public function set_password($password) {
-		$salt = sha1(time() + rand(0,1000));
-	    $this->password = crypt($password, $salt);
+		// Blank passwords come in as part of form processing
+		// They indicate we don't want to update the password
+		if ($password !== '') {
+			$salt = sha1(time() + rand(0,1000));
+		    $this->password = crypt($password, $salt);
+		}
 	}
 	
 	/**
@@ -390,22 +461,40 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 	 */
 	public function save() {
 		$retval = FALSE;
-		// Don't allow blank passwords
-		if ($this->password == '') {
+		// We don't show passwords, so a blank password
+		// is only allowed for an update without a 
+		// password change.
+		if ($this->password == '' && intval($this->id) == 0) {
 			return FALSE;
 		}
 		if ($this->id > 0 ) {
-			// Update an existing user
-	    	$sql = array(
-	    		'UPDATE user SET user_name = \'?s\', ' .
-	    			'user_pass = \'?s\', ' .
-	    			'user_is_admin = \'?i\' ' .
-    			'WHERE user_id = \'?i\'',
-	    		$this->get_name(),
-	    		$this->password,
-	    		$this->get_is_admin(),
-	    		$this->get_id()
-	    	);
+	 		$sql = '';
+	    	if ($this->password == '') {
+	    		$sql = array(
+		    		'UPDATE user SET user_name = \'?s\', ' .
+		    			'user_is_admin = \'?i\', ' .
+		    			'user_email = \'?s\' ' .
+	    			'WHERE user_id = \'?i\'',
+		    		$this->get_name(),
+		    		$this->get_is_admin(),
+		    		$this->get_email(),
+		    		$this->get_id()
+		    	);
+	    	}
+	    	else {
+	    		$sql = array(
+	    				'UPDATE user SET user_name = \'?s\', ' .
+	    				'user_pass = \'?s\', ' .
+	    				'user_is_admin = \'?i\', ' .
+	    				'user_email = \'?s\' ' .
+	    				'WHERE user_id = \'?i\'',
+	    				$this->get_name(),
+	    				$this->password,
+	    				$this->get_is_admin(),
+	    				$this->get_email(),
+	    				$this->get_id()
+	    		);
+	    	}
 	    	$retval = $this->db->iud_sql($sql);
 		}
 		else {
@@ -413,9 +502,11 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 				'INSERT INTO user ' .
 					'SET user_name = \'?s\', ' .
 					'user_pass = \'?s\', ' .
+					'user_email = \'?s\', ' .
 					'user_is_admin = \'?i\'',
 				$this->get_name(),
 	    		$this->password,
+				$this->get_email(),
 	    		$this->get_is_admin()
 	    	);
 	    	$retval = $this->db->iud_sql($sql);

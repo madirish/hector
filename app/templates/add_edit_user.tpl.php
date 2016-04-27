@@ -1,4 +1,14 @@
-<form name="<?php echo $form_name;?>" id="<?php echo $form_name;?>" method="POST" action="?action=add_edit_scr&object=<?php echo $object;?>&id=<?php echo $id;?>">
+<script type="text/javascript">
+function validatePasswords() {
+	if ($("#password").val() === $("#password_confirm").val()) {
+		return true;
+	}
+	alert("Passwords do not match");
+	return false;
+}
+</script>
+
+<form <?php if (! isset($_GET['id'])){ ?>onSubmit="return validatePasswords()"<?php } ?> name="<?php echo $form_name;?>" id="<?php echo $form_name;?>" method="POST" action="?action=add_edit_scr&object=<?php echo $object;?>&id=<?php echo $id;?>">
 <fieldset>
 <legend><?php echo (isset($_GET['id'])) ? 'Edit' : 'Add';?> <?php echo $object;?></legend>
 <table id="add-edit-table">

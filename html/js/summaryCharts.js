@@ -26,7 +26,7 @@ function prepPieChart(pieChartId, pieChartLegend, pieCharthartLabels, pieChartCo
 		ctx.canvas.height = 300;
 		var incidentChart = new Chart(ctx).Pie(data, {
 				animation:false, 
-				percentageInnerCutout : 50,
+				percentageInnerCutout : 5,
 				segmentStrokeColor: "#999",
 				});
 		legend(document.getElementById(pieChartLegend),data);

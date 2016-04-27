@@ -64,7 +64,7 @@ to perform automated scans of hosts.</p>
             <canvas id="vulnNumbersChart"></canvas>
         </div>
 		<?php else: ?>
-			No incidents reported.
+			No vulnerabilities tracked.
 		<?php endif; ?>
     </div>
 </div>

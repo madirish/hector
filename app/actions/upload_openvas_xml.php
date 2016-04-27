@@ -1,10 +1,9 @@
 <?php 
 /**
- * Upload a CSV file from a Nessus report
+ * Upload an XML file from a OpenVAS report
  * 
- * @author Justin Klein Keane <jukeane@sas.upenn.edu>
+ * @author Justin Klein Keane <justin@madirish.net>
  * @package HECTOR
- * @todo Add exact time (currently midnight is set)
  */
 
 // Required includes

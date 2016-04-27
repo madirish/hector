@@ -474,6 +474,10 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 		return htmlspecialchars($retval);
     }
     
+    public function get_id() {
+    	return intval($this->id);
+    }
+    
     /**
      * Should this report be ignored for reporting purposes?
      * 
@@ -652,7 +656,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
                 $date);
         $result = $this->db->fetch_object_array($sql);
         if (is_array($result) && count($result) > 0 && is_object($result[0])) {           
-            $this->__construct($result[0]->host_id);
+            $this->__construct($result[0]->vuln_detail_id);
         }
     }
     /**

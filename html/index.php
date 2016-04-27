@@ -2,7 +2,7 @@
 /**
  * This is the controller, all rivers flow from this source
  * 
- * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+ * @author Justin C. Klein Keane <justin@madirish.net>
  * @package HECTOR
  */
 
@@ -92,6 +92,7 @@ $policy .= ' report-uri /hector/?action=csp-report;';
 header("Content-Security-Policy: $policy");*/
 //header("X-Content-Security-Policy: $policy");
 
+
 /**
  * Hand off to subcontrollers
  */
@@ -105,6 +106,15 @@ else {
 		// User isn't logged in, use static header template
 		if ($action !== 'login_scr') {
 			include_once($templates . 'header.tpl.php');
+		}
+		else {
+			// Necessary includes for search form
+			require_once($approot . 'lib/class.Form.php');
+			$ip_search = new Form();
+			$ip_search_name = 'search_ip_form';
+			$ip_search->set_name($ip_search_name);
+			$ip_search_token = $ip_search->get_token();
+			$ip_search->save();
 		}
 		
 	}

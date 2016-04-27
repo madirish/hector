@@ -1,7 +1,7 @@
 <?php if (isset($message)) {?>
 <div id="message" class="alert"><?php echo $message;?></div>
 <?php } ?>
-<h2>Upload a Nessus Scan</h2>
+<h2>Upload a OpenVAS Scan Results</h2>
 <p id='explaination'>After running a OpenVAS scan you can export the results as an XML file.
 HECTOR can import these files, creating host records as necessary, and appending vulnerabilities and descriptions 
 to HECTOR records.</p>

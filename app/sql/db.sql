@@ -577,6 +577,7 @@ CREATE TABLE IF NOT EXISTS `vuln_detail` (
   `vuln_detail_fixedby_user_id` INT,
   `vuln_detail_fixed_notes` text,
   `vuln_detail_ticket` VARCHAR(255),
+  `vulnscan_id` VARCHAR(255) DEFAULT NULL,
   `risk_id` INT UNSIGNED NOT NULL DEFAULT 1,
   `host_id` INT UNSIGNED NOT NULL,  
   `vuln_id` INT UNSIGNED NOT NULL,

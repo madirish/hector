@@ -87,7 +87,8 @@ if(php_sapi_name() == 'cli') {
 	}
 	
 	$datetime = new DateTime($openvasrun->name, new DateTimeZone('America/New_York'));
-	
+	$task_id = (string)$openvasrun->task['id'];
+
 	foreach ($openvasrun->report->results->result as $scanresult) {
 		$host = new Host();
 		$host->set_ip($scanresult->host);
@@ -102,7 +103,7 @@ if(php_sapi_name() == 'cli') {
 		$tag->lookup_by_name($scanresult->nvt->cve);
 		
 		$vuln = new Vuln();
-		$vuln->lookup_by_name_cve($scanresult->nvt->cve, $scanresult->name);
+		$vuln->lookup_by_name_cve($scanresult->name, $scanresult->nvt->cve);
 		if ($vuln->get_id() < 1) {
 			$vuln->set_cve($scanresult->nvt->cve);
 			$vuln->set_name($scanresult->name);
@@ -120,11 +121,15 @@ if(php_sapi_name() == 'cli') {
 		else $risk->lookup_by_name('none');
 		
 		$vuln_detail = new Vuln_detail();
-		$vuln_detail->set_vuln_id($vuln->get_id());
-		$vuln_detail->set_host_id($host->get_id());
-		$vuln_detail->set_datetime($datetime->format('Y-m-d H:i:s'));
-		$vuln_detail->set_risk_id($risk->get_id());
-		$vuln_detail->save();
+		$vuln_detail->lookup_by_vuln_id_host_id_date($vuln->get_id(), $host->get_id(), $datetime->format('Y-m-d H:i:s'));
+		if ($vuln_detail->get_id() == 0) {
+			$vuln_detail->set_vuln_id($vuln->get_id());
+			$vuln_detail->set_host_id($host->get_id());
+			$vuln_detail->set_datetime($datetime->format('Y-m-d H:i:s'));
+			$vuln_detail->set_risk_id($risk->get_id());
+			$vuln_detail->set_vulnscan_id($task_id);
+			$vuln_detail->save();
+		}
 	}
 	$vulncount = count($openvasrun->report->results->result);
 	loggit("OpenVAS import.php process", "OpenVAS import process complete.  $vulncount records added.");

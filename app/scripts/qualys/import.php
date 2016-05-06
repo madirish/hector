@@ -27,6 +27,7 @@ if(php_sapi_name() == 'cli') {
 	require_once($approot . 'lib/class.Log.php');
 	require_once($approot . 'lib/class.Vuln.php');
 	require_once($approot . 'lib/class.Vuln_detail.php');
+	require_once($approot . 'lib/class.Vulnscan.php');
 	require_once($approot . 'lib/class.Risk.php');
 	require_once($approot . 'lib/class.Tag.php');
 		
@@ -86,6 +87,16 @@ if(php_sapi_name() == 'cli') {
 	}
 	
 	$datetime = new DateTime($qualysscanxml->HEADER->KEY[2], new DateTimeZone('America/New_York'));
+	$scan_name = (string)$qualysscanxml->HEADER->KEY[3];
+	$asset_group_title = (string)$qualysscanxml->HEADER->ASSET_GROUPS->ASSET_GROUP->ASSET_GROUP_TITLE;
+	$option_profile_title = (string)$qualysscanxml->HEADER->OPTION_PROFILE->OPTION_PROFILE_TITLE;
+	$task_id = $scan_name . " (Target: " . $asset_group_title . ") (Profile: " . $option_profile_title . ")";
+	$vuln_records_created = 0;
+	$vuln_detail_records_created = 0;
+	$host_records_created = 0;
+	
+	// Get any results from previous runs of the same scan
+	$prev_vulnscan = new Vulnscan($task_id);
 	
 	foreach ($qualysscanxml->IP as $scanresult) {
 		$host = new Host();
@@ -94,8 +105,9 @@ if(php_sapi_name() == 'cli') {
 		// If there's no host go ahead and create it
 		if ($host->get_id() < 1) {
 			$host->save();
-			print_r("Saved host id: " . $host->get_id(). "\n");
+			$host_records_created++;
 		}
+		
 		
 		foreach ($scanresult->VULNS as $vuln) {
 			foreach($vuln->CAT as $category) {
@@ -117,6 +129,7 @@ if(php_sapi_name() == 'cli') {
 						$vuln_obj->set_description((string)$vulnerability->DIAGNOSIS . "\n\n" . (string)$vulnerability->CONSEQUENCE . "\n\n" . (string)$vulnerability->SOLUTION);
 						$vuln_obj->set_tag_ids($tags);
 						$vuln_obj->save();
+						$vuln_records_created++;
 					}
 
 					$risk = new Risk();
@@ -134,14 +147,25 @@ if(php_sapi_name() == 'cli') {
 						$vuln_detail->set_host_id($host->get_id());
 						$vuln_detail->set_datetime($datetime->format('Y-m-d H:i:s'));
 						$vuln_detail->set_risk_id($risk->get_id());
+						$vuln_detail->set_vulnscan_id($task_id);
 						$vuln_detail->save();
+						$vuln_detail_records_created++;
 					}
 				}
 			}
 		}
 	}
+	// Get new "latest" vulnscan
+	
+	$this_vulnscan = new Vulnscan($task_id);
+	$this_vulnscan->delta($prev_vulnscan);
+	
 	$vulncount = count($qualysscanxml->IP);
-	loggit("Qualys import.php process", "Qualys import process complete.  $vulncount records added.");
+	$report = "Qualys import process complete.  $vulncount record examined added. ";
+	$report .= $host_records_created . " new hosts created. ";
+	$report .= $vuln_records_created . " new vulnerability records created. ";
+	$report .= $vuln_detail_records_created . " new vuln detail records created.";
+	loggit("Qualys import.php process", $report);
 	
 }
 ?>

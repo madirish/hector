@@ -102,7 +102,7 @@
         <li><a href="?action=add_edit&object=Vuln">Add vulnerability </a></li>
         <li><a href="?action=nessus_scans">Nessus scans</a></li>
         <li><a href="?action=add_edit&object=Vuln_detail">Report vulnerability</a></li>
-        <li><a href="?action=upload_nessus_csv">Upload Nessus report</a></li>
+        <li><a href="?action=upload_qualys_xml">Upload Qualys report</a></li>
         <li><a href="?action=upload_openvas_xml">Upload OpenVAS report</a></li>
       </ul>
     </li>

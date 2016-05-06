@@ -3,7 +3,7 @@
 <?php endif;?>
 
 <?php if (isset($_GET['host_group_id'])):?>
-	<h3><?php echo $hostgroup->get_name();?> Hostgroup Member</h3>
+	<h3><?php echo $prefix . " " . $hostgroup->get_name();?> Hostgroup Members    <small><?php echo $filter;?></small></h3>
 	<table id="hostgroupstable" class="table table-striped table-bordered">
 	<thead>
 		<tr>
@@ -34,6 +34,7 @@
 			<th>Name</th>
 		    <th width="50%">Description</th>
 		    <th># of hosts</th>
+		    <th># of live hosts</th>
 		    <th>&nbsp;</th>
 		</tr>
 	</thead>
@@ -43,6 +44,7 @@
 			    <td><?php echo $hostgroup->get_name();?></td>
 			    <td><?php echo $hostgroup->get_detail();?></td>
 			    <td><?php echo count($hostgroup->get_host_ids());?></td>
+			    <td><?php echo count($hostgroup->get_live_host_ids());?></td>
 			    <td>
 			        <a href="?action=host_groups&host_group_id=<?php echo $hostgroup->get_id();?>"><input type="button" class="btn btn-info" value="Details"/></a>
 			        <a href="?action=config&object=host_group"><input type="button" class="btn" value="Config"/></a>

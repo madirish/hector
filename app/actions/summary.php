@@ -118,7 +118,7 @@ $risk_nums = array();
 $risk_coll = new Collection('Risk', ' AND t.risk_name != "none" ');
 if (is_array($risk_coll->members)) {
 	foreach ($risk_coll->members as $risk) {
-		$risk_nums[$risk->get_name()]['count'] = count($risk->get_vuln_detail_ids());
+		$risk_nums[$risk->get_name()]['count'] = count($risk->get_most_recent_vuln_detail_ids());
 		$risk_nums[$risk->get_name()]['href'] = '?action=risk_rating&risk_id=' . $risk->get_id();
 	}
 }

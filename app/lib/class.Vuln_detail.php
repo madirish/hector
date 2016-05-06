@@ -77,6 +77,9 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 	 * @var Datetime The date and time that this report was generated (when the vuln was observed)
 	 */
 	private $datetime = null;
+	
+	private $max_datetime = null;
+	private $min_datetime = null;
     
     /**
 	 * Boolean indicating that the vulnearbility should be 
@@ -186,6 +189,15 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
      */
     private $risk_id = 0;
     
+    /**
+     * The id for the OpenVAS, Qualys or other scan so that 
+     * we can track remediation in an automated fashion
+     * 
+     * @var String The string assigned to the vulnerability scan by whatever appliance did the scan
+     * @access private
+     */
+    private $vulnscan_id = null;
+    
     // --- OPERATIONS ---
 
     /**
@@ -225,6 +237,16 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 				$this->set_risk_id($r->risk_id);
 				$this->set_host_id($r->host_id);
 				$this->set_ticket($r->vuln_detail_ticket);
+			}
+			$sql = array(
+				'SELECT max(vuln_detail_datetime) as max_datetime, min(vuln_detail_datetime) as min_datetime 
+					from vuln_detail where vuln_id = ?i and host_id = ?i',
+				$this->get_vuln_id(), $this->get_host_id()
+			);
+			$result = $this->db->fetch_object_array($sql);
+			if (isset($result[0])) {
+				$this->max_datetime = $result[0]->max_datetime;
+				$this->min_datetime = $result[0]->min_datetime;
 			}
 		}
     }
@@ -351,6 +373,14 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 		else {
 			return null;
 		}
+    }
+    
+    public function get_max_datetime() {
+    	return $this->max_datetime;
+    }
+    
+    public function get_min_datetime() {
+    	return $this->min_datetime;
     }
 	
 	/**
@@ -592,6 +622,15 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
     	return $this->vuln;
     }
     
+    public function get_vulnscan_id() {
+        global $approot;
+        require_once($approot . 'software/htmlpurifier/library/HTMLPurifier.auto.php');
+        $config = HTMLPurifier_Config::createDefault();
+        $config->set('Attr.EnableID', true);
+        $purifier = new HTMLPurifier($config);
+		return $purifier->purify($this->vulnscan_id);
+    }
+    
     /**
      * Get vulnerability details for a specific host.
      * 
@@ -605,6 +644,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
         if ($db == '') $db = $this->db;
         $host_id = intval($host_id);
     	$sql = array('SELECT distinct(v.vuln_name), ' .
+    				'max(d.vuln_detail_datetime), ' .
                     'd.vuln_detail_id, ' .
                     'd.vuln_detail_text, ' .
                     'd.vuln_detail_ignore, ' .
@@ -613,9 +653,10 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
                 'FROM vuln_detail d, ' .
                     'vuln v, ' .
                     'risk r ' .
-                'WHERE d.vuln_id = v.vuln_id AND ' .
+    			'WHERE ' .
                     'd.host_id = ?i ' .
                     'AND r.risk_id = d.risk_id '. 
+    				'AND d.vuln_id = v.vuln_id ' .
                 'GROUP BY v.vuln_name ' . 
                 'ORDER BY r.risk_weight DESC', 
                 $host_id);
@@ -682,6 +723,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 	    			'vuln_detail_fixed_datetime = \'?s\', ' .
 	    			'vuln_detail_fixed_notes =\'?s\',' .
 	    			'vuln_detail_ticket =\'?s\',' .
+	    			'vulnscan_id =\'?s\',' .
 	    			'risk_id = ?i, ' .
 	    			'host_id = ?i, ' .
 	    			'vuln_id = ?i ' .
@@ -696,6 +738,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 	    		$this->get_fixed_datetime(),
 	    		$this->get_fixed_notes(),
 	    		$this->get_ticket(),
+	    		$this->get_vulnscan_id(),
 	    		$this->get_risk_id(),
 	    		$this->get_host_id(),
 	    		$this->get_vuln_id(),
@@ -718,6 +761,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 	    			'vuln_detail_fixed_datetime = \'?s\', ' .
 	    			'vuln_detail_fixed_notes =\'?s\',' .
 	    			'vuln_detail_ticket =\'?s\',' .
+	    			'vulnscan_id =\'?s\',' .
 	    			'host_id = ?i, ' .
 	    			'risk_id = ?i, ' .
 	    			'vuln_id = ?i',
@@ -731,6 +775,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 	    		$this->get_fixed_datetime(),
 	    		$this->get_fixed_notes(),
 	    		$this->get_ticket(),
+	    		$this->get_vulnscan_id(),
 	    		$this->get_host_id(),
 	    		$this->get_risk_id(),
 	    		$this->get_vuln_id()
@@ -908,6 +953,10 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
      */
     public function set_vuln_id($id) {
     	$this->vuln_id = intval($id);
+    }
+    
+    public function set_vulnscan_id($vulnscan_id) {
+    	$this->vulnscan_id = $vulnscan_id;
     }
 
 } /* end of class Vuln_detail */

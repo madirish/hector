@@ -80,6 +80,14 @@ class Risk extends Maleable_Object implements Maleable_Object_Interface {
 	 * @var Array The vuln_detail_ids for Vuln_detail objects
 	 */
     public $vuln_detail_ids = array();
+    
+    /**
+     * Just the most recent instances of a particular vuln on 
+     * a specific host
+     * 
+     * @var Array The vuln_detail_ids for the most recent Vuln_detail objects
+     */
+    public $most_recent_vuln_detail_ids = array();
 
     // --- OPERATIONS ---
 
@@ -114,6 +122,23 @@ class Risk extends Maleable_Object implements Maleable_Object_Interface {
 	    	if (is_array($result) && count($result) > 0) {
 	    		foreach($result as $row) {
 	    			$this->vuln_detail_ids[] = $row->vuln_detail_id;
+	    		}
+	    	}
+			$sql = array(
+				'select distinct(d.host_id), 
+					max(d.vuln_detail_datetime), 
+					d.vuln_detail_id, 
+					v.vuln_name, 
+					d.host_id 
+				  FROM vuln_detail d, vuln v 
+				  WHERE d.vuln_id = v.vuln_id and d.risk_id = ?i  
+				  GROUP by d.host_id',
+				$id
+			);
+			$resultdist = $this->db->fetch_object_array($sql);
+	    	if (is_array($resultdist) && count($resultdist) > 0) {
+	    		foreach($resultdist as $row) {
+	    			$this->most_recent_vuln_detail_ids[] = $row->vuln_detail_id;
 	    		}
 	    	}
 		}
@@ -299,6 +324,10 @@ class Risk extends Maleable_Object implements Maleable_Object_Interface {
      */
     public function get_vuln_detail_ids(){
 		return $this->vuln_detail_ids;
+    }
+    
+    public function get_most_recent_vuln_detail_ids(){
+    	return $this->most_recent_vuln_detail_ids;
     }
     
 	/**

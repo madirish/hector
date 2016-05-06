@@ -12,7 +12,7 @@ $risk_id = isset($_GET['risk_id']) ? $_GET['risk_id'] : 0;
 $vuln_details = array();
 $risk = new Risk($risk_id);
 
-$details = $risk->get_vuln_detail_ids(); 
+$details = $risk->get_most_recent_vuln_detail_ids(); 
 if (is_array($details)) {
 	foreach ($details as $id) {
 		$vuln_details[] = new Vuln_detail($id);

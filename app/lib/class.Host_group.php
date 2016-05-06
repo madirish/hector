@@ -325,6 +325,31 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
 		}
 		return $retval;
 	}
+
+	/**
+	 * Get all the hosts that respond on ports or we have details on
+	 * 
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @access public
+	 * @return Array List of host_id integers
+	 */
+	public function get_live_host_ids() {
+		$retval = array();
+		if ($this->id != null) {
+			$sql = array(
+				'select x.host_id 
+					from host_x_host_group x, host h, nmap_result n 
+					where x.host_id = h.host_id 
+						AND n.host_id = x.host_id 
+						AND x.host_group_id = ?i',
+				$this->id);
+			$result = $this->db->fetch_object_array($sql);
+			if (is_array($result)) {
+				foreach($result as $record) $retval[] = intval($record->host_id);
+			}
+		}
+		return $retval;
+	}
 	
 	/**
      * Return the printable string use for the object in interfaces

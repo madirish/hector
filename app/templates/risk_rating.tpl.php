@@ -7,8 +7,8 @@
 				<tr>
 					<th>Vulnerability</th>
 					<th>Host</th>
-					<th>Observed</th>
-					<th>Description</th>
+					<th>Last Observed</th>
+					<th>First Observed</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -16,8 +16,8 @@
 					<tr>
 						<td><?php echo $detail->get_vuln_name()?></td>
 						<td><a href="?action=host_details&id=<?php echo $detail->get_host_id();?>"><?php echo $detail->get_host_name();?></a></td>
-						<td><?php echo $detail->get_datetime(); ?></td>
-						<td><?php echo substr($detail->get_text(), 0, 200); ?></td>
+						<td><?php echo $detail->get_max_datetime(); ?></td>
+						<td><?php echo $detail->get_min_datetime(); ?></td>
 					</tr>
 				<?php endforeach;?>
 			</tbody>

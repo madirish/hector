@@ -122,6 +122,8 @@ touch $HECTOR_PATH/app/logs/error_log
 touch $HECTOR_PATH/app/logs/message_log
 chmod 0700 $HECTOR_PATH/app/logs/*_log
 chown -R apache $HECTOR_PATH/app/logs
+chown apache $HECTOR_PATH/app/scripts/openvas
+chown apache $HECTOR_PATH/app/scripts/qualys
 
 echo
 echo "Step - Configuring Apache"
@@ -153,10 +155,15 @@ if ! cat /etc/crontab | grep -q "HECTOR" ; then
   echo "01 0 * * * root /usr/bin/php $HECTOR_PATH/app/scripts/scan_cron.php" >> /etc/crontab
   # echo "* * * * * root /opt/hector/app/scripts/hector-ossec-mysql-monitor.sh" >> /etc/crontab
   echo "*/5 * * * * root /opt/hector/app/scripts/openvas/import.sh" >> /etc/crontab
+  echo "*/5 * * * * root /opt/hector/app/scripts/qualys/import.sh" >> /etc/crontab
   echo " [+] cron scheduled in /etc/crontab"
 else
   echo " [+] HECTOR crontab seems to already exist"
 fi
+
+
+chmod +x /opt/hector/app/scripts/qualys/import.sh
+chmod +x /opt/hector/app/scripts/openvas/import.sh
 
 echo
 echo "Step - Installing OSSEC"

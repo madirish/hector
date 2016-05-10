@@ -88,6 +88,7 @@
         <li><a href="?action=reports&report=oses">Operating systems</a></li>
         <li><a href="?action=reports&report=by_port">Ports detected</a></li>
         <li><a href="?action=vuln">Vulnerabilities <?php if (isset($vuln_badge)) echo $vuln_badge ;?></a></li>
+        <li><a href="?action=vulnscans">Vulnerability Scans</a></li>
       </ul>
     </li>
     <li class="dropdown">

@@ -299,6 +299,16 @@ class Report {
         return $passwords;
     }
     
+    public function get_vulnscans() {
+    	$sql = 'select distinct(vuln_detail_datetime), vulnscan_id 
+    			from vuln_detail
+    			order by vuln_detail_datetime desc';
+
+    	$results= $this->db->fetch_object_array($sql);
+    	foreach($results as $result) $vulnscans[] = array('vulnscan_id'=>$result->vulnscan_id, 'vuln_detail_datetime'=>$result->vuln_detail_datetime);
+    	return $vulnscans;
+    }
+    
     /**
      * Get the total number of hosts tracked in the system, if used by
      * and admin user, or the total number of hosts in supportgroups to

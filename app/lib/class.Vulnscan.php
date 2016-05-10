@@ -22,6 +22,7 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 require_once('class.Config.php');
 require_once('class.Db.php');
 require_once('class.Log.php');
+require_once('class.Risk.php');
 require_once('class.Vuln_detail.php');
 
 
@@ -54,6 +55,11 @@ class Vulnscan {
     
     private $vuln_details = array();
     
+    private $critical_risk_count = 0;
+    private $high_risk_count = 0;
+    private $medium_risk_count = 0;
+    private $low_risk_count = 0;
+    
     public function __construct($name, $time='') {
     	$this->db = Db::get_instance();
     	$this->name = $name;
@@ -81,7 +87,23 @@ class Vulnscan {
     	if (is_array($result) && isset($result[0])){ 
     		foreach ($result as $row) {
     			$this->vuln_detail_ids[] = $row->vuln_detail_id;
-    			$this->vuln_details[] = new Vuln_detail($row->vuln_detail_id);
+    			$detail = new Vuln_detail($row->vuln_detail_id);
+    			$this->vuln_details[] = $detail;
+    			$risk = new Risk($detail->get_risk_id());
+    			switch($risk->get_name()) {
+    				case 'critical':
+    					$this->critical_risk_count++;
+    					break;
+    				case 'high':
+    					$this->high_risk_count++;
+    					break;
+    				case 'medium':
+    					$this->medium_risk_count++;
+    					break;
+    				case 'low':
+    					$this->medium_risk_count++;
+    					break;
+    			}
     		}
     		$this->datetime = $result[0]->vuln_detail_datetime;
     	}
@@ -89,16 +111,19 @@ class Vulnscan {
     
     public function delta($scan) {
     	if (! is_a($scan, 'Vulnscan')) return false;
-    	$oldscan = $this;
-    	$newscan = $scan;
+    	// Repeats are all eliminated by this function
+    	$oldscan = clone $this; // If it stays in oldscan it's fixed
+    	$newscan = clone $scan; // If it's still in newscan it's a new finding
     	foreach ($newscan->get_vuln_details() as $newdetail) {
     		foreach ($oldscan->get_vuln_details() as $olddetail) {
     			if ($newdetail->get_vuln_id() == $olddetail->get_vuln_id() && $newdetail->get_host_id() == $olddetail->get_host_id() ) {
     				$oldscan->drop_detail($olddetail);
     				$newscan->drop_detail($newdetail);
+    				break;
     			}
     		}
     	}
+    	// return fixed, new-findings
     	return array($oldscan, $newscan);
     }
     
@@ -109,6 +134,61 @@ class Vulnscan {
     		$idkey = array_search($detail->get_id(), $this->vuln_detail_ids);
     		unset($this->vuln_detail_ids[$idkey]);
     	}
+    }
+	
+	public function get_datetime() {
+		return htmlspecialchars($this->datetime);
+	}
+    
+	public function get_name() {
+		return htmlspecialchars($this->name);
+	}
+	
+    public function get_risk_count($sev) {
+    	switch ($sev) {
+    		case 'critical':
+    			return $this->critical_risk_count;
+    			break;
+    		case 'high':
+    			return $this->high_risk_count;
+    			break;
+    		case 'medium':
+    			return $this->medium_risk_count;
+    			break;
+    		case 'low':
+    			return $this->low_risk_count;
+    			break;
+    	}
+    }
+    
+    public function get_previous_runs() {
+    	$retval = array();
+    	$runtimes = $this->get_previous_runtimes();
+    	if (count($runtimes) > 0) {
+    		foreach ($runtimes as $time) {
+    			$retval[] = new Vulnscan($this->name, $time);
+    		}
+    	}
+    	return $retval;
+    }
+    
+    public function get_previous_runtimes() {
+    	$retval = array();
+    	$sql = array(
+    			'select distinct(vuln_detail_datetime) 
+    				from vuln_detail 
+    			  	where vulnscan_id like \'?s\' 
+    					and vuln_detail_datetime < \'?d\'
+    				order by vuln_detail_datetime desc',
+    			$this->name, $this->datetime
+    	);
+    	$result = $this->db->fetch_object_array($sql);
+    	if (is_array($result) && isset($result[0])){ 
+    		foreach ($result as $row) {
+    			$retval[] = $row->vuln_detail_datetime;
+    		}
+    	}
+    	return $retval;
     }
     
     public function get_vuln_details() {

@@ -300,9 +300,7 @@ class Report {
     }
     
     public function get_vulnscans() {
-    	$sql = 'select distinct(vuln_detail_datetime), vulnscan_id 
-    			from vuln_detail
-    			order by vuln_detail_datetime desc';
+    	$sql = ' select distinct(vulnscan_id), max(vuln_detail_datetime) as vuln_detail_datetime from vuln_detail group by vulnscan_id';
 
     	$results= $this->db->fetch_object_array($sql);
     	foreach($results as $result) $vulnscans[] = array('vulnscan_id'=>$result->vulnscan_id, 'vuln_detail_datetime'=>$result->vuln_detail_datetime);

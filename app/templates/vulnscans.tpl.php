@@ -1,7 +1,7 @@
 <h3>Vulnerability Scans Imported</h3>
 <table class="table table-striped" id="vulns">
 	<thead>
-	<tr><th>Date</th><th>Scan ID</th></tr>
+	<tr><th>Lat Run</th><th>Scan ID</th></tr>
 	</thead>
     <tbody>
 	<?php foreach ($vulnscans as $scan): ?>

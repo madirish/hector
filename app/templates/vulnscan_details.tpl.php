@@ -189,9 +189,9 @@ $low_fixed_counts[] = '0';
 <div class="tab-pane" id="detail">
 <table class="table table-stiped table-bordered">
 <tr>
-	<th>#</th>
-	<th>Risk</th>
-	<th>Host IP</th>
+	<th width="5%">#</th>
+	<th width="10%">Risk</th>
+	<th width="20%">Host IP</th>
 	<th>Vulnerability</th>
 </tr>
 <?php 

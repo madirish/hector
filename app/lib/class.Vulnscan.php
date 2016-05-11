@@ -101,7 +101,7 @@ class Vulnscan {
     					$this->medium_risk_count++;
     					break;
     				case 'low':
-    					$this->medium_risk_count++;
+    					$this->low_risk_count++;
     					break;
     			}
     		}
@@ -130,6 +130,21 @@ class Vulnscan {
     public function drop_detail($detail) {
     	$key = array_search($detail, $this->vuln_details);
     	if ($key) {
+    		$risk = new Risk($detail->get_risk_id());
+    		switch($risk->get_name()) {
+    			case 'critical':
+    				$this->critical_risk_count--;
+    				break;
+    			case 'high':
+    				$this->high_risk_count--;
+    				break;
+    			case 'medium':
+    				$this->medium_risk_count--;
+    				break;
+    			case 'low':
+    				$this->low_risk_count--;
+    				break;
+    		}
     		unset($this->vuln_details[$key]);		
     		$idkey = array_search($detail->get_id(), $this->vuln_detail_ids);
     		unset($this->vuln_detail_ids[$idkey]);
@@ -159,6 +174,25 @@ class Vulnscan {
     			return $this->low_risk_count;
     			break;
     	}
+    }
+    
+    public function get_all_runtimes() {
+    	$retval = array();
+    	$sql = array(
+    			'select distinct(vuln_detail_datetime) 
+    				from vuln_detail 
+    			  	where vulnscan_id like \'?s\' 
+    				order by vuln_detail_datetime desc',
+    			$this->name
+    	);
+    	$result = $this->db->fetch_object_array($sql);
+    	if (is_array($result) && isset($result[0])){ 
+    		foreach ($result as $row) {
+    			$retval[] = $row->vuln_detail_datetime;
+    		}
+    	}
+    	return $retval;
+    	
     }
     
     public function get_previous_runs() {

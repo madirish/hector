@@ -37,6 +37,14 @@ $runs = $vulnscan->get_previous_runs();
 
 ?>
 <h3>Vulnerability Scan Details</h3>
+<ul class="nav nav-tabs" id="vulnScanTab">
+	<li class="active"><a href="#overview" data-toggle="tab">Overview</a></li>
+	<li><a href="#detail" data-toggle="tab">Detail</a></li>
+</ul>
+
+<div class="tab-content">
+<div class="tab-pane active" id="overview">
+
 <table class="table table-bordered">
 <tr> 
 	<td width="25%">Scan name/id:</td>
@@ -79,7 +87,7 @@ $runs = $vulnscan->get_previous_runs();
 </tr>
 
 <?php 
-
+$vulnscan_for_details = clone $vulnscan;
 $current_scan = $vulnscan;
 foreach ($runs as $run) {
 	$critical_totals[] = $run->get_risk_count('critical');
@@ -177,7 +185,46 @@ $low_fixed_counts[] = '0';
 
 ?>
 </table>
-
+</div>
+<div class="tab-pane" id="detail">
+<table class="table table-stiped table-bordered">
+<tr>
+	<th>#</th>
+	<th>Risk</th>
+	<th>Host IP</th>
+	<th>Vulnerability</th>
+</tr>
+<?php 
+$x = 1;
+foreach ($vulnscan_for_details->get_vuln_details() as $vuln_detail) {
+	$risk = new Risk($vuln_detail->get_risk_id());
+?>
+<tr>
+	<td><?php echo $x; ?></td>
+	<td><?php 
+		switch ($risk->get_name()) {
+    			case 'critical':
+    				print "<span class='label label-important'>Critical</span>";
+    				break;
+    			case 'high':
+    				print "<span class='label label-warning'>High</span>";
+    				break;
+    			case 'medium':
+    				print "<span class='label label-info'>Medium</span>";
+    				break;
+    			case 'low':
+    				print "<span class='label'>Low</span>";
+    				break;
+		}
+	?></td>
+	<td><a href="?action=host_detail&id=<?php echo $vuln_detail->get_host_id(); ?>"><?php echo $vuln_detail->get_host_ip();?></a></td>
+	<td><a href="?action=vuln_details&id=<?php echo $vuln_detail->get_id(); ?>"><?php echo $vuln_detail->get_vuln_name();?></a></td>
+<?php 
+$x++;
+} ?>
+</table>
+</div>
+</div>
 
 
 

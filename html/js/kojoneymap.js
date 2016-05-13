@@ -289,8 +289,7 @@ $(function(){
 		 backgroundColor: '#C8EEFF',
 		 onMarkerLabelShow: function(event,label,index){
 			 label.html(
-					 "<b>" + markers[index]['name'] + "</b><br/>"
-					 + 'Distinct IPs attempting login': ' + markers[index]['value']
+					 "<b>" + markers[index]['name'] + "</b><br/>" + 'Distinct IPs attempting login: ' + markers[index]['value']
 					 );
 		 },
 		 onMarkerClick: function(event,index){

@@ -46,7 +46,7 @@
 			    <td><?php echo count($hostgroup->get_host_ids());?></td>
 			    <td><?php echo count($hostgroup->get_live_host_ids());?></td>
 			    <td>
-			        <a href="?action=host_groups&host_group_id=<?php echo $hostgroup->get_id();?>"><input type="button" class="btn btn-info" value="Details"/></a>
+			        <a href="?action=host_groups&live=yes&host_group_id=<?php echo $hostgroup->get_id();?>"><input type="button" class="btn btn-info" value="Details"/></a>
 			        <a href="?action=config&object=host_group"><input type="button" class="btn" value="Config"/></a>
 			    </td>
 			</tr>

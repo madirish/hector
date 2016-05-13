@@ -337,7 +337,7 @@ class Host_group extends Maleable_Object implements Maleable_Object_Interface {
 		$retval = array();
 		if ($this->id != null) {
 			$sql = array(
-				'select x.host_id 
+				'select distinct(x.host_id) 
 					from host_x_host_group x, host h, nmap_result n 
 					where x.host_id = h.host_id 
 						AND n.host_id = x.host_id 

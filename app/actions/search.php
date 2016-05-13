@@ -40,9 +40,10 @@ if (isset($_POST['version']) && $_POST['version'] != '') {
     foreach ($collection->members as $member) $hosts[] = $member;
     $show_results = TRUE;
 }
-if (isset($_GET['os']) && $_GET['os'] != '') {
+if (isset($_GET['os']) && $_GET['os'] != '' || isset($_POST['os']) && $_POST['os'] != '') {
+	$os = (isset($_GET['os'])) ? $_GET['os'] : $_POST['os'];
     require_once($approot . 'lib/class.Collection.php');
-    $os = mysql_real_escape_string($_GET['os']);
+    $os = mysql_real_escape_string($os);
     $collection = new Collection('Host', $os, 'get_collection_by_os', $order);
 
     foreach ($collection->members as $member) $hosts[] = $member;

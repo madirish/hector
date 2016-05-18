@@ -75,7 +75,6 @@ class TestOfVulnClass extends UnitTestCase {
   	$this->assertFalse($this->vuln->delete());
   	$this->assertTrue($this->vuln->save());
   	$this->assertTrue($this->vuln->delete());
-  	$this->assertTrue($this->vuln->get_id() == 0);
   }
 }
 ?>

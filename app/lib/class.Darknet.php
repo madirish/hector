@@ -146,6 +146,52 @@ class Darknet extends Maleable_Object {
             }
         }
     }
+    
+    /**
+     * May 15 04:19:58 servername kernel: iptables IN=eth0 OUT= MAC=00:1a:4b:dc:c3:68:88:43:e1:2f:45:1b:08:00 SRC=104.193.252.230 DST=208.88.12.61 LEN=40 TOS=0x00 PREC=0x00 TTL=241 ID=54321 PROTO=TCP SPT=46797 DPT=21320 WINDOW=65535 RES=0x00 SYN URGP=0 
+     * 
+     * @param unknown $log
+     */
+    public function construct_by_syslog_string($log) {
+    	// Split the date off the log
+    	$first_colon = strpos($log, ":");
+    	$second_colon = strpos($log, ":", $first_colon);
+    	$end_of_date = strpos($log, " ", $second_colon);
+    	$date = substr($log, 0, $end_of_date);
+    	$start_of_iptable = strpos($log, "iptables ") +9;
+    	$iptable = substr($log, $start_of_iptable);
+    	$iptablesarr = explode(" ", $iptable);
+    	foreach ($iptablesarr as $piece) {
+    		$pieces = explode("=", $piece);
+    		if (count($pieces) > 1) {
+    			switch ($pieces[0]) {
+    				case "SRC":
+    					$ip = $pieces[1];
+    					if (filter_var($ip, FILTER_VALIDATE_IP)) {
+    						$ip = inet_pton($ip);
+    						$this->set_src_ip($ip);
+    					}
+    					break;
+    				case "DST":
+    					$ip = $pieces[1];
+    					if (filter_var($ip, FILTER_VALIDATE_IP)) {
+    						$ip = inet_pton($ip);
+    						$this->set_dst_ip($ip);
+    					}
+    					break;
+    				case "SPT":
+    					$this->set_src_port($pieces[1]);
+    					break;
+    				case "DPT":
+    					$this->set_dst_port($pieces[1]);
+    					break;
+    				case "PROTO":
+    					$this->set_proto(strtolower($pieces[1]));
+    					break;
+    			}
+    		}
+    	}
+    }
 
 
     /**
@@ -203,7 +249,7 @@ class Darknet extends Maleable_Object {
      * @param String The SQL order by clause
      * @return String The SQL to pass to the Collection class
      */
-    public function get_collection_by_country($country, $orderby) {
+    public function get_collection_by_country($country, $orderby='') {
         $country = substr($country, 0, 2);
     	$filter = ' AND d.country_code = \'' . mysql_real_escape_string($country) . '\' ';
         return $this->get_collection_definition($filter, $orderby);
@@ -382,12 +428,15 @@ class Darknet extends Maleable_Object {
                 'src_port = \'?i\', ' .
                 'dst_port = \'?i\', ' .
                 'proto = \'?s\', ' .
+            	'country_code = (SELECT g.country_code FROM geoip g WHERE g.start_ip_long < \'?i\' AND g.end_ip_long > \'?i\')',
                 'received_at = \'?i\' WHERE id = \'?i\'',
                 $this->get_src_ip(),
                 $this->get_dst_ip(),
                 $this->get_src_port(),
                 $this->get_dst_port(),
                 $this->get_proto(),
+                $this->get_src_ip(),
+                $this->get_src_ip(),
                 $this->get_received_at(),
                 $this->get_id()
             );
@@ -400,13 +449,16 @@ class Darknet extends Maleable_Object {
                 'src_port = \'?i\', ' .
                 'dst_port = \'?i\', ' .
                 'proto = \'?s\', ' .
-                'received_at = \'?i\'',
+                'received_at = \'?i\', ' . 
+            	'country_code = (SELECT g.country_code FROM geoip g WHERE g.start_ip_long < \'?i\' AND g.end_ip_long > \'?i\')',
                 $this->get_src_ip(),
                 $this->get_dst_ip(),
                 $this->get_src_port(),
                 $this->get_dst_port(),
                 $this->get_proto(),
-                $this->get_received_at()
+                $this->get_received_at(),
+            	$this->get_src_ip(),
+            	$this->get_src_ip()
             );
             $retval = $this->db->iud_sql($sql);
             // Now set the id
@@ -449,6 +501,8 @@ class Darknet extends Maleable_Object {
      * @param Int The destination IP of the probe
      */
     public function set_dst_ip($ip) {
+    	if (! is_int($ip)) return false;
+    	if (filter_var(inet_ntop($ip), FILTER_VALIDATE_IP)) return false;
         $this->dst_ip = intval($ip);
     }
     
@@ -502,6 +556,8 @@ class Darknet extends Maleable_Object {
      * @param Int The source IP of the probe
      */
     public function set_src_ip($ip) {
+    	if (! is_int($ip)) return false;
+    	if (filter_var(inet_ntop($ip), FILTER_VALIDATE_IP)) return false;
     	$this->src_ip = intval($ip);
     }
     

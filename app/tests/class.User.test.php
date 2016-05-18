@@ -25,7 +25,9 @@ class TestOfUserClass extends UnitTestCase {
 		$name = 'Test';
 		$this->user->set_name($name);
 		$this->assertEqual($this->user->get_name(), $name);
-        $this->assertTrue($this->user->save());
+		$this->user->set_password('test');
+		$save_val = $this->user->save();
+        $this->assertTrue($save_val);
         $id = $this->user->get_id();
         $user2 = new User();
         $user2->get_by_name($name);

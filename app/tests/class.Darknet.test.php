@@ -41,14 +41,16 @@ class TestOfDarknetClass extends UnitTestCase {
     function testSrcDstIP() {
     	$ip = '127.0.0.1';
         $bad = '127.0.5';
-        $this->dnet->set_src_ip($ip);
-        $this->assertEqual($this->dnet->get_src_ip(), $ip);
-        $this->dnet->set_dst_ip($ip);
-        $this->assertEqual($ip, $this->dnet->get_dst_ip());
-        $this->dnet->set_src_ip($bad);
-        $this->assertNotEqual($bad, $this->dnet->get_src_ip());
-        $this->dnet->set_dst_ip($bad);
-        $this->assertNotEqual($bad, $this->dnet->get_dst_ip);
+        // Test for source
+        $this->assertFalse($this->dnet->set_src_ip($ip));
+        $this->assertFalse($this->dnet->set_src_ip($bad));
+        $this->dnet->set_src_ip(inet_pton($ip));
+        $this->assertEqual($this->dnet->get_src_ip(), inet_pton($ip));
+        // Test for dest
+        $this->assertFalse($this->dnet->set_dst_ip($ip));
+        $this->assertFalse($this->dnet->set_dst_ip($bad));
+        $this->dnet->set_dst_ip(inet_pton($ip));
+        $this->assertEqual(inet_pton($ip), $this->dnet->get_dst_ip());
     }
     
     function testCollectionByCountry() {
@@ -86,7 +88,7 @@ class TestOfDarknetClass extends UnitTestCase {
         $this->dnet->set_country_code('US');
         $this->dnet->set_src_ip('127.0.0.1');
         $this->dnet->set_dst_ip('127.0.0.1');
-        $this->dnet->set_received_at();
+        $this->dnet->set_received_at('');
         $this->dnet->set_proto('tcp');
         $this->dnet->set_src_port(0);
         $this->dnet->set_dst_port(0);

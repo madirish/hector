@@ -1500,7 +1500,14 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	    			'location_id = \'?i\', ' .
 	    			'supportgroup_id = \'?i\' ',
 	    		$this->get_ip(),
+	    		$this->get_portscan_exclusion(),
+	    		$this->get_excludedby(),
+	    		$this->get_excludedfor(),
+	    		$this->get_excludedreason(),
+	    		$this->get_link(),
 	    		$this->get_name(),
+	    		$this->get_note(),
+	    		$this->get_policy(),
 	    		$this->get_os(),
 	    		$this->get_os_family(),
 	    		$this->get_os_type(),
@@ -1509,13 +1516,6 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	    		$this->get_technical(),
 	    		$this->get_location_id(),
 	    		$this->get_supportgroup_id(),
-	    		$this->get_policy(),
-	    		$this->get_note(),
-	    		$this->get_link(),
-	    		$this->get_portscan_exclusion(),
-	    		$this->get_excludedby(),
-	    		$this->get_excludedfor(),
-	    		$this->get_excludedreason(),
 	    	); 
 	    	$retval = $this->db->iud_sql($sql);
 	    	// Now set the id
@@ -1779,6 +1779,9 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 			$this->ip = $ip;
 			$retval = TRUE;
 		}
+		else {
+			$this->log->write_error("Attempt to set invalid IP in Host::set_ip()");
+		}
 		return $retval;
 	}
 		
@@ -1849,6 +1852,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 	 */
     public function set_name($name) {
     	$this->name = $name;
+    	return true;
     }
 
 	/**

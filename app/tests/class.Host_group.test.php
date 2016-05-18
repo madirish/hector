@@ -45,10 +45,12 @@ class TestOfHost_groupClass extends UnitTestCase {
     
     function testSetApplyToAll() {
         $newhost = new Host();
-        $newhost->set_ip('127.0.0.1');
+        $newhost->set_ip('192.0.2.1');
         $newhost->save();
     	$this->host_group->set_applytoall(1);
-        $this->assertTrue(in_array($this->host_group->get_id(), $newhost->get_host_group_ids()));
+    	// We have to refresh the hostgroups now
+    	$host_new = new Host($newhost->get_id());
+        $this->assertTrue(in_array($this->host_group->get_id(), $host_new->get_host_group_ids()));
         $newhost->delete();
     }
 	

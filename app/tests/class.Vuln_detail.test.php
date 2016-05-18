@@ -2,7 +2,7 @@
 require_once(dirname(__FILE__) . '/../software/simpletest/autorun.php');
 require_once(dirname(__FILE__) . '/../lib/class.Vuln_detail.php');
 require_once(dirname(__FILE__) . '/../lib/class.User.php');
-require_once(dirname(__FILE__) . '/../lib/class.Vuln.php');
+require_once(dirname(__FILE__) . '/../lib/class.Host.php');
 require_once(dirname(__FILE__) . '/../lib/class.Vuln.php');
 
 
@@ -104,6 +104,7 @@ class TestOfVuln_detailClass extends UnitTestCase {
     	$name = 'User Foo';
         $user = new User();
         $user->set_name($name);
+        $user->set_password('test');
         $user->save();
         $this->assertTrue($this->vuln_detail->set_fixed_user_id($user->get_id()));
         $this->assertEqual($name, $this->vuln_detail->get_fixed_user_name());
@@ -123,14 +124,15 @@ class TestOfVuln_detailClass extends UnitTestCase {
     }
     
     function testHost() {
-    	$hostname = 'New host';
+    	$hostname = 'new host';
         $host = new Host();
-        $host->set_ip('127.0.0.1');
-        $host->set_name($name);
-        $host->save();
-        $id = $host->get_id();
-        $this->vuln_detail->set_host_id($id);
+        $this->assertTrue($host->set_ip('192.0.2.1'));
+        $this->assertTrue($host->set_name($hostname));
+        $this->assertTrue($host->save());
+        $id = $host->get_id(); print_r($id . "\n");
+        $this->assertTrue($this->vuln_detail->set_host_id($id));
         $this->assertEqual($hostname, $this->vuln_detail->get_host_name());
+        $host->delete();
     }
     
 	function testTicket() {

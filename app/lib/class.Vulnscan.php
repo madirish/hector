@@ -70,7 +70,8 @@ class Vulnscan {
 	    				from vuln_detail 
 	    			  	where vulnscan_id like \'?s\' 
 	    					and vuln_detail_datetime = \'?d\'',
-	    			$name, $time
+	    			$name, 
+	    			$time
 	    	);
     	}
     	else {
@@ -80,6 +81,7 @@ class Vulnscan {
 	    			  	where vulnscan_id like \'?s\' 
 	    					and vuln_detail_datetime = 
 	    					(select max(vuln_detail_datetime) from vuln_detail where vulnscan_id like \'?s\')',
+	    			$name, 
 	    			$name
 	    	);
     	}

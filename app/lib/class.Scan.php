@@ -647,7 +647,7 @@ class Scan extends Maleable_Object implements Maleable_Object_Interface {
      * @param Int The day of the year for the scan
      */
     public function set_dayofyear($int) {
-        $retval = false;
+        $retval = true;
     	$int = (int) $int;
     	if ($int > 365 || $int < 1) {
     		$int = 0;

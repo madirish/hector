@@ -525,7 +525,7 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
 	    	//sanitize the array
 	    	$array = array_map('intval', $array);
 	    	$this->tag_ids = $array;
-	    	$reval = TRUE;
+	    	$retval = TRUE;
     	}
     	return $retval;
     }
@@ -580,14 +580,13 @@ class Article extends Maleable_Object implements Maleable_Object_Interface {
      * @return Boolean False if something goes awry
      */
     public function set_url($url) {
-    	$retval = TRUE;
-    	if(!filter_var($url, FILTER_VALIDATE_URL)) {
-    		$retval = FALSE;
-    	}
-    	else {
+    	$retval = FALSE;
+    	$url = filter_var($url, FILTER_SANITIZE_URL);
+    	if(filter_var($url, FILTER_VALIDATE_URL)) {
     		$this->url = $url;
+    		$retval = TRUE;
     	}
-    	return TRUE;
+    	return $retval;
     }
     
     /**

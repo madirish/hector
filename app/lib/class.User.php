@@ -346,6 +346,7 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 	 * @param Boolean Whether or not the person is an admin
 	 */
 	public function set_is_admin($val) {
+		$retval = true;
 		// Is the caller an admin? Can they do this?
         global $appuser;
         if (! isset($appuser)) {
@@ -359,7 +360,9 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
         else {
         	// Attempt to reset a user account when not admin?
         	$this->log->write_error("Error in User::set_is_admin() by non-admin user (" . $appuser->get_id() . ")");
+        	$retval = false;
         }
+        return $retval;
 	}
 	
 	/**
@@ -426,14 +429,26 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 	 * @access public
 	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
 	 * @param  Array The array of Supportgroup ids
-	 * @return void
+	 * @return Boolean
 	 */
 	public function set_supportgroup_ids($array) {
+		if (! is_array($array)) {
+			$this->log->write_error("Invalid input passed to set_supportgroup_ids().");
+			return false;
+		}
+		// validate the array
+		foreach($array as $key=>$val) {
+			if (! is_int($val)) {
+				$this->log->write_error("Invalid element in supportgroup array.");
+				return false;
+			}
+		}
 		// Reset the array to clean out cruft
 		$this->supportgroup_ids = array();
 		// Put the new valus in
 		foreach($array as $key=>$val) 
 			$this->supportgroup_ids[] = intval($val);
+		return true;
 	}
 	
 	/**
@@ -465,9 +480,11 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 		// is only allowed for an update without a 
 		// password change.
 		if ($this->password == '' && intval($this->id) == 0) {
+  			$this->log->write_error('Attempting to insert a user w/o a password');
 			return FALSE;
 		}
 		if ($this->id > 0 ) {
+  			$this->log->write_message('Updating user system id ' . $this->id);
 	 		$sql = '';
 	    	if ($this->password == '') {
 	    		$sql = array(
@@ -516,6 +533,7 @@ class User extends Maleable_Object implements Maleable_Object_Interface {
 	    	if (isset($result[0]) && $result[0]->last_id > 0) {
 	    		$this->set_id($result[0]->last_id);
 	    	}
+  			$this->log->write_message('Adding new user to the system id ' . $this->id);
 		}
 		// Update the support groups (if any)
 		$sql = array(

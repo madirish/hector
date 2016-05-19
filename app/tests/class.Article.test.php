@@ -41,8 +41,8 @@ class TestOfArticleClass extends UnitTestCase {
   function testSetArticleTitle() {
     $this->article->set_title('Title');
     $this->assertTrue($this->article->get_title() == 'Title');
-    $this->article->set_title('<Title>');
-    $this->assertTrue($this->article->get_title() == '&lt;Title&gt;');
+    $this->article->set_title('<b>Title</b>');
+    $this->assertTrue($this->article->get_title() == 'Title');
   }
   
   function testTagIDs() {
@@ -56,19 +56,20 @@ class TestOfArticleClass extends UnitTestCase {
     $this->assertTrue($this->article->add_tag_id(5));
     $this->assertEqual($tag_ids, $this->article->get_tag_ids());
     $this->article->set_tag_ids($bad_tagids);
-    $this->assertNotEqual($bad_tagids, $this->article->get_tag_ids());
+    $article_tag_ids_array = $this->article->get_tag_ids();
+    $this->assertNotIdentical($bad_tagids[3], $article_tag_ids_array[3]);
   }
   
   function testURL() {
   	$url = 'http://localhost';
     $bad = 'foo';
-    $badurl = 'http://localhost?id=<script>alert("xss");</script>';
+    $evilurl = 'http://example.com/?id=<script>alert("xss");</script>';
     $this->assertTrue($this->article->set_url($url));
     $this->assertEqual($url, $this->article->get_url());
     $this->assertEqual('<a href="http://localhost">http://localhost</a>', $this->article->get_linked_url());
     $this->assertFalse($this->article->set_url($bad));
-    $this->assertTrue($this->article->set_url($badurl));
-    $this->assertNotEqual($badurl, $this->article->get_url());
+    $this->assertTrue($this->article->set_url($evilurl));
+    $this->assertNotEqual($evilurl, $this->article->get_url());
   }
   
   function testAddAlterForm() {

@@ -598,7 +598,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
      */
     public function get_text() {
         global $approot;
-        require_once($approot . 'software/htmlpurifier/library/HTMLPurifier.auto.php');
+        require_once($approot . '/software/htmlpurifier/library/HTMLPurifier.auto.php');
         $config = HTMLPurifier_Config::createDefault();
         $config->set('Attr.EnableID', true);
         $purifier = new HTMLPurifier($config);
@@ -624,7 +624,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
     
     public function get_vulnscan_id() {
         global $approot;
-        require_once($approot . 'software/htmlpurifier/library/HTMLPurifier.auto.php');
+        require_once($approot . '/software/htmlpurifier/library/HTMLPurifier.auto.php');
         $config = HTMLPurifier_Config::createDefault();
         $config->set('Attr.EnableID', true);
         $purifier = new HTMLPurifier($config);
@@ -844,6 +844,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
      */
     public function set_fixed_notes($fixed_notes) {
     	$this->fixed_notes = $fixed_notes;
+    	return true;
     }
     
     /**
@@ -854,13 +855,21 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
      */
     public function set_fixed_user_id($user_id) {
     	$this->fixed_user_id = intval($user_id);
+    	return true;
     }
     
     public function set_host_by_ip($ip) {
-    	$host = new Host();
-    	$host->set_ip($ip);
-    	$host->lookup_by_ip();
-    	$this->set_host_id($host->get_id());
+    	if (filter_var($ip_a, FILTER_VALIDATE_IP)) {
+	    	$host = new Host();
+	    	$host->set_ip($ip);
+	    	$host->lookup_by_ip();
+	    	$this->set_host_id($host->get_id());
+	    	return true;
+    	}
+	    else {
+	    	$this->log->write_error("Invalid IP address sent to Vuln_detail::set_host_by_ip()");
+	    	return false;
+	    }
     }
     
     /**
@@ -871,7 +880,14 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
      * @param Int The unique id of the associated Host object
      */
      public function set_host_id($id) {
-     	$this->host_id = (int) $id;
+    	if (is_int($id)){
+    		$this->host_id = (int) $id;
+    		return true;
+    	}
+    	else {
+    		$this->log->write_error("Attempt to use invalid host_id in Vuln_detail::set_host_id()");
+    		return false;
+    	}  	
      }
     
     /**
@@ -882,6 +898,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
      */
     public function set_ignore($ignore) {
     	$this->ignore = (bool) $ignore;
+    	return true;
     }
     
     /**
@@ -911,11 +928,25 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
      * @param Int The ID of the User marking the record ignored.
      */
     public function set_ignore_user_id($user_id) {
-    	$this->ignore_user_id = intval($user_id);
+    	if (is_int($user_id)){
+    		$this->ignore_user_id = intval($user_id);
+    		return true;
+    	}
+    	else {
+    		$this->log->write_error("Attempt to use invalid user_id in Vuln_detail::set_ignore_user_id()");
+    		return false;
+    	}
     }
     
     public function set_risk_id($id) {
-    	$this->risk_id = intval($id);
+    	if (is_int($id)) {
+    		$this->risk_id = intval($id);
+    		return true;
+    	}
+    	else {
+    		$this->log->write_error("Attempt to set non-numeric risk_id in Vuln_detail::set_risk_id()");
+    		return false;
+    	}
     }
     
     /**
@@ -926,6 +957,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
      */
     public function set_text($text) {
     		$this->text = $text;
+    		return true;
     }
     
     /**
@@ -952,7 +984,14 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
      * @param Int The id of the associated Vuln object.
      */
     public function set_vuln_id($id) {
-    	$this->vuln_id = intval($id);
+    	if (is_int($id)) {
+    		$this->vuln_id = intval($id);
+    		return true;
+    	}
+    	else {
+    		$this->log->write_error("Attempt to set non-numeric risk_id in Vuln_detail::set_vuln_id()");
+    		return false;
+    	}
     }
     
     public function set_vulnscan_id($vulnscan_id) {

@@ -59,7 +59,7 @@
     <?php foreach ($darknets as $probe): ?>
     	<?php $ip = long2ip($probe->get_src_ip()); ?>
     	<tr>
-    		<td><a href="?action=attackerip&ip=<?php echo $probe->get_src_ip() ?>"><?php echo $ip?></a>
+    		<td><a href="?action=attackerip&ip=<?php echo $ip ?>"><?php echo $ip?></a>
     		<td><?php echo $probe->get_proto()?></td>
     		<td><?php echo $probe->get_dst_port()?></td>
     		<td><?php echo $probe->get_src_port() ?></td>

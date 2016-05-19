@@ -136,13 +136,13 @@ class Darknet extends Maleable_Object {
             $result = $this->db->fetch_object_array($sql);
             if (is_object($result[0])) {
                 $this->set_country_code($result[0]->country_code);
-                $this->set_id($result[0]->darknet_id);
-                $this->set_dst_ip($result[0]->dst_ip);
-                $this->set_dst_port($result[0]->dst_port);
+                $this->set_id(intval($result[0]->darknet_id));
+                $this->set_dst_ip(intval($result[0]->dst_ip));
+                $this->set_dst_port(intval($result[0]->dst_port));
                 $this->set_proto($result[0]->proto);
                 $this->set_received_at($result[0]->received_at);
-                $this->set_src_ip($result[0]->src_ip);
-                $this->set_src_port($result[0]->src_port);	
+                $this->set_src_ip(intval($result[0]->src_ip));
+                $this->set_src_port(intval($result[0]->src_port));	
             }
         }
     }
@@ -158,6 +158,7 @@ class Darknet extends Maleable_Object {
     	$second_colon = strpos($log, ":", $first_colon);
     	$end_of_date = strpos($log, " ", $second_colon);
     	$date = substr($log, 0, $end_of_date);
+    	$this->set_received_at($date);
     	$start_of_iptable = strpos($log, "iptables ") +9;
     	$iptable = substr($log, $start_of_iptable);
     	$iptablesarr = explode(" ", $iptable);
@@ -429,7 +430,7 @@ class Darknet extends Maleable_Object {
                 'dst_port = \'?i\', ' .
                 'proto = \'?s\', ' .
             	'country_code = (SELECT g.country_code FROM geoip g WHERE g.start_ip_long < \'?i\' AND g.end_ip_long > \'?i\')',
-                'received_at = \'?i\' WHERE id = \'?i\'',
+                'received_at = \'?d\' WHERE id = \'?i\'',
                 $this->get_src_ip(),
                 $this->get_dst_ip(),
                 $this->get_src_port(),
@@ -449,7 +450,7 @@ class Darknet extends Maleable_Object {
                 'src_port = \'?i\', ' .
                 'dst_port = \'?i\', ' .
                 'proto = \'?s\', ' .
-                'received_at = \'?i\', ' . 
+                'received_at = \'?d\', ' . 
             	'country_code = (SELECT g.country_code FROM geoip g WHERE g.start_ip_long < \'?i\' AND g.end_ip_long > \'?i\')',
                 $this->get_src_ip(),
                 $this->get_dst_ip(),
@@ -465,7 +466,7 @@ class Darknet extends Maleable_Object {
             $sql = 'SELECT LAST_INSERT_ID() AS last_id';
             $result = $this->db->fetch_object_array($sql);
             if (isset($result[0]) && $result[0]->last_id > 0) {
-                $this->set_id($result[0]->last_id);
+                $this->set_id(intval($result[0]->last_id));
             }
             else {
             	$this->log->write_error("There was a problem getting the last insert id at Darknet::save()");

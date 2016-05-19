@@ -64,8 +64,8 @@ if(php_sapi_name() == 'cli') {
 	// Check to make sure arguments are present
 	if ($argc < 2) show_help("Too few arguments!  You tried:\n " . implode(' ', $argv));
 
-	$logfile = fopen($argv[1], "r");
-	if ($handle) {
+	$logfile = file($argv[1]);
+	if ($logfile) {
 		/**
 		 * Singletons
 		 */
@@ -73,21 +73,22 @@ if(php_sapi_name() == 'cli') {
 		$db = Db::get_instance();
 		$dblog = Dblog::get_instance();
 		$log = Log::get_instance();
+		loggit("iptables import.php process", "Beginning iptables import process");
+		
+		$record_count = 0;
+		
+		foreach($logfile as $line) {
+			$darknet = new Darknet();
+			$darknet->construct_by_syslog_string($line);
+			$darknet->save();
+			$record_count++;
+		}
+
+		loggit("iptables import.php process", "iptables import process complete.  Imported " . $record_count . " records");
+		 
 	}
 	else {
 		loggit("iptables import.php process", "There was a problem opening the file " . $argv[1]);
 	}
-
-
-	// Load up the XML and parse it
-	$openvasrun = simplexml_load_file($xmloutput);
-	if (! $openvasrun) {
-		loggit("OpenVAS import.php process", "There was a problem parsing the XML file $xmloutput!");
-	}
-
-	$datetime = new DateTime($openvasrun->name, new DateTimeZone('America/New_York'));
-	$task_id = (string)$openvasrun->task['id'];
-
-	foreach ($openvasrun->report->results->result as $scanresult) {
-
+}
 ?>

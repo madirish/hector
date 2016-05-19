@@ -105,6 +105,7 @@ class TestOfDarknetClass extends UnitTestCase {
     	$this->assertIdentical(46797, $this->dnet->get_src_port());
     	$this->assertIdentical(21320, $this->dnet->get_dst_port());
     	$this->assertIdentical('tcp', $this->dnet->get_proto());
+    	$this->assertEqual('2016-05-15 04:19:58', $this->dnet->get_received_at());
     	$this->assertTrue($this->dnet->save());
 		/* print_r("\nThe source IP is: " . ip2long('222.229.21.1') . "\n");
 		print_r("\nThe country code is: " . $this->dnet->get_country_code() . "\n");

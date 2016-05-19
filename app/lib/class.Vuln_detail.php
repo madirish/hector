@@ -223,19 +223,19 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 			$result = $this->db->fetch_object_array($sql);
 			if (isset($result[0])) {
 				$r = $result[0];
-				$this->set_id($r->vuln_detail_id);
+				$this->set_id(intval($r->vuln_detail_id));
 				$this->set_text($r->vuln_detail_text);
 				$this->set_datetime($r->vuln_detail_datetime);
 				$this->set_ignore($r->vuln_detail_ignore);
 				$this->set_ignore_datetime($r->vuln_detail_ignore_datetime);
-				$this->set_ignore_user_id($r->vuln_detail_ignoredby_user_id);
+				$this->set_ignore_user_id(intval($r->vuln_detail_ignoredby_user_id));
 				$this->set_fixed($r->vuln_detail_fixed);
 				$this->set_fixed_datetime($r->vuln_detail_fixed_datetime);
 				$this->set_fixed_notes($r->vuln_detail_fixed_notes);
-				$this->set_fixed_user_id($r->vuln_detail_fixedby_user_id);
-				$this->set_vuln_id($r->vuln_id);
-				$this->set_risk_id($r->risk_id);
-				$this->set_host_id($r->host_id);
+				$this->set_fixed_user_id(intval($r->vuln_detail_fixedby_user_id));
+				$this->set_vuln_id(intval($r->vuln_id));
+				$this->set_risk_id(intval($r->risk_id));
+				$this->set_host_id(intval($r->host_id));
 				$this->set_ticket($r->vuln_detail_ticket);
 			}
 			$sql = array(

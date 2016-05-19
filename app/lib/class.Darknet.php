@@ -168,22 +168,22 @@ class Darknet extends Maleable_Object {
     				case "SRC":
     					$ip = $pieces[1];
     					if (filter_var($ip, FILTER_VALIDATE_IP)) {
-    						$ip = inet_pton($ip);
+    						$ip = ip2long($ip);
     						$this->set_src_ip($ip);
     					}
     					break;
     				case "DST":
     					$ip = $pieces[1];
     					if (filter_var($ip, FILTER_VALIDATE_IP)) {
-    						$ip = inet_pton($ip);
+    						$ip = ip2long($ip);
     						$this->set_dst_ip($ip);
     					}
     					break;
     				case "SPT":
-    					$this->set_src_port($pieces[1]);
+    					$this->set_src_port(intval($pieces[1])); 
     					break;
     				case "DPT":
-    					$this->set_dst_port($pieces[1]);
+    					$this->set_dst_port(intval($pieces[1]));
     					break;
     				case "PROTO":
     					$this->set_proto(strtolower($pieces[1]));
@@ -273,7 +273,7 @@ class Darknet extends Maleable_Object {
      * @return Int The destination IP of the probe
      */
     public function get_dst_ip() {
-    	return intval($this->dst_ip);
+    	return $this->dst_ip;
     }
     
     /**
@@ -377,7 +377,7 @@ class Darknet extends Maleable_Object {
      * @return Int The source IP of the probe
      */
     public function get_src_ip() {
-        return intval($this->src_ip);
+        return $this->src_ip;
     }
     
     /**
@@ -467,6 +467,24 @@ class Darknet extends Maleable_Object {
             if (isset($result[0]) && $result[0]->last_id > 0) {
                 $this->set_id($result[0]->last_id);
             }
+            else {
+            	$this->log->write_error("There was a problem getting the last insert id at Darknet::save()");
+            }
+        }
+        // Finally set the country code
+		$sql = array(
+			'SELECT country_code from darknet where id = ?i',
+			$this->get_id()
+		);
+		$result = $this->db->fetch_object_array($sql);
+		if (isset($result[0])) {
+			$this->set_country_code($result[0]->country_code);
+		}
+		else {
+			$this->log->write_error("There was a problem getting the country_code at Darknet::save()");
+   		}
+        if (! $retval) {
+        	$this->log->write_error("There was a problem saving in Darknet::save()");
         }
         return $retval;
     }
@@ -478,9 +496,16 @@ class Darknet extends Maleable_Object {
      * @param String The two letter country code.
      */
     public function set_country_code($code) {
+    	$retval = true;
+    	$original_code = $code;
         $code = substr(strtoupper($code),0,2);
         $code = preg_replace('/[^A-Z]/', '', $code);
+        if (! $original_code == $code ) {
+        	$this->log->write_error("Country code reformatted at Darknet::set_country_code()");
+       		$retval = false;
+        }
         $this->country_code = $code;
+        return $retval;
     }
     
     /**
@@ -490,7 +515,12 @@ class Darknet extends Maleable_Object {
      * @param Int The unique ID from the data layer
      */
     protected function set_id($id) {
+    	if (! is_int($id)) {
+    		$this->log->write_error("Non integer submitted to Darknet::set_id()");
+    		return false;
+    	}
         $this->id = intval($id);
+        return true;
     }
 
     
@@ -498,12 +528,20 @@ class Darknet extends Maleable_Object {
      * Set the destination IP of the probe
      * 
      * @access public
-     * @param Int The destination IP of the probe
+     * @param Long The destination IP of the probe
      */
     public function set_dst_ip($ip) {
-    	if (! is_int($ip)) return false;
-    	if (filter_var(inet_ntop($ip), FILTER_VALIDATE_IP)) return false;
-        $this->dst_ip = intval($ip);
+    	if (! is_long($ip)) {
+    		$this->log->write_error("Invalid IP param datatype at Darknet::set_dst_ip()");
+    		return false;
+    	}
+    	// This validation doesn't seem very reliable, won't validate reserved IP's
+    	/* if (filter_var(long2ip($ip), FILTER_VALIDATE_IP)) {
+    		$this->log->write_error("IP failed to validate at Darknet::set_dst_ip()");
+    		return false;
+    	} */
+        $this->dst_ip = $ip;
+        return true;
     }
     
     /**
@@ -513,7 +551,12 @@ class Darknet extends Maleable_Object {
      * @param Int The destination port of the probe
      */
     public function set_dst_port($port) {
-    	$this->dst_port = intval($port);
+    	if (! is_int($port)) {
+    		$this->log->write_error("Non-integer submitted to Darknet::set_dst_port()");
+    		return false;
+    	}
+        $this->dst_port = intval($port);
+        return true;
     }
     
     /**
@@ -535,7 +578,10 @@ class Darknet extends Maleable_Object {
                 break;
             default:
                 $this->proto = '';
+                $this->log->write_error("Unrecognized protocol submitted to Darkenet::set_proto()");
+                return false;
         }
+        return true;
     }
     
     /**
@@ -546,6 +592,7 @@ class Darknet extends Maleable_Object {
      */
     public function set_received_at($datetime) {
         $this->received_at = date("Y-m-d H:i:s", strtotime($datetime));
+        return true;
     }
     
     
@@ -556,19 +603,32 @@ class Darknet extends Maleable_Object {
      * @param Int The source IP of the probe
      */
     public function set_src_ip($ip) {
-    	if (! is_int($ip)) return false;
-    	if (filter_var(inet_ntop($ip), FILTER_VALIDATE_IP)) return false;
-    	$this->src_ip = intval($ip);
+    	if (! is_int($ip)) {
+    		$this->log->write_error("Non-integer IP param datatype at Darknet::set_src_ip() - got " . gettype($ip));
+    		return false;
+    	}
+    	// This validation doesn't seem very reliable, won't validate reserved IP's
+    	/* if (filter_var(long2ip($ip), FILTER_VALIDATE_IP)) {
+    		$this->log->write_error("IP failed to validate at Darknet::set_src_ip() - got " . long2ip($ip));
+    		return false;
+    	} */
+    	$this->src_ip = $ip;
+    	return true;
     }
     
     /**
      * Set the source port of the probe
      * 
      * @access public
-     * @param Int The source port of the probe
+     * @param Long The source port of the probe
      */
     public function set_src_port($port) {
-        $this->src_port = intval($port);
+    	if (! is_long($port)) {
+    		$this->log->write_error("Non-integer submitted to Darknet::set_src_port()");
+    		return false;
+    	}
+        $this->src_port = $port;
+        return true;
     }
     
 

@@ -225,6 +225,7 @@ if (is_array($tag_collection->members)){
 		}
 	}
 	array_multisort($tag_sorter,SORT_DESC,$tag_weights);
+	$tag_cloud = array_slice($tag_weights, 0, 50); // Limit to 50 elements
 }
 
 /**

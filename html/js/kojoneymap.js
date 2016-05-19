@@ -244,65 +244,9 @@ $(function(){
 	latlong["ZM"] = {'latitude':-15,'longitude':30,'name':"Zambia"}
 	latlong["ZW"] = {'latitude':-20,'longitude':30,'name':"Zimbabwe"}
 	latlong[""] = {'latitude':0,'longitude':0,'name':"Unknown"}	
-
-
-
-
-	var data = $.parseJSON($('#kojoney-map-counts').text());
-	var markers = [];
-	var markerValues = [];
-	for (iso in data){
-		if (latlong.hasOwnProperty(iso)) {
-			loc = [latlong[iso]["latitude"],latlong[iso]["longitude"]];
-			val = data[iso]
-			country = latlong[iso]["name"];
-			markers.push({latLng:loc,value:val,name:country,code:iso});
-			markerValues.push(val);
-		}
-		else {
-			console.log("Odd, no entry for country " + iso);
-		}
-	}
 	
-	$('#kojoney-worldmap').vectorMap({
-		map: 'world_mill_en',
-		series:{
-			markers: [{
-		        attribute: 'r',
-		        scale: [5, 15],
-		        values: markerValues,
-		      }]
-		},
-		 markers:markers,
-		 scaleColors: ['#C8EEFF', '#0071A4'],
-		 markerStyle: {
-			 initial: {
-				 fill: '#FF0F00',
-				 stroke: '#FF0F00'
-			 }
-		 },
-		 regionStyle: {
-		      initial: {
-		        fill: '#B8E186'
-		      },
-		 },
-		 backgroundColor: '#C8EEFF',
-		 onMarkerLabelShow: function(event,label,index){
-			 label.html(
-					 "<b>" + markers[index]['name'] + "</b><br/>" + 'Distinct IPs attempting login: ' + markers[index]['value']
-					 );
-		 },
-		 onMarkerClick: function(event,index){
-			 location.href = "?action=honeypot&country=" + markers[index]['code'];
-		 },
-		 onMarkerOver: function(event,label){
-			 $(this).css('cursor','pointer');
-		 },
-		 onMarkerOut: function(event,label){
-			 $(this).css('cursor','default');
-		 }
-	})
-})
+});
+
 
 
 

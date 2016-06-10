@@ -234,6 +234,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 				$this->set_fixed_notes($r->vuln_detail_fixed_notes);
 				$this->set_fixed_user_id(intval($r->vuln_detail_fixedby_user_id));
 				$this->set_vuln_id(intval($r->vuln_id));
+				$this->set_vuln_id(intval($r->vulnscan_id));
 				$this->set_risk_id(intval($r->risk_id));
 				$this->set_host_id(intval($r->host_id));
 				$this->set_ticket($r->vuln_detail_ticket);
@@ -640,15 +641,17 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
      * @param Object An instance of the database connection
      * @return Array An object array with attributes vuln_name, vuln_detail_id, vuln_detail_text, vuln_detail_datetime, vuln_detail_ignore, and vuln_detail_fixed
      */
-    public function get_vuln_details_by_host($host_id, $db='') {
+    public function get_vuln_details_by_host($host_id, $db='',$vulnscan='') {
         if ($db == '') $db = $this->db;
         $host_id = intval($host_id);
-    	$sql = array('SELECT distinct(v.vuln_name), ' .
+        $select_stmt = 'SELECT distinct(v.vuln_name), ' .
     				'max(d.vuln_detail_datetime), ' .
                     'd.vuln_detail_id, ' .
                     'd.vuln_detail_text, ' .
                     'd.vuln_detail_ignore, ' .
                     'd.vuln_detail_fixed, ' .
+                    'd.vuln_detail_fixed, ' .
+    				'r.risk_id, ' . 
                     'r.risk_name ' .
                 'FROM vuln_detail d, ' .
                     'vuln v, ' .
@@ -656,10 +659,14 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
     			'WHERE ' .
                     'd.host_id = ?i ' .
                     'AND r.risk_id = d.risk_id '. 
-    				'AND d.vuln_id = v.vuln_id ' .
-                'GROUP BY v.vuln_name ' . 
-                'ORDER BY r.risk_weight DESC', 
+    				'AND d.vuln_id = v.vuln_id ';
+    	if ($vulnscan != '') $select_stmt .= ' AND d.vulnscan_id = \'?s\' ';    	
+        $select_stmt .= 'GROUP BY v.vuln_name ' . 
+                'ORDER BY r.risk_weight DESC';
+    	$sql = array($select_stmt, 
                 $host_id);
+    	if ($vulnscan != '') $sql[] = $vulnscan;
+    	
         return $db->fetch_object_array($sql);
     }
     

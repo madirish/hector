@@ -40,6 +40,7 @@ $runs = $vulnscan->get_previous_runs();
 <ul class="nav nav-tabs" id="vulnScanTab">
 	<li class="active"><a href="#overview" data-toggle="tab">Overview</a></li>
 	<li><a href="#detail" data-toggle="tab">Detail</a></li>
+	<li><a href="#breakdown" data-toggle="tab">Breakdown</a></li>
 </ul>
 
 <div class="tab-content">
@@ -217,13 +218,93 @@ foreach ($vulnscan_for_details->get_vuln_details() as $vuln_detail) {
     				break;
 		}
 	?></td>
-	<td><a href="?action=host_detail&id=<?php echo $vuln_detail->get_host_id(); ?>"><?php echo $vuln_detail->get_host_ip();?></a></td>
+	<td><a href="?action=host_details&id=<?php echo $vuln_detail->get_host_id(); ?>"><?php echo $vuln_detail->get_host_ip();?></a></td>
 	<td><a href="?action=vuln_details&id=<?php echo $vuln_detail->get_id(); ?>"><?php echo $vuln_detail->get_vuln_name();?></a></td>
 <?php 
 $x++;
 } ?>
 </table>
 </div>
+
+
+
+<div class="tab-pane" id="detail">
+<table class="table table-stiped table-bordered">
+<tr>
+	<th width="5%">#</th>
+	<th width="10%">Risk</th>
+	<th width="20%">Host IP</th>
+	<th>Vulnerability</th>
+</tr>
+<?php 
+$x = 1;
+foreach ($vulnscan_for_details->get_vuln_details() as $vuln_detail) {
+	$risk = new Risk($vuln_detail->get_risk_id());
+?>
+<tr>
+	<td><?php echo $x; ?></td>
+	<td><?php 
+		switch ($risk->get_name()) {
+    			case 'critical':
+    				print "<span class='label label-important'>Critical</span>";
+    				break;
+    			case 'high':
+    				print "<span class='label label-warning'>High</span>";
+    				break;
+    			case 'medium':
+    				print "<span class='label label-info'>Medium</span>";
+    				break;
+    			case 'low':
+    				print "<span class='label'>Low</span>";
+    				break;
+		}
+	?></td>
+	<td><a href="?action=host_details&id=<?php echo $vuln_detail->get_host_id(); ?>"><?php echo $vuln_detail->get_host_ip();?></a></td>
+	<td><a href="?action=vuln_details&id=<?php echo $vuln_detail->get_id(); ?>"><?php echo $vuln_detail->get_vuln_name();?></a></td>
+<?php 
+$x++;
+} ?>
+</table>
+</div>
+
+
+
+<div class="tab-pane" id="breakdown">
+<table class="table table-stiped table-bordered">
+<tr>
+	<th width="5%">#</th>
+	<th width="10%">IP</th>
+	<th width="20%">Hostname</th>
+	<th>Critical</th>
+	<th>High</th>
+	<th>Medium</th>
+	<th>Low</th>
+	<th>None</th>
+	<th>Contact</th>
+	<th>Notes</th>
+</tr>
+<?php 
+$x = 1;
+foreach ($hosts as $record) {
+	$host = $record['host'];
+?>
+<tr>
+	<td><?php echo $x; ?></td>
+	<td><a href="?action=host_details&id=<?php echo $host->get_id(); ?>"><?php echo $host->get_ip();?></a></td>
+	<td><?php echo $host->get_name();?></td>
+	<td><?php echo $record['urgents'];?></td>
+	<td><?php echo $record['criticals'];?></td>
+	<td><?php echo $record['seriouses'];?></td>
+	<td><?php echo $record['mediums'];?></td>
+	<td><?php echo $record['minimals'];?></td>
+	<td><?php echo $host->get_sponsor();?></td>
+	<td><?php echo $host->get_note();?></td>
+<?php 
+$x++;
+} ?>
+</table>
+</div>
+
 </div>
 
 

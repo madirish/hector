@@ -60,13 +60,15 @@ class Vulnscan {
     private $medium_risk_count = 0;
     private $low_risk_count = 0;
     
+    private $host_ids = array();
+    
     public function __construct($name, $time='') {
     	$this->db = Db::get_instance();
     	$this->name = $name;
     	$sql = '';
     	if ($time !== '') {
 	    	$sql = array(
-	    			'select vuln_detail_id, vuln_id, vuln_detail_datetime, vulnscan_id 
+	    			'select vuln_detail_id, vuln_id, vuln_detail_datetime, vulnscan_id, host_id  
 	    				from vuln_detail 
 	    			  	where vulnscan_id like \'?s\' 
 	    					and vuln_detail_datetime = \'?d\'',
@@ -76,7 +78,7 @@ class Vulnscan {
     	}
     	else {
 	    	$sql = array(
-	    			'select vuln_detail_id, vuln_id, vuln_detail_datetime, vulnscan_id 
+	    			'select vuln_detail_id, vuln_id, vuln_detail_datetime, vulnscan_id, host_id 
 	    				from vuln_detail 
 	    			  	where vulnscan_id like \'?s\' 
 	    					and vuln_detail_datetime = 
@@ -105,6 +107,9 @@ class Vulnscan {
     				case 'low':
     					$this->low_risk_count++;
     					break;
+    			}
+    			if (! array_search($row->host_id, $this->host_ids)) {
+    				$this->host_ids[] = $row->host_id;
     			}
     		}
     		$this->datetime = $result[0]->vuln_detail_datetime;
@@ -155,6 +160,11 @@ class Vulnscan {
 	
 	public function get_datetime() {
 		return htmlspecialchars($this->datetime);
+	}
+	
+	public function get_host_ids() {
+		// Return de-duped array
+		return array_unique($this->host_ids);
 	}
     
 	public function get_name() {

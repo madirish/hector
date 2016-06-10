@@ -41,9 +41,12 @@ $runs = $vulnscan->get_previous_runs();
 	<li class="active"><a href="#overview" data-toggle="tab">Overview</a></li>
 	<li><a href="#detail" data-toggle="tab">Detail</a></li>
 	<li><a href="#breakdown" data-toggle="tab">Breakdown</a></li>
+	<li><a href="#by_machine" data-toggle="tab">By Machine</a></li>
 </ul>
 
 <div class="tab-content">
+
+<!--  Overview Tab -->
 <div class="tab-pane active" id="overview">
 
 <table class="table table-bordered">
@@ -225,9 +228,9 @@ $x++;
 } ?>
 </table>
 </div>
+<!--  End Overview Tab -->
 
-
-
+<!--  Detail Tab -->
 <div class="tab-pane" id="detail">
 <table class="table table-stiped table-bordered">
 <tr>
@@ -266,9 +269,9 @@ $x++;
 } ?>
 </table>
 </div>
+<!--  End Detail Tab -->
 
-
-
+<!--  Breakdown Tab -->
 <div class="tab-pane" id="breakdown">
 <table class="table table-stiped table-bordered">
 <tr>
@@ -304,6 +307,44 @@ $x++;
 } ?>
 </table>
 </div>
+<!--  End Breakdown Tab -->
+
+
+<!--  By Machine Tab -->
+<div class="tab-pane" id="by_machine">
+<table class="table table-stiped table-bordered">
+<tr>
+	<th width="5%">#</th>
+	<th width="10%">IP</th>
+	<th width="20%">Hostname</th>
+	<th>Severity</th>
+	<th>Notes</th>
+	<th>Contact</th>
+	<th>Vuln</th>
+	<th width="25%">Details</th>
+</tr>
+<?php 
+$x = 1;
+foreach ($hosts as $record) {
+	$host = $record['host'];
+	foreach ($record['vulns'] as $vuln) {
+?>
+<tr>
+	<td><?php echo $x; ?></td>
+	<td><a href="?action=host_details&id=<?php echo $host->get_id(); ?>"><?php echo $host->get_ip();?></a></td>
+	<td><?php echo $host->get_name();?></td>
+	<td><?php echo $vuln->risk_name ;?></td>
+	<td><?php echo $host->get_note() ;?></td>
+	<td><?php echo $host->get_sponsor() ;?></td>
+	<td><?php echo $vuln->vuln_name ;?></td>
+	<td width="25%"><?php echo $vuln->vuln_description ;?></td>
+<?php 
+	$x++;
+	}
+} ?>
+</table>
+</div>
+<!-- End By Machine Tab -->
 
 </div>
 

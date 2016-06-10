@@ -651,6 +651,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
                     'd.vuln_detail_ignore, ' .
                     'd.vuln_detail_fixed, ' .
                     'd.vuln_detail_fixed, ' .
+                    'v.vuln_description, ' . 
     				'r.risk_id, ' . 
                     'r.risk_name ' .
                 'FROM vuln_detail d, ' .

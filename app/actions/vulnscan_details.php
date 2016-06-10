@@ -49,7 +49,7 @@ if (is_array($vulnscan->get_host_ids())) {
 			}
 		}
 		$hosts[] = array('host'=>new Host($host_id), 
-							'vulns'=>vulns, 
+							'vulns'=>$vulns, 
 							'minimals'=>$minimals, 
 							'mediums'=>$mediums,
 							'seriouses'=>$seriouses,

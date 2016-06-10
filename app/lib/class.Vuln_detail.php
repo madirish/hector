@@ -234,7 +234,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
 				$this->set_fixed_notes($r->vuln_detail_fixed_notes);
 				$this->set_fixed_user_id(intval($r->vuln_detail_fixedby_user_id));
 				$this->set_vuln_id(intval($r->vuln_id));
-				$this->set_vuln_id(intval($r->vulnscan_id));
+				$this->set_vulnscan_id(intval($r->vulnscan_id)); 
 				$this->set_risk_id(intval($r->risk_id));
 				$this->set_host_id(intval($r->host_id));
 				$this->set_ticket($r->vuln_detail_ticket);
@@ -993,7 +993,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
      */
     public function set_vuln_id($id) {
     	if (is_int($id)) {
-    		$this->vuln_id = intval($id);
+    		$this->vuln_id = $id;
     		return true;
     	}
     	else {

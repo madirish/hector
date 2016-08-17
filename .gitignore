@@ -6,3 +6,5 @@
 version-tcp-ips.txt
 version-udp-ips.txt
 app/reports/*.csv
+*.toimport
+*.done

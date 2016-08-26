@@ -586,3 +586,20 @@ CREATE TABLE IF NOT EXISTS `vuln_detail` (
   INDEX (`risk_id`),
   PRIMARY KEY (`vuln_detail_id`)
 ) ENGINE = INNODB;
+
+
+-- OpenDNS Malware Domains
+CREATE TABLE IF NOT EXISTS `malware_domain` (
+  `malware_domain_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `malware_domain_name` VARCHAR(255) NOT NULL UNIQUE,
+  PRIMARY KEY (`malware_domain_id`)
+) ENGINE = INNODB;
+
+CREATE TABLE IF NOT EXISTS `infoblox_query` (
+  `infoblox_query_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `infoblox_query_src_ip` VARCHAR(15) NOT NULL,
+  `infoblox_query_src_ip_numeric` INT UNSIGNED NOT NULL,
+  `infoblox_query_domain_name` VARCHAR(255) NOT NULL,
+  `infoblox_query_datetime` timestamp NOT NULL,
+  PRIMARY KEY (`infoblox_query_id`)
+) ENGINE = INNODB;

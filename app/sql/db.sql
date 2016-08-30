@@ -598,7 +598,6 @@ CREATE TABLE IF NOT EXISTS `malware_domain` (
 CREATE TABLE IF NOT EXISTS `infoblox_query` (
   `infoblox_query_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `infoblox_query_src_ip` VARCHAR(15) NOT NULL,
-  `infoblox_query_src_ip_numeric` INT UNSIGNED NOT NULL,
   `infoblox_query_domain_name` VARCHAR(255) NOT NULL,
   `infoblox_query_datetime` timestamp NOT NULL,
   PRIMARY KEY (`infoblox_query_id`)

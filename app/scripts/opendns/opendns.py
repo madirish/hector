@@ -41,8 +41,10 @@ logger.info('pulling logs from s3 bucket.')
 aws = subprocess.Popen(["aws", "s3", "cp", "--recursive", "s3://"+bucket+"/dnslogs/"+target_date+"/", opendns_dir+"logs/"+target_date+"/"], stdout=subprocess.PIPE)
 aws.communicate() # wait for process to complete
 
-logger.info('filtering out domain names')
 outfile = open(opendns_dir+output_filename, "w")
+
+logger.info('filtering out domain names')
+
 gzip = subprocess.Popen(["gzip", "-rdc", opendns_dir+"logs/"+target_date+"/"],stdout=subprocess.PIPE)
 grep = subprocess.Popen(["grep", "-e", "Malware"],stdin=gzip.stdout,stdout=subprocess.PIPE)
 awk = subprocess.Popen(["awk", "-f", opendns_dir+"blocked.awk"],stdin=grep.stdout,stdout=subprocess.PIPE)

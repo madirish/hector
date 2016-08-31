@@ -1,6 +1,6 @@
 <?php
 /**
- * HECTOR - class.Malware_domain.php
+ * HECTOR - class.Domain.php
  *
  * @author Josh Bauer <bauerj@mlhs.org>
  *
@@ -23,14 +23,15 @@ require_once('class.Log.php');
 require_once('class.Collection.php');
 require_once('interface.Maleable_Object_Interface.php');
 require_once('class.Maleable_Object.php');
+require_once('class.Service.php');
 
 /**
- * Malware_domain
+ * Domain
  *
  * @access public
  * @package HECTOR
  */
-class Malware_domain {
+class Domain {
 
 
     // --- ATTRIBUTES ---
@@ -50,6 +51,27 @@ class Malware_domain {
      */
     private $name;
     
+    /**
+     * Is the domain marked as malicious.
+     *
+     * @var bool
+     */
+    private $is_malicious;
+    
+    /**
+     * Date that the domin was last marked malicious
+     *
+     * @var String
+     */
+    private $marked_malicious_datetime;
+    
+    /**
+     * Service logged the domain
+     *
+     * @var Service
+     */
+    private $service;
+    
     
     /**
      * Generic constructor.  Look up the object
@@ -67,13 +89,16 @@ class Malware_domain {
     	$this->log = Log::get_instance();
     	if ($id != '') {
     		$sql = array(
-    				'SELECT * FROM malware_domain WHERE malware_domain_id = ?i',
+    				'SELECT * FROM domain WHERE domain_id = ?i',
     				$id
     		);
     		$result = $this->db->fetch_object_array($sql);
     		if (isset($result[0])) {
-    			$this->id = $result[0]->malware_domain_id;
-    			$this->name = $result[0]->malware_domain_name;
+    			$this->id = $result[0]->domain_id;
+    			$this->name = $result[0]->domain_name;
+    			$this->is_malicious = $result[0]->is_malicious > 0;
+    			$this->marked_malicious_datetime = $result[0]->marked_malicious_datetime;
+    			$this->service = new Service($result[0]->service_id);
     		}
     	}
     }
@@ -88,7 +113,7 @@ class Malware_domain {
     public function delete() {
     	$retval = FALSE;
     	if ($this->id > 0 ) {
-    		$sql=array('Delete FROM malware_domain WHERE malware_domain_id =?i',
+    		$sql=array('Delete FROM domain WHERE domain_id =?i',
     				$this->get_id()
     		);
     		$retval = $this->db->iud_sql($sql);
@@ -113,12 +138,41 @@ class Malware_domain {
      *
      * @access public
      * @author Josh Bauer <bauerj@mlhs.org>
-     * @return String The malware domain name
+     * @return String The domain name
      */
     public function get_name() {
     	return htmlspecialchars($this->name);
     }
     
+    /**
+     * Is the domain malicious
+     * @access public
+     * @author Josh Bauer <bauerj@mlhs.org>
+     * @return bool 
+     */
+    public function get_is_malicious() {
+    	return $this->is_malicious;
+    }
+    
+    /**
+     * Get display safe datetime when marked malicious
+     * @access public
+     * @author Josh Bauer <bauerj@mlhs.org>
+     * @return bool
+     */
+    public function get_marked_malicious_datetime() {
+    	return htmlspecialchars($this->marked_malicious_datetime);
+    }
+    
+    /**
+     * Get Service
+     * @access public
+     * @author Josh Bauer <bauerj@mlhs.org>
+     * @return Service
+     */
+    public function get_service() {
+    	return $this->service;
+    }
     
     /**
      * Populate object if a domain name exists in the database
@@ -127,11 +181,14 @@ class Malware_domain {
      * @author Josh Bauer <bauerj@mlhs.org>
      */
     public function lookup_by_name($name) {
-    	$sql = array('select * from malware_domain where malware_domain_name = \'?s\'', $name);
+    	$sql = array('select * from domain where domain_name = \'?s\'', $name);
     	$result = $this->db->fetch_object_array($sql);
     	if (isset($result[0])) {
-    		$this->id = $result[0]->malware_domain_id;
-    		$this->name = $result[0]->malware_domain_name;
+    		$this->id = $result[0]->domain_id;
+    		$this->name = $result[0]->domain_name;
+    		$this->is_malicious = $result[0]->is_malicious > 0;
+    		$this->marked_malicious_datetime = $result[0]->marked_malicious_datetime;
+    		$this->service = new Service($result[0]->service_id);
     	}
     }
     
@@ -145,20 +202,26 @@ class Malware_domain {
     public function save() {
     	$sql = '';
     	if ($this->id > 0 ) {
-    		// Update an existing malware domain
+    		// Update an existing domain
     		$sql = array(
-    				'UPDATE malware_domain SET ' .
-    				'malware_domain_name = \'?s\', ' .
-    				'WHERE malware_domain_id = \'?i\'',
+    				'UPDATE domain SET ' .
+    				'domain_name = \'?s\', ' .
+    				'is_malicious = \'?i\', ' .
+    				'marked_malicious_datetime = \'?s\', ' .
+    				'service_id = \'?i\', ' .
+    				'WHERE domain_id = \'?i\'',
     				$this->get_name(),
+    				$this->get_is_malicious(),
+    				$this->get_marked_malicious_datetime(),
+    				$this->get_service()->get_id(),
     				$this->get_id()
     		);
     		$retval = $this->db->iud_sql($sql);
     	}
     	else {
     		$sql = array(
-    				'INSERT INTO malware_domain ' .
-    				'SET malware_domain_name = \'?s\'',
+    				'INSERT INTO domain ' .
+    				'SET domain_name = \'?s\'',
     				$this->get_name()
     		);
     		$retval = $this->db->iud_sql($sql);
@@ -185,16 +248,62 @@ class Malware_domain {
     }
     
     /**
-     * Set the malware domain name.
+     * Set the domain name.
      *
      * @author Josh Bauer <bauerj@mlhs.org>
      * @access public
      * @param String $name
      */
     public function set_name($name) {
-    	if ($name != '')
+    	if ($name != '') {
     		$this->name = htmlspecialchars($name);
+    	}
     }
     
-} /* end of class Malware_domain */
+    /**
+     * Set is_malicious.
+     *
+     * @author Josh Bauer <bauerj@mlhs.org>
+     * @access public
+     * @param String $is_malicious
+     */
+    public function set_is_malicious($is_malicious) {
+    	$this->is_malicious = $is_malicious > 0;
+    }
+    
+    /**
+     * Set marked malicious datetime.
+     *
+     * @author Josh Bauer <bauerj@mlhs.org>
+     * @access public
+     * @param String $datetime
+     */
+    public function set_marked_malicious_datetime($datetime) {
+    	if ($datetime != '') {
+    		$this->marked_malicious_datetime = htmlspecialchars($datetime);
+    	}
+    }
+    
+    /**
+     * Set Service by id.
+     *
+     * @author Josh Bauer <bauerj@mlhs.org>
+     * @access public
+     * @param int $service_id
+     */
+    public function set_service_by_id($service_id) {
+    	$this->service = new Service($service_id);
+    }
+    /**
+     * Set Service.
+     *
+     * @author Josh Bauer <bauerj@mlhs.org>
+     * @access public
+     * @param Service $service
+     */
+    public function set_service($service) {
+    	$this->service = $service;
+    }
+    
+} /* end of class Domain */
 ?>

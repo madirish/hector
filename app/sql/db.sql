@@ -567,7 +567,7 @@ CREATE TABLE IF NOT EXISTS `vuln_x_tag` (
 -- Vulnerablities details
 CREATE TABLE IF NOT EXISTS `vuln_detail` (
   `vuln_detail_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `vuln_detail_text` text,
+  `vuln_detail_text` text,infoblox_query
   `vuln_detail_datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `vuln_detail_ignore` int(1) NOT NULL DEFAULT '0',
   `vuln_detail_ignore_datetime` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -588,17 +588,32 @@ CREATE TABLE IF NOT EXISTS `vuln_detail` (
 ) ENGINE = INNODB;
 
 
--- OpenDNS Malware Domains
-CREATE TABLE IF NOT EXISTS `malware_domain` (
-  `malware_domain_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `malware_domain_name` VARCHAR(255) NOT NULL UNIQUE,
-  PRIMARY KEY (`malware_domain_id`)
+-- Domains
+CREATE TABLE IF NOT EXISTS `domain` (
+  `domain_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `domain_name` VARCHAR(255) NOT NULL UNIQUE,
+  `is_malicious` INT(1) NOT NULL DEFAULT '0',
+  `marked_malicious_datetime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `service_id` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`domain_id`)
 ) ENGINE = INNODB;
 
-CREATE TABLE IF NOT EXISTS `infoblox_query` (
-  `infoblox_query_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `infoblox_query_src_ip` VARCHAR(15) NOT NULL,
-  `infoblox_query_domain_name` VARCHAR(255) NOT NULL,
-  `infoblox_query_datetime` timestamp NOT NULL,
-  PRIMARY KEY (`infoblox_query_id`)
+-- NameD resoloutions
+CREATE TABLE IF NOT EXISTS `named_resolution` (
+  `named_resolution_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `named_resolution_src_ip` VARCHAR(15) NOT NULL,
+  `named_resolution_src_ip_numeric` INT UNSIGNED NOT NULL,
+  `domain_id` INT UNSIGNED NOT NULL,
+  `named_resolution_datetime` timestamp NOT NULL,
+  `service_id` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`named_resolution_id`)
+) ENGINE = INNODB;
+
+-- Services
+CREATE TABLE IF NOT EXISTS `service` (
+  `service_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `service_name` VARCHAR(255) NOT NULL,
+  `service_url` VARCHAR(255),
+  `service_api_key` VARCHAR(255),
+  PRIMARY KEY (`service_id`)
 ) ENGINE = INNODB;

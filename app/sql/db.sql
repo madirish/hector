@@ -592,9 +592,9 @@ CREATE TABLE IF NOT EXISTS `vuln_detail` (
 CREATE TABLE IF NOT EXISTS `domain` (
   `domain_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `domain_name` VARCHAR(255) NOT NULL UNIQUE,
-  `is_malicious` INT(1) NOT NULL DEFAULT '0',
-  `marked_malicious_datetime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `service_id` INT UNSIGNED NOT NULL,
+  `domain_is_malicious` INT(1) NOT NULL DEFAULT '0',
+  `domain_marked_malicious_datetime` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `malware_service_id` INT UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY (`domain_id`)
 ) ENGINE = INNODB;
 
@@ -604,16 +604,23 @@ CREATE TABLE IF NOT EXISTS `named_resolution` (
   `named_resolution_src_ip` VARCHAR(15) NOT NULL,
   `named_resolution_src_ip_numeric` INT UNSIGNED NOT NULL,
   `domain_id` INT UNSIGNED NOT NULL,
-  `named_resolution_datetime` timestamp NOT NULL,
-  `service_id` INT UNSIGNED NOT NULL,
+  `named_resolution_datetime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `named_src_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`named_resolution_id`)
 ) ENGINE = INNODB;
 
--- Services
-CREATE TABLE IF NOT EXISTS `service` (
-  `service_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `service_name` VARCHAR(255) NOT NULL,
-  `service_url` VARCHAR(255),
-  `service_api_key` VARCHAR(255),
-  PRIMARY KEY (`service_id`)
+-- NameD sources
+CREATE TABLE IF NOT EXISTS `named_src` (
+  `named_src_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `named_src_name` VARCHAR(255) NOT NULL UNIQUE,
+  PRIMARY KEY (`named_src_id`)
+) ENGINE = INNODB;
+
+-- Services that identify malware domains
+CREATE TABLE IF NOT EXISTS `malware_service` (
+  `malware_service_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `malware_service_name` VARCHAR(255) NOT NULL,
+  `malware_service_url` VARCHAR(255),
+  `malware_service_api_key` VARCHAR(255),
+  PRIMARY KEY (`malware_service_id`)
 ) ENGINE = INNODB;

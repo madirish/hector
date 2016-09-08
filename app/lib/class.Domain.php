@@ -23,7 +23,7 @@ require_once('class.Log.php');
 require_once('class.Collection.php');
 require_once('interface.Maleable_Object_Interface.php');
 require_once('class.Maleable_Object.php');
-require_once('class.Service.php');
+//require_once('class.Service.php');
 
 /**
  * Domain
@@ -100,6 +100,8 @@ class Domain {
     			$this->marked_malicious_datetime = $result[0]->marked_malicious_datetime;
     			$this->service = new Service($result[0]->service_id);
     		}
+    	} else {
+    		$this->service = new Service();
     	}
     }
     
@@ -206,9 +208,9 @@ class Domain {
     		$sql = array(
     				'UPDATE domain SET ' .
     				'domain_name = \'?s\', ' .
-    				'is_malicious = \'?i\', ' .
-    				'marked_malicious_datetime = \'?s\', ' .
-    				'service_id = \'?i\', ' .
+    				'domain_is_malicious = \'?i\', ' .
+    				'domain_marked_malicious_datetime = \'?s\', ' .
+    				'malware_service_id = \'?i\', ' .
     				'WHERE domain_id = \'?i\'',
     				$this->get_name(),
     				$this->get_is_malicious(),
@@ -221,8 +223,14 @@ class Domain {
     	else {
     		$sql = array(
     				'INSERT INTO domain ' .
-    				'SET domain_name = \'?s\'',
-    				$this->get_name()
+    				'SET domain_name = \'?s\', '.
+    				'domain_is_malicious = \'?i\', ' .
+    				'domain_marked_malicious_datetime = \'?s\', ' .
+    				'malware_service_id = \'?i\'',
+    				$this->get_name(),
+    				$this->get_is_malicious(),
+    				$this->get_marked_malicious_datetime(),
+    				$this->get_service()->get_id()
     		);
     		$retval = $this->db->iud_sql($sql);
     		// Now set the id
@@ -247,13 +255,6 @@ class Domain {
        $this->id = (int) $id;
     }
     
-    /**
-     * Set the domain name.
-     *
-     * @author Josh Bauer <bauerj@mlhs.org>
-     * @access public
-     * @param String $name
-     */
     public function set_name($name) {
     	if ($name != '') {
     		$this->name = htmlspecialchars($name);

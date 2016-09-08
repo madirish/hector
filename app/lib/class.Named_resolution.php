@@ -1,6 +1,6 @@
 <?php
 /**
- * HECTOR - class.Infoblox_query.php
+ * HECTOR - class.Named_resolution.php
  *
  * @author Josh Bauer <bauerj@mlhs.org>
  *
@@ -23,14 +23,15 @@ require_once('class.Log.php');
 require_once('class.Collection.php');
 require_once('interface.Maleable_Object_Interface.php');
 require_once('class.Maleable_Object.php');
+require_once('class.Domain.php');
 
 /**
- * Infoblox_query
+ * Named_resolution
  *
  * @access public
  * @package HECTOR
  */
-class Infoblox_query {
+class Named_resolution {
 
 
     // --- ATTRIBUTES ---
@@ -51,19 +52,26 @@ class Infoblox_query {
     private $ip;
     
     /**
-     * query datetime
+     * ip address numeric
+     *
+     * @var int
+     */
+    private $ip_numeric;
+    
+    /**
+     * resolution datetime
      * 
      * @var timestamp
      */
     private $datetime;
     
     /**
-     * domain name
+     * domain
      * 
-     * @var string
+     * @var Domain
      */
     
-    private $domain_name;
+    private $domain;
     
     
     /**
@@ -82,15 +90,16 @@ class Infoblox_query {
     	$this->log = Log::get_instance();
     	if ($id != '') {
     		$sql = array(
-    				'SELECT * FROM infoblox_query WHERE infoblox_query_id = ?i',
+    				'SELECT * FROM named_resolution WHERE named_resolution_id = ?i',
     				$id
     		);
     		$result = $this->db->fetch_object_array($sql);
     		if (isset($result[0])) {
-    			$this->id = $result[0]->infoblox_query_id;
-    			$this->domain_name = $result[0]->infoblox_query_domain_name;
-    			$this->datetime = $result[0]->infoblox_query_datetime;
-    			$this->ip = $result[0]->infoblox_query_src_ip;
+    			$this->id = $result[0]->named_resolution_id;
+    			$this->domain = new Domain($result[0]->domain_id);
+    			$this->datetime = $result[0]->named_resolution_datetime;
+    			$this->ip = $result[0]->named_resolution_src_ip;
+    			$this->ip_numeric = $result[0]->named_resolution_src_ip_numeric;
     		}
     	}
     }
@@ -105,7 +114,7 @@ class Infoblox_query {
     public function delete() {
     	$retval = FALSE;
     	if ($this->id > 0 ) {
-    		$sql=array('Delete FROM infoblox_query WHERE infoblox_query_id =?i',
+    		$sql=array('Delete FROM named_resolution WHERE named_resolution_id =?i',
     				$this->get_id()
     		);
     		$retval = $this->db->iud_sql($sql);
@@ -140,11 +149,11 @@ class Infoblox_query {
      * Return the display safe domain name
      *
      * @access public
-     * @author Josh Bauer <bauerj@mlhs.org>
-     * @return String The domain name
+     * @author Josh Bauer <bauerj@mlhs.org>_name()
+     * @return Domain the domain
      */
-    public function get_domain_name() {
-    	return htmlspecialchars($this->domain_name);
+    public function get_domain() {
+    	return $this->domain;
     }
     
     /**
@@ -156,6 +165,17 @@ class Infoblox_query {
      */
     public function get_ip() {
     	return htmlspecialchars($this->ip);
+    }
+    
+    /**
+     * Return the numeric value of the ip address
+     *
+     * @access public
+     * @author Josh Bauer <bauerj@mlhs.org>
+     * @return  int The ip address numeric value
+     */
+    public function get_ip_numeric() {
+    	return $this->ip_numeric;
     }
     
     
@@ -170,15 +190,17 @@ class Infoblox_query {
     public function save() {
     	$sql = '';
     	if ($this->id > 0 ) {
-    		// Update an existing infoblox query
+    		// Update an existing named resolution
     		$sql = array(
-    				'UPDATE infoblox_query SET ' .
-    				'infoblox_query_domain_name = \'?s\', ' .
-    				'infoblox_query_src_ip = \'?s\', ' .
-    				'infoblox_query_datetime = \'?s\', ' .
-    				'WHERE infoblox_query_id = \'?i\'',
-    				$this->get_domain_name(),
+    				'UPDATE named_resolution SET ' .
+    				'domain_id = \'?i\', ' .
+    				'named_resolution_src_ip = \'?s\', ' .
+    				'named_resolution_src_ip_numeric = \'?i\', ' .
+    				'named_resolution_datetime = \'?s\' ' .
+    				'WHERE named_resolution_id = \'?i\'',
+    				$this->get_domain()->get_id(),
     				$this->get_ip(),
+    				$this->get_ip_numeric(),
     				$this->get_datetime(),
     				$this->get_id()
     		);
@@ -186,12 +208,14 @@ class Infoblox_query {
     	}
     	else {
     		$sql = array(
-    				'INSERT INTO infoblox_query ' .
-    				'SET infoblox_query_domain_name = \'?s\', ' .
-    				'infoblox_query_src_ip = \'?s\', ' .
-    				'infoblox_query_datetime = \'?s\'',
-    				$this->get_domain_name(),
+    				'INSERT INTO named_resolution ' .
+    				'SET domain_id = \'?i\', ' .
+    				'named_resolution_src_ip = \'?s\', ' .
+    				'named_resolution_src_ip_numeric = \'?i\', ' .
+    				'named_resolution_datetime = \'?s\'',
+    				$this->get_domain()->get_id(),
     				$this->get_ip(),
+    				$this->get_ip_numeric(),
     				$this->get_datetime()
     		);
     		$retval = $this->db->iud_sql($sql);
@@ -218,7 +242,7 @@ class Infoblox_query {
     }
     
     /**
-     * Set the infoblox query datetime.
+     * Set the named resolution datetime.
      *
      * @author Josh Bauer <bauerj@mlhs.org>
      * @access public
@@ -230,33 +254,60 @@ class Infoblox_query {
     }
     
     /**
-     * Set the infoblox query domain.
+     * Set the named resolution domain.
      *
      * @author Josh Bauer <bauerj@mlhs.org>
      * @access public
-     * @param String $domain_name
+     * @param Domain $domain
      */
-    public function set_domain_name($domain_name) {
-    	if ($domain_name != '')
-    		$this->domain_name = htmlspecialchars($domain_name);
+    public function set_domain($domain) {
+    	$this->domain = $domain;
     }
     
     /**
-     * Set the infoblox query ip address.
+     * Set the named resolution domain by id.
+     *
+     * @author Josh Bauer <bauerj@mlhs.org>
+     * @access public
+     * @param int $domain_id
+     */
+    public function set_domain_by_id($domain_id) {
+    	$this->domain = new Domain($domain_id);
+    }
+    
+    /**
+     * Set the named resolution ip address.
      *
      * @author Josh Bauer <bauerj@mlhs.org>
      * @access public
      * @param String $ip
      */
     public function set_ip($ip) {
-    	if ($ip != '')
+    	if ($ip != '') {
     		$this->ip = htmlspecialchars($ip);
+    		$this->ip_numeric = ip2long($ip);
+    	}
     }
+    
+    /**
+     * Set the named resolution ip address.
+     *
+     * @author Josh Bauer <bauerj@mlhs.org>
+     * @access public
+     * @param int $ip_numeric
+     */
+    public function set_ip_numeric($ip_numeric) {
+    	if ($ip_numeric > 0) {
+    		$this->ip = htmlspecialchars(long2ip($ip_numeric));
+    		$this->ip_numeric = $ip_numeric;
+    	}
+    }
+    
     /*Aug 26 04:02:16*/
     public static function conv_datetime($datetime) {
     	$tmp = DateTime::createFromFormat('M j H:i:s', $datetime);
     	return $tmp->format('Y-m-d H:i:s');
     }
     
-} /* end of class Infoblox_query */
+} /* end of class Named_resolution */
 ?>

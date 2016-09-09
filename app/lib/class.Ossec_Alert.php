@@ -93,6 +93,22 @@ class Ossec_Alert extends Maleable_Object {
 	private $rule_id;
 	
 	/**
+	 * The ipv4 rule destination ip
+	 * 
+	 * @access private
+	 * @var String the rule destination ip for the ossec alert
+	 */
+	private $rule_dst_ip;
+	
+	/**
+	 * The numeric representation of the rule destination ip
+	 * 
+	 * @access private
+	 * @var Int numeric representation of the rule destination ip
+	 */
+	private $rule_dst_ip_numeric;
+	
+	/**
 	 * The ipv4 rule source ip
 	 * 
 	 * @access private
@@ -149,7 +165,8 @@ class Ossec_Alert extends Maleable_Object {
 			$sql = array(
 				'SELECT alert_id as ossec_alert_id, alert_date, host_id, 
 					alert_log, rule_id, rule_src_ip, rule_src_ip_numeric, 
-					rule_user, rule_log, alert_ossec_id
+					rule_user, rule_log, alert_ossec_id, rule_dst_ip,
+					rule_dst_ip_numeric 
 					FROM ossec_alert o WHERE o.alert_id = ?i',
 					$id
 			);
@@ -161,6 +178,8 @@ class Ossec_Alert extends Maleable_Object {
 				$this->set_host_id($r->host_id);
 				$this->set_alert_log($r->alert_log);
 				$this->set_rule_id($r->rule_id);
+				$this->set_rule_dst_ip($r->rule_dst_ip);
+				$this->set_rule_dst_ip_numeric($r->rule_dst_ip_numeric);
 				$this->set_rule_src_ip($r->rule_src_ip);
 				$this->set_rule_src_ip_numeric($r->rule_src_ip_numeric);
 				$this->set_rule_user($r->rule_user);
@@ -173,7 +192,8 @@ class Ossec_Alert extends Maleable_Object {
 			$sql = array(
 				'SELECT alert_id as ossec_alert_id, alert_date, host_id, 
 					alert_log, rule_id, rule_src_ip, rule_src_ip_numeric, 
-					rule_user, rule_log, alert_ossec_id
+					rule_user, rule_log, alert_ossec_id, rule_dst_ip,
+					rule_dst_ip_numeric 
 					FROM ossec_alert o WHERE o.alert_ossec_id = ?i',
 					$id
 			);
@@ -185,6 +205,8 @@ class Ossec_Alert extends Maleable_Object {
 				$this->set_host_id($r->host_id);
 				$this->set_alert_log($r->alert_log);
 				$this->set_rule_id($r->rule_id);
+				$this->set_rule_dst_ip_numeric($r->rule_dst_ip_numeric);
+				$this->set_rule_src_ip($r->rule_src_ip);
 				$this->set_rule_src_ip($r->rule_src_ip);
 				$this->set_rule_src_ip_numeric($r->rule_src_ip_numeric);
 				$this->set_rule_user($r->rule_user);
@@ -225,6 +247,17 @@ class Ossec_Alert extends Maleable_Object {
 		$this->alert_date = date("Y-m-d H:i:s", strtotime($datetime));
 	}
 	
+	public function set_alert_host_by_name($hostname) {
+		require_once 'class.Host.php';
+		$host = new Host();
+		$host->lookup_by_name($hostname);
+		if (! $host->get_id() > 0) {
+			$host->set_name($hostname);
+			$host->set_ip(gethostbyname($hostname));
+			$host->save();
+		}
+		$this->set_host_id($host->get_id());
+	}
 	/**
 	 * Get the timestamp of the ossec alert
 	 *
@@ -296,6 +329,28 @@ class Ossec_Alert extends Maleable_Object {
 	}
 	
 	/**
+	 * Set the rule_dst_ip attribute
+	 * 
+	 * @access public
+	 * @param String the ipv4 rule destination ip address
+	 */
+	public function set_rule_dst_ip($rule_dst_ip){
+		if ($rule_dst_ip == filter_var($rule_dst_ip,FILTER_VALIDATE_IP)){
+			$this->rule_dst_ip = $rule_dst_ip;
+		}
+	}
+	
+	/**
+	 * Get the rule destination ip for the ossec alert
+	 * 
+	 * @access public
+	 * @return String the html safe ipv4 rule destination ip address
+	 */
+	public function get_rule_dst_ip(){
+		return htmlspecialchars($this->rule_dst_ip);
+	}
+	
+	/**
 	 * Set the rule_src_ip attribute
 	 * 
 	 * @access public
@@ -355,6 +410,145 @@ class Ossec_Alert extends Maleable_Object {
 	 */
 	public function get_rule_user(){
 		return htmlspecialchars($this->rule_user);
+	}
+	
+	public function process_log_line($line) {
+		/**
+		 * ** Alert 1463651767.22664: mail  - syslog,errors,
+		 * 2016 May 19 05:56:07 hector->/var/log/messages
+		 * Rule: 1002 (level 2) -> 'Unknown problem somewhere in the system.'
+		 * May 19 05:56:06 hector HECTOR[5431]: 2016-05-19 05:56:06  ERROR: 127.0.0.1  IP failed to validate at Darknet::set_dst_ip()#011
+		 */
+		//Process the first line
+		if (substr($line, 0, 8) == '** Alert') {
+			$this->process_log_alert_line($line);
+		}
+		// Process the source line
+		if (preg_match('/^\d{4} [A-Z][a-z]{2} \d\d \d\d:\d\d:\d\d /', $line, $matches)) {
+			$this->process_log_source_line($line, $matches);
+		}
+		// Process the rule line
+		if (substr($line, 0, 6) == 'Rule: ') {
+			$this->process_log_rule_line($line);
+		}
+		
+
+
+
+		// Process source ip line
+		if (substr($line, 0, 7) == 'Src IP:') {
+			$this->process_log_src_ip_line($line);
+		}
+		
+		// Process destination ip line
+		if (substr($line, 0, 7) == 'Dst IP:') {
+			$this->process_log_dst_ip_line($line);
+		}
+		
+		// Process user line
+		if (substr($line, 0, 5) == 'User:') {
+			preg_match('/^User: .*/',$line,$usernames);
+			$username = isset($usernames[0]) ? substr($usernames[0], 6) : 'No source ip found';
+			print("* User name is $username\n");
+			$alert->set_rule_user($username);
+		}
+		
+		
+	}
+	
+	private function process_log_alert_line($line) {
+			//Find alert id start and end
+			preg_match('/Alert \d+\.\d+/', $line, $matches);
+			if (isset($matches[0])) {
+				$this->set_alert_ossec_id($matches[0]);
+			}
+			else {
+				$this->log->write_error("Unable to parse out OSSEC assigned alert ID number in Ossec_Alert::process_log_alert_line");
+				return false;
+			}
+			return true;
+	}
+	
+	private function process_log_dst_ip_line($line) {
+		preg_match('/^Dst IP: \d+.\d+.\d+\d+/',$line,$dstips);
+		$dstip = isset($dstips[0]) ? substr($dstips[0], 8) : '';
+		if ($dstip == '') {
+			$this->log->write_error("Unable to parse destination IP in Ossec_Alert::process_log_dst_ip_line");
+			return false;
+		}
+		$this->set_rule_dst_ip($dstip);
+		return true;
+	}
+	
+	private function process_log_rule_line($line) {
+		preg_match('/^Rule: \d+ /', $line, $matches);
+		if (isset($matches[0])) {
+			//$alert = new Ossec_Alert('', $alert_id);
+			require_once 'class.Ossec_rule.php';
+			$rule = new Rule('',$matches[0]);
+			if (! $rule->get_id() > 0) {
+				// new rule we need to populate
+				preg_match('/level \d+\)/', $line, $rule_level);
+				if (isset($rule_level[0]))
+					$rule->set_rule_level($rule_level[0]);
+				else 
+					$this->log->write_error("Unable to parse out OSSEC rule level in Ossec_Alert::process_log_rule_line");
+				preg_match("/-> '.+'/", $line, $rule_text);
+				if (isset($rule_text[0])) 
+					$rule->set_rule_message($rule_text[0]);
+				else 
+					$this->log->write_error("Unable to find rule message text in Ossec_Alert::process_log_rule_line");
+				$rule->save();
+			}
+			else {
+				$this->set_rule_id($rule->get_id());
+			}
+		}
+		else {
+			$this->log->write_error("Unable to OSSEC rule number in Ossec_Alert::process_log_rule_line");
+			return false;
+		}
+		return true;
+	}
+	
+	private function process_log_src_ip_line($line) {
+		preg_match('/^Src IP: \d+.\d+.\d+\d+/',$line,$srcips);
+		$srcip = isset($srcips[0]) ? substr($srcips[0], 8) : '';
+		if ($srcip == '') {
+			$this->log->write_error("No source IP found in Ossec_Alert::process_log_src_ip_line");
+			return false;
+		}
+		$this->set_rule_src_ip($srcip);
+		return true;
+	}
+	
+	private function process_log_source_line($line) {
+		if (isset($matches[0])) {
+			$alert_date = $matches[0];
+			$year = substr($alert_date, 0, 4);
+			$month = substr($alert_date, 5, 3);
+			$months = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
+			$month = array_search($month, $months) + 1;
+			if (strlen($month) < 2) $month = '0' . $month;
+			$day = substr($alert_date, 9, 2);
+			$time = substr($alert_date, -9);
+			preg_match('/ (\w|\.)+->/', $line, $sources);
+			$source = isset($sources[0]) ? substr($sources[0], 1, -2) : 'Source not found';
+			preg_match('/->\S+$/', $line, $logs);
+			$log = substr($logs[0], 2);
+			$this->set_alert_date("$year-$month-$day $time");
+			$this->set_alert_log($log);
+			$this->set_alert_host_by_name($source);
+		}
+		else {
+			return false;
+		}
+		return true;
+	}
+	
+	// G'ah! Do this!
+	public function save() {
+		
 	}
 	
 	/**

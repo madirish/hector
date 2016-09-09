@@ -91,13 +91,13 @@ class Ossec_Rule extends Maleable_Object {
 	 * @param Int the unique ID of the OSSEC Rule
 	 * @return void
 	 */
-	public function __construct($id=''){
+	public function __construct($id='', $rule_number=''){
 		$this->db = Db::get_instance();
 		$this->log = Log::get_instance();
 		if ($id !=''){
 			$sql = array(
 					'SELECT rule_id as ossec_rule_id, rule_number, rule_level, rule_message
-					FROM ossec_rule r WHERE r.rule_id = ?i',
+					FROM ossec_rule WHERE rule_id = ?i',
 					$id
 			);
 			$result = $this->db->fetch_object_array($sql);
@@ -107,6 +107,24 @@ class Ossec_Rule extends Maleable_Object {
 				$this->set_rule_number($r->rule_number);
 				$this->set_rule_level($r->rule_level);
 				$this->set_rule_message($r->rule_message);
+			}
+		}
+		if ($rule_number != '') {
+			$sql = array(
+					'SELECT rule_id as ossec_rule_id, rule_number, rule_level, rule_message
+					FROM ossec_rule WHERE ossec_rule_id = ?i',
+					$rule_number
+			);
+			$result = $this->db->fetch_object_array($sql);
+			if (is_object($result[0])){
+				$r = $result[0];
+				$this->set_id($r->ossec_rule_id);
+				$this->set_rule_number($r->rule_number);
+				$this->set_rule_level($r->rule_level);
+				$this->set_rule_message($r->rule_message);
+			}
+			else {
+				$this->set_rule_number($rule_number);
 			}
 		}
 	}

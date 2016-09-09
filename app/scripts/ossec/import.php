@@ -124,74 +124,7 @@ if(php_sapi_name() == 'cli') {
 			$alert = new Ossec_Alert();
 		}
 			
-		print "Examining: $line\n";
-		
-		//Process the first line
-		if (substr($line, 0, 8) == '** Alert') {
-			//Find alert id start and end
-			$pattern = '/Alert \d+\.\d+/';
-			preg_match($pattern, $line, $matches);
-			$alert_id =  $matches[0];
-			print("Alert id is: " . $alert_id . "\n\n");
-			$alert->set_alert_ossec_id($alert_id);
-		}
-		
-		// Process the source line
-		if (preg_match('/^\d{4} [A-Z][a-z]{2} \d\d \d\d:\d\d:\d\d /', $line, $matches)) {
-			$alert_date = $matches[0];
-			$year = substr($alert_date, 0, 4);
-			$month = substr($alert_date, 5, 3);
-			$months = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
-			$month = array_search($month, $months) + 1;
-			if (strlen($month) < 2) $month = '0' . $month;
-			$day = substr($alert_date, 9, 2);
-			$time = substr($alert_date, -9);
-			preg_match('/ (\w|\.)+->/', $line, $sources);
-			$source = isset($sources[0]) ? substr($sources[0], 1, -2) : 'Source not found';
-			preg_match('/->\S+$/', $line, $logs);
-			$log = substr($logs[0], 2);
-			print("* Date is $year-$month-$day $time\n* Source is $source\n* Log is $log\n");
-			$alert->set_alert_date("$year-$month-$day $time");
-		}
-		
-		// Process rule line
-		if (substr($line, 0, 6) == 'Rule: ') { print "RULE!\n";
-			preg_match('/^Rule: \d+ /', $line, $matches);
-			$alert_id = $matches[0];
-			$alert = new Ossec_Alert('', $alert_id);
-			print "Alert_id is " . $alert->get_id() . "\n";
-			if ($alert->get_id() < 1) {
-				// New alert
-				$pattern = '/level \d+\)/';
-				preg_match($pattern, $line, $matches);
-				$alert_level = $matches[0];
-				print("Alert level is " . $alert_level);
-				// Get alert text
-			}
-		}
-		
-		// Process source ip line
-		if (substr($line, 0, 7) == 'Src IP:') {
-			preg_match('/^Src IP: \d+.\d+.\d+\d+/',$line,$srcips);
-			$srcip = isset($srcips[0]) ? substr($srcips[0], 8) : 'No source ip found';
-			print("* Source IP is $srcip\n");
-			$alert->set_rule_src_ip($srcip);
-		}
-		
-		// Process destination ip line
-		if (substr($line, 0, 7) == 'Dst IP:') {
-			preg_match('/^Dst IP: \d+.\d+.\d+\d+/',$line,$dstips);
-			$dstip = isset($dstips[0]) ? substr($dstips[0], 8) : 'No source ip found';
-			print("* Dest IP is $dstip\n");
-		}
-		
-		// Process user line
-		if (substr($line, 0, 5) == 'User:') {
-			preg_match('/^User: .*/',$line,$usernames);
-			$username = isset($usernames[0]) ? substr($usernames[0], 6) : 'No source ip found';
-			print("* User name is $username\n");
-			$alert->set_rule_user($username);
-		}
+		$alert->process_log_line($line);
 		
 	}
 	

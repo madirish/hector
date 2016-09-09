@@ -125,7 +125,7 @@ class Ossec_Alert extends Maleable_Object {
 	private $rule_log;
 	
 	/**
-	 * The alert_ossec_id value from the data layer
+	 * The alert_ossec_id value from the data layer, assigned by OSSEC
 	 * 
 	 * @access private
 	 * @var String the alert_ossec_id value from the data layer
@@ -142,7 +142,7 @@ class Ossec_Alert extends Maleable_Object {
 	 * @param Int the unique ID of the OSSEC ALERT
 	 * @return void
 	 */
-	public function __construct($id=''){
+	public function __construct($id='', $alert_id=''){
 		$this->db = Db::get_instance();
 		$this->log = Log::get_instance();
 		if ($id !=''){
@@ -151,6 +151,30 @@ class Ossec_Alert extends Maleable_Object {
 					alert_log, rule_id, rule_src_ip, rule_src_ip_numeric, 
 					rule_user, rule_log, alert_ossec_id
 					FROM ossec_alert o WHERE o.alert_id = ?i',
+					$id
+			);
+			$result = $this->db->fetch_object_array($sql);
+			if (is_object($result[0])){
+				$r = $result[0];
+				$this->set_id($r->ossec_alert_id);
+				$this->set_alert_date($r->alert_date);
+				$this->set_host_id($r->host_id);
+				$this->set_alert_log($r->alert_log);
+				$this->set_rule_id($r->rule_id);
+				$this->set_rule_src_ip($r->rule_src_ip);
+				$this->set_rule_src_ip_numeric($r->rule_src_ip_numeric);
+				$this->set_rule_user($r->rule_user);
+				$this->set_rule_log($r->rule_log);
+				$this->set_alert_ossec_id($r->alert_ossec_id);
+				
+			}
+		}
+		if ($alert_id !=''){
+			$sql = array(
+				'SELECT alert_id as ossec_alert_id, alert_date, host_id, 
+					alert_log, rule_id, rule_src_ip, rule_src_ip_numeric, 
+					rule_user, rule_log, alert_ossec_id
+					FROM ossec_alert o WHERE o.alert_ossec_id = ?i',
 					$id
 			);
 			$result = $this->db->fetch_object_array($sql);

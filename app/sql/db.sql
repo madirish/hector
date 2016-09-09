@@ -384,6 +384,8 @@ CREATE TABLE IF NOT EXISTS `ossec_alert` (
 	`rule_id` INT NOT NULL,
 	`rule_src_ip` VARCHAR(15) DEFAULT NULL,
 	`rule_src_ip_numeric` INT UNSIGNED,
+	`rule_dst_ip` VARCHAR(15) DEFAULT NULL,
+	`rule_dst_ip_numeric` INT UNSIGNED,
 	`rule_user` VARCHAR(20) DEFAULT NULL,
 	`rule_log` TEXT DEFAULT NULL,
 	`alert_ossec_id` VARCHAR(50) NOT NULL,

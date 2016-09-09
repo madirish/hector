@@ -1399,6 +1399,46 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		if (is_array($result) && is_object($result[0])) {			
 			$this->__construct($result[0]->host_id);
 		}			
+		// If still nothing look in the alternative IP's
+		if (! isset($this->host_id)) {
+			$sql = array(
+						'SELECT host_id FROM host_alts WHERE host_ip = \'?s\'',
+						$this->ip
+					);
+			$result = $this->db->fetch_object_array($sql);
+			if (is_array($result) && is_object($result[0])) {			
+				$this->__construct($result[0]->host_id);
+			}			
+		}
+	}
+	
+	/**
+	 * Populate this object from data that may
+	 * already exist based on host name
+	 * 
+	 * @author Justin C. Klein Keane <jukeane@sas.upenn.edu>
+	 * @access public
+	 */
+	public function lookup_by_name($name) {
+		$sql = array(
+					'SELECT host_id FROM host WHERE host_ip = \'?s\'',
+					$name
+				);
+		$result = $this->db->fetch_object_array($sql);
+		if (is_array($result) && is_object($result[0])) {			
+			$this->__construct($result[0]->host_id);
+		}	
+		// If still blank try looking up the alternative name
+		if (! isset($this->host_id)) {
+			$sql = array(
+						'SELECT host_id FROM host_alts WHERE host_name = \'?s\'',
+						$this->ip
+					);
+			$result = $this->db->fetch_object_array($sql);
+			if (is_array($result) && is_object($result[0])) {			
+				$this->__construct($result[0]->host_id);
+			}			
+		}
 	}
 
 	/**

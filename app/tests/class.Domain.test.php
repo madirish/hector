@@ -25,9 +25,28 @@ class TestOfDomainClass extends UnitTestCase {
   function testDomainSave() {
   	$this->assertEqual($this->domain->get_id(), 0);
   	$this->domain->set_name('test.domain.com');
+  	$this->domain->set_is_malicious(true);
+  	$this->domain->set_marked_malicious_datetime(date("Y-m-d H:i:s", time()));
+  	$this->domain->set_service(new Malware_service);
   	$this->assertTrue($this->domain->save());
   	$this->domain_id = $this->domain->get_id();
   	$this->assertTrue($this->domain_id > 0);
+  	$clone = new Domain($this->domain_id);
+  	$this->assertEqual($this->domain->get_id(),$clone->get_id());
+  	$this->assertEqual($this->domain->get_name(),$clone->get_name());
+  	$this->assertEqual($this->domain->get_is_malicious(),$clone->get_is_malicious());
+  	$this->assertEqual($this->domain->get_marked_malicious_datetime(), $clone->get_marked_malicious_datetime());
+  	$this->assertEqual($this->domain->get_service()->get_id(), $clone->get_service()->get_id());
+  	$this->domain->set_name('2test.domain.com');
+  	$this->domain->set_is_malicious(false);
+  	$this->domain->set_marked_malicious_datetime(date("Y-m-d H:i:s", time()));
+  	$this->assertTrue($this->domain->save());
+  	$clone = new Domain($this->domain_id);
+  	$this->assertEqual($this->domain->get_id(),$clone->get_id());
+  	$this->assertEqual($this->domain->get_name(),$clone->get_name());
+  	$this->assertEqual($this->domain->get_is_malicious(),$clone->get_is_malicious());
+  	$this->assertEqual($this->domain->get_marked_malicious_datetime(), $clone->get_marked_malicious_datetime());
+  	$this->assertEqual($this->domain->get_service()->get_id(), $clone->get_service()->get_id());
   }
   
   

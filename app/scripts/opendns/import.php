@@ -17,7 +17,8 @@ if(php_sapi_name() == 'cli') {
 	/**
 	 * Neccesary includes
 	 */
-	require_once($approot . 'lib/class.Malware_domain.php');
+	require_once($approot . 'lib/class.Domain.php');
+	require_once($approot . 'lib/class.Malware_service.php');
 	require_once($approot . 'lib/class.Dblog.php');
 	require_once($approot . 'lib/class.Log.php');
 		
@@ -73,20 +74,35 @@ if(php_sapi_name() == 'cli') {
 		loggit("OpenDNS Malware Domain import.php process", "there was a problem opening the file $malware_domain_file_path");
 		exit(1);
 	}
-	
+	$service = new Malware_service();
+	$service->lookup_by_name('OpenDNS');
+	if (! $service->get_id() > 0) {
+		$service->set_name('OpenDNS');
+		$service->save();
+	}
 	$domain_records_created = 0;
+	$domain_records_updated = 0;
 	while (($line = fgets($malware_domain_file))!== false) {
 		$dn = substr($line,0,-1);
-		$domain = new Malware_domain();
+		$domain = new Domain();
 		$domain->lookup_by_name($dn);
 		if ($domain->get_id() == 0) {
-			$domain_records_created++;
 			$domain->set_name($dn);
+			$domain->set_is_malicious(true);
+			$domain->set_marked_malicious_datetime(date('y-m-d H:i:s'));
+			$domain->set_service($service);
 			$domain->save();
+			$domain_records_created++;
+		} elseif ($domain->get_is_malicious()){
+			$domain->set_is_malicious(true);
+			$domain->set_marked_malicious_datetime(date('y-m-d H:i:s'));
+			$domain->set_service($service);
+			$domain->save();
+			$domain_records_updated++;
 		}
 	}
 
-	loggit("OpenDNS Malware Domain import.php process", "OpenDNS Malware Domain import.php process complete.  $domain_records_created records added.");
+	loggit("OpenDNS Malware Domain import.php process", "OpenDNS Malware Domain import.php process complete.  $domain_records_created records added. $domain_records_updated records updated.");
 	
 }
 ?>

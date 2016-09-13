@@ -4,6 +4,8 @@ import subprocess
 import logging
 import os,sys
 import MySQLdb
+import struct, socket
+from datetime import datetime
 
 appPath = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + "/../../")
 sys.path.append(appPath + "/lib/pylib")
@@ -29,14 +31,14 @@ error_hdlr.setFormatter(formatter)
 error_hdlr.setLevel(logging.ERROR)
 logger.addHandler(hdlr) 
 logger.addHandler(error_hdlr)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 logger.info('infoblox.py starting')
 logger.debug('args: [\''+('\', \''.join(sys.argv))+'\']')
 
 #config vars
 infoblox_dir = configr.get_var('approot')+"app/scripts/infoblox/"
-infoblox_log_file_name = "infoblox.log.1.gz.short"
+infoblox_log_file_name = "infoblox.log.1.gz"
 output_filename = "infoblock-queries.txt"
 
 #pull log file
@@ -45,7 +47,7 @@ output_filename = "infoblock-queries.txt"
 #outfile = open(infoblox_dir+output_filename, "w")
 
 gzip = subprocess.Popen(["gzip", "-dc", infoblox_dir+"logs/"+infoblox_log_file_name],stdout=subprocess.PIPE)
-grep = subprocess.Popen(["grep", "-e", "query"],stdin=gzip.stdout,stdout=subprocess.PIPE)
+grep = subprocess.Popen(["grep", "-e", ": query:"],stdin=gzip.stdout,stdout=subprocess.PIPE)
 awk = subprocess.Popen(["awk", "-f", infoblox_dir+"filter.awk"],stdin=grep.stdout,stdout=subprocess.PIPE)
 sort = subprocess.Popen(["sort"],stdin=awk.stdout, stdout=subprocess.PIPE)
 uniq = subprocess.Popen(["uniq"],stdin=sort.stdout,stdout=subprocess.PIPE)            # outfile)
@@ -60,32 +62,56 @@ conn = MySQLdb.connect(host=HOST,
       passwd=PASSWORD,
       db=DB)
 cursor = conn.cursor()
-#print records
+
+#@TODO: Get/set infoblox named_src_id
+src_id = 1
+
+current_year = datetime.today().year
+current_month = datetime.today().month
 for record in iter(uniq.stdout.readline,''):
     count+=1
     r=record.split("|")
-    dt=r[0]
+    dt=datetime.strptime(r[0],"%b %d %H:%M:%S")
+    if current_month<12 and dt.month==12:
+        dt=dt.replace(year=current_year-1)
+    else:
+        dt=dt.replace(year=current_year)
+    dt=dt.strftime("%Y-%m-%d %H:%M:%S")
     ip=r[1]
+    try:
+        ip_numeric = struct.unpack('>L',socket.inet_aton(ip))[0]
+    except:
+        ip_numeric = 0
+        logger.error('error with ip numeric for record: '+str(r))
     dm=r[2].rstrip()
-    if not dm in domains.keys():
+    if not dm in domains:
         logger.debug("looking up domain \""+dm+"\"")
         cursor.execute("""SELECT domain_id from domain 
         where domain_name=%s""",(dm,))
         res = cursor.fetchone()
         if res == None:
             domain_count+=1
-            cursor.execute("""Insert into domain set domain_name=%s""",(dm,))
-            conn.commit()
+            cursor.execute("""INSERT INTO domain SET domain_name=%s""",(dm,))
+            #conn.commit()
             domains[dm] = int(cursor.lastrowid)
             logger.debug("inserted domain \""+dm+"\" with id \""+str(domains[dm])+"\"")
         else:
             domains[dm] = int(res[0])
-    dm_id = domains[dm]   
+    dm_id = domains[dm]
+    
+    cursor.execute("""INSERT INTO named_resolution SET named_resolution_src_ip=%s, 
+    named_resolution_src_ip_numeric=%s, 
+    domain_id=%s, 
+    named_resolution_datetime=%s, 
+    named_src_id=%s""",
+    (ip,ip_numeric,dm_id,dt,src_id,))
+    
+    
+      
     if count%1000000==0:
-        logger.info(str(count)+' records added')
-        
-print domains
-print len(domains)
+        conn.commit()
+        logger.info(str(count)+" records added. "+str(domain_count)+" domains added.")
+conn.commit()      
 conn.close()        
 logger.info("infoblox.py finished. "+str(count)+" records added. "+str(domain_count)+" domains added.")
 

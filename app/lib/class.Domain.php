@@ -23,7 +23,7 @@ require_once('class.Log.php');
 require_once('class.Collection.php');
 require_once('interface.Maleable_Object_Interface.php');
 require_once('class.Maleable_Object.php');
-//require_once('class.Service.php');
+require_once('class.Malware_service.php');
 
 /**
  * Domain
@@ -79,7 +79,6 @@ class Domain {
      * one.
      *
      * @access public
-     * @author Josh Bauer <bauerj@mlhs.org>
      * @param  int id
      * @return void
      */
@@ -96,12 +95,12 @@ class Domain {
     		if (isset($result[0])) {
     			$this->id = $result[0]->domain_id;
     			$this->name = $result[0]->domain_name;
-    			$this->is_malicious = $result[0]->is_malicious > 0;
-    			$this->marked_malicious_datetime = $result[0]->marked_malicious_datetime;
-    			$this->service = new Service($result[0]->service_id);
+    			$this->is_malicious = $result[0]->domain_is_malicious > 0;
+    			$this->marked_malicious_datetime = $result[0]->domain_marked_malicious_datetime;
+    			$this->service = new Malware_service($result[0]->malware_service_id);
     		}
     	} else {
-    		$this->service = new Service();
+    		$this->service = new Malware_service();
     	}
     }
     
@@ -109,7 +108,6 @@ class Domain {
      * Delete the record from the database
      *
      * @access public
-     * @author Josh Bauer <bauerj@mlhs.org>
      * @return Boolean True if the delete succeeds, False otherwise.
      */
     public function delete() {
@@ -128,7 +126,6 @@ class Domain {
      * Return the unique id from the data layer
      *
      * @access public
-     * @author Josh Bauer <bauerj@mlhs.org>
      * @return int Unique id from the data layer or zero
      */
     public function get_id() {
@@ -139,7 +136,6 @@ class Domain {
      * Return the display safe name
      *
      * @access public
-     * @author Josh Bauer <bauerj@mlhs.org>
      * @return String The domain name
      */
     public function get_name() {
@@ -149,7 +145,6 @@ class Domain {
     /**
      * Is the domain malicious
      * @access public
-     * @author Josh Bauer <bauerj@mlhs.org>
      * @return bool 
      */
     public function get_is_malicious() {
@@ -159,8 +154,7 @@ class Domain {
     /**
      * Get display safe datetime when marked malicious
      * @access public
-     * @author Josh Bauer <bauerj@mlhs.org>
-     * @return bool
+     * @return string
      */
     public function get_marked_malicious_datetime() {
     	return htmlspecialchars($this->marked_malicious_datetime);
@@ -169,7 +163,6 @@ class Domain {
     /**
      * Get Service
      * @access public
-     * @author Josh Bauer <bauerj@mlhs.org>
      * @return Service
      */
     public function get_service() {
@@ -180,7 +173,6 @@ class Domain {
      * Populate object if a domain name exists in the database
      *
      * @access public
-     * @author Josh Bauer <bauerj@mlhs.org>
      */
     public function lookup_by_name($name) {
     	$sql = array('select * from domain where domain_name = \'?s\'', $name);
@@ -188,9 +180,9 @@ class Domain {
     	if (isset($result[0])) {
     		$this->id = $result[0]->domain_id;
     		$this->name = $result[0]->domain_name;
-    		$this->is_malicious = $result[0]->is_malicious > 0;
-    		$this->marked_malicious_datetime = $result[0]->marked_malicious_datetime;
-    		$this->service = new Service($result[0]->service_id);
+    		$this->is_malicious = $result[0]->domain_is_malicious > 0;
+    		$this->marked_malicious_datetime = $result[0]->domain_marked_malicious_datetime;
+    		$this->service = new Malware_service($result[0]->malware_service_id);
     	}
     }
     
@@ -198,7 +190,6 @@ class Domain {
      * Persist the object back to the data layer.
      *
      * @access public
-     * @author Josh Bauer <bauerj@mlhs.org>
      * @return Boolean True if the save worked properly, false otherwise.
      */
     public function save() {
@@ -210,7 +201,7 @@ class Domain {
     				'domain_name = \'?s\', ' .
     				'domain_is_malicious = \'?i\', ' .
     				'domain_marked_malicious_datetime = \'?s\', ' .
-    				'malware_service_id = \'?i\', ' .
+    				'malware_service_id = \'?i\' ' .
     				'WHERE domain_id = \'?i\'',
     				$this->get_name(),
     				$this->get_is_malicious(),
@@ -264,7 +255,6 @@ class Domain {
     /**
      * Set is_malicious.
      *
-     * @author Josh Bauer <bauerj@mlhs.org>
      * @access public
      * @param String $is_malicious
      */
@@ -275,7 +265,6 @@ class Domain {
     /**
      * Set marked malicious datetime.
      *
-     * @author Josh Bauer <bauerj@mlhs.org>
      * @access public
      * @param String $datetime
      */
@@ -288,7 +277,6 @@ class Domain {
     /**
      * Set Service by id.
      *
-     * @author Josh Bauer <bauerj@mlhs.org>
      * @access public
      * @param int $service_id
      */
@@ -298,7 +286,6 @@ class Domain {
     /**
      * Set Service.
      *
-     * @author Josh Bauer <bauerj@mlhs.org>
      * @access public
      * @param Service $service
      */

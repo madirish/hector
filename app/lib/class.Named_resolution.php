@@ -80,7 +80,6 @@ class Named_resolution {
      * one.
      *
      * @access public
-     * @author Josh Bauer <bauerj@mlhs.org>
      * @param  int id
      * @return void
      */
@@ -108,7 +107,6 @@ class Named_resolution {
      * Delete the record from the database
      *
      * @access public
-     * @author Josh Bauer <bauerj@mlhs.org>
      * @return Boolean True if the delete succeeds, False otherwise.
      */
     public function delete() {
@@ -127,7 +125,6 @@ class Named_resolution {
      * Return the unique id from the data layer
      *
      * @access public
-     * @author Josh Bauer <bauerj@mlhs.org>
      * @return int Unique id from the data layer or zero
      */
     public function get_id() {
@@ -138,7 +135,6 @@ class Named_resolution {
      * Return the display safe datetime
      *
      * @access public
-     * @author Josh Bauer <bauerj@mlhs.org>
      * @return String The datetime
      */
     public function get_datetime() {
@@ -149,7 +145,6 @@ class Named_resolution {
      * Return the display safe domain name
      *
      * @access public
-     * @author Josh Bauer <bauerj@mlhs.org>_name()
      * @return Domain the domain
      */
     public function get_domain() {
@@ -160,7 +155,6 @@ class Named_resolution {
      * Return the display safe ip address
      *
      * @access public
-     * @author Josh Bauer <bauerj@mlhs.org>
      * @return String The ip address
      */
     public function get_ip() {
@@ -171,7 +165,6 @@ class Named_resolution {
      * Return the numeric value of the ip address
      *
      * @access public
-     * @author Josh Bauer <bauerj@mlhs.org>
      * @return  int The ip address numeric value
      */
     public function get_ip_numeric() {
@@ -184,7 +177,6 @@ class Named_resolution {
      * Persist the object back to the data layer.
      *
      * @access public
-     * @author Josh Bauer <bauerj@mlhs.org>
      * @return Boolean True if the save worked properly, false otherwise.
      */
     public function save() {
@@ -244,7 +236,6 @@ class Named_resolution {
     /**
      * Set the named resolution datetime.
      *
-     * @author Josh Bauer <bauerj@mlhs.org>
      * @access public
      * @param String $datetime
      */
@@ -256,7 +247,6 @@ class Named_resolution {
     /**
      * Set the named resolution domain.
      *
-     * @author Josh Bauer <bauerj@mlhs.org>
      * @access public
      * @param Domain $domain
      */
@@ -267,7 +257,6 @@ class Named_resolution {
     /**
      * Set the named resolution domain by id.
      *
-     * @author Josh Bauer <bauerj@mlhs.org>
      * @access public
      * @param int $domain_id
      */
@@ -278,7 +267,6 @@ class Named_resolution {
     /**
      * Set the named resolution ip address.
      *
-     * @author Josh Bauer <bauerj@mlhs.org>
      * @access public
      * @param String $ip
      */
@@ -292,7 +280,6 @@ class Named_resolution {
     /**
      * Set the named resolution ip address.
      *
-     * @author Josh Bauer <bauerj@mlhs.org>
      * @access public
      * @param int $ip_numeric
      */

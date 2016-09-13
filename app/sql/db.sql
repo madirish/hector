@@ -619,7 +619,7 @@ CREATE TABLE IF NOT EXISTS `named_src` (
 -- Services that identify malware domains
 CREATE TABLE IF NOT EXISTS `malware_service` (
   `malware_service_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `malware_service_name` VARCHAR(255) NOT NULL,
+  `malware_service_name` VARCHAR(255) NOT NULL UNIQUE,
   `malware_service_url` VARCHAR(255),
   `malware_service_api_key` VARCHAR(255),
   PRIMARY KEY (`malware_service_id`)

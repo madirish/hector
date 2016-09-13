@@ -452,7 +452,9 @@ class Ossec_Alert extends Maleable_Object {
 	
 	/**
 	 * Process a line from an OSSEC alert log.
-	 * @param String $line
+	 * 
+	 * @access public
+	 * @param String The line from the OSSEC log file to examine
 	 */
 	public function process_log_line($line) {
 		/**
@@ -488,20 +490,33 @@ class Ossec_Alert extends Maleable_Object {
 		// Process the actual log entry
 		else {
 			$this->process_data($line);	
-		}
-		
+		}	
 		
 	}
 	
+	/**
+	 * Process the line of actual log data received from the host
+	 * 
+	 * @access private
+	 * @param String The log entry from the host
+	 */
 	private function process_data($line) {
-		$this->set
+		$this->set_append_rule_log($line);
 	}
 	
+	/**
+	 * Process the line of OSSEC log that contains the alert level:
+	 * ** Alert 1463651767.22664: mail  - syslog,errors,
+	 * 
+	 * @access private
+	 * @return Boolean
+	 * @param String The log entry from the host
+	 */
 	private function process_log_alert_line($line) {
 			//Find alert id start and end
 			preg_match('/Alert \d+\.\d+/', $line, $matches);
 			if (isset($matches[0])) {
-				$this->set_alert_ossec_id($matches[0]);
+				$this->set_alert_ossec_id(substr($matches[0], 6));
 			}
 			else {
 				$this->log->write_error("Unable to parse out OSSEC assigned alert ID number in Ossec_Alert::process_log_alert_line");
@@ -510,6 +525,14 @@ class Ossec_Alert extends Maleable_Object {
 			return true;
 	}
 	
+	/**
+	 * Process the line of OSSEC log that contains the destination IP
+	 * Dst IP: 10.124.236.94
+	 * 
+	 * @access private
+	 * @return Boolean
+	 * @param String The OSSEC identified IPv4 destination IP address
+	 */
 	private function process_log_dst_ip_line($line) {
 		preg_match('/^Dst IP: \d+.\d+.\d+\d+/',$line,$dstips);
 		$dstip = isset($dstips[0]) ? substr($dstips[0], 8) : '';
@@ -521,22 +544,31 @@ class Ossec_Alert extends Maleable_Object {
 		return true;
 	}
 	
+	/**
+	 * Process the line of OSSEC log that contains the rule information
+	 * and create a new rule if necessary.
+	 * Rule: 100100 (level 2) -> 'Suppress long syslog messages for foo.mlhs.org'
+	 * 
+	 * @access private
+	 * @return Boolean
+	 * @param String The OSSEC log line that contains the rule number, level, and description.
+	 */
 	private function process_log_rule_line($line) {
 		preg_match('/^Rule: \d+ /', $line, $matches);
 		if (isset($matches[0])) {
-			//$alert = new Ossec_Alert('', $alert_id);
-			require_once 'class.Ossec_rule.php';
-			$rule = new Rule('',$matches[0]);
+			$rule_id_number = trim(substr($matches[0], 6));
+			require_once 'class.Ossec_Rule.php';
+			$rule = new Ossec_Rule('',$rule_id_number);
 			if (! $rule->get_id() > 0) {
 				// new rule we need to populate
 				preg_match('/level \d+\)/', $line, $rule_level);
 				if (isset($rule_level[0]))
-					$rule->set_rule_level($rule_level[0]);
+					$rule->set_rule_level(substr($rule_level[0], 6));
 				else 
 					$this->log->write_error("Unable to parse out OSSEC rule level in Ossec_Alert::process_log_rule_line");
 				preg_match("/-> '.+'/", $line, $rule_text);
 				if (isset($rule_text[0])) 
-					$rule->set_rule_message($rule_text[0]);
+					$rule->set_rule_message(substr($rule_text[0], 3));
 				else 
 					$this->log->write_error("Unable to find rule message text in Ossec_Alert::process_log_rule_line");
 				$rule->save();
@@ -552,6 +584,14 @@ class Ossec_Alert extends Maleable_Object {
 		return true;
 	}
 	
+	/**
+	 * Process the line of OSSEC log that contains the source IP
+	 * Src IP: 10.124.236.94
+	 * 
+	 * @access private
+	 * @return Boolean
+	 * @param String The OSSEC log line identifying the IPv4 source IP address
+	 */
 	private function process_log_src_ip_line($line) {
 		preg_match('/^Src IP: \d+.\d+.\d+\d+/',$line,$srcips);
 		$srcip = isset($srcips[0]) ? substr($srcips[0], 8) : '';
@@ -563,6 +603,14 @@ class Ossec_Alert extends Maleable_Object {
 		return true;
 	}
 	
+	/**
+	 * Process the line of OSSEC log that contains the source of the log and date
+	 * 2016 Sep 14 00:23:23 (foo.mlhs.org) 10.103.24.50->/var/log/messages
+	 * 
+	 * @access private
+	 * @return Boolean
+	 * @param String The OSSEC log line containing the date, source host, and source log for the alert
+	 */
 	private function process_log_source_line($line) {
 		if (isset($matches[0])) {
 			$alert_date = $matches[0];
@@ -587,13 +635,29 @@ class Ossec_Alert extends Maleable_Object {
 		return true;
 	}
 	
+	/**
+	 * Process the line of OSSEC log that contains any identified user
+	 * User: root
+	 * 
+	 * @access private
+	 * @return Boolean
+	 * @param String The OSSEC log line containing user information
+	 */
 	private function process_log_user($line) {
 		preg_match('/^User: .*/',$line,$usernames);
-		$username = isset($usernames[0]) ? substr($usernames[0], 6) : 'No source ip found';
+		$username = isset($usernames[0]) ? substr($usernames[0], 6) : '';
+		if ($username == '') return false;
 		$this->set_rule_user($username);
+		return true;
 	}
 	
-
+	/**
+	 * Persist the OSSEC alert to the data layer, either creating a new record
+	 * or updating an existing record
+	 * 
+	 * @access public
+	 * @return Boolean
+	 */
 	public function save() {
     	$retval = FALSE;
     	if ($this->id > 0 ) {
@@ -661,7 +725,7 @@ class Ossec_Alert extends Maleable_Object {
 	    		$this->set_id($result[0]->last_id);
 	    	}
     	}
-		
+		return $retval;	
 	}
 	
 	/**
@@ -674,6 +738,13 @@ class Ossec_Alert extends Maleable_Object {
 		$this->alert_date = date("Y-m-d H:i:s", strtotime($datetime));
 	}
 	
+	/**
+	 * Set up the Host values for the alert, looking them up by hostname
+	 * 
+	 * @access public
+	 * @return Boolean
+	 * @param String The hostname to use for the lookup of the Host
+	 */
 	public function set_alert_host_by_name($hostname) {
 		require_once 'class.Host.php';
 		$host = new Host();
@@ -683,7 +754,12 @@ class Ossec_Alert extends Maleable_Object {
 			$host->set_ip(gethostbyname($hostname));
 			$host->save();
 		}
-		$this->set_host_id($host->get_id());
+		if ($this->set_host_id($host->get_id())) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	
 	/**
@@ -704,6 +780,18 @@ class Ossec_Alert extends Maleable_Object {
 	 */
 	public function set_alert_ossec_id($alert_ossec_id){
 		$this->alert_ossec_id = $alert_ossec_id;
+	}
+	
+	/**
+	 * Set the actual log message from the host that generated the alert (i.e. "Authentication failed")
+	 * Sometimes this is a multiline entry so we use an append function when processing logs line 
+	 * by line.
+	 * 
+	 * @access public 
+	 * @param String The actual log message from the host that generated the alert (i.e. "Authentication failed")
+	 */
+	public function set_append_rule_log($rule_log){
+		$this->rule_log .= $rule_log;
 	}
 	
 	/**

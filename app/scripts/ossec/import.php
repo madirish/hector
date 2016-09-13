@@ -5,7 +5,6 @@
  * @author Justin C. Klein Keane <justin@madirish.net>
  * @package HECTOR
  * 
- * Last modified 9 September, 2016
  */
  
 /**
@@ -39,10 +38,45 @@ if(php_sapi_name() == 'cli') {
 	
 	syslog(LOG_INFO, 'OSSEC alert log import.php starting.');
 	
+	/**
+	 * Singletons
+	 */
+	new Config();
+	$db = Db::get_instance();
+	$dblog = Dblog::get_instance();
+	$log = Log::get_instance();
+	
 	// Local variables
 	$debug = 0;
 	$reading_alert = 0;
 	$alert = null;
+	
+	
+	/**
+	 * Process the log line by line
+	 * 
+	 * @param String The line from the log
+	 */
+	function process_log_line($line) {
+		global $reading_alert;
+		global $alert;
+		/**
+		 * ** Alert 1463651767.22664: mail  - syslog,errors,
+		 * 2016 May 19 05:56:07 hector->/var/log/messages
+		 * Rule: 1002 (level 2) -> 'Unknown problem somewhere in the system.'
+		 * May 19 05:56:06 hector HECTOR[5431]: 2016-05-19 05:56:06  ERROR: 127.0.0.1  IP failed to validate at Darknet::set_dst_ip()#011
+		 */
+		// Start a new alert
+		if ($reading_alert > 0  && substr($line, 0, 8) == '** Alert') {
+			$alert->save();
+			$reading_alert = 0;
+		}
+		elseif ($reading_alert == 0 && substr($line, 0, 8) == '** Alert') {
+			$reading_alert = 1;
+			$alert = new Ossec_Alert();
+		}
+		$alert->process_log_line($line);
+	}
 	
 	// Make sure we have some functions that may come from nmap_scan
 	if (! function_exists("show_help")) {
@@ -97,46 +131,6 @@ if(php_sapi_name() == 'cli') {
 			fclose($handle);
 		}
 	}
-	
-	/**
-	 * 
-	 * @param unknown $line
-	 */
-	function process_log_line($line) {
-		global $reading_alert;
-		global $alert;
-		
-		/**
-		 * ** Alert 1463651767.22664: mail  - syslog,errors,
-		 * 2016 May 19 05:56:07 hector->/var/log/messages
-		 * Rule: 1002 (level 2) -> 'Unknown problem somewhere in the system.'
-		 * May 19 05:56:06 hector HECTOR[5431]: 2016-05-19 05:56:06  ERROR: 127.0.0.1  IP failed to validate at Darknet::set_dst_ip()#011
-		 */
-		print ("Starting process_log_line()\n");
-		
-		// Start a new alert
-		if ($reading_alert > 0  && substr($line, 0, 8) == '** Alert') {
-			$alert->save();
-			$reading_alert = 0;
-		}
-		elseif ($reading_alert == 0 && substr($line, 0, 8) == '** Alert') {
-			$reading_alert = 1;
-			$alert = new Ossec_Alert();
-		}
-			
-		$alert->process_log_line($line);
-		
-	}
-	
-	/**
-	 * Singletons
-	 */
-	new Config();
-	$db = Db::get_instance();
-	$dblog = Dblog::get_instance();
-	$log = Log::get_instance();
-	
-	
 	
 	loggit("OSSEC alert log import.php process", "OSSEC alert log import process complete.");
 	

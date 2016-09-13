@@ -112,7 +112,7 @@ class Ossec_Rule extends Maleable_Object {
 		if ($rule_number != '') {
 			$sql = array(
 					'SELECT rule_id as ossec_rule_id, rule_number, rule_level, rule_message
-					FROM ossec_rule WHERE ossec_rule_id = ?i',
+					FROM ossec_rule WHERE rule_number = ?i',
 					$rule_number
 			);
 			$result = $this->db->fetch_object_array($sql);
@@ -217,6 +217,13 @@ class Ossec_Rule extends Maleable_Object {
 		return htmlspecialchars($this->rule_message);	
 	}
 	
+	/**
+	 * Persist the Rule back to the data layer, creating a new
+	 * Rule if necessary
+	 * 
+	 * @access public
+	 * @return Boolean
+	 */
 	public function save() {
     	$retval = FALSE;
     	if ($this->id > 0 ) {
@@ -252,6 +259,7 @@ class Ossec_Rule extends Maleable_Object {
 	    		$this->set_id($result[0]->last_id);
 	    	}
     	}
+    	return $retval;
 	}
 	
 	/**
@@ -283,41 +291,7 @@ class Ossec_Rule extends Maleable_Object {
 	public function set_rule_level($level){
 		$this->rule_level = intval($level);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	
 }
 

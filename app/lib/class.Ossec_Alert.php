@@ -3,6 +3,7 @@
  * HECTOR - class.Ossec_Alert.php
  * 
  * @author Ubani A Balogun <ubani@sas.upenn.edu>
+ * @author Justin C. Klein Keane <justin@madirish.net>
  * @package HECTOR 
  * 
  */
@@ -31,34 +32,11 @@ require_once('class.Maleable_Object.php');
  * 
  * @package HECTOR
  * @author Ubani A Balogun <ubani@sas.upenn.edu>
+ * @author Justin C. Klein Keane <justin@madirish.net>
  */
 
 class Ossec_Alert extends Maleable_Object {
 	// --- Attributes ---
-	
-	/**
-	 *  Instance of the Db
-	 *
-	 *  @access private
-	 *  @var Db An instance of the Db
-	 */
-	private $db = null;
-	
-	/**
-	 * Instance of the Log
-	 *
-	 * @access private
-	 * @var Log An instance of the Log
-	 */
-	private $log = null;
-	
-	/**
-	 * Unique id from the data layer
-	 * 
-	 * @access protected
-	 * @var int Unique id
-	 */
-	protected $id = null;
 	
 	/**
 	 * Timestamp of the Alert
@@ -69,6 +47,30 @@ class Ossec_Alert extends Maleable_Object {
 	private $alert_date;
 	
 	/**
+	 * The log filename from which the OSSEC alert was generated (syslog, maillog, etc.)
+	 * 
+	 * @access private
+	 * @var String The log filename from which the OSSEC alert was generated (syslog, maillog, etc.)
+	 */
+	private $alert_log;
+	
+	/**
+	 * The OSSEC alert id value from the data layer, assigned by OSSEC (ex 1473739283.14752)
+	 * 
+	 * @access private
+	 * @var String The OSSEC alert id value from the data layer, assigned by OSSEC (ex 1473739283.14752)
+	 */
+	private $alert_ossec_id;
+	
+	/**
+	 *  Instance of the Db
+	 *
+	 *  @access private
+	 *  @var Db An instance of the Db
+	 */
+	private $db = null;
+	
+	/**
 	 * The host id for the ossec_alert
 	 * 
 	 * @access private
@@ -77,18 +79,26 @@ class Ossec_Alert extends Maleable_Object {
 	private $host_id;
 	
 	/**
-	 * The alert log
+	 * Unique id from the data layer
 	 * 
-	 * @access private
-	 * @var String the ossec alert log
+	 * @access protected
+	 * @var int Unique id
 	 */
-	private $alert_log;
+	protected $id = null;
 	
 	/**
-	 * The rule id of the ossec rule
+	 * Instance of the Log
+	 *
+	 * @access private
+	 * @var Log An instance of the Log
+	 */
+	private $log = null;
+	
+	/**
+	 * The id of the associated Ossec_Rule
 	 * 
 	 * @access private 
-	 * @var Int the rule id of the ossec rule
+	 * @var Int The id of the associated Ossec_Rule
 	 */
 	private $rule_id;
 	
@@ -133,20 +143,12 @@ class Ossec_Alert extends Maleable_Object {
 	private $rule_user;
 	
 	/**
-	 * The rule log of the ossec alert
+	 * The actual log message from the host that generated the alert (i.e. "Authentication failed")
 	 * 
 	 * @access private
-	 * @var String the rule log of the ossec alert
+	 * @var String The actual log message from the host that generated the alert (i.e. "Authentication failed")
 	 */
 	private $rule_log;
-	
-	/**
-	 * The alert_ossec_id value from the data layer, assigned by OSSEC
-	 * 
-	 * @access private
-	 * @var String the alert_ossec_id value from the data layer
-	 */
-	private $alert_ossec_id;
 	
 	
 	// -- Operations --
@@ -216,48 +218,6 @@ class Ossec_Alert extends Maleable_Object {
 			}
 		}
 	}
-	
-	/**
-	 *  Set the id attribute.
-	 *
-	 *  @access protected
-	 *  @param Int The unique ID from the data layer
-	 */
-	protected function set_id($id){
-		$this->id = intval($id);
-	}
-	
-	/**
-	 *  Get the unique ID for the object
-	 *
-	 *  @access public
-	 *  @return Int The unique ID of the object
-	 */
-	public function get_id(){
-		return intval($this->id);
-	}
-	
-	/**
-	 * Set the alert_date attribute.
-	 *
-	 * @access public
-	 * @param Datetime The timestamp of the login attempt
-	 */
-	public function set_alert_date($datetime){
-		$this->alert_date = date("Y-m-d H:i:s", strtotime($datetime));
-	}
-	
-	public function set_alert_host_by_name($hostname) {
-		require_once 'class.Host.php';
-		$host = new Host();
-		$host->lookup_by_name($hostname);
-		if (! $host->get_id() > 0) {
-			$host->set_name($hostname);
-			$host->set_ip(gethostbyname($hostname));
-			$host->save();
-		}
-		$this->set_host_id($host->get_id());
-	}
 	/**
 	 * Get the timestamp of the ossec alert
 	 *
@@ -269,13 +229,46 @@ class Ossec_Alert extends Maleable_Object {
 	}
 	
 	/**
-	 * Set the host_id attribute
+	 * Get the alert log for the ossec alert
 	 * 
 	 * @access public
-	 * @param Int the host_id for the ossec alert
+	 * @return String the html safe log filename from which the OSSEC alert was generated (syslog, maillog, etc.)
 	 */
-	public function set_host_id($host_id){
-		$this->host_id = intval($host_id);
+	public function get_alert_log(){
+		return htmlspecialchars($this->alert_log);
+	}
+	
+	/**
+	 * Get the alert ossec id
+	 * 
+	 * @access public
+	 * @return String the html safe alert ossec id
+	 */
+	public function get_alert_ossec_id(){
+		return htmlspecialchars($this->alert_ossec_id);
+	}
+	
+	/**
+	 *  This function directly supports the Collection class.
+	 *
+	 *  @return String SQL select string
+	 */
+	public function get_collection_definition($filter = '', $orderby = ''){
+		$sql = 'SELECT o.alert_id as ossec_alert_id FROM ossec_alert o, ossec_rule r WHERE o.alert_id > 0 and o.rule_id = r.rule_id and r.rule_level > 7';
+		if ($filter != '' && is_array($filter))  {
+			$sql .= ' ' . array_shift($filter);
+			$sql = $this->db->parse_query(array($sql, $filter));
+		}
+		if ($filter != '' && ! is_array($filter))  {
+			$sql .= ' ' . $filter . ' ';
+		}
+		if ($orderby != '') {
+			$sql .= ' ' . $orderby;
+		}
+		else if ($orderby == '') {
+			$sql .= ' ORDER BY o.alert_date desc LIMIT 1000';
+		}
+		return $sql;
 	}
 	
 	/**
@@ -289,55 +282,112 @@ class Ossec_Alert extends Maleable_Object {
 	}
 	
 	/**
-	 * Set the alert_log attribute
-	 * 
-	 * @access public
-	 * @param String the alert log for the ossec alert
+	 *  Get the unique ID for the object
+	 *
+	 *  @access public
+	 *  @return Int The unique ID of the object
 	 */
-	public function set_alert_log($alert_log){
-		$this->alert_log = $alert_log;
+	public function get_id(){
+		return intval($this->id);
 	}
 	
 	/**
-	 * Get the alert log for the ossec alert
+	 * This function returns the attributes of the object in a associative array
 	 * 
-	 * @access public
-	 * @return String the html safe alert log for the ossec alert
+	 * @return Array an associative array of the objects attributes
 	 */
-	public function get_alert_log(){
-		return htmlspecialchars($this->alert_log);
+	public function get_object_as_array(){
+		return array(
+				'id' => $this->get_id(),
+				'alert_date' => $this->get_alert_date(),
+				'host_id' => $this->get_host_id(),
+				'alert_log' => $this->get_alert_log(),
+				'rule_id' => $this->get_rule_id(),
+				'rule_src_ip' => $this->get_rule_src_ip(),
+				'rule_src_ip_numeric' => $this->get_rule_src_ip_numeric(),
+				'rule_user' => $this->get_rule_user(),
+				'rule_log' => $this->get_rule_log(),
+				'alert_ossec_id' => $this->get_alert_ossec_id(),
+				'rule_level' => $this->get_ossec_rule_level(),
+				'rule_message' => $this->get_ossec_rule_message(),
+		);
+	}
+	
+	
+	/**
+	 *  Get ossec alerts in the last week
+	 *  
+	 *  @access public
+	 *  @return String the sql for the collection definition
+	 */
+	public function get_ossec_alerts_in_last_week(){
+		$ossec_alert_filter = " AND alert_date >= DATE_SUB(NOW(), INTERVAL 5 DAY) ";
+		return $this->get_collection_definition($ossec_alert_filter);
+	}
+	
+	public function get_ossec_id() {
+		return $this->alert_ossec_id();
 	}
 	
 	/**
-	 * Set the rule_id attribute
+	 * Get the ossec rule object for the ossec alert
 	 * 
 	 * @access public 
-	 * @param Int the rule id for the ossec alert
+	 * @return Ossec_Rule the ossec rule for the alert
 	 */
-	public function set_rule_id($rule_id){
-		$this->rule_id = intval($rule_id);
+	public function get_ossec_rule(){
+		include_once('class.Ossec_Rule.php');
+		$rule = new Ossec_Rule($this->get_rule_id());
+		return $rule; 
+	}
+	
+	
+	/**
+	 * Get the rule level for the ossec alert
+	 * 
+	 * @access public
+	 * @return Int the rule level for the ossec alert
+	 */
+	public function get_ossec_rule_level(){
+		$rule = $this->get_ossec_rule();
+		return $rule->get_rule_level();
 	}
 	
 	/**
-	 * Get the rule id for the ossec alert
+	 * Get the ossec rule message
 	 * 
 	 * @access public
-	 * @return Int the rule id for the ossec alert
+	 * @return String the ossec rule message
 	 */
-	public function get_rule_id(){
-		return $this->rule_id;
+	public function get_ossec_rule_message(){
+		$rule = $this->get_ossec_rule();
+		return $rule->get_rule_message();
 	}
 	
 	/**
-	 * Set the rule_dst_ip attribute
-	 * 
-	 * @access public
-	 * @param String the ipv4 rule destination ip address
+	 * Returns the frequencies of entries for a field in the data layer
+	 *
+	 * @param String $field The field from the data layer to count
+	 * @param string $bound The bound for the data
+	 * @return Array The frequenies of entries for the field
 	 */
-	public function set_rule_dst_ip($rule_dst_ip){
-		if ($rule_dst_ip == filter_var($rule_dst_ip,FILTER_VALIDATE_IP)){
-			$this->rule_dst_ip = $rule_dst_ip;
+	public function get_field_frequencies($field,$bound=''){
+		$retval = array();
+		$sql = 'SELECT ?s, count(?s) as frequency FROM ossec_alert WHERE id > 0 ';
+		if ($bound != ''){
+			$sql .= ' AND alert_date > DATE_SUB(NOW(), INTERVAL ?i DAY)';
+			$sql .= ' GROUP BY ?s ORDER BY frequency DESC';
+			$result = $this->db->fetch_object_array(array($sql,$field,$field,intval($bound),$field));
+		}else{
+			$sql .= ' GROUP BY ?s order by frequency desc';
+			$result = $this->db->fetch_object_array(array($sql,$field,$field,$field));
 		}
+		if (isset($result[0])){
+			foreach ($result as $row){
+				$retval[$row->$field] = $row->frequency;
+			}
+		}
+		return $retval;
 	}
 	
 	/**
@@ -351,15 +401,23 @@ class Ossec_Alert extends Maleable_Object {
 	}
 	
 	/**
-	 * Set the rule_src_ip attribute
+	 * Get the rule id for the ossec alert
 	 * 
 	 * @access public
-	 * @param String the ipv4 rule source ip address
+	 * @return Int the rule id for the ossec alert
 	 */
-	public function set_rule_src_ip($rule_src_ip){
-		if ($rule_src_ip == filter_var($rule_src_ip,FILTER_VALIDATE_IP)){
-			$this->rule_src_ip = $rule_src_ip;
-		}
+	public function get_rule_id(){
+		return $this->rule_id;
+	}
+	
+	/**
+	 * Get the actual log message from the host that generated the alert (i.e. "Authentication failed")
+	 * 
+	 * @access public
+	 * @return String The html safe rule log entry data that generated the alert
+	 */
+	public function get_rule_log(){
+		return htmlspecialchars($this->rule_log);
 	}
 	
 	/**
@@ -373,16 +431,6 @@ class Ossec_Alert extends Maleable_Object {
 	}
 	
 	/**
-	 * Set the rule_src_ip_numeric attribute
-	 * 
-	 * @access public
-	 * @param Int the decimal representation of the rule source ip address
-	 */
-	public function set_rule_src_ip_numeric($rule_src_ip_numeric){
-		$this->rule_src_ip_numeric = intval($rule_src_ip_numeric);
-	}
-	
-	/**
 	 * Get the decimal representation of the rule source ip
 	 * 
 	 * @access public
@@ -390,16 +438,6 @@ class Ossec_Alert extends Maleable_Object {
 	 */
 	public function get_rule_src_ip_numeric(){
 		return $this->rule_src_ip_numeric;
-	}
-	
-	/**
-	 * Set the rule_user attribute
-	 * 
-	 * @access public
-	 * @param String the rule user 
-	 */
-	public function set_rule_user($rule_user){
-		$this->rule_user = $rule_user;
 	}
 	
 	/**
@@ -412,6 +450,10 @@ class Ossec_Alert extends Maleable_Object {
 		return htmlspecialchars($this->rule_user);
 	}
 	
+	/**
+	 * Process a line from an OSSEC alert log.
+	 * @param String $line
+	 */
 	public function process_log_line($line) {
 		/**
 		 * ** Alert 1463651767.22664: mail  - syslog,errors,
@@ -424,36 +466,35 @@ class Ossec_Alert extends Maleable_Object {
 			$this->process_log_alert_line($line);
 		}
 		// Process the source line
-		if (preg_match('/^\d{4} [A-Z][a-z]{2} \d\d \d\d:\d\d:\d\d /', $line, $matches)) {
+		elseif (preg_match('/^\d{4} [A-Z][a-z]{2} \d\d \d\d:\d\d:\d\d /', $line, $matches)) {
 			$this->process_log_source_line($line, $matches);
 		}
 		// Process the rule line
-		if (substr($line, 0, 6) == 'Rule: ') {
+		elseif (substr($line, 0, 6) == 'Rule: ') {
 			$this->process_log_rule_line($line);
 		}
-		
-
-
-
 		// Process source ip line
-		if (substr($line, 0, 7) == 'Src IP:') {
+		elseif (substr($line, 0, 7) == 'Src IP:') {
 			$this->process_log_src_ip_line($line);
 		}
-		
 		// Process destination ip line
-		if (substr($line, 0, 7) == 'Dst IP:') {
+		elseif (substr($line, 0, 7) == 'Dst IP:') {
 			$this->process_log_dst_ip_line($line);
 		}
-		
 		// Process user line
-		if (substr($line, 0, 5) == 'User:') {
-			preg_match('/^User: .*/',$line,$usernames);
-			$username = isset($usernames[0]) ? substr($usernames[0], 6) : 'No source ip found';
-			print("* User name is $username\n");
-			$alert->set_rule_user($username);
+		elseif (substr($line, 0, 5) == 'User:') {
+			$this->process_log_user($line);
+		}
+		// Process the actual log entry
+		else {
+			$this->process_data($line);	
 		}
 		
 		
+	}
+	
+	private function process_data($line) {
+		$this->set
 	}
 	
 	private function process_log_alert_line($line) {
@@ -546,29 +587,113 @@ class Ossec_Alert extends Maleable_Object {
 		return true;
 	}
 	
-	// G'ah! Do this!
+	private function process_log_user($line) {
+		preg_match('/^User: .*/',$line,$usernames);
+		$username = isset($usernames[0]) ? substr($usernames[0], 6) : 'No source ip found';
+		$this->set_rule_user($username);
+	}
+	
+
 	public function save() {
+    	$retval = FALSE;
+    	if ($this->id > 0 ) {
+    		// Update an existing rule
+	    	$sql = array(
+	    		'UPDATE ossec_alert SET 
+	    			alert_date = \'?d\,
+	    			host_id = \'?i\,
+	    			alert_log = \'?s\' ,
+	    			rule_id = \'?i\,
+	    			rule_src_ip = \'?s\,
+	    			rule_src_ip_numeric = \'?i\,
+	    			rule_dst_ip = \'?s\,
+	    			rule_dst_ip_numeric = \'?i\,
+	    			rule_user = \'?s\,
+	    			rule_log = \'?s\,
+	    			alert_ossec_id = \'?s\
+	    		WHERE alert_id = \'?i\'',
+	    		$this->get_alert_date(),
+	    		$this->get_host_id(),
+	    		$this->get_alert_log(),
+	    		$this->get_rule_id(),
+	    		$this->get_src_ip(),
+	    		$this->get_src_ip_numeric(),
+	    		$this->get_dst_ip(),
+	    		$this->get_dst_ip_numeric(),
+	    		$this->get_rule_user(),
+	    		$this->get_rule_log(),
+	    		$this->get_ossec_id(),
+	    		$this->get_id()
+	    	);
+	    	$retval = $this->db->iud_sql($sql);
+    	}
+    	else {
+    		$sql = array(
+				'INSERT INTO ossec_rule SET 
+	    			alert_date = \'?d\,
+	    			host_id = \'?i\,
+	    			alert_log = \'?s\' ,
+	    			rule_id = \'?i\,
+	    			rule_src_ip = \'?s\,
+	    			rule_src_ip_numeric = \'?i\,
+	    			rule_dst_ip = \'?s\,
+	    			rule_dst_ip_numeric = \'?i\,
+	    			rule_user = \'?s\,
+	    			rule_log = \'?s\,
+	    			alert_ossec_id = \'?s\'',
+	    		$this->get_alert_date(),
+	    		$this->get_host_id(),
+	    		$this->get_alert_log(),
+	    		$this->get_rule_id(),
+	    		$this->get_src_ip(),
+	    		$this->get_src_ip_numeric(),
+	    		$this->get_dst_ip(),
+	    		$this->get_dst_ip_numeric(),
+	    		$this->get_rule_user(),
+	    		$this->get_rule_log(),
+	    		$this->get_ossec_id()
+	    	);
+	    	$retval = $this->db->iud_sql($sql);
+	    	// Now set the id
+	    	$sql = 'SELECT LAST_INSERT_ID() AS last_id';
+	    	$result = $this->db->fetch_object_array($sql);
+	    	if (isset($result[0]) && $result[0]->last_id > 0) {
+	    		$this->set_id($result[0]->last_id);
+	    	}
+    	}
 		
 	}
 	
 	/**
-	 * Set the rule log attribute
-	 * 
-	 * @access public 
-	 * @param String the rule log
+	 * Set the alert_date attribute.
+	 *
+	 * @access public
+	 * @param Datetime The timestamp of the login attempt
 	 */
-	public function set_rule_log($rule_log){
-		$this->rule_log = $rule_log;
+	public function set_alert_date($datetime){
+		$this->alert_date = date("Y-m-d H:i:s", strtotime($datetime));
+	}
+	
+	public function set_alert_host_by_name($hostname) {
+		require_once 'class.Host.php';
+		$host = new Host();
+		$host->lookup_by_name($hostname);
+		if (! $host->get_id() > 0) {
+			$host->set_name($hostname);
+			$host->set_ip(gethostbyname($hostname));
+			$host->save();
+		}
+		$this->set_host_id($host->get_id());
 	}
 	
 	/**
-	 * Get the rule log
+	 * Set the alert_log attribute
 	 * 
 	 * @access public
-	 * @return The html safe rule log
+	 * @param String The log filename from which the OSSEC alert was generated (syslog, maillog, etc.)
 	 */
-	public function get_rule_log(){
-		return htmlspecialchars($this->rule_log);
+	public function set_alert_log($alert_log){
+		$this->alert_log = $alert_log;
 	}
 	
 	/**
@@ -582,132 +707,87 @@ class Ossec_Alert extends Maleable_Object {
 	}
 	
 	/**
-	 * Get the alert ossec id
+	 * Set the host_id attribute
 	 * 
 	 * @access public
-	 * @return String the html safe alert ossec id
+	 * @param Int the host_id for the ossec alert
 	 */
-	public function get_alert_ossec_id(){
-		return htmlspecialchars($this->alert_ossec_id);
+	public function set_host_id($host_id){
+		$this->host_id = intval($host_id);
 	}
 	
 	/**
-	 *  This function directly supports the Collection class.
-	 *
-	 *  @return String SQL select string
-	 */
-	public function get_collection_definition($filter = '', $orderby = ''){
-		$sql = 'SELECT o.alert_id as ossec_alert_id FROM ossec_alert o, ossec_rule r WHERE o.alert_id > 0 and o.rule_id = r.rule_id and r.rule_level > 7';
-		if ($filter != '' && is_array($filter))  {
-			$sql .= ' ' . array_shift($filter);
-			$sql = $this->db->parse_query(array($sql, $filter));
-		}
-		if ($filter != '' && ! is_array($filter))  {
-			$sql .= ' ' . $filter . ' ';
-		}
-		if ($orderby != '') {
-			$sql .= ' ' . $orderby;
-		}
-		else if ($orderby == '') {
-			$sql .= ' ORDER BY o.alert_date desc LIMIT 1000';
-		}
-		return $sql;
-	}
-	
-	/**
-	 * This function returns the attributes of the object in a associative array
+	 * Set the rule_dst_ip attribute
 	 * 
-	 * @return Array an associative array of the objects attributes
+	 * @access public
+	 * @param String the ipv4 rule destination ip address
 	 */
-	public function get_object_as_array(){
-		return array(
-				'id' => $this->get_id(),
-				'alert_date' => $this->get_alert_date(),
-				'host_id' => $this->get_host_id(),
-				'alert_log' => $this->get_alert_log(),
-				'rule_id' => $this->get_rule_id(),
-				'rule_src_ip' => $this->get_rule_src_ip(),
-				'rule_src_ip_numeric' => $this->get_rule_src_ip_numeric(),
-				'rule_user' => $this->get_rule_user(),
-				'rule_log' => $this->get_rule_log(),
-				'alert_ossec_id' => $this->get_alert_ossec_id(),
-				'rule_level' => $this->get_ossec_rule_level(),
-				'rule_message' => $this->get_ossec_rule_message(),
-		);
+	public function set_rule_dst_ip($rule_dst_ip){
+		if ($rule_dst_ip == filter_var($rule_dst_ip,FILTER_VALIDATE_IP)){
+			$this->rule_dst_ip = $rule_dst_ip;
+		}
 	}
 	
-	
 	/**
-	 *  Get ossec alerts in the last week
-	 *  
-	 *  @access public
-	 *  @return String the sql for the collection definition
-	 */
-	public function get_ossec_alerts_in_last_week(){
-		$ossec_alert_filter = " AND alert_date >= DATE_SUB(NOW(), INTERVAL 5 DAY) ";
-		return $this->get_collection_definition($ossec_alert_filter);
-	}
-	
-	
-	/**
-	 * Get the ossec rule object for the ossec alert
+	 * Set the rule_id attribute
 	 * 
 	 * @access public 
-	 * @return Ossec_Rule the ossec rule for the alert
+	 * @param Int the rule id for the ossec alert
 	 */
-	public function get_ossec_rule(){
-		include_once('class.Ossec_Rule.php');
-		$rule = new Ossec_Rule($this->get_rule_id());
-		return $rule; 
+	public function set_rule_id($rule_id){
+		$this->rule_id = intval($rule_id);
 	}
 	
+	/**
+	 * Set the actual log message from the host that generated the alert (i.e. "Authentication failed")
+	 * 
+	 * @access public 
+	 * @param String The actual log message from the host that generated the alert (i.e. "Authentication failed")
+	 */
+	public function set_rule_log($rule_log){
+		$this->rule_log = $rule_log;
+	}
 	
 	/**
-	 * Get the rule level for the ossec alert
+	 * Set the Src IP value for the alert
 	 * 
 	 * @access public
-	 * @return Int the rule level for the ossec alert
+	 * @param String The ipv4 rule source ip address
 	 */
-	public function get_ossec_rule_level(){
-		$rule = $this->get_ossec_rule();
-		return $rule->get_rule_level();
+	public function set_rule_src_ip($rule_src_ip){
+		if ($rule_src_ip == filter_var($rule_src_ip,FILTER_VALIDATE_IP)){
+			$this->rule_src_ip = $rule_src_ip;
+		}
 	}
 	
 	/**
-	 * Get the ossec rule message
+	 * Set the rule_src_ip_numeric attribute
 	 * 
 	 * @access public
-	 * @return String the ossec rule message
+	 * @param Int the decimal representation of the rule source ip address
 	 */
-	public function get_ossec_rule_message(){
-		$rule = $this->get_ossec_rule();
-		return $rule->get_rule_message();
+	public function set_rule_src_ip_numeric($rule_src_ip_numeric){
+		$this->rule_src_ip_numeric = intval($rule_src_ip_numeric);
 	}
 	
 	/**
-	 * Returns the frequencies of entries for a field in the data layer
+	 * Set the rule_user attribute
+	 * 
+	 * @access public
+	 * @param String The User from the OSSEC alert
+	 */
+	public function set_rule_user($rule_user){
+		$this->rule_user = $rule_user;
+	}
+	
+	/**
+	 *  Set the id attribute.
 	 *
-	 * @param String $field The field from the data layer to count
-	 * @param string $bound The bound for the data
-	 * @return Array The frequenies of entries for the field
+	 *  @access protected
+	 *  @param Int The unique ID from the data layer
 	 */
-	public function get_field_frequencies($field,$bound=''){
-		$retval = array();
-		$sql = 'SELECT ?s, count(?s) as frequency FROM ossec_alert WHERE id > 0 ';
-		if ($bound != ''){
-			$sql .= ' AND alert_date > DATE_SUB(NOW(), INTERVAL ?i DAY)';
-			$sql .= ' GROUP BY ?s ORDER BY frequency DESC';
-			$result = $this->db->fetch_object_array(array($sql,$field,$field,intval($bound),$field));
-		}else{
-			$sql .= ' GROUP BY ?s order by frequency desc';
-			$result = $this->db->fetch_object_array(array($sql,$field,$field,$field));
-		}
-		if (isset($result[0])){
-			foreach ($result as $row){
-				$retval[$row->$field] = $row->frequency;
-			}
-		}
-		return $retval;
+	protected function set_id($id){
+		$this->id = intval($id);
 	}
 	
 }

@@ -325,8 +325,14 @@ class Ossec_Alert extends Maleable_Object {
 		return $this->get_collection_definition($ossec_alert_filter);
 	}
 	
+	/**
+	 * The OSSEC assigned ID (in format 123456.78)
+	 * 
+	 * @access public
+	 * @return String The OSSEC assigned alert id (in format 1234.56)
+	 */
 	public function get_ossec_id() {
-		return $this->alert_ossec_id();
+		return $this->alert_ossec_id;
 	}
 	
 	/**
@@ -401,6 +407,19 @@ class Ossec_Alert extends Maleable_Object {
 	}
 	
 	/**
+	 * Get the decimal representation of the rule destination ip
+	 * 
+	 * @access public
+	 * @return Int the decimal representation of the rule destination ip
+	 */
+	public function get_rule_dst_ip_numeric(){
+		if (isset($this->rule_dst_ip_numeric))
+			return $this->rule_dst_ip_numeric;
+		else 
+			return ip2long($this->rule_dst_ip);
+	}
+	
+	/**
 	 * Get the rule id for the ossec alert
 	 * 
 	 * @access public
@@ -437,7 +456,10 @@ class Ossec_Alert extends Maleable_Object {
 	 * @return Int the decimal representation of the rule source ip
 	 */
 	public function get_rule_src_ip_numeric(){
-		return $this->rule_src_ip_numeric;
+		if (isset($this->rule_src_ip_numeric))
+			return $this->rule_src_ip_numeric;
+		else 
+			return ip2long($this->rule_src_ip);
 	}
 	
 	/**
@@ -664,26 +686,26 @@ class Ossec_Alert extends Maleable_Object {
     		// Update an existing rule
 	    	$sql = array(
 	    		'UPDATE ossec_alert SET 
-	    			alert_date = \'?d\,
-	    			host_id = \'?i\,
+	    			alert_date = \'?d\',
+	    			host_id = \'?i\',
 	    			alert_log = \'?s\' ,
-	    			rule_id = \'?i\,
-	    			rule_src_ip = \'?s\,
-	    			rule_src_ip_numeric = \'?i\,
+	    			rule_id = \'?i\',
+	    			rule_src_ip = \'?s\',
+	    			rule_src_ip_numeric = \'?i\',
 	    			rule_dst_ip = \'?s\,
-	    			rule_dst_ip_numeric = \'?i\,
-	    			rule_user = \'?s\,
-	    			rule_log = \'?s\,
-	    			alert_ossec_id = \'?s\
+	    			rule_dst_ip_numeric = \'?i\',
+	    			rule_user = \'?s\',
+	    			rule_log = \'?s\',
+	    			alert_ossec_id = \'?s\'
 	    		WHERE alert_id = \'?i\'',
 	    		$this->get_alert_date(),
 	    		$this->get_host_id(),
 	    		$this->get_alert_log(),
 	    		$this->get_rule_id(),
-	    		$this->get_src_ip(),
-	    		$this->get_src_ip_numeric(),
-	    		$this->get_dst_ip(),
-	    		$this->get_dst_ip_numeric(),
+	    		$this->get_rule_src_ip(),
+	    		$this->get_rule_src_ip_numeric(),
+	    		$this->get_rule_dst_ip(),
+	    		$this->get_rule_dst_ip_numeric(),
 	    		$this->get_rule_user(),
 	    		$this->get_rule_log(),
 	    		$this->get_ossec_id(),
@@ -693,26 +715,26 @@ class Ossec_Alert extends Maleable_Object {
     	}
     	else {
     		$sql = array(
-				'INSERT INTO ossec_rule SET 
-	    			alert_date = \'?d\,
-	    			host_id = \'?i\,
+				'INSERT INTO ossec_alert SET 
+	    			alert_date = \'?d\',
+	    			host_id = \'?i\',
 	    			alert_log = \'?s\' ,
-	    			rule_id = \'?i\,
-	    			rule_src_ip = \'?s\,
-	    			rule_src_ip_numeric = \'?i\,
-	    			rule_dst_ip = \'?s\,
-	    			rule_dst_ip_numeric = \'?i\,
-	    			rule_user = \'?s\,
-	    			rule_log = \'?s\,
+	    			rule_id = \'?i\',
+	    			rule_src_ip = \'?s\',
+	    			rule_src_ip_numeric = \'?i\',
+	    			rule_dst_ip = \'?s\',
+	    			rule_dst_ip_numeric = \'?i\',
+	    			rule_user = \'?s\',
+	    			rule_log = \'?s\',
 	    			alert_ossec_id = \'?s\'',
 	    		$this->get_alert_date(),
 	    		$this->get_host_id(),
 	    		$this->get_alert_log(),
 	    		$this->get_rule_id(),
-	    		$this->get_src_ip(),
-	    		$this->get_src_ip_numeric(),
-	    		$this->get_dst_ip(),
-	    		$this->get_dst_ip_numeric(),
+	    		$this->get_rule_src_ip(),
+	    		$this->get_rule_src_ip_numeric(),
+	    		$this->get_rule_dst_ip(),
+	    		$this->get_rule_dst_ip_numeric(),
 	    		$this->get_rule_user(),
 	    		$this->get_rule_log(),
 	    		$this->get_ossec_id()
@@ -813,7 +835,18 @@ class Ossec_Alert extends Maleable_Object {
 	public function set_rule_dst_ip($rule_dst_ip){
 		if ($rule_dst_ip == filter_var($rule_dst_ip,FILTER_VALIDATE_IP)){
 			$this->rule_dst_ip = $rule_dst_ip;
+			$this->rule_dst_ip_numeric = ip2long($rule_dst_ip);
 		}
+	}
+	
+	/**
+	 * Set the rule_dst_ip_numeric attribute
+	 * 
+	 * @access public
+	 * @param Int the decimal representation of the rule destination ip address
+	 */
+	public function set_rule_dst_ip_numeric($rule_dst_ip_numeric){
+		$this->rule_dst_ip_numeric = intval($rule_dst_ip_numeric);
 	}
 	
 	/**
@@ -845,6 +878,7 @@ class Ossec_Alert extends Maleable_Object {
 	public function set_rule_src_ip($rule_src_ip){
 		if ($rule_src_ip == filter_var($rule_src_ip,FILTER_VALIDATE_IP)){
 			$this->rule_src_ip = $rule_src_ip;
+			$this->rule_src_ip_numeric = ip2long($rule_src_ip);
 		}
 	}
 	

@@ -1402,7 +1402,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 		// If still nothing look in the alternative IP's
 		if (! isset($this->host_id)) {
 			$sql = array(
-						'SELECT host_id FROM host_alts WHERE host_ip = \'?s\'',
+						'SELECT host_id FROM host_alts WHERE host_alt_ip = \'?s\'',
 						$this->ip
 					);
 			$result = $this->db->fetch_object_array($sql);

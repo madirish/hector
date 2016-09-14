@@ -230,8 +230,8 @@ class Ossec_Rule extends Maleable_Object {
     		// Update an existing rule
 	    	$sql = array(
 	    		'UPDATE ossec_rule SET 
-	    			rule_number = \'?i\,
-	    			rule_level = \'?i\,
+	    			rule_number = \'?i\',
+	    			rule_level = \'?i\',
 	    			rule_message = \'?s\' 
 	    		WHERE rule_id = \'?i\'',
 	    		$this->get_rule_number(),
@@ -244,8 +244,8 @@ class Ossec_Rule extends Maleable_Object {
     	else {
     		$sql = array(
 				'INSERT INTO ossec_rule SET 
-	    			rule_number = \'?i\,
-	    			rule_level = \'?i\,
+	    			rule_number = \'?i\', 
+	    			rule_level = \'?i\', 
 	    			rule_message = \'?s\'',
 	    		$this->get_rule_number(),
 	    		$this->get_rule_level(),

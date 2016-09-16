@@ -74,33 +74,36 @@ if(php_sapi_name() == 'cli') {
 		loggit("OpenDNS Malware Domain import.php process", "there was a problem opening the file $malware_domain_file_path");
 		exit(1);
 	}
+	//Load or create OpenDNS as the malware identifying service
 	$service = new Malware_service();
 	$service->lookup_by_name('OpenDNS');
 	if (! $service->get_id() > 0) {
 		$service->set_name('OpenDNS');
 		$service->save();
 	}
+	//initialize counters
 	$domain_records_created = 0;
 	$domain_records_updated = 0;
 	$domain_records_existed = 0;
+	
 	while (($line = fgets($malware_domain_file))!== false) {
 		$dn = substr($line,0,-1);
 		$domain = new Domain();
 		$domain->lookup_by_name($dn);
-		if ($domain->get_id() == 0) {
+		if ($domain->get_id() == 0) { //domain doesn't exist in database
 			$domain->set_name($dn);
 			$domain->set_is_malicious(true);
 			$domain->set_marked_malicious_datetime(date('y-m-d H:i:s'));
 			$domain->set_service($service);
 			$domain->save();
 			$domain_records_created++;
-		} elseif (!$domain->get_is_malicious()){
+		} elseif ($domain->get_is_malicious()===false){ //domain exists but is not marked malicious
 			$domain->set_is_malicious(true);
 			$domain->set_marked_malicious_datetime(date('y-m-d H:i:s'));
 			$domain->set_service($service);
 			$domain->save();
 			$domain_records_updated++;
-		} else {
+		} else {           //domain exists and is marked malicious
 			$domain_records_existed++;
 		}
 	}

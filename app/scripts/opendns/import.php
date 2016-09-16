@@ -82,6 +82,7 @@ if(php_sapi_name() == 'cli') {
 	}
 	$domain_records_created = 0;
 	$domain_records_updated = 0;
+	$domain_records_existed = 0;
 	while (($line = fgets($malware_domain_file))!== false) {
 		$dn = substr($line,0,-1);
 		$domain = new Domain();
@@ -93,16 +94,18 @@ if(php_sapi_name() == 'cli') {
 			$domain->set_service($service);
 			$domain->save();
 			$domain_records_created++;
-		} elseif ($domain->get_is_malicious()){
+		} elseif (!$domain->get_is_malicious()){
 			$domain->set_is_malicious(true);
 			$domain->set_marked_malicious_datetime(date('y-m-d H:i:s'));
 			$domain->set_service($service);
 			$domain->save();
 			$domain_records_updated++;
+		} else {
+			$domain_records_existed++;
 		}
 	}
 
-	loggit("OpenDNS Malware Domain import.php process", "OpenDNS Malware Domain import.php process complete.  $domain_records_created records added. $domain_records_updated records updated.");
+	loggit("OpenDNS Malware Domain import.php process", "OpenDNS Malware Domain import.php process complete.  $domain_records_created records added. $domain_records_updated records updated. $domain_records_existed records already marked.");
 	
 }
 ?>

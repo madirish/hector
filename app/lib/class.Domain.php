@@ -20,9 +20,6 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 require_once('class.Config.php');
 require_once('class.Db.php');
 require_once('class.Log.php');
-require_once('class.Collection.php');
-require_once('interface.Maleable_Object_Interface.php');
-require_once('class.Maleable_Object.php');
 require_once('class.Malware_service.php');
 
 /**
@@ -37,7 +34,7 @@ class Domain {
     // --- ATTRIBUTES ---
 
     /**
-     * Unique id reflected from the databasse
+     * Unique id reflected from the database
      *
      * @access private
      * @var int
@@ -59,14 +56,14 @@ class Domain {
     private $is_malicious;
     
     /**
-     * Date that the domin was last marked malicious
+     * Date that the domin was first marked malicious
      *
      * @var String
      */
     private $marked_malicious_datetime;
     
     /**
-     * Service logged the domain
+     * Service that marked the domain as malicious
      *
      * @var Service
      */
@@ -183,7 +180,9 @@ class Domain {
     		$this->is_malicious = $result[0]->domain_is_malicious > 0;
     		$this->marked_malicious_datetime = $result[0]->domain_marked_malicious_datetime;
     		$this->service = new Malware_service($result[0]->malware_service_id);
+    		return true;
     	}
+    	return false;
     }
     
     /**
@@ -244,12 +243,15 @@ class Domain {
      */
 	protected function set_id($id) {
        $this->id = (int) $id;
+       return true;
     }
     
     public function set_name($name) {
     	if ($name != '') {
     		$this->name = htmlspecialchars($name);
+    		return true;
     	}
+    	return false;
     }
     
     /**
@@ -260,6 +262,7 @@ class Domain {
      */
     public function set_is_malicious($is_malicious) {
     	$this->is_malicious = $is_malicious > 0;
+    	return true;
     }
     
     /**
@@ -271,7 +274,9 @@ class Domain {
     public function set_marked_malicious_datetime($datetime) {
     	if ($datetime != '') {
     		$this->marked_malicious_datetime = htmlspecialchars($datetime);
+    		return true;
     	}
+    	return false;
     }
     
     /**
@@ -282,15 +287,18 @@ class Domain {
      */
     public function set_service_by_id($service_id) {
     	$this->service = new Service($service_id);
+    	return $this->service->get_id()==$service_id;
     }
     /**
      * Set Service.
      *
      * @access public
      * @param Service $service
+     * @return bool
      */
     public function set_service($service) {
     	$this->service = $service;
+    	return true;
     }
     
 } /* end of class Domain */

@@ -20,9 +20,6 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 require_once('class.Config.php');
 require_once('class.Db.php');
 require_once('class.Log.php');
-require_once('class.Collection.php');
-require_once('interface.Maleable_Object_Interface.php');
-require_once('class.Maleable_Object.php');
 require_once('class.Domain.php');
 
 /**
@@ -37,7 +34,7 @@ class Named_resolution {
     // --- ATTRIBUTES ---
 
     /**
-     * Unique id reflected from the databasse
+     * Unique id reflected from the database
      *
      * @access private
      * @var int
@@ -61,7 +58,7 @@ class Named_resolution {
     /**
      * resolution datetime
      * 
-     * @var timestamp
+     * @var String
      */
     private $datetime;
     

@@ -197,7 +197,7 @@ class Ossec_Alert extends Maleable_Object {
 					rule_user, rule_log, alert_ossec_id, rule_dst_ip,
 					rule_dst_ip_numeric 
 					FROM ossec_alert o WHERE o.alert_ossec_id = ?i',
-					$id
+					$alert_id
 			);
 			$result = $this->db->fetch_object_array($sql);
 			if (is_object($result[0])){

@@ -67,14 +67,20 @@ if(php_sapi_name() == 'cli') {
 		 * May 19 05:56:06 hector HECTOR[5431]: 2016-05-19 05:56:06  ERROR: 127.0.0.1  IP failed to validate at Darknet::set_dst_ip()#011
 		 */
 		// Start a new alert
-		if ($reading_alert > 0  && substr($line, 0, 8) == '** Alert') {
-			$alert->save();
-			$reading_alert = 0;
-		}
-		elseif ($reading_alert == 0 && substr($line, 0, 8) == '** Alert') {
+		if (substr($line, 0, 8) == '** Alert') {
+			// Track that we found one alert so we can save the last one
 			$reading_alert = 1;
-			$alert = new Ossec_Alert();
+			if ($alert == null) {
+				// Very first alert
+				$alert = new Ossec_Alert();
+			}
+			else {
+				// Save the working alert and start a new one
+				$alert->save();
+				$alert = new Ossec_Alert();
+			}
 		}
+		
 		$alert->process_log_line($line);
 	}
 	
@@ -128,6 +134,11 @@ if(php_sapi_name() == 'cli') {
 			if (!feof($handle)) {
 				echo "Error: unexpected fgets() fail\n";
 			}
+			// Save the last alert
+			if ($reading_alert > 0) {
+				$alert->save();
+			}
+			
 			fclose($handle);
 		}
 	}

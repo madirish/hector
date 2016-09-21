@@ -564,7 +564,7 @@ CREATE TABLE IF NOT EXISTS `vuln_x_tag` (
   INDEX (`tag_id`)
 ) ENGINE = INNODB;
 
--- Vulnerablities details
+-- Vulnerabilities details
 CREATE TABLE IF NOT EXISTS `vuln_detail` (
   `vuln_detail_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `vuln_detail_text` text,infoblox_query
@@ -598,7 +598,7 @@ CREATE TABLE IF NOT EXISTS `domain` (
   PRIMARY KEY (`domain_id`)
 ) ENGINE = INNODB;
 
--- NameD resoloutions
+-- NameD resolutions
 CREATE TABLE IF NOT EXISTS `named_resolution` (
   `named_resolution_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `named_resolution_src_ip` VARCHAR(15) NOT NULL,
@@ -606,6 +606,9 @@ CREATE TABLE IF NOT EXISTS `named_resolution` (
   `domain_id` INT UNSIGNED NOT NULL,
   `named_resolution_datetime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `named_src_id` INT UNSIGNED NOT NULL,
+  INDEX (`domain_id`),
+  INDEX (`named_resolution_src_ip_numeric`),
+  INDEX (`named_resolution_datetime`),
   PRIMARY KEY (`named_resolution_id`)
 ) ENGINE = INNODB;
 

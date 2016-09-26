@@ -32,7 +32,7 @@ if [ -e /etc/redhat-release ]; then
     	/sbin/service httpd start
 	else
 		# CentOS 7
-		/usr/bin/yum install mariadb mariadb-server git httpd php php-cli php-mysql php-xml MySQL-python MySQL-python nmap gcc make perl-DBI
+		/usr/bin/yum install mariadb mariadb-server git httpd php php-cli php-mysql php-xml MySQL-python nmap gcc make perl-DBI
 		/usr/bin/systemctl enable mariadb
 		/usr/bin/systemctl enable httpd
 		/usr/bin/systemctl start mariadb

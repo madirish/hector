@@ -36,8 +36,7 @@ logger.debug('args: [\''+('\', \''.join(sys.argv))+'\']')
 
 #config vars
 infoblox_dir = configr.get_var('approot')+"app/scripts/infoblox/"
-infoblox_log_file_name = "2016-09-26.infoblox.log.gz"
-output_filename = ""
+
 blacklisted_ips = set()
 
 current_year = datetime.today().year
@@ -50,10 +49,12 @@ domain_inserts = 0
 conn = None
 cursor = None
 
+filedate = '2016-10-04'
+infoblox_log_file_name = filedate+".infoblox.log.gz"
 filepath = infoblox_dir+'logs/'+infoblox_log_file_name
-pathtoarchivefile = infoblox_dir+'logs/2016-09-26.infoblox.csv.gz'
+pathtoarchivefile = infoblox_dir+'logs/'+filedate+'.infoblox.csv.gz'
 chunkfilepathtemplate = infoblox_dir+'logs/chunks/chunk{0:03d}.csv'
-chunksize=10**6
+chunksize=5*(10**5)
 
 def connect_db():
     global conn,cursor
@@ -97,29 +98,31 @@ def get_ip(ip):
     
     return ip,ip_numeric
 
+def load_domains():
+    global domains
+    query = "SELECT domain_id, domain_name from domain"
+    try:
+        cursor.execute(query)
+    except AttributeError:
+        logger.debug('no connection to db. calling connect_db')
+        connect_db()
+        cursor.execute(query)
+    res = cursor.fetchall()
+    for record in res:
+        domains[record[1].lower()] = int(record[0])
+    
+    
 def get_domain_id(domain):
-    global domain_lookups
     global domain_inserts
     global domains
+    if len(domains)==0:
+        load_domains()
+    domain = domain.lower()
     if not domain in domains:
-        query = "SELECT domain_id from domain where domain_name=%s"
-        
-        try:
-            cursor.execute(query,(domain,))
-        except AttributeError:
-            logger.debug('no connection to db. calling connect_db')
-            connect_db()
-            cursor.execute(query,(domain,))
-            
-        res = cursor.fetchone()
-        domain_lookups+=1
-        if res == None:
-            cursor.execute("""INSERT INTO domain SET domain_name=%s""",(domain,))
-            domains[domain] = int(cursor.lastrowid)
-            conn.commit()
-            domain_inserts+=1
-        else:
-            domains[domain] = int(res[0])
+        cursor.execute("""INSERT INTO domain SET domain_name=%s""",(domain,))
+        domains[domain] = int(cursor.lastrowid)
+        #conn.commit()
+        domain_inserts+=1
     domain_id = domains[domain]
     return domain_id
         
@@ -153,16 +156,19 @@ def proc_file(filepath,chunksize):
             chunk+=res+'\n'
             count+=1
             if count % chunksize == 0:
+                conn.commit()
                 pathtochunkfile = chunkfilepathtemplate.format(fnumber)
                 write_data(chunk,pathtoarchivefile,pathtochunkfile)
                 fnumber+=1
                 chunk = ''
+                logger.debug('inserts/record: {0}/{1} ({2:05.2f}%)'.format(domain_inserts,count,100.0*domain_inserts/count))
                 
     if chunk!='':
         pathtochunkfile = chunkfilepathtemplate.format(fnumber)
         write_data(chunk,pathtoarchivefile,pathtochunkfile)
         fnumber+=1
-    fin.close()              
+    fin.close()
+    conn.commit()           
     logger.info('{0} records written to {1} chunk files'.format(count,fnumber))
     logger.info('{0} domains added.'.format(domain_inserts))
     return fnumber
@@ -192,12 +198,20 @@ def import_chunks(chunks):
         except:
             logger.error('import chunks error', exc_info=True)
             raise
-        logger.info('importing chunk complete.')    
+        logger.info('importing chunk complete.')
+
+def delete_chunks(chunks):
+    logger.info("Cleaning up chunk files.")
+    for i in chunks:
+        chunkfilepath=chunkfilepathtemplate.format(i)
+        logger.debug('removing file: {0}'.format(chunkfilepath))
+        os.remove(chunkfilepath)
 
 if __name__=='__main__':
     logger.info('named.py starting')
     num_chunks = proc_file(filepath,chunksize)
     import_chunks(xrange(num_chunks))
+    delete_chunks(xrange(num_chunks))
     
     conn.close()
     logger.info('named.py complete')

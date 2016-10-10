@@ -34,7 +34,7 @@ if (! function_exists("loggit")) {
 	}
 }
 
-// Handle the CSV upload
+// Handle the XML file
 if (isset($_FILES['nmap_xml'])) {
 	loggit("NMAP upload XML process", "NMAP XML file uploaded started.");
     if ($_FILES['nmap_xml']['error'] == 0) {

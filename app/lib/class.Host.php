@@ -1410,6 +1410,8 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 				$this->__construct($result[0]->host_id);
 			}			
 		}
+		// if still nothing we need to create a host
+		if (! isset($this->host_id)) $this->save();		
 	}
 	
 	/**

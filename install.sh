@@ -152,6 +152,7 @@ if ! cat /etc/crontab | grep -q "HECTOR" ; then
   # echo "* * * * * root /opt/hector/app/scripts/hector-ossec-mysql-monitor.sh" >> /etc/crontab
   echo "*/5 * * * * root /opt/hector/app/scripts/openvas/import.sh" >> /etc/crontab
   echo "*/5 * * * * root /opt/hector/app/scripts/qualys/import.sh" >> /etc/crontab
+  echo "*/5 * * * * root /opt/hector/app/scripts/nmap_scan/import.sh" >> /etc/crontab
   echo "[+] cron scheduled in /etc/crontab"
 else
   echo "[+] HECTOR crontab seems to already exist"
@@ -160,6 +161,7 @@ fi
 
 chmod +x /opt/hector/app/scripts/qualys/import.sh
 chmod +x /opt/hector/app/scripts/openvas/import.sh
+chmod +x /opt/hector/app/scripts/nmap_scan/import.sh
 
 echo -e "Do you wish to install OSSEC? (y/n):"
 read installossec

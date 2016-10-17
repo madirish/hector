@@ -28,9 +28,19 @@ if (isset($_GET['classB'])) {
 }
 elseif (isset($_GET['classC'])) {
 	$hosts = array();
+	$outputs = array();
     $host_collection = new Collection('Host', $_GET['classC'], 'get_collection_by_classC');
     if (isset($host_collection->members) && is_array($host_collection->members)) {
     	$hosts = $host_collection->members;
+    	foreach ($hosts as $host) {
+    		$name = ($host->get_name() !== '') ? $host->get_name() : $host->get_ip();
+    		$outputs[] = array('id'=>$host->get_id(),
+    				'name'=>$name,
+    				'ip'=>htmlspecialchars($host->get_ip()),
+    				'ports'=>$host->get_open_ports(),
+    				'os'=> htmlspecialchars($host->get_os())
+    		);
+    	}
     }
     hector_add_js('browse_classC.js');
 }

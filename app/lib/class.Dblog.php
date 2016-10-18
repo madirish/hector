@@ -6,6 +6,14 @@
  * @abstract This class provides logging to the database.
  * @author Justin C. Klein Keane <justin@madirish.net>
  */
+/**
+ * Error reporting
+ */
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
+
+if (0 > version_compare(PHP_VERSION, '5')) {
+	die('This file was generated for PHP 5');
+}
 
 /**
  * Set up debugging

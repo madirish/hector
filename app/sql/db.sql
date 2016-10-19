@@ -67,6 +67,15 @@ CREATE TABLE IF NOT EXISTS `darknet` (
 	INDEX USING HASH (`src_ip`)
 ) ENGINE = INNODB;
 
+-- Table used to hold totals for darknet hits to speed up reporting
+CREATE TABLE IF NOT EXISTS `darknet_totals` (
+    `countrytime` varchar(15) NOT NULL, 
+    `country_code` varchar(3), 
+    `day_of_total` DATE NOT NULL, 
+    `count` INT NOT NULL,
+    UNIQUE KEY (`countrytime`)
+) ENGINE = INNODB;
+
 -- Form table is used for anti XSRF tokens
 CREATE TABLE IF NOT EXISTS `form` (
 	`form_id` INT NOT NULL AUTO_INCREMENT,

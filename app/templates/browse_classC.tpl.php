@@ -4,16 +4,17 @@
     <tr><th>Hostname</th><th>IP</th><th>Open Ports</th><th>OS</th></tr>
 </thead>
 <tbody>
-	<?php if (isset($hosts) && is_array($hosts)):?>
-		<?php foreach ($hosts as $host):?>
-			<?php $name = ($host->get_name() !== '') ? $host->get_name() : $host->get_ip(); ?>
-			<tr>
-				<td><a href='?action=host_details&id=<?php echo $host->get_id();?>'><?php echo htmlspecialchars($name);?></a></td>
-				<td><?php echo htmlspecialchars($host->get_ip());?></td>
-				<td><?php echo $host->get_open_ports();?></td>
-				<td><?php echo htmlspecialchars($host->get_os());?></td>
-			</tr>
-		<?php endforeach;?>
-	<?php endif;?>
+<!-- This space filled dynamically via the JavaScript below -->
 </tbody>
 </table>
+
+<script type="text/javascript">
+var hosts='<?php echo json_encode($outputs); ?>';
+var working = $.parseJSON(hosts);
+$(function() {
+	$.each(working, function(i, item) {
+		var href = '<a href="?action=host_details&id=' + item.id + '">' + item.name + '</a>';
+		table.row.add([href, item.ip, item.ports, item.os]).draw().node();
+	});
+});
+</script>

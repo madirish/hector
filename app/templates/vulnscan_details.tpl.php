@@ -194,17 +194,24 @@ $low_fixed_counts[] = '0';
 <table class="table table-stiped table-bordered">
 <tr>
 	<th width="5%">#</th>
-	<th width="10%">Risk</th>
 	<th width="20%">Host IP</th>
+	<th width="10%">Risk</th>
 	<th>Vulnerability</th>
 </tr>
 <?php 
 $x = 1;
+$prev_host_id = 0;
 foreach ($vulnscan_for_details->get_vuln_details() as $vuln_detail) {
 	$risk = new Risk($vuln_detail->get_risk_id());
+	$local_host_id = $vuln_detail->get_host_id();
 ?>
 <tr>
 	<td><?php echo $x; ?></td>
+	<?php if ($local_host_id != $prev_host_id) { ?>
+	<td><a href="?action=host_details&id=<?php echo $local_host_id; ?>"><?php echo $vuln_detail->get_host_ip();?></a></td>
+	<?php } else {?>
+	<td>&nbsp;</td>
+	<?php } ?>
 	<td><?php 
 		switch ($risk->get_name()) {
     			case 'critical':
@@ -221,9 +228,9 @@ foreach ($vulnscan_for_details->get_vuln_details() as $vuln_detail) {
     				break;
 		}
 	?></td>
-	<td><a href="?action=host_details&id=<?php echo $vuln_detail->get_host_id(); ?>"><?php echo $vuln_detail->get_host_ip();?></a></td>
-	<td><a href="?action=vuln_details&id=<?php echo $vuln_detail->get_id(); ?>"><?php echo $vuln_detail->get_vuln_name();?></a></td>
+	<td><a href="?action=vuln_details&id=<?php echo $vuln_detail->get_id(); ?>"><?php echo $vuln_detail->get_vuln_name();?></a> <a href="#myModal" role="button" class="btn-small" data-toggle="modal">Details</a></td>
 <?php 
+$prev_host_id = $local_host_id;
 $x++;
 } ?>
 </table>

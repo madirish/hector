@@ -442,7 +442,7 @@ class Report {
      * @return Object An object with the attribute idcount
      */
     public function getProbesByCountryDate($country, $date) {
-        $date = strtotime($date);
+       /*  $date = strtotime($date);
     	$datemin = date('Y-m-d 00:00:00', $date);
         $datemax = date('Y-m-d 24:59:59', $date);
         $sql = 'SELECT COUNT(id) AS idcount ' .
@@ -452,6 +452,13 @@ class Report {
                 'AND received_at >= "' . $datemin . '" ' .
                 'AND received_at <= "' . $datemax . '"';
         $count = $this->db->fetch_object_array($sql);
-        return $count[0]->idcount;
+        return $count[0]->idcount; */
+    	$tmpDate = new DateTime($date);
+    	$sql = 'SELECT darknet_totals.count as idcount 
+    			from darknet_totals where country_code = "' . mysql_real_escape_string($country) . '" ' .
+    			'AND day_of_total = "' . $tmpDate->format('Y-m-d') . '"';
+        $count = $this->db->fetch_object_array($sql);
+        if (! isset($count[0])) return 0;
+        else return $count[0]->idcount;
     }
 }

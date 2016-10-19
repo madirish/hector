@@ -10,7 +10,7 @@
 /**
  * Error reporting
  */
-error_reporting(E_ALL);
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
 
 if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
@@ -641,7 +641,7 @@ class Vuln_detail extends Maleable_Object implements Maleable_Object_Interface {
      * @param Object An instance of the database connection
      * @return Array An object array with attributes vuln_name, vuln_detail_id, vuln_detail_text, vuln_detail_datetime, vuln_detail_ignore, and vuln_detail_fixed
      */
-    public function get_vuln_details_by_host($host_id, $db='',$vulnscan='') {
+    public static function get_vuln_details_by_host($host_id, $db='',$vulnscan='') {
         if ($db == '') $db = $this->db;
         $host_id = intval($host_id);
         $select_stmt = 'SELECT distinct(v.vuln_name), ' .

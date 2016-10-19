@@ -7,6 +7,14 @@
  * @todo Move the SQL out of actions/summary.php and into a helper class
  */
 
+$debugTime = False;
+
+// Timer block
+if ($debugTime) {
+	$startTime = time();
+	echo "\n\r Start Time is " . $startTime;
+	echo "\n\r Time is " . time();
+}
 
 // Queries (inefficiently done)
 /**
@@ -24,6 +32,11 @@ if (! isset($appuser)) {
 	if (! isset($_SESSION['user_id'])) die("<h2>Fatal error!<?h2>User not initialized.");
 	else $appuser = new User($_SESSION['user_id']);
 } 
+
+// Timer block
+if ($debugTime) {
+	echo "\n\r Start page render time is " . (time() - $startTime);
+}
 
 $report = new Report();
 $port_result = $report->topTenPorts($appuser);
@@ -109,6 +122,13 @@ $cy = date('Y');
 $ly = $cy - 1;
 $timespan =    $month . ' ' . $ly . ' - ' . $cy ;
 
+
+// Timer block
+if ($debugTime) {
+	$break = microtime(true);
+	echo "\n\r Starting Vulnerability Time is " . (time() - $startTime);
+}
+
 /**
  * Vulnerability Pie Charts
  */
@@ -125,6 +145,13 @@ if (is_array($risk_coll->members)) {
 $vuln_num_report_header = 'Vulnerability Risk Counts';
 $vuln_num_chart_labels = json_encode(array_keys($risk_nums));
 $vuln_num_chart_counts = json_encode($risk_nums);
+
+
+// Timer block
+if ($debugTime) {
+	$break = microtime(true);
+	echo "\n\r Starting Incidents Time is " . (time() - $startTime);
+}
 
 /**
  * Incidents Pie Chart
@@ -174,12 +201,22 @@ $incident_report_header = "Incident Reports " . $timespan;
 $asset_count_header = "Assets Affected $timespan";
 $asset_labels_json = json_encode(array_keys($asset_count));
 
+
+// Timer block
+if ($debugTime) {
+	$break = microtime(true);
+	echo "\n\r Starting Darknet Map Time is " . (time() - $startTime);
+}
+
 /**
  * Darknet map
  */
 
 $darknetmapcounts = $report->getDarknetCountryCount();
-
+// Timer block
+if ($debugTime) {
+	echo "\n\r Got darknet country count at " . (time() - $startTime);
+}
 /**
  * Darknet Country Trends
  */
@@ -188,11 +225,29 @@ for ($i=6; $i>=0; $i--) {
 	$datelabels[$i] = date('Y-m-d', mktime(0,0,0,date('m'),date('d')-$i,date('Y')));
 }
 $topCountries = $report->getTopDarknetCountries();
+
+// Timer block
+if ($debugTime) {
+	$break = microtime(true);
+	echo "\n\r got top countries report at  " . (time() - $startTime);
+}
+
+// This is the slowest part of the page
+
 $countrycountdates = array();
 foreach ($topCountries as $country) {
 	foreach($datelabels as $datelabel) {
 		$countrycountdates[$country][$datelabel] = $report->getProbesByCountryDate($country, $datelabel);
+		// Timer block
+		if ($debugTime) {
+			echo "\n\r Finished country [$country] at " . (time() - $startTime);
+		}
+		
 	}
+}
+// Timer block
+if ($debugTime) {
+	echo "\n\r Finished Darknet, starting honeypot " . (time() - $startTime);
 }
 
 /**
@@ -204,6 +259,12 @@ $kojoneymapcounts = json_encode($kojoneyCountryCount);
 /**
  * Tag cloud
  */
+
+
+// Timer block
+if ($debugTime) {
+	echo "\n\r Starting Tag Cloud Time is " . (time() - $startTime);
+}
 
 $tag_collection = new Collection('Tag');
 $tag_weights = array();
@@ -226,6 +287,12 @@ if (is_array($tag_collection->members)){
 	}
 	array_multisort($tag_sorter,SORT_DESC,$tag_weights);
 	$tag_cloud = array_slice($tag_weights, 0, 50); // Limit to 50 elements
+}
+
+
+// Timer block
+if ($debugTime) {
+	echo "\n\r Starting Article Count Time is " . (time() - $startTime);
 }
 
 /**

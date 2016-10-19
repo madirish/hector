@@ -1,5 +1,6 @@
+var table;
 $(document).ready( function () {
-    var table = $('#tableClassC').DataTable({
+    table = $('#tableClassC').DataTable({
         "ordering": true,
         "autoWidth": false,
     });

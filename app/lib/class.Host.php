@@ -788,7 +788,7 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
      */
     public function get_collection_by_classC($classC, $orderby='') {
         $sql = 'SELECT h.host_id FROM host h ' .
-                'WHERE h.host_ip LIKE \'?s%\' ';
+                'WHERE h.host_ip LIKE \'?s.%\' ';
         if ($orderby != '') {
             $sql .= ' ' . $orderby;
         }

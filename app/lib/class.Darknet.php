@@ -466,11 +466,24 @@ class Darknet extends Maleable_Object {
             $sql = 'SELECT LAST_INSERT_ID() AS last_id';
             $result = $this->db->fetch_object_array($sql);
             if (isset($result[0]) && $result[0]->last_id > 0) {
-                $this->set_id(intval($result[0]->last_id));
+            	$this->__construct($result[0]->last_id);
+                //$this->set_id(intval($result[0]->last_id));
             }
             else {
             	$this->log->write_error("There was a problem getting the last insert id at Darknet::save()");
             }
+            // Update totals
+            $tmpDate = new DateTime($this->get_received_at());
+            $sql = array('INSERT INTO darknet_totals SET countrytime = \'?s\',
+            						country_code = \'?s\',
+            						day_of_total = \'?s\',
+            						count = 1
+            				ON DUPLICATE KEY UPDATE count = count + 1',
+            	$tmpDate->format('Y-m-d') . $this->country_code,
+            	$this->country_code,
+            	$tmpDate->format('Y-m-d')
+            );
+            $retval = $this->db->iud_sql($sql);
         }
         // Finally set the country code
 		$sql = array(
@@ -579,7 +592,7 @@ class Darknet extends Maleable_Object {
                 break;
             default:
                 $this->proto = '';
-                $this->log->write_error("Unrecognized protocol submitted to Darkenet::set_proto()");
+                $this->log->write_error("Unrecognized protocol [$proto] submitted to Darkenet::set_proto()");
                 return false;
         }
         return true;

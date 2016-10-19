@@ -308,6 +308,7 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
      * @return Int the id of the tag. 0 on an error
      */
     public function lookup_by_name($name){
+    	$name = substr($name, 0, 50);
     	$sql = array(
     		'SELECT tag_id FROM tag WHERE tag_name = \'?s\'',
     			$name
@@ -388,6 +389,10 @@ class Tag extends Maleable_Object implements Maleable_Object_Interface {
 	 * @return Boolean True if everything worked, FALSE on error.
 	 */
     public function save() {
+    	// Dont' import garbage tags like: SF-Port22-TCP:V=6.40%I=7%D=10/12%Time=57FDB5EA%P=x
+    	if (strpos($this->get_name(), '%I=7%') > -1) {
+    		return FALSE;
+    	}
     	$retval = FALSE;
     	if ($this->id > 0 ) {
     		// Update an existing tag

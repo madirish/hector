@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<title>HECTOR</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="shortcut icon" href="images/favicon.ico" />
+	<link rel="shortcut icon" href="images/hector.ico" />
 	<link href="css/bootstrap.css" rel="stylesheet">
 	<link href="css/bootstrap-responsive.css" rel="stylesheet">
 	<script src="js/ajaxFunctions.js" type="text/javascript"></script>

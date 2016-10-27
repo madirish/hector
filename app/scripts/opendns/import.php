@@ -88,19 +88,22 @@ if(php_sapi_name() == 'cli') {
 	
 	while (($line = fgets($malware_domain_file))!== false) {
 		$dn = substr($line,0,-1);
+		$dn = explode("|",$dn);
 		$domain = new Domain();
-		$domain->lookup_by_name($dn);
+		$domain->lookup_by_name($dn[0]);
 		if ($domain->get_id() == 0) { //domain doesn't exist in database
-			$domain->set_name($dn);
+			$domain->set_name($dn[0]);
 			$domain->set_is_malicious(true);
 			$domain->set_marked_malicious_datetime(date('y-m-d H:i:s'));
 			$domain->set_service($service);
+			$domain->set_categories($dn[1]);
 			$domain->save();
 			$domain_records_created++;
 		} elseif ($domain->get_is_malicious()===false){ //domain exists but is not marked malicious
 			$domain->set_is_malicious(true);
 			$domain->set_marked_malicious_datetime(date('y-m-d H:i:s'));
 			$domain->set_service($service);
+			$domain->set_categories($dn[1]);
 			$domain->save();
 			$domain_records_updated++;
 		} else {           //domain exists and is marked malicious

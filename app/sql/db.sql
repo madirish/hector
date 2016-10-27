@@ -594,6 +594,7 @@ CREATE TABLE IF NOT EXISTS `domain` (
   `domain_name` VARCHAR(255) NOT NULL UNIQUE,
   `domain_is_malicious` INT(1) NOT NULL DEFAULT '0',
   `domain_marked_malicious_datetime` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `domain_categories` VARCHAR(255),
   `malware_service_id` INT UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY (`domain_id`)
 ) ENGINE = INNODB;

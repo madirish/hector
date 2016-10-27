@@ -69,6 +69,14 @@ class Domain {
      */
     private $service;
     
+    /**
+     * Categories associated with the domain
+     * 
+     * @var String
+     */
+    
+    private $categories;
+    
     
     /**
      * Generic constructor.  Look up the object
@@ -95,6 +103,7 @@ class Domain {
     			$this->is_malicious = $result[0]->domain_is_malicious > 0;
     			$this->marked_malicious_datetime = $result[0]->domain_marked_malicious_datetime;
     			$this->service = new Malware_service($result[0]->malware_service_id);
+    			$this->categories = $result[0]->domain_categories;
     		}
     	} else {
     		$this->service = new Malware_service();
@@ -117,6 +126,10 @@ class Domain {
     	}
     	$this->set_id(null);
     	return $retval;
+    }
+    
+    public function get_categories() {
+    	return htmlspecialchars($this->categories);
     }
     
     /**
@@ -180,6 +193,7 @@ class Domain {
     		$this->is_malicious = $result[0]->domain_is_malicious > 0;
     		$this->marked_malicious_datetime = $result[0]->domain_marked_malicious_datetime;
     		$this->service = new Malware_service($result[0]->malware_service_id);
+    		$this->categories = $result[0]->domain_categories;
     		return true;
     	}
     	return false;
@@ -200,12 +214,14 @@ class Domain {
     				'domain_name = \'?s\', ' .
     				'domain_is_malicious = \'?i\', ' .
     				'domain_marked_malicious_datetime = \'?s\', ' .
-    				'malware_service_id = \'?i\' ' .
+    				'malware_service_id = \'?i\', ' .
+    				'domain_categories = \'?s\' ' .
     				'WHERE domain_id = \'?i\'',
     				$this->get_name(),
     				$this->get_is_malicious(),
     				$this->get_marked_malicious_datetime(),
     				$this->get_service()->get_id(),
+    				$this->get_categories(),
     				$this->get_id()
     		);
     		$retval = $this->db->iud_sql($sql);
@@ -216,11 +232,13 @@ class Domain {
     				'SET domain_name = \'?s\', '.
     				'domain_is_malicious = \'?i\', ' .
     				'domain_marked_malicious_datetime = \'?s\', ' .
-    				'malware_service_id = \'?i\'',
+    				'malware_service_id = \'?i\', ' .
+    				'domain_categories = \'?s\'',
     				$this->get_name(),
     				$this->get_is_malicious(),
     				$this->get_marked_malicious_datetime(),
-    				$this->get_service()->get_id()
+    				$this->get_service()->get_id(),
+    				$this->get_categories()
     		);
     		$retval = $this->db->iud_sql($sql);
     		// Now set the id
@@ -233,6 +251,13 @@ class Domain {
     	 
     	return $retval;
     }
+    
+    public function set_categories($categories) {
+    	if ($categories != ''){
+    		$this->categories = htmlspecialchars($categories);
+    	}
+    }
+    
     
     /**
      * Set the object's unique id

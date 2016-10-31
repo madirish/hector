@@ -567,7 +567,7 @@ CREATE TABLE IF NOT EXISTS `vuln_x_tag` (
 -- Vulnerabilities details
 CREATE TABLE IF NOT EXISTS `vuln_detail` (
   `vuln_detail_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `vuln_detail_text` text,infoblox_query
+  `vuln_detail_text` text,
   `vuln_detail_datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `vuln_detail_ignore` int(1) NOT NULL DEFAULT '0',
   `vuln_detail_ignore_datetime` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',

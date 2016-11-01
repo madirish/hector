@@ -34,6 +34,9 @@ if (! function_exists("loggit")) {
 	}
 }
 
+if (isset($_GET['upload'])) {
+	$message = 'There was an undetected error in the upload, please check the web server logs.';
+}
 // Handle the XML file
 if (isset($_FILES['nmap_xml'])) {
 	loggit("NMAP upload XML process", "NMAP XML file uploaded started.");

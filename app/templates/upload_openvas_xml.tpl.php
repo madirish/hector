@@ -5,7 +5,7 @@
 <p id='explaination'>After running a OpenVAS scan you can export the results as an XML file.
 HECTOR can import these files, creating host records as necessary, and appending vulnerabilities and descriptions 
 to HECTOR records.</p>
-<form method="post" action="?action=upload_openvas_xml" enctype="multipart/form-data" name="upload_openvas_xml" class="form-horizontal">
+<form method="post" action="?action=upload_openvas_xml&upload=1" enctype="multipart/form-data" name="upload_openvas_xml" class="form-horizontal">
 	<div class="control-group">
 		<label class="control-label" for="file-name-field">File:</label>
 		<div class="controls">

@@ -34,6 +34,9 @@ if (! function_exists("loggit")) {
 	}
 }
 
+if (isset($_GET['upload'])) {
+	$message = 'There was an undetected error in the upload, please check the web server logs.';
+}
 // Handle the CSV upload
 if (isset($_FILES['openvas_xml'])) {
 	loggit("OpenVAS upload XML process", "OpenVAS XML file uploaded started.");

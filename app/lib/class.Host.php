@@ -1406,8 +1406,8 @@ class Host extends Maleable_Object implements Maleable_Object_Interface {
 						$this->ip
 					);
 			$result = $this->db->fetch_object_array($sql);
-			if (is_array($result) && is_object($result[0])) {			
-				$this->__construct($result[0]->host_id);
+			if (is_array($result) && isset($result[0]) ) {			
+				if (is_object($result[0])) $this->__construct($result[0]->host_id);
 			}			
 		}
 		// if still nothing we need to create a host

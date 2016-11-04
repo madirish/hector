@@ -183,6 +183,8 @@ class Domain {
      * Populate object if a domain name exists in the database
      *
      * @access public
+     * @param $name the domain name
+     * @return bool True if a domain with that name is in the database, otherwise false
      */
     public function lookup_by_name($name) {
     	$sql = array('select * from domain where domain_name = \'?s\'', $name);

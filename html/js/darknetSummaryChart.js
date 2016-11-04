@@ -4,6 +4,7 @@ $(document).ready(function(){
 		var dataPoints = document.getElementById('darknetSummaryChartData').textContent.split(",");
 	
 	    var data = {
+	    	type: 'bar',
 	        labels : displayLabels,
 	        datasets : [ 
 	            { 
@@ -13,7 +14,7 @@ $(document).ready(function(){
 	            }
 	        ]
 	    }
-	    var myNewChart = new Chart(document.getElementById("darknetChart").getContext("2d")).Bar(data);
+	    var myNewChart = new Chart($("darknetChart"), data);
 		$("#darknetChart").click(function (evt) {
 			var activeBars = myNewChart.getBarsAtEvent(evt);
 			location.href="?action=reports&report=by_port&ports=" + activeBars[0]["label"];

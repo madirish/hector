@@ -100,7 +100,7 @@ $('a[data-toggle="tab"]').on('shown', function (e) {
 	            <div id="vulnNumbersChartCounts" class="hidden"><?php echo $vuln_num_chart_counts?></div>
 	            <h3 id="vulnNumbersChartHeader"><?php echo $vuln_num_report_header?></h3>
 	            <div id="vulnNumbersChartLegend"></div>
-	            <canvas id="vulnNumbersChart"></canvas>
+	            <canvas id="vulnNumbersChart" height="300" width="550"></canvas>
 	        </div>
 			<?php else: ?>
 				No vulnerabilities tracked.
@@ -237,6 +237,7 @@ $('a[data-toggle="tab"]').on('shown', function (e) {
         <script type="text/javascript">
         $(document).ready(function(){
             var data = {
+                type: 'line',
                 labels : [<?php print "'" . implode("','", $datelabels) . "'";?>],
                 datasets : [ 
 <?php 
@@ -267,13 +268,15 @@ $('a[data-toggle="tab"]').on('shown', function (e) {
                             $x++;
                         }
 ?>
-                ]
+                ],
+                options : [{bezierCurve: true,
+                    multiTooltipTemplate: "<%= datasetLabel%> - <%= value %>"}]
             };
-            var options = {
+            /**var options = {
             	bezierCurve: true,
                 multiTooltipTemplate: "<%= datasetLabel%> - <%= value %>",
-            };
-            var myNewChart = new Chart(document.getElementById("darknetCountryChart").getContext("2d")).Line(data, options);
+            };*/
+            var myNewChart = new Chart(document.getElementById("darknetCountryChart").getContext("2d")).data;
             $("#darknetCountryChart").hover(function (evt) {
                 var activeBars = myNewChart.getPointsAtEvent(evt);
                 console.log(activeBars);

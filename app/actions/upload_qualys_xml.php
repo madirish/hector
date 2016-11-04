@@ -34,6 +34,9 @@ if (! function_exists("loggit")) {
 	}
 }
 
+if (isset($_GET['upload'])) {
+	$message = 'There was an undetected error in the upload, please check the web server logs.';
+}
 // Handle the CSV upload
 if (isset($_FILES['qualys_xml'])) {
 	loggit("Qualys upload XML process", "Qualys XML file uploaded started.");

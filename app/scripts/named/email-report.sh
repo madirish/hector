@@ -20,7 +20,7 @@ where d.domain_is_malicious>0 and d.domain_id = nr.domain_id and nr.named_resolu
 group by nr.named_resolution_src_ip, nr.named_resolution_src_ip_numeric order by nr.named_resolution_src_ip, nr.named_resolution_src_ip) \
 as malware_ips order by records desc, named_resolution_src_ip_numeric asc"
 
-records_sql="select nr.named_resolution_src_ip, named_resolution_src_ip_numeric, named_resolution_datetime, d.domain_name, d.domain_is_malicious \
+records_sql="select nr.named_resolution_src_ip, nr.named_resolution_src_ip_numeric, nr.named_resolution_datetime, d.domain_name, d.domain_is_malicious \
 from named_resolution nr, domain d where d.domain_is_malicious>0 and d.domain_id = nr.domain_id and nr.named_resolution_datetime>='$from_dt' and nr.named_resolution_datetime<='$to_dt' \
 order by nr.named_resolution_src_ip_numeric, nr.named_resolution_datetime"
 

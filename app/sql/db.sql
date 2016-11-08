@@ -575,7 +575,7 @@ CREATE TABLE IF NOT EXISTS `vuln_x_tag` (
   INDEX (`tag_id`)
 ) ENGINE = INNODB;
 
--- Vulnerablities details
+-- Vulnerabilities details
 CREATE TABLE IF NOT EXISTS `vuln_detail` (
   `vuln_detail_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `vuln_detail_text` text,
@@ -596,4 +596,46 @@ CREATE TABLE IF NOT EXISTS `vuln_detail` (
   INDEX (`host_id`),
   INDEX (`risk_id`),
   PRIMARY KEY (`vuln_detail_id`)
+) ENGINE = INNODB;
+
+
+-- Domains
+CREATE TABLE IF NOT EXISTS `domain` (
+  `domain_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `domain_name` VARCHAR(255) NOT NULL UNIQUE,
+  `domain_is_malicious` INT(1) NOT NULL DEFAULT '0',
+  `domain_marked_malicious_datetime` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `domain_categories` VARCHAR(255),
+  `malware_service_id` INT UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`domain_id`)
+) ENGINE = INNODB;
+
+-- NameD resolutions
+CREATE TABLE IF NOT EXISTS `named_resolution` (
+  `named_resolution_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `named_resolution_src_ip` VARCHAR(15) NOT NULL,
+  `named_resolution_src_ip_numeric` INT UNSIGNED NOT NULL,
+  `domain_id` INT UNSIGNED NOT NULL,
+  `named_resolution_datetime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `named_src_id` INT UNSIGNED NOT NULL,
+  INDEX (`domain_id`),
+  INDEX (`named_resolution_src_ip_numeric`),
+  INDEX (`named_resolution_datetime`),
+  PRIMARY KEY (`named_resolution_id`)
+) ENGINE = INNODB;
+
+-- NameD sources
+CREATE TABLE IF NOT EXISTS `named_src` (
+  `named_src_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `named_src_name` VARCHAR(255) NOT NULL UNIQUE,
+  PRIMARY KEY (`named_src_id`)
+) ENGINE = INNODB;
+
+-- Services that identify malware domains
+CREATE TABLE IF NOT EXISTS `malware_service` (
+  `malware_service_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `malware_service_name` VARCHAR(255) NOT NULL UNIQUE,
+  `malware_service_url` VARCHAR(255),
+  `malware_service_api_key` VARCHAR(255),
+  PRIMARY KEY (`malware_service_id`)
 ) ENGINE = INNODB;

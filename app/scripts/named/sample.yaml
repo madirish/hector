@@ -1,0 +1,21 @@
+---
+#This is a sample config file to be used with named-malware.py
+#Make a copy of this file and modify it to configure a named import.
+#The modified file's path should be supplied to named-malware.py as an argument.
+
+#Name of source of the named data
+named_src: 'sample'
+
+#What level to log to the HECTOR message log.
+log_level: 'DEBUG' #(DEBUG, WARNING, INFO, ERROR)
+
+#List of ips to ignore when processing logs
+whitelisted_ips:
+- '127.0.0.1'
+- '10.0.0.1'
+
+#number of lines per chunkfile created for import
+chunksize: 100
+
+#Keep a gzipped copy of the consolidated csv used for import
+archive: False

@@ -618,9 +618,6 @@ CREATE TABLE IF NOT EXISTS `named_resolution` (
   `domain_id` INT UNSIGNED NOT NULL,
   `named_resolution_datetime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `named_src_id` INT UNSIGNED NOT NULL,
-  INDEX (`domain_id`),
-  INDEX (`named_resolution_src_ip_numeric`),
-  INDEX (`named_resolution_datetime`),
   PRIMARY KEY (`named_resolution_id`)
 ) ENGINE = INNODB;
 

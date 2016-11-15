@@ -1,3 +1,5 @@
+// Depends on hector.analytics.js
+
 $(document).ready(function(){
 	var table = $('#articles-table').dataTable({
 		"sDom": '<"top"lf>rt<"bottom"ip>',

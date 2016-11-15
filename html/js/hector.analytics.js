@@ -11,7 +11,7 @@
  * @param canvasId the id of the canvas element used for the chart
  * @param dataId The id of the hidden div that contains the data element
  */
-function hectorDrawDoughnutChart(canvasId,dataId){
+function hectorDrawDoughnutChart(canvasId,dataId,percentLabel){
 	if (canvasId == null || dataId == null){
 		return
 	}
@@ -23,30 +23,34 @@ function hectorDrawDoughnutChart(canvasId,dataId){
 		fillStyle = 'black';
 		textAlign = 'center';
 		var percent = parseInt($(dId).text());
-	    var data = [
-	        {
-	          value: percent,
-	          color:"#05EDFF"
-	        },
-	        {
-	          value : 100-percent,
-	          color : "#fafafa"
-	        }
-	      ];
+		var restPercent = 100-percent;
+
+		var data = {
+				labels: [percentLabel,"All others"], //These are hidden anyway
+				datasets: [{
+					data: [percent, restPercent],
+					backgroundColor: ["#05EDFF", "#999999"]
+				}]
+		};
 	    
 	    
 	    var ctx = document.getElementById(canvasId).getContext("2d");
 	    ctx.canvas.width = 200;
 		ctx.canvas.height = 200;
-	    var chart = new Chart(ctx).Doughnut(data,{
-	    	animationSteps:1,
-	    	percentageInnerCutout : 80,
-	    	showTooltips: false,
-	    	onAnimationComplete: function(){
-	    		ctx.font = font;
-	    		ctx.fillStyle = fillStyle;
-	    		ctx.textAlign = textAlign;
-	    		ctx.fillText(data[0].value + "%", ctx.canvas.width/2, ctx.canvas.width/2 + 15);
+	    var chart = new Chart(ctx,{
+	    	type: 'doughnut',
+	    	data: data,
+	    	options: {
+	    		legend: {display: false}, // Hide the labels
+		    	animationSteps:1,
+		    	percentageInnerCutout : 80,
+		    	showTooltips: false,
+		    	onAnimationComplete: function(){
+		    		ctx.font = font;
+		    		ctx.fillStyle = fillStyle;
+		    		ctx.textAlign = textAlign;
+		    		ctx.fillText(data[0].value + "%", ctx.canvas.width/2, ctx.canvas.width/2 + 15);
+		    	}
 	    	}
 	    });
 	}
@@ -95,7 +99,11 @@ function hectorDrawBarChart(canvasId,labelsId,valuesId,datasetProperties){
 				multiTooltipTemplate: "<%= datasetLabel%> - <%= value %>",
 		};
 		
-		var chart = new Chart(document.getElementById(canvasId).getContext("2d")).Bar(data,options);
+		var chart = new Chart(document.getElementById(canvasId).getContext("2d"), {
+			type: 'bar',
+			data,
+			options
+		});
 		
 	}
 	

@@ -13,7 +13,7 @@
         	<div class="panel-body">
         		<canvas id="threat-agent"></canvas>		
         	</div>
-        	<div class="panel-footer"><h4><?php echo $agent_names[0]; ?></h4></div>
+        	<div class="panel-footer"><h4 id="topThreatAgent"><?php echo $agent_names[0] . " " . $agentpercent; ?>%</h4></div>
         	<div class="hidden" id="agentpercent"><?php echo $agentpercent;?></div>
         </div>
     </div>
@@ -25,7 +25,7 @@
         	<div class="panel-body">
         		<canvas id="threat-action"></canvas>		
         	</div>
-        	<div class="panel-footer"><h4><?php echo $action_names[0]; ?></h4></div>
+        	<div class="panel-footer"><h4 id="topThreatAction"><?php echo $action_names[0] . " " . $actionpercent; ?>%</h4></div>
         	<div class="hidden" id="actionpercent"><?php echo $actionpercent;?></div>
         </div>
     </div>  
@@ -37,7 +37,7 @@
         	<div class="panel-body">
         		<canvas id="threat-asset"></canvas>		
         	</div>
-        	<div class="panel-footer"><h4><?php echo $asset_names[0]; ?></h4></div>
+        	<div class="panel-footer"><h4 id="topAssetAffected"><?php echo $asset_names[0] . " " . $assetpercent; ?>%</h4></div>
         	<div class="hidden" id="assetpercent"><?php echo $assetpercent;?></div>
         </div>
     </div>
@@ -49,7 +49,7 @@
         	<div class="panel-body">
         		<canvas id="disco-method"></canvas>		
         	</div>
-        	<div class="panel-footer"><h4><?php echo $disco_names[0]; ?></h4></div>
+        	<div class="panel-footer"><h4 id="topDiscoveryMethod"><?php echo $disco_names[0] . " " . $discopercent; ?>%</h4></div>
         	<div class="hidden" id="discopercent"><?php echo $discopercent;?></div>
         </div>
     </div>

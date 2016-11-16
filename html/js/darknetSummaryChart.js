@@ -9,8 +9,9 @@ $(document).ready(function(){
                     //fillColor : "rgba(200,220,160,0.2)", 
                     //strokeColor : "rgba(200,220,160,1)",
                     data : dataPoints,
-                }],
-                borderColor: "#000000",
+                    borderColor: "#999",
+                    borderWidth: 1,
+                }]
         };
         var options = {
                 legend: {

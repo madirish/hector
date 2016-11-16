@@ -233,7 +233,7 @@ if ($debugTime) {
 }
 
 // This is the slowest part of the page
-
+/**
 $countrycountdates = array();
 foreach ($topCountries as $country) {
 	foreach($datelabels as $datelabel) {
@@ -245,6 +245,10 @@ foreach ($topCountries as $country) {
 		
 	}
 }
+**/
+
+$countrycountdates = $report->getProbesByCountryAndDate($topCountries);
+
 // Timer block
 if ($debugTime) {
 	echo "\n\r Finished Darknet, starting honeypot " . (time() - $startTime);

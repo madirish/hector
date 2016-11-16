@@ -255,32 +255,29 @@ $('a[data-toggle="tab"]').on('shown', function (e) {
                         $x = 0;
                         foreach ($countrycountdates as $country_code=>$countarray) {
                         	print "\t\t\t\t\t{\n";
-                            print "\t\t\t\t\t\tlabel: \"" . $country_code . "\",\n";
-                            print "\t\t\t\t\t\ttitle: \"" . $country_code . "\",\n";
-                            print "\t\t\t\t\t\tfillColor : \"rgba(".$colors[$x].",0.2)\",\n";
-                            print "\t\t\t\t\t\tstrokeColor : \"rgba(".$colors[$x].",1)\",\n";
-                            print "\t\t\t\t\t\tpointColor : \"rgba(".$colors[$x].",1)\",\n";
-                            print "\t\t\t\t\t\tpointStrokeColor: \"#fff\",\n";
-                            print "\t\t\t\t\t\tpointHighlightFill: \"#fff\",\n";
-                            print "\t\t\t\t\t\tpointHighlightStroke : \"rgba(".$colors[$x].",1)\",\n";
+                            print "\t\t\t\t\t\tlabel: \"" . $country_code . "\",\n"; 
+                            //print "\t\t\t\t\t\ttitle: \"" . $country_code . "\",\n";
+                            //print "\t\t\t\t\t\tfillColor : \"rgba(".$colors[$x].",0.2)\",\n";
+                            //print "\t\t\t\t\t\tstrokeColor : \"rgba(".$colors[$x].",1)\",\n";
+                            //print "\t\t\t\t\t\tpointColor : \"rgba(".$colors[$x].",1)\",\n";
+                            //print "\t\t\t\t\t\tpointStrokeColor: \"#fff\",\n";
+                            //print "\t\t\t\t\t\tpointHighlightFill: \"#fff\",\n";
+                            //print "\t\t\t\t\t\tpointHighlightStroke : \"rgba(".$colors[$x].",1)\",\n";
                             print "\t\t\t\t\t\tdata : [" . implode(",", $countarray) . "]\n";
                             print "\t\t\t\t\t},\n";
                             $x++;
                         }
 ?>
                 ],
-                options : [{bezierCurve: true,
-                    multiTooltipTemplate: "<%= datasetLabel%> - <%= value %>"}]
             };
             /**var options = {
             	bezierCurve: true,
                 multiTooltipTemplate: "<%= datasetLabel%> - <%= value %>",
             };*/
-            var myNewChart = new Chart(document.getElementById("darknetCountryChart").getContext("2d")).data;
-            $("#darknetCountryChart").hover(function (evt) {
-                var activeBars = myNewChart.getPointsAtEvent(evt);
-                console.log(activeBars);
-            });        
+            var myDarknetCountryChart = new Chart($("#darknetCountryChart"), {
+                type: 'bar',
+                data: data,
+            });
         });
         </script>
 		<?php else:?>

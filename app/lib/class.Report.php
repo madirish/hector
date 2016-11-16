@@ -461,4 +461,29 @@ class Report {
         if (! isset($count[0])) return 0;
         else return $count[0]->idcount;
     }
+    
+    private function sanCountry($n) {
+    	foreach ($n as $key=>$val) {
+    		$n[$key] = preg_replace('/[^A-Z][^A-Z]/', '', $val);
+    	}
+    	return $n;
+    }
+    
+    public function getProbesByCountryAndDate($countries) {
+    	$countries = $this->sanCountry($countries);
+    	$countries = "'" . implode("','", $countries) . "'";
+    	$sql = 'select count(id) as thecount, country_code, received ' . 
+    		'from darknet ' . 
+    		'where received > date_sub(current_date(), interval 1 week) ' . 
+    		'AND country_code IN (' . $countries . ') ' . 
+    		'group by received, country_code ' . 
+    		'order by received, thecount desc';
+    	$count = $this->db->fetch_object_array($sql);
+    	//$countrycountdates[$country][$datelabel]
+    	$countrycountdates = array();
+    	foreach($count as $obj) {
+    		$countrycountdates[$obj->country_code][$obj->received] = $obj->thecount;
+    	}
+    	return $countrycountdates;
+    }
 }

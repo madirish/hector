@@ -18,7 +18,8 @@ function prepPieChart(pieChartId, pieChartLegend, pieCharthartLabels, pieChartCo
 				labels: chartLabels, 
 				datasets: [{
 					data: pieDataSets, 
-					backgroundColor: colors
+					backgroundColor: colors,
+					borderColor: "#999",
 				}]
 		};
 		

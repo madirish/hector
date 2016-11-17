@@ -10,7 +10,7 @@ if(key=="db_host"){db_host=value};if(key=="db_user"){db_user=value};if(key=="db_
 END {OFS="\n"; print db_host, db, db_user, db_pass, email}' "$conf_file_path")
 
 
-domain_sql="select * from (select d.domain_name, count(nr.named_resolution_datetime) as records from named_resolution nr, domain d \
+domain_sql="select * from (select d.domain_name, count(nr.named_resolution_datetime) as records, d.domain_categories from named_resolution nr, domain d \
 where d.domain_is_malicious>0 and d.domain_id = nr.domain_id and nr.named_resolution_datetime>='$from_dt' and nr.named_resolution_datetime<='$to_dt' \
 group by d.domain_name order by d.domain_name) as malware_domains order by records desc, domain_name asc"
 
@@ -20,7 +20,7 @@ where d.domain_is_malicious>0 and d.domain_id = nr.domain_id and nr.named_resolu
 group by nr.named_resolution_src_ip, nr.named_resolution_src_ip_numeric order by nr.named_resolution_src_ip, nr.named_resolution_src_ip) \
 as malware_ips order by records desc, named_resolution_src_ip_numeric asc"
 
-records_sql="select nr.named_resolution_src_ip, nr.named_resolution_src_ip_numeric, nr.named_resolution_datetime, d.domain_name, d.domain_is_malicious \
+records_sql="select nr.named_resolution_src_ip, nr.named_resolution_src_ip_numeric, nr.named_resolution_datetime, d.domain_name, d.domain_categories, d.domain_is_malicious \
 from named_resolution nr, domain d where d.domain_is_malicious>0 and d.domain_id = nr.domain_id and nr.named_resolution_datetime>='$from_dt' and nr.named_resolution_datetime<='$to_dt' \
 order by nr.named_resolution_src_ip_numeric, nr.named_resolution_datetime"
 

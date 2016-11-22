@@ -17,10 +17,11 @@ $(document).ready(function () {
                 {
                     label: "Reported security incidents",
                     lineTension: 0,
-                    backgroundColor: "#999999",
+                    backgroundColor: "#f0fbff",
                     pointRadius: 5,
-                    pointBackgroundColor: "#05EDFF",
-                    pointBorderColor: "#000000",
+                    pointBackgroundColor: "#2e94b9",
+                    borderColor: "#999",
+                    borderWidth: 1,
                     data: values,
                 }
             ]
@@ -29,7 +30,7 @@ $(document).ready(function () {
 	var options = {};
 
 	var myIncidentChart = new Chart($("#incidentCountChart"), {
-		type: 'line',
+		type: 'bar',
 		data: data,
 		options: options
 	});

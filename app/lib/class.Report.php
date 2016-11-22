@@ -122,6 +122,64 @@ class Report {
     	return $retval;
     }
     
+    /** 
+	 * Get a listing of threat agents, magnitude of incidents
+	 * the agents were involved in, and the count of the 
+	 * magnitudes.  This function is used to power stacked
+	 * bar charts on the incident reporting page.
+	 * 
+	 * @access public
+	 * @author Justin C. Klein Keane <justin@madirish.net>
+	 * @return Array An array of threat agents, impact magnitudes, and counts
+     */
+    public function get_ir_agent_magnitudes() {
+    	$query = 'select distinct(a.agent_agent), ' .
+    					'm.magnitude_name,  ' .
+    					'count(i.impact_magnitude_id) as magnitudeCounts ' .
+    					'from incident i, incident_agent a, incident_magnitude m  ' .
+    					'where m.magnitude_id = i.impact_magnitude_id  ' .
+    							'AND a.agent_id = i.agent_id  ' .
+    					'group by i.agent_id, i.impact_magnitude_id ' .
+    					'order by m.magnitude_id';
+    	return $this->db->fetch_object_array($query);
+    }
+    
+    public function get_ir_action_magnitudes() {
+    	$query = 'select distinct(a.action_action), a.action_id, ' .
+    					'm.magnitude_name,  ' .
+    					'count(i.impact_magnitude_id) as magnitudeCounts ' .
+    					'from incident i, incident_action a, incident_magnitude m  ' .
+    					'where m.magnitude_id = i.impact_magnitude_id  ' .
+    							'AND a.action_id = i.action_id  ' .
+    					'group by i.action_id, i.impact_magnitude_id ' . 
+    					'order by m.magnitude_id';
+    	return $this->db->fetch_object_array($query);
+    }
+    
+    public function get_ir_asset_magnitudes() {
+    	$query = 'select distinct(a.asset_asset), a.asset_id, ' .
+    					'm.magnitude_name,  ' .
+    					'count(i.impact_magnitude_id) as magnitudeCounts ' .
+    					'from incident i, incident_asset a, incident_magnitude m  ' .
+    					'where m.magnitude_id = i.impact_magnitude_id  ' .
+    							'AND a.asset_id = i.asset_id  ' .
+    					'group by i.asset_id, i.impact_magnitude_id ' . 
+    					'order by m.magnitude_id';
+    	return $this->db->fetch_object_array($query);
+    }
+    
+    public function get_ir_discovery_magnitudes() {
+    	$query = 'select distinct(d.discovery_method), d.discovery_id, ' .
+    					'm.magnitude_name,  ' .
+    					'count(i.impact_magnitude_id) as magnitudeCounts ' .
+    					'from incident i, incident_discovery d, incident_magnitude m  ' .
+    					'where m.magnitude_id = i.impact_magnitude_id  ' .
+    							'AND d.discovery_id = i.discovery_id  ' .
+    					'group by i.discovery_id, i.impact_magnitude_id ' . 
+    					'order by m.magnitude_id';
+    	return $this->db->fetch_object_array($query);
+    }
+    
     /**
      * Get a listing of class C networks in which we are 
      * tracking hosts for a given class B input.

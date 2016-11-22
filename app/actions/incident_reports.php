@@ -9,6 +9,9 @@
  * Require the collection class
  */
 include_once($approot . 'lib/class.Collection.php');
+include_once($approot . 'lib/class.Report.php');
+
+$report_obj = new Report();
 
 if (isset($_GET['threat_action'])) {
 	include_once($approot . 'lib/class.IRAction.php');
@@ -25,6 +28,7 @@ else {
     $assets = array();
     $discos = array();
 	$incident_reports = new Collection('Incident');
+
     if (is_array($incident_reports->members)) {
     	foreach($incident_reports->members as $report) {
             $agent_name = $report->get_agent_name();
@@ -60,6 +64,7 @@ else {
             }
     	}
     }
+    
     arsort($agents); 
     $agent_names = array_keys($agents);
     $agent_values = array_values($agents);
@@ -87,6 +92,12 @@ else {
     $discototal = array_sum($discos);
     $topdisco = $disco_values[0];
     $discopercent = round(($topdisco / $discototal) * 100);
+    
+    // Stack bar chart of threat agents and magnitudes
+    $agent_magnitude = $report_obj->get_ir_agent_magnitudes();
+    $action_magnitude = $report_obj->get_ir_action_magnitudes();
+    $asset_magnitude = $report_obj->get_ir_asset_magnitudes();
+    $discovery_magnitude = $report_obj->get_ir_discovery_magnitudes();
     
 }
 

@@ -1,5 +1,6 @@
 /**
  * @author Ubani Balogun <ubani@sas.upenn.edu>
+ * @author Justin C. Klein Keane <justin@madirish.net>
  * @package HECTOR
  * 
  * Functions used for analytics graphics in hector
@@ -19,7 +20,7 @@ function hectorDrawDoughnutChart(canvasId,dataId,percentLabel){
 	if (document.getElementById(canvasId) != null & document.getElementById(dataId) != null){
 		cId = "#" + canvasId;
 		dId = "#" + dataId;
-		font = "50px Helvetica Neue, Helvetica, Arial, sans-serif";
+		font = "45px Helvetica Neue, Helvetica, Arial, sans-serif";
 		fillStyle = 'black';
 		textAlign = 'center';
 		var percent = parseInt($(dId).text());
@@ -29,10 +30,9 @@ function hectorDrawDoughnutChart(canvasId,dataId,percentLabel){
 				labels: [percentLabel,"All others"], //These are hidden anyway
 				datasets: [{
 					data: [percent, restPercent],
-					backgroundColor: ["#05EDFF", "#999999"]
+					backgroundColor: ["#acdcee", "#999999"]
 				}]
 		};
-	    
 	    
 	    var ctx = document.getElementById(canvasId).getContext("2d");
 	    ctx.canvas.width = 200;
@@ -45,14 +45,30 @@ function hectorDrawDoughnutChart(canvasId,dataId,percentLabel){
 		    	animationSteps:1,
 		    	percentageInnerCutout : 80,
 		    	showTooltips: false,
-		    	onAnimationComplete: function(){
-		    		ctx.font = font;
-		    		ctx.fillStyle = fillStyle;
-		    		ctx.textAlign = textAlign;
-		    		ctx.fillText(data[0].value + "%", ctx.canvas.width/2, ctx.canvas.width/2 + 15);
-		    	}
+	            animation: {
+	                duration: 100,
+	                onComplete: function(){
+	                    var canvas = document.getElementById(canvasId);
+	                    // calculate the center of the canvas (cx,cy)
+	                    var cx=canvas.width/2;
+	                    var cy=canvas.height/2;
+	                    // horizontally align text around the specified point (cx)
+	                    ctx.textAlign='center';
+
+	                    // vertically align text around the specified point (cy)
+	                    ctx.textBaseline='middle';
+
+	                    // draw the text
+	                    ctx.font = font;
+	                    ctx.fillStyle = fillStyle;
+	                    ctx.textAlign = textAlign;
+	                    ctx.fillText(percent + "%", cx,cy);
+	                }
+	            },
+		    	
 	    	}
 	    });
+        
 	}
     
 }

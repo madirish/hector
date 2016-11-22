@@ -1,7 +1,80 @@
+<script type="text/javascript">
+// Global variables for jQuery document ready functions
+//var readyCharts = new Array();
+var readyDatas = new Array();
+//var dataSets = new Array();
+//var data = new Array();
+
+var colors = ['#eee', '#475053', '#2e94b9', '#acdcee', '#f0fbff'];
+//ar barChartLabels = new Array();
+//var magnitudeLabels = new Array();
+
+
+// Build up the datasets
+function buildDatasets(inObj, mLables, chartLabels, searchItem) {
+	var dataSets = new Array();
+	for (var i=0; i<mLables.length; i++) {
+		var dataGroup = [];
+		dataGroup['label'] = mLables[i];
+		dataGroup['backgroundColor'] = colors[i];
+		dataGroup['borderColor'] = '#666';
+		dataGroup['borderWidth'] = 1;
+		var datas = [];
+		for (var x=0; x<chartLabels.length; x++) {
+			var found = 0;
+			for (y=0; y<inObj.length; y++) {
+				if (inObj[y][searchItem] == chartLabels[x] && inObj[y]['magnitude_name'] == mLables[i]) {
+					datas.push(inObj[y]['magnitudeCounts']);
+					found = 1;
+				}
+			}
+			if (found == 0) { datas.push(0); }
+		}
+		dataGroup['data'] = datas;
+		dataSets.push(dataGroup);
+	}
+	return dataSets;
+}
+
+function parsePushObject(parseObject, labelString, hrefText='', hrefId='') {
+    // Parse up JSON object and prepare Chart.js data for display in ready funtion 
+    var magnitudeLabels = new Array();
+	var dataSets = new Array();
+	var barChartLabels = new Array();
+	var summaryLinks = 'Detailed report for: ';
+
+	// Build up the lables
+	for (var i=0; i<parseObject.length; i++) {
+		if (barChartLabels.indexOf(parseObject[i][labelString]) < 0) {
+		    barChartLabels.push(parseObject[i][labelString]);
+		    var link = "<a href='?action=incident_reports&" + hrefText + "=";
+		    link += parseObject[i][hrefId];
+		    link += "'>" + parseObject[i][labelString] + "</a>, ";
+		    summaryLinks += link;
+		}
+		if (magnitudeLabels.indexOf(parseObject[i]['magnitude_name']) < 0) {
+		    magnitudeLabels.push(parseObject[i]['magnitude_name']);
+		}
+	}
+
+	dataSets = buildDatasets(parseObject, magnitudeLabels, barChartLabels, labelString);
+
+	if (hrefText == '') { summaryLinks = ''; }
+	
+	var data = {
+		labels: barChartLabels,
+		datasets: dataSets,
+		links: summaryLinks,
+	};
+	return data;
+}
+
+</script>
+
 <?php if (isset($threat_action)) {?>
-<h2><?php echo $threat_action->get_action(); ?> Incidents</h2>
+<h2>Incidents with Threat Action: <?php echo $threat_action->get_action(); ?></h2>
 <?php } else if (isset($asset)) { ?>
-<h2><?php echo $asset->get_name(); ?> Incidents</h2>
+<h2>Incidents Involving Asset: <?php echo $asset->get_name(); ?></h2>
 <?php } else { ?>
 <h2>Incident Reports</h2>
 <div class="row-fluid">
@@ -54,6 +127,69 @@
         </div>
     </div>
 </div>
+
+<!--  Magnitude breakdowns for agents and actions -->
+<div class="row-fluid">
+	<div class="panel panel-default span6">
+		<div class="panel-heading">Incidents by Threat Agent and Magnitude</div>
+		<div class="panel-body">
+		<script type="text/javascript">
+			var amobj = <?php echo json_encode($agent_magnitude);?>;
+			readyDatas['agents'] = parsePushObject(amobj, 'agent_agent');
+			console.info(readyDatas['agents']);
+		</script>
+		<canvas id="stackedAgentMagnitude"></canvas>
+		</div>
+		<div class="panel-footer" id="agentMagnitudeFooter">&nbsp;
+		</div>
+	</div>
+	<div class="panel panel-default span6">
+		<div class="panel-heading">Incidents by Threat Action and Magnitude</div>
+		<div class="panel-body">
+		<script type="text/javascript">
+
+		var actionmobj = <?php echo json_encode($action_magnitude);?>;
+		readyDatas['actions'] = parsePushObject(actionmobj, 'action_action', 'threat_action', 'action_id');
+		console.info(readyDatas['actions']);
+		</script>
+		<canvas id="stackedActionMagnitude"></canvas>
+		</div>
+		<div class="panel-footer" id="threatActionFooter">&nbsp;</div>
+	</div>
+</div>
+
+
+<!--  Magnitude breakdowns for assets and discovery methods -->
+<div class="row-fluid">
+	<div class="panel panel-default span12">
+		<div class="panel-heading">Incidents by Assets Affected and Magnitude</div>
+		<div class="panel-body">
+		<script type="text/javascript">
+			var assetObj = <?php echo json_encode($asset_magnitude);?>;
+			readyDatas['assets'] = parsePushObject(assetObj, 'asset_asset', 'asset_id', 'asset_id');
+			console.info(readyDatas['assets']);
+		</script>
+		<canvas id="stackedAssetMagnitude"></canvas>
+		</div>
+		<div class="panel-footer" id="assetMagnitudeFooter">&nbsp;</div>
+	</div>
+</div><div class="row-fluid">
+	<div class="panel panel-default span12">
+		<div class="panel-heading">Incidents by Discovery Method and Magnitude</div>
+		<div class="panel-body">
+		<script type="text/javascript">
+
+		var discoveryObj = <?php echo json_encode($discovery_magnitude);?>;
+		readyDatas['discoveries'] = parsePushObject(discoveryObj, 'discovery_method');
+		console.info(readyDatas['discoveries']);
+		</script>
+		<canvas id="stackedDiscoveryMagnitude"></canvas>
+		</div>
+		<div class="panel-footer" id="discoveryFooter">&nbsp;</div>
+	</div>
+</div>
+
+
 
 <?php } ?>
 
@@ -114,3 +250,48 @@
 		</table>
 	</div>
 </div>
+
+<?php if (! isset($threat_action) && ! isset($asset)) {?>
+<script type="text/javascript">
+var chartOptions = {
+    	scales: {
+            xAxes: [{
+                stacked: true
+            }],
+            yAxes: [{
+                stacked: true
+            }]
+    	}
+	};
+$(document).ready(function () {
+	var agentMagnitudeChart = new Chart(document.getElementById("stackedAgentMagnitude").getContext("2d"), {
+    	type: 'bar',
+    	data: readyDatas['agents'],
+    	options: chartOptions,
+    });
+
+	var actionMagnitudeChart = new Chart(document.getElementById("stackedActionMagnitude").getContext("2d"), {
+    	type: 'bar',
+    	data: readyDatas['actions'],
+    	options: chartOptions,
+    });
+
+	var assetMagnitudeChart = new Chart(document.getElementById("stackedAssetMagnitude").getContext("2d"), {
+    	type: 'bar',
+    	data: readyDatas['assets'],
+    	options: chartOptions,
+    });
+
+	var discoveryMagnitudeChart = new Chart(document.getElementById("stackedDiscoveryMagnitude").getContext("2d"), {
+    	type: 'bar',
+    	data: readyDatas['discoveries'],
+    	options: chartOptions,
+    });
+
+    $('#threatActionFooter').html(readyDatas['actions']['links']);
+    $('#assetMagnitudeFooter').html(readyDatas['assets']['links']);
+    // $('#assetMagnitudeFooter').html(assetLinks);
+});
+
+</script>
+<?php } ?>

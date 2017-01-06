@@ -3,6 +3,7 @@
 from_dt=$(date --date "yesterday" +%Y-%m-%d)" 00:00:00"
 to_dt=$(date --date "yesterday" +%Y-%m-%d)" 23:59:59"
 conf_file_path=$(dirname "$BASH_SOURCE")"/../../conf/config.ini"
+reportfile='/tmp/'$from_dt'-'$to_dt'_records.txt'
 
 read -d "\n" db_host db db_user db_pass email <<< $(awk -F'=' '\
 {key=$1;value=$2;gsub(/^[ \t]+/,"",key);gsub(/[ \t]+$/,"",key);gsub(/^[ \t]+/,"",value);gsub(/[ \t]+$/,"",value);\
@@ -30,8 +31,7 @@ output+="\n--------------End Domains---------------\n"
 output+="\n-----------------IPs--------------------\n"
 output+=$(mysql -u "$db_user" -h "$db_host" -D "$db" -p"$db_pass" -t -e  "$ip_sql")
 output+="\n---------------End IPs------------------\n"
-output+="\n---------------Records------------------\n"
-output+=$(mysql -u "$db_user" -h "$db_host" -D "$db" -p"$db_pass" -t -e  "$records_sql")
-output+="\n-------------End Records----------------\n"
+mysql -u "$db_user" -h "$db_host" -D "$db" -p"$db_pass" -t -e  "$records_sql" > "$reportfile"
 
-echo -e "$output" | mail -s "OpenDNS Report $from_dt - $to_dt" "$email"
+echo -e "$output" | mail -s "OpenDNS Report $from_dt - $to_dt" -a "$reportfile" "$email"
+rm "$reportfile"

@@ -86,6 +86,8 @@ if(php_sapi_name() == 'cli') {
 		loggit("Qualys XML import.php process", "There was a problem parsing the XML file $xmloutput!");
 	}
 	
+	loggit("Qualys import.php process", "Import starting, XML file loaded");
+	
 	$datetime = new DateTime($qualysscanxml->HEADER->KEY[2], new DateTimeZone('America/New_York'));
 	$scan_name = (string)$qualysscanxml->HEADER->KEY[3];
 	$asset_group_title = (string)$qualysscanxml->HEADER->ASSET_GROUPS->ASSET_GROUP->ASSET_GROUP_TITLE;
@@ -97,6 +99,9 @@ if(php_sapi_name() == 'cli') {
 	
 	// Get any results from previous runs of the same scan
 	$prev_vulnscan = new Vulnscan($task_id);
+
+	// Risk object for lookups
+	$risk = new Risk();
 	
 	foreach ($qualysscanxml->IP as $scanresult) {
 		$host = new Host();
@@ -131,8 +136,6 @@ if(php_sapi_name() == 'cli') {
 						$vuln_obj->save();
 						$vuln_records_created++;
 					}
-
-					$risk = new Risk();
 					$severity = intval((string)$vulnerability["severity"]);
 					if ($severity == 5) $risk->lookup_by_name('critical');
 					elseif ($severity == 4) $risk->lookup_by_name('high');

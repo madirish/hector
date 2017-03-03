@@ -5,18 +5,22 @@ CREATE DATABASE IF NOT EXISTS hector;
 use hector;
 
 -- Alerts are OSSEC alerts
-CREATE TABLE IF NOT EXISTS `alert` (
-	`alert_id` INT NOT NULL AUTO_INCREMENT,
-	`alert_timestamp` TIMESTAMP,
-	`alert_string` VARCHAR(255),
-	`host_id` INT NOT NULL,
-	PRIMARY KEY  (`alert_id`),
-	INDEX (`host_id`)
+CREATE TABLE IF NOT EXISTS `hector`.`alert` (
+  `alert_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `alert_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `alert_string` VARCHAR(255) NULL DEFAULT NULL,
+  `host_id` INT(11) NOT NULL,
+  PRIMARY KEY (`alert_id`),
+  INDEX `host_id` (`host_id` ASC),
+  CONSTRAINT `fk_alert_1`
+    FOREIGN KEY (`host_id`)
+    REFERENCES `hector`.`host` (`host_id`)
+    ON DELETE CASCADE
 ) ENGINE = INNODB;
 
 -- API keys 
-CREATE TABLE IF NOT EXISTS `api_key` (
-  `api_key_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `hector`.`api_key` (
+  `api_key_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `api_key_value` VARCHAR(255) NOT NULL,
   `api_key_resource` VARCHAR(255) NOT NULL,
   `api_key_holder_name` VARCHAR(255) NOT NULL,
@@ -26,15 +30,15 @@ CREATE TABLE IF NOT EXISTS `api_key` (
 ) ENGINE = INNODB;
 
 -- Actual data from RSS feeds
-CREATE TABLE IF NOT EXISTS `article` (
-  `article_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `hector`.`article` (
+  `article_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `article_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `article_title` varchar(255),
-  `article_teaser` text,
-  `article_url` varchar (255),
-  `article_body` text,
+  `article_title` VARCHAR(255) NULL DEFAULT NULL,
+  `article_teaser` TEXT NULL DEFAULT NULL,
+  `article_url` VARCHAR(255) NULL DEFAULT NULL,
+  `article_body` TEXT NULL DEFAULT NULL,
   PRIMARY KEY (`article_id`),
-  INDEX USING BTREE (`article_date`)
+  INDEX `article_date` USING BTREE (`article_date` ASC)
 ) ENGINE = INNODB;
 
 -- Allow free tagging of articles from RSS feeds
@@ -46,68 +50,77 @@ CREATE TABLE IF NOT EXISTS `article_x_tag` (
 ) ENGINE = INNODB;
 
 -- If the article describes a vulnerability pair them
-CREATE TABLE IF NOT EXISTS `article_x_vuln` (
-  `article_id` INT NOT NULL,
-  `vuln_id` INT NOT NULL,
-  INDEX (`article_id`),
-  INDEX (`vuln_id`)
+CREATE TABLE IF NOT EXISTS `hector`.`article_x_tag` (
+  `article_id` INT(10) UNSIGNED NULL DEFAULT NULL,
+  `tag_id` INT(11) NOT NULL,
+  INDEX `article_id` (`article_id` ASC),
+  INDEX `tag_id` (`tag_id` ASC),
+  CONSTRAINT `fk_article_x_tag_2`
+    FOREIGN KEY (`article_id`)
+    REFERENCES `hector`.`article` (`article_id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_article_x_tag_1`
+    FOREIGN KEY (`tag_id`)
+    REFERENCES `hector`.`tag` (`tag_id`)
+    ON DELETE CASCADE
 );
 
 -- Darknet sensor
-CREATE TABLE IF NOT EXISTS `darknet` (
-	`id` INT NOT NULL AUTO_INCREMENT,
-	`src_ip` INT UNSIGNED NOT NULL,
-	`dst_ip` INT UNSIGNED NOT NULL,
-	`src_port` INT UNSIGNED NOT NULL,
-	`dst_port` INT UNSIGNED NOT NULL,
-	`proto` ENUM('tcp','udp','icmp'),
-	`country_code` VARCHAR(2),
-	`received_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	`received` DATE,
-	PRIMARY KEY (`id`),
-	INDEX USING HASH (`src_ip`)
+CREATE TABLE IF NOT EXISTS `hector`.`darknet` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `src_ip` INT(10) UNSIGNED NOT NULL,
+  `dst_ip` INT(10) UNSIGNED NOT NULL,
+  `src_port` INT(10) UNSIGNED NOT NULL,
+  `dst_port` INT(10) UNSIGNED NOT NULL,
+  `proto` ENUM('tcp', 'udp', 'icmp') NULL DEFAULT NULL,
+  `country_code` VARCHAR(2) NULL DEFAULT NULL,
+  `received_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `received` DATE NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `src_ip` USING HASH (`src_ip` ASC)
 ) ENGINE = INNODB;
 
 -- Table used to hold totals for darknet hits to speed up reporting
-CREATE TABLE IF NOT EXISTS `darknet_totals` (
-    `countrytime` varchar(15) NOT NULL, 
-    `country_code` varchar(3), 
-    `day_of_total` DATE NOT NULL, 
-    `count` INT NOT NULL,
-    UNIQUE KEY (`countrytime`)
+CREATE TABLE IF NOT EXISTS `hector`.`darknet_totals` (
+  `countrytime` VARCHAR(15) NOT NULL,
+  `country_code` VARCHAR(3) NULL DEFAULT NULL,
+  `day_of_total` DATE NOT NULL,
+  `count` INT(11) NOT NULL,
+  UNIQUE INDEX `countrytime` (`countrytime` ASC)
 ) ENGINE = INNODB;
 
 -- Domains
-CREATE TABLE IF NOT EXISTS `domain` (
-  `domain_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `domain_name` VARCHAR(255) NOT NULL UNIQUE,
+CREATE TABLE IF NOT EXISTS `hector`.`domain` (
+  `domain_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `domain_name` VARCHAR(255) NOT NULL,
   `domain_is_malicious` INT(1) NOT NULL DEFAULT '0',
   `domain_marked_malicious_datetime` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `domain_categories` VARCHAR(255),
-  `malware_service_id` INT UNSIGNED NOT NULL DEFAULT '0',
-  PRIMARY KEY (`domain_id`)
+  `domain_categories` VARCHAR(255) NULL DEFAULT NULL,
+  `malware_service_id` INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`domain_id`),
+  UNIQUE INDEX `domain_name` (`domain_name` ASC)
 ) ENGINE = INNODB;
 
 -- Form table is used for anti XSRF tokens
-CREATE TABLE IF NOT EXISTS `form` (
-	`form_id` INT NOT NULL AUTO_INCREMENT,
-	`form_name` VARCHAR(255) NOT NULL,
-	`form_token` VARCHAR(32) NOT NULL,
-	`form_ip` VARCHAR(15) NOT NULL,
-	`form_datetime` DATETIME NOT NULL,
-	PRIMARY KEY  (`form_id`)
+CREATE TABLE IF NOT EXISTS `hector`.`form` (
+  `form_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `form_name` VARCHAR(255) NOT NULL,
+  `form_token` VARCHAR(32) NOT NULL,
+  `form_ip` VARCHAR(15) NOT NULL,
+  `form_datetime` DATETIME NOT NULL,
+  PRIMARY KEY (`form_id`)
 ) ENGINE = INNODB;
 
 -- http://geolite.maxmind.com/download/geoip/database/GeoIPCountryCSV.zip
-CREATE TABLE IF NOT EXISTS `geoip` (
-  `start_ip_str` VARCHAR(15),
-  `end_ip_str` VARCHAR(15),
-  `start_ip_long` INT UNSIGNED,
-  `end_ip_long` INT UNSIGNED,
-  `country_code` VARCHAR(2),
-  `country_name` VARCHAR(255),
-  INDEX USING HASH (`start_ip_long`),
-  INDEX USING HASH (`end_ip_long`)
+CREATE TABLE IF NOT EXISTS `hector`.`geoip` (
+  `start_ip_str` VARCHAR(15) NULL DEFAULT NULL,
+  `end_ip_str` VARCHAR(15) NULL DEFAULT NULL,
+  `start_ip_long` INT(10) UNSIGNED NULL DEFAULT NULL,
+  `end_ip_long` INT(10) UNSIGNED NULL DEFAULT NULL,
+  `country_code` VARCHAR(2) NULL DEFAULT NULL,
+  `country_name` VARCHAR(255) NULL DEFAULT NULL,
+  INDEX `start_ip_long` USING HASH (`start_ip_long` ASC),
+  INDEX `end_ip_long` USING HASH (`end_ip_long` ASC)
 ) ENGINE = INNODB;
 DELETE FROM geoip;
 LOAD DATA INFILE '/opt/hector/app/sql/GeoIPCountryWhois.csv' INTO TABLE geoip FIELDS TERMINATED BY "," ENCLOSED BY '"';
@@ -124,11 +137,11 @@ CREATE TABLE IF NOT EXISTS `host` (
   `host_os_vendor` VARCHAR(100) DEFAULT NULL,
   `host_link` VARCHAR(255) DEFAULT NULL,
   `host_note` TEXT DEFAULT NULL,
-  `host_sponsor` VARCHAR(50) DEFAULT NULL, -- faculty/staff contact
+  `host_sponsor` VARCHAR(50) DEFAULT NULL, -- user contact
   `host_technical` VARCHAR(255) DEFAULT NULL, -- technical contact
-  `supportgroup_id` INT DEFAULT NULL, -- responsible lsp
+  `supportgroup_id` INT DEFAULT NULL, -- responsible support of field staff
   `host_verified` tinyint(1) DEFAULT '0', -- has the information been vetted
-  `host_ignored` tinyint(1) DEFAULT '0', -- Don't check this host?
+  `host_ignored` tinyint(1) DEFAULT '0', -- Don't scan this host
   `host_policy` tinyint(1) DEFAULT '0', -- Policy (i.e. "falls under confidential data policy")
   `location_id` INT DEFAULT NULL,
   `host_ignore_portscan` TINYINT(1) DEFAULT 0,
@@ -144,79 +157,143 @@ CREATE TABLE IF NOT EXISTS `host` (
 ) ENGINE = INNODB;
 
 -- Track alternative IP addresses and domain names
-CREATE TABLE IF NOT EXISTS `host_alts` (
-	`host_id` INT NOT NULL,
-	`host_alt_ip` varchar(15),
-	`host_alt_name` varchar(255),
-  PRIMARY KEY (`host_id`)
+CREATE TABLE IF NOT EXISTS `hector`.`host_alts` (
+  `host_id` INT NOT NULL,
+  `host_alt_ip` VARCHAR(15) NULL DEFAULT NULL,
+  `host_alt_name` VARCHAR(255) NULL DEFAULT NULL,
+  PRIMARY KEY (`host_id`),
+  CONSTRAINT `fk_host_alts_1`
+    FOREIGN KEY (`host_id`)
+    REFERENCES `hector`.`host` (`host_id`)
+    ON DELETE CASCADE
 ) ENGINE = INNODB;
 
 -- For grouping hosts (say, "HR Machines")
-CREATE TABLE IF NOT EXISTS `host_group` (
-	`host_group_id` INT NOT NULL AUTO_INCREMENT,
-	`host_group_name` VARCHAR(255) NOT NULL,
-	`host_group_detail` TEXT,
-  PRIMARY KEY  (`host_group_id`)
+CREATE TABLE IF NOT EXISTS `hector`.`host_group` (
+  `host_group_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `host_group_name` VARCHAR(255) NOT NULL,
+  `host_group_detail` TEXT NULL DEFAULT NULL,
+  PRIMARY KEY (`host_group_id`)
 ) ENGINE = INNODB;
 
 -- Mapping table for hosts to groups
-CREATE TABLE IF NOT EXISTS `host_x_host_group` (
-	`host_group_id` INT NOT NULL,
-	`host_id` INT NOT NULL,
-  INDEX USING BTREE (`host_group_id`),
-  INDEX USING BTREE (`host_id`)
+CREATE TABLE IF NOT EXISTS `hector`.`host_x_host_group` (
+  `host_group_id` INT(11) NOT NULL,
+  `host_id` INT(11) NOT NULL,
+  INDEX `host_group_id` USING BTREE (`host_group_id` ASC),
+  INDEX `host_id` USING BTREE (`host_id` ASC),
+  CONSTRAINT `fk_host_x_host_group_1`
+    FOREIGN KEY (`host_group_id`)
+    REFERENCES `hector`.`host_group` (`host_group_id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_host_x_host_group_2`
+    FOREIGN KEY (`host_id`)
+    REFERENCES `hector`.`host` (`host_id`)
+    ON DELETE CASCADE
 ) ENGINE = INNODB;
 
 -- Free tagging of hosts
-CREATE TABLE IF NOT EXISTS `host_x_tag` (
-	`host_id` INT NOT NULL,
-	`tag_id` INT NOT NULL,
-  INDEX (`host_id`),
-  INDEX (`tag_id`)
+CREATE TABLE IF NOT EXISTS `hector`.`host_x_tag` (
+  `host_id` INT(11) NOT NULL,
+  `tag_id` INT(11) NOT NULL,
+  INDEX `host_id` (`host_id` ASC),
+  INDEX `tag_id` (`tag_id` ASC),
+  CONSTRAINT `fk_host_x_tag_2`
+    FOREIGN KEY (`tag_id`)
+    REFERENCES `hector`.`tag` (`tag_id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_host_x_tag_1`
+    FOREIGN KEY (`host_id`)
+    REFERENCES `hector`.`host` (`host_id`)
+    ON DELETE CASCADE
 ) ENGINE = INNODB;
 
 -- Master incident table
-CREATE TABLE IF NOT EXISTS `incident` (
-  `incident_id` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `hector`.`incident` (
+  `incident_id` INT(11) NOT NULL AUTO_INCREMENT,
   `incident_title` VARCHAR(255) NOT NULL,
-  `incident_month` TINYINT NOT NULL,
-  `incident_year` INT NOT NULL,
-  `agent_id` INT NOT NULL,
-  `action_id` INT NOT NULL,
-  `asset_id` INT NOT NULL,
-  `confidential_data` INT(1) DEFAULT 0,
-  `integrity_loss` TEXT,
-  `authenticity_loss` TEXT,
-  `availability_loss_timeframe_id` INT NOT NULL,
-  `utility_loss` TEXT,
-  `action_to_discovery_timeframe_id` INT NOT NULL,
-  `discovery_to_containment_timeframe_id` INT NOT NULL,
-  `discovery_id` INT NOT NULL,
-  `discovery_evidence_sources` TEXT,
-  `discovery_metrics` TEXT,
-  `2020_hindsight` TEXT,
-  `correction_recommended` TEXT,
-  `asset_loss_magnitude_id` INT NOT NULL,
-  `disruption_magnitude_id` INT NOT NULL,
-  `response_cost_magnitude_id` INT NOT NULL,
-  `impact_magnitude_id` INT NOT NULL,
-  INDEX (`agent_id`), 
-  INDEX (`action_id`), 
-  INDEX (`asset_id`), 
-  INDEX (`impact_magnitude_id`),
-  INDEX (`availability_loss_timeframe_id`),
-  INDEX (`action_to_discovery_timeframe_id`),
-  INDEX (`discovery_to_containment_timeframe_id`),
-  INDEX (`discovery_id`),
-  INDEX (`asset_loss_magnitude_id`),
-  INDEX (`disruption_magnitude_id`),
-  INDEX (`response_cost_magnitude_id`),
-  INDEX (`impact_magnitude_id`),
-  PRIMARY KEY (`incident_id`)
+  `incident_month` TINYINT(4) NOT NULL,
+  `incident_year` INT(11) NOT NULL,
+  `agent_id` INT(11) NOT NULL,
+  `action_id` INT(11) NOT NULL,
+  `asset_id` INT(11) NOT NULL,
+  `confidential_data` INT(1) NULL DEFAULT '0',
+  `integrity_loss` TEXT NULL DEFAULT NULL,
+  `authenticity_loss` TEXT NULL DEFAULT NULL,
+  `availability_loss_timeframe_id` INT(11) NOT NULL,
+  `utility_loss` TEXT NULL DEFAULT NULL,
+  `action_to_discovery_timeframe_id` INT(11) NOT NULL,
+  `discovery_to_containment_timeframe_id` INT(11) NOT NULL,
+  `discovery_id` INT(11) NOT NULL,
+  `discovery_evidence_sources` TEXT NULL DEFAULT NULL,
+  `discovery_metrics` TEXT NULL DEFAULT NULL,
+  `2020_hindsight` TEXT NULL DEFAULT NULL,
+  `correction_recommended` TEXT NULL DEFAULT NULL,
+  `asset_loss_magnitude_id` INT(11) NOT NULL,
+  `disruption_magnitude_id` INT(11) NOT NULL,
+  `response_cost_magnitude_id` INT(11) NOT NULL,
+  `impact_magnitude_id` INT(11) NOT NULL,
+  PRIMARY KEY (`incident_id`),
+  INDEX `agent_id` (`agent_id` ASC),
+  INDEX `action_id` (`action_id` ASC),
+  INDEX `asset_id` (`asset_id` ASC),
+  INDEX `impact_magnitude_id` (`impact_magnitude_id` ASC),
+  INDEX `availability_loss_timeframe_id` (`availability_loss_timeframe_id` ASC),
+  INDEX `action_to_discovery_timeframe_id` (`action_to_discovery_timeframe_id` ASC),
+  INDEX `discovery_to_containment_timeframe_id` (`discovery_to_containment_timeframe_id` ASC),
+  INDEX `discovery_id` (`discovery_id` ASC),
+  INDEX `asset_loss_magnitude_id` (`asset_loss_magnitude_id` ASC),
+  INDEX `disruption_magnitude_id` (`disruption_magnitude_id` ASC),
+  INDEX `response_cost_magnitude_id` (`response_cost_magnitude_id` ASC),
+  INDEX `impact_magnitude_id_2` (`impact_magnitude_id` ASC),
+  CONSTRAINT `fk_incident_11`
+    FOREIGN KEY (`impact_magnitude_id`)
+    REFERENCES `hector`.`incident_magnitude` (`magnitude_id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_incident_1`
+    FOREIGN KEY (`agent_id`)
+    REFERENCES `hector`.`incident_agent` (`agent_id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_incident_10`
+    FOREIGN KEY (`response_cost_magnitude_id`)
+    REFERENCES `hector`.`incident_magnitude` (`magnitude_id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_incident_2`
+    FOREIGN KEY (`action_id`)
+    REFERENCES `hector`.`incident_action` (`action_id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_incident_3`
+    FOREIGN KEY (`asset_id`)
+    REFERENCES `hector`.`incident_asset` (`asset_id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_incident_4`
+    FOREIGN KEY (`availability_loss_timeframe_id`)
+    REFERENCES `hector`.`incident_timeframe` (`timeframe_id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_incident_5`
+    FOREIGN KEY (`action_to_discovery_timeframe_id`)
+    REFERENCES `hector`.`incident_timeframe` (`timeframe_id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_incident_6`
+    FOREIGN KEY (`discovery_to_containment_timeframe_id`)
+    REFERENCES `hector`.`incident_timeframe` (`timeframe_id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_incident_7`
+    FOREIGN KEY (`discovery_id`)
+    REFERENCES `hector`.`incident_discovery` (`discovery_id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_incident_8`
+    FOREIGN KEY (`asset_loss_magnitude_id`)
+    REFERENCES `hector`.`incident_magnitude` (`magnitude_id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_incident_9`
+    FOREIGN KEY (`disruption_magnitude_id`)
+    REFERENCES `hector`.`incident_magnitude` (`magnitude_id`)
+    ON DELETE CASCADE
 ) ENGINE = INNODB;  
 
 -- Action that caused the incident
-CREATE TABLE IF NOT EXISTS `incident_action` (
+CREATE TABLE IF NOT EXISTS `hector`.`incident_action` (
   `action_id` INT NOT NULL AUTO_INCREMENT,
   `action_action` VARCHAR(255) NOT NULL,
   PRIMARY KEY  (`action_id`)
@@ -230,9 +307,11 @@ INSERT INTO `incident_action` SET `action_id` = 6, `action_action` = 'Physical' 
 INSERT INTO `incident_action` SET `action_id` = 7, `action_action` = 'Error' ON DUPLICATE KEY UPDATE `action_id`=7;
 INSERT INTO `incident_action` SET `action_id` = 8, `action_action` = 'Environmental' ON DUPLICATE KEY UPDATE `action_id`=8;
 INSERT INTO `incident_action` SET `action_id` = 9, `action_action` = 'Phishing' ON DUPLICATE KEY UPDATE `action_id`=9;
+INSERT INTO `incident_action` SET `action_id` = 10, `action_action` = 'Other/Unknown' ON DUPLICATE KEY UPDATE `action_id`=10;
+INSERT INTO `incident_action` SET `action_id` = 11, `action_action` = 'Phishing' ON DUPLICATE KEY UPDATE `action_id`=11;
 
 -- Source of the agent who caused the incident
-CREATE TABLE IF NOT EXISTS `incident_agent` (
+CREATE TABLE IF NOT EXISTS `hector`.`incident_agent` (
   `agent_id` INT NOT NULL AUTO_INCREMENT,
   `agent_agent` VARCHAR(255) NOT NULL,
   PRIMARY KEY  (`agent_id`)
@@ -243,7 +322,7 @@ INSERT INTO `incident_agent` SET `agent_id` = 3, `agent_agent` = 'Partner' ON DU
 INSERT INTO `incident_agent` SET `agent_id` = 4, `agent_agent` = 'Other/Unknown' ON DUPLICATE KEY UPDATE `agent_id`=4;
   
 -- Asset affected by the incident
-CREATE TABLE IF NOT EXISTS `incident_asset` (
+CREATE TABLE IF NOT EXISTS `hector`.`incident_asset` (
   `asset_id` INT NOT NULL AUTO_INCREMENT,
   `asset_asset` VARCHAR(255) NOT NULL,
   PRIMARY KEY  (`asset_id`)
@@ -258,9 +337,15 @@ INSERT INTO `incident_asset` SET `asset_id` = 7, `asset_asset` = 'Removable medi
 INSERT INTO `incident_asset` SET `asset_id` = 8, `asset_asset` = 'Web app or server' ON DUPLICATE KEY UPDATE `asset_id`=8;
 INSERT INTO `incident_asset` SET `asset_id` = 9, `asset_asset` = 'Credentials' ON DUPLICATE KEY UPDATE `asset_id`=9;
 INSERT INTO `incident_asset` SET `asset_id` = 10, `asset_asset` = 'Proxy server' ON DUPLICATE KEY UPDATE `asset_id`=10;
+INSERT INTO `incident_asset` SET `asset_id` = 11, `asset_asset` = 'Fileserver server' ON DUPLICATE KEY UPDATE `asset_id`=11;
+INSERT INTO `incident_asset` SET `asset_id` = 12, `asset_asset` = 'Management server' ON DUPLICATE KEY UPDATE `asset_id`=12;
+INSERT INTO `incident_asset` SET `asset_id` = 13, `asset_asset` = 'IoT device' ON DUPLICATE KEY UPDATE `asset_id`=13;
+INSERT INTO `incident_asset` SET `asset_id` = 14, `asset_asset` = 'Medical device' ON DUPLICATE KEY UPDATE `asset_id`=14;
+INSERT INTO `incident_asset` SET `asset_id` = 15, `asset_asset` = 'None' ON DUPLICATE KEY UPDATE `asset_id`=15;
+INSERT INTO `incident_asset` SET `asset_id` = 16, `asset_asset` = 'PII data' ON DUPLICATE KEY UPDATE `asset_id`=16;
 
 -- Method of incident discovery
-CREATE TABLE IF NOT EXISTS `incident_discovery` (
+CREATE TABLE IF NOT EXISTS `hector`.`incident_discovery` (
   `discovery_id` INT NOT NULL AUTO_INCREMENT,
   `discovery_method` VARCHAR(100) NOT NULL,
   PRIMARY KEY  (`discovery_id`)
@@ -274,9 +359,11 @@ INSERT INTO `incident_discovery` SET `discovery_id` = 6, `discovery_method` = 'U
 INSERT INTO `incident_discovery` SET `discovery_id` = 7, `discovery_method` = 'End user report' ON DUPLICATE KEY UPDATE `discovery_id`=7;
 INSERT INTO `incident_discovery` SET `discovery_id` = 8, `discovery_method` = 'Application monitoring system' ON DUPLICATE KEY UPDATE `discovery_id`=8;
 INSERT INTO `incident_discovery` SET `discovery_id` = 9, `discovery_method` = 'Public disclosure via 3rd party' ON DUPLICATE KEY UPDATE `discovery_id`=9;
+INSERT INTO `incident_discovery` SET `discovery_id` = 10, `discovery_method` = 'Host based intrusion detection system (HIDS)' ON DUPLICATE KEY UPDATE `discovery_id`=10;
+INSERT INTO `incident_discovery` SET `discovery_id` = 11, `discovery_method` = 'Partner or vendor' ON DUPLICATE KEY UPDATE `discovery_id`=11;
 
 -- Incident magnitudes
-CREATE TABLE IF NOT EXISTS `incident_magnitude` (
+CREATE TABLE IF NOT EXISTS `hector`.`incident_magnitude` (
   `magnitude_id` INT NOT NULL AUTO_INCREMENT,
   `magnitude_name` VARCHAR(20) NOT NULL,
   `magnitude_level` INT NOT NULL,
@@ -290,7 +377,7 @@ INSERT INTO `incident_magnitude` SET `magnitude_id` = 5, `magnitude_name` = 'Maj
 INSERT INTO `incident_magnitude` SET `magnitude_id` = 6, `magnitude_name` = 'Unknown', `magnitude_level` = '-1' ON DUPLICATE KEY UPDATE `magnitude_id`=6;
 
 -- Timeframes for incident discovery, containment, and outages
-CREATE TABLE IF NOT EXISTS `incident_timeframe` (
+CREATE TABLE IF NOT EXISTS `hector`.`incident_timeframe` (
   `timeframe_id` INT NOT NULL AUTO_INCREMENT,
   `timeframe_duration` VARCHAR(50) NOT NULL,
   PRIMARY KEY  (`timeframe_id`)
@@ -306,14 +393,22 @@ INSERT INTO `incident_timeframe` SET `timeframe_id` = 8, `timeframe_duration` = 
 INSERT INTO `incident_timeframe` SET `timeframe_id` = 9, `timeframe_duration` = 'forever' ON DUPLICATE KEY UPDATE `timeframe_id`=9;
 
 -- Free tagging of incidents
-CREATE TABLE IF NOT EXISTS `incident_x_tag` (
-  `incident_id` INT NOT NULL,
-  `tag_id` INT NOT NULL,
-  INDEX (`incident_id`),
-  INDEX (`tag_id`)
+CREATE TABLE IF NOT EXISTS `hector`.`incident_x_tag` (
+  `incident_id` INT(11) NOT NULL,
+  `tag_id` INT(11) NOT NULL,
+  INDEX `incident_id` (`incident_id` ASC),
+  INDEX `tag_id` (`tag_id` ASC),
+  CONSTRAINT `fk_incident_x_tag_2`
+    FOREIGN KEY (`tag_id`)
+    REFERENCES `hector`.`tag` (`tag_id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_incident_x_tag_1`
+    FOREIGN KEY (`incident_id`)
+    REFERENCES `hector`.`incident` (`incident_id`)
+    ON DELETE CASCADE
 ) ENGINE = INNODB;
 
-CREATE TABLE IF NOT EXISTS `koj_executed_command` (
+CREATE TABLE IF NOT EXISTS `hector`.`koj_executed_command` (
   `id` INT(12) AUTO_INCREMENT NOT NULL,
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ip` VARCHAR(15) NOT NULL,
@@ -325,7 +420,7 @@ CREATE TABLE IF NOT EXISTS `koj_executed_command` (
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS `koj_login_attempt` (
+CREATE TABLE IF NOT EXISTS `hector`.`koj_login_attempt` (
   `id` INT(12) AUTO_INCREMENT NOT NULL,
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ip` VARCHAR(15) NOT NULL,
@@ -338,14 +433,14 @@ CREATE TABLE IF NOT EXISTS `koj_login_attempt` (
 ) ENGINE = InnoDB;
 
 -- Physical addresses for hosts
-CREATE TABLE IF NOT EXISTS `location` (
+CREATE TABLE IF NOT EXISTS `hector`.`location` (
 	`location_id` INT NOT NULL AUTO_INCREMENT,
 	`location_name` VARCHAR(255) NOT NULL,
 	PRIMARY KEY (`location_id`)
 );
 
 -- Log file table
-CREATE TABLE IF NOT EXISTS `log` (
+CREATE TABLE IF NOT EXISTS `hector`.`log` (
 	`log_id` INT NOT NULL AUTO_INCREMENT,
 	`log_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`log_type` VARCHAR(255) DEFAULT NULL,
@@ -354,101 +449,142 @@ CREATE TABLE IF NOT EXISTS `log` (
 ) ENGINE = INNODB;
 
 -- Keep track of malware uploaded to HECTOR
-CREATE TABLE IF NOT EXISTS `malware` (
-  `id` INT AUTO_INCREMENT NOT NULL,
-  `time` TIMESTAMP,
-  `source` VARCHAR(255),
+CREATE TABLE IF NOT EXISTS `hector`.`malware` (
+  `id` INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `source` VARCHAR(255) NULL DEFAULT NULL,
   `source_ip` VARCHAR(15) NOT NULL,
-  `source_ip_numeric` INT UNSIGNED NOT NULL,
-  `source_url` VARCHAR(255),
-  `md5sum` VARCHAR(32),
-  `filetype` VARCHAR(255),
-  `clamsig` text,
-  `sensor_id` INT(10) UNSIGNED,
-  `file` LONGBLOB,
+  `source_ip_numeric` INT(10) UNSIGNED NOT NULL,
+  `source_url` VARCHAR(255) NULL DEFAULT NULL,
+  `md5sum` VARCHAR(32) NULL DEFAULT NULL,
+  `filetype` VARCHAR(255) NULL DEFAULT NULL,
+  `clamsig` TEXT NULL DEFAULT NULL,
+  `sensor_id` INT(10) UNSIGNED NULL DEFAULT NULL,
+  `file` LONGBLOB NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  INDEX (`source_ip_numeric`), 
-  INDEX (`md5sum`)
+  INDEX `source_ip_numeric` (`source_ip_numeric` ASC),
+  INDEX `md5sum` (`md5sum` ASC)
 ) ENGINE = InnoDB;
 
 -- Add ability to free tag malware
-CREATE TABLE IF NOT EXISTS `malware_x_tag` (
-  `malware_id` INT UNSIGNED NOT NULL,
-  `tag_id` INT UNSIGNED NOT NULL,
-  INDEX (`malware_id`), 
-  INDEX (`tag_id`)
+CREATE TABLE IF NOT EXISTS `hector`.`malware_x_tag` (
+  `malware_id` INT(10) UNSIGNED NOT NULL,
+  `tag_id` INT(11) NULL DEFAULT NULL,
+  INDEX `malware_id` (`malware_id` ASC),
+  INDEX `tag_id` (`tag_id` ASC),
+  CONSTRAINT `fk_malware_x_tag_2`
+    FOREIGN KEY (`tag_id`)
+    REFERENCES `hector`.`tag` (`tag_id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_malware_x_tag_1`
+    FOREIGN KEY (`malware_id`)
+    REFERENCES `hector`.`malware` (`id`)
+    ON DELETE CASCADE
 ) ENGINE = INNODB;
 
 -- Services that identify malware domains
-CREATE TABLE IF NOT EXISTS `malware_service` (
-  `malware_service_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `malware_service_name` VARCHAR(255) NOT NULL UNIQUE,
-  `malware_service_url` VARCHAR(255),
-  `malware_service_api_key` VARCHAR(255),
-  PRIMARY KEY (`malware_service_id`)
+CCREATE TABLE IF NOT EXISTS `hector`.`malware_service` (
+  `malware_service_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `malware_service_name` VARCHAR(255) NOT NULL,
+  `malware_service_url` VARCHAR(255) NULL DEFAULT NULL,
+  `malware_service_api_key` VARCHAR(255) NULL DEFAULT NULL,
+  PRIMARY KEY (`malware_service_id`),
+  UNIQUE INDEX `malware_service_name` (`malware_service_name` ASC)
 ) ENGINE = INNODB;
 
 -- NameD resolutions
-CREATE TABLE IF NOT EXISTS `named_resolution` (
-  `named_resolution_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `hector`.`named_resolution` (
+  `named_resolution_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `named_resolution_src_ip` VARCHAR(15) NOT NULL,
-  `named_resolution_src_ip_numeric` INT UNSIGNED NOT NULL,
-  `domain_id` INT UNSIGNED NOT NULL,
-  `named_resolution_datetime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `named_src_id` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`named_resolution_id`)
+  `named_resolution_src_ip_numeric` INT(10) UNSIGNED NOT NULL,
+  `domain_id` INT(10) UNSIGNED NOT NULL,
+  `named_resolution_datetime` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `named_src_id` INT(10) UNSIGNED NOT NULL,
+  PRIMARY KEY (`named_resolution_id`),
+  INDEX `domain_id` (`domain_id` ASC),
+  INDEX `named_resolution_src_ip_numeric` (`named_resolution_src_ip_numeric` ASC),
+  INDEX `named_resolution_datetime` (`named_resolution_datetime` ASC),
+  INDEX `fk_named_resolution_2` (`named_src_id` ASC),
+  CONSTRAINT `fk_named_resolution_2`
+    FOREIGN KEY (`named_src_id`)
+    REFERENCES `hector`.`named_src` (`named_src_id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_named_resolution_1`
+    FOREIGN KEY (`domain_id`)
+    REFERENCES `hector`.`domain` (`domain_id`)
+    ON DELETE CASCADE
 ) ENGINE = INNODB;
 
 -- NameD sources
-CREATE TABLE IF NOT EXISTS `named_src` (
-  `named_src_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `named_src_name` VARCHAR(255) NOT NULL UNIQUE,
-  PRIMARY KEY (`named_src_id`)
+CREATE TABLE IF NOT EXISTS `hector`.`named_src` (
+  `named_src_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `named_src_name` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`named_src_id`),
+  UNIQUE INDEX `named_src_name` (`named_src_name` ASC)
 ) ENGINE = INNODB;
 
 -- Results of NMAP scans
-CREATE TABLE IF NOT EXISTS `nmap_result` (
-	`nmap_result_id` INT NOT NULL AUTO_INCREMENT,
-	`host_id` INT NOT NULL,
-  `state_id` INT NOT NULL,
-  `scan_id` INT NOT NULL,
-	`nmap_result_port_number` INT NOT NULL,
-  `nmap_result_protocol` varchar(4),
+CREATE TABLE IF NOT EXISTS `hector`.`nmap_result` (
+  `nmap_result_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `host_id` INT(11) NOT NULL,
+  `state_id` INT(11) NOT NULL,
+  `scan_id` INT(11) NOT NULL,
+  `nmap_result_port_number` INT(11) NOT NULL,
+  `nmap_result_protocol` VARCHAR(4) NULL DEFAULT NULL,
   `nmap_result_service_name` VARCHAR(50) NOT NULL,
   `nmap_result_service_version` VARCHAR(255) NOT NULL,
-	`nmap_result_is_new` INT NOT NULL DEFAULT 1,
-	`nmap_result_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	PRIMARY KEY (`nmap_result_id`),
-  INDEX (`host_id`),
-  INDEX (`nmap_result_port_number`),
-  INDEX (`scan_id`)
+  `nmap_result_is_new` INT(11) NOT NULL DEFAULT '1',
+  `nmap_result_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`nmap_result_id`),
+  INDEX `host_id` (`host_id` ASC),
+  INDEX `nmap_result_port_number` (`nmap_result_port_number` ASC),
+  INDEX `scan_id` (`scan_id` ASC),
+  INDEX `fk_nmap_result_state` (`state_id` ASC),
+  CONSTRAINT `fk_nmap_result_scan`
+    FOREIGN KEY (`scan_id`)
+    REFERENCES `hector`.`scan` (`scan_id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_nmap_result_host`
+    FOREIGN KEY (`host_id`)
+    REFERENCES `hector`.`host` (`host_id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_nmap_result_state`
+    FOREIGN KEY (`state_id`)
+    REFERENCES `hector`.`state` (`state_id`)
+    ON DELETE CASCADE
 ) ENGINE = INNODB;
 
 -- OSSEC alerts from clients
-CREATE TABLE IF NOT EXISTS `ossec_alert` (
-	`alert_id` INT NOT NULL AUTO_INCREMENT,
-	`alert_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	`host_id` INT NOT NULL,
-	`alert_log` VARCHAR(255) DEFAULT NULL,
-	`rule_id` INT NOT NULL,
-	`rule_src_ip` VARCHAR(15) DEFAULT NULL,
-	`rule_src_ip_numeric` INT UNSIGNED,
-	`rule_dst_ip` VARCHAR(15) DEFAULT NULL,
-	`rule_dst_ip_numeric` INT UNSIGNED,
-	`rule_user` VARCHAR(20) DEFAULT NULL,
-	`rule_log` TEXT DEFAULT NULL,
-	`alert_ossec_id` VARCHAR(50) NOT NULL,
-	PRIMARY KEY (`alert_id`),
-	INDEX (`host_id`), 
-	INDEX (`rule_id`),
-	INDEX USING HASH (`rule_src_ip_numeric`),
-  INDEX USING HASH (`rule_id`),
-  INDEX USING HASH (`host_id`),
-	INDEX USING BTREE (`alert_date`)
+CREATE TABLE IF NOT EXISTS `hector`.`ossec_alert` (
+  `alert_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `alert_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `host_id` INT(11) NOT NULL,
+  `alert_log` VARCHAR(255) NULL DEFAULT NULL,
+  `rule_id` INT(11) NOT NULL,
+  `rule_src_ip` VARCHAR(15) NULL DEFAULT NULL,
+  `rule_src_ip_numeric` INT(10) UNSIGNED NULL DEFAULT NULL,
+  `rule_user` VARCHAR(20) NULL DEFAULT NULL,
+  `rule_log` TEXT NULL DEFAULT NULL,
+  `alert_ossec_id` VARCHAR(50) NOT NULL,
+  PRIMARY KEY (`alert_id`),
+  INDEX `host_id` (`host_id` ASC),
+  INDEX `rule_id` (`rule_id` ASC),
+  INDEX `rule_src_ip_numeric` USING HASH (`rule_src_ip_numeric` ASC),
+  INDEX `rule_id_2` USING HASH (`rule_id` ASC),
+  INDEX `host_id_2` USING HASH (`host_id` ASC),
+  INDEX `alert_date` USING BTREE (`alert_date` ASC),
+  CONSTRAINT `fk_ossec_alert_2`
+    FOREIGN KEY (`rule_id`)
+    REFERENCES `hector`.`ossec_rule` (`rule_id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_ossec_alert_1`
+    FOREIGN KEY (`host_id`)
+    REFERENCES `hector`.`host` (`host_id`)
+    ON DELETE CASCADE
 ) ENGINE = INNODB;
 
 -- OSSEC rules (defined in the server)
-CREATE TABLE IF NOT EXISTS `ossec_rule` (
+CREATE TABLE IF NOT EXISTS `hector`.`ossec_rule` (
 	`rule_id` INT NOT NULL AUTO_INCREMENT,
 	`rule_number` INT NOT NULL,
 	`rule_level` INT NOT NULL,
@@ -460,7 +596,7 @@ CREATE TABLE IF NOT EXISTS `ossec_rule` (
 );
 
 -- Risk rating, for vulnerabilities
-CREATE TABLE IF NOT EXISTS `risk` (
+CREATE TABLE IF NOT EXISTS hector`.`risk` (
   `risk_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `risk_name` varchar(25) NOT NULL,
   `risk_weight` INT UNSIGNED NOT NULL DEFAULT 0,
@@ -473,7 +609,7 @@ INSERT INTO `risk` SET `risk_id`=4, `risk_name`='high', `risk_weight`= 15 ON DUP
 INSERT INTO `risk` SET `risk_id`=5, `risk_name`='critical', `risk_weight`= 20 ON DUPLICATE KEY UPDATE `risk_id` = 5;
 
 -- Table for regularly generated reports
-CREATE TABLE IF NOT EXISTS `report` (
+CREATE TABLE IF NOT EXISTS hector`.`report` (
 	`report_id` INT NOT NULL AUTO_INCREMENT,
 	`report_title` VARCHAR(255),
 	`report_filename` VARCHAR(255),
@@ -546,6 +682,7 @@ CREATE TABLE IF NOT EXISTS `supportgroup` (
 	`supportgroup_email` varchar(100) DEFAULT NULL, -- Distribution e-mail alias
   PRIMARY KEY  (`supportgroup_id`)
 ) ENGINE = INNODB;
+INSERT INTO `hector`.`supportgroup` (`supportgroup_id`, `supportgroup_name`) VALUES (0, `No support group`);
 
 -- Free tags (for hosts)
 CREATE TABLE IF NOT EXISTS `tag` (
